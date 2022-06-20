@@ -1,0 +1,594 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="Asm_Cahrt_Error.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_PM.Asm_Cahrt_Error" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>異常統計分析 | 德大機械</title>
+ <%=color %>
+    <!--<link href="../../assets/build/css/custom.css" rel="stylesheet" />
+    <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <style>
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: auto;
+            -webkit-appearance: default-button;
+        }
+    </style>
+    <!-----------------content------------------>
+    <div class="right_col" role="main">
+        <!------------------TitleRef----------------------->
+        <ol class="breadcrumb_">
+            <li><u><a href="../index.aspx">首頁</a></u></li>
+            <li><u><a href="../SYS_CONTROL/dp_fuclist.aspx?dp=PMD">生產部</a></u></li>
+            <li><u><a href="../dp_PM/Asm_Cahrt_Error.aspx">異常統計分析</a></u></li>
+            <br />
+            <li style="position: absolute; right: 0">
+                <input name="ctl00$ContentPlaceHolder1$bt_Ver" type="submit" id="ContentPlaceHolder1_bt_Ver" class="btn btn-primary" value="立式">
+                <input name="ctl00$ContentPlaceHolder1$bt_Hor" type="submit" id="ContentPlaceHolder1_bt_Hor" class="btn btn-warning" value="臥式">
+            </li>
+            <br />
+        </ol>
+        <!-----------------title------------------>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <h4>您目前所選取的產線為：         
+                        <asp:LinkButton ID="LinkButton_type" runat="server" data-toggle="modal" data-target="#exampleModal_cbx"><u><%=Choose_Line %></u></asp:LinkButton>
+                    </h4>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                </div>
+                <div class="col-md-5 col-sm-12 col-xs-12">
+                    <h4>統計時間 :<asp:LinkButton ID="LinkButton1" runat="server" data-toggle="modal" data-target="#exampleModal_time"><%=TimeTypeForSubTitle%></asp:LinkButton>
+                    </h4>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <!-----------------content------------------>
+        <div class="row">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="dashboard_graph x_panel" id="Div_Shadow">
+                    <div class="x_content">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-8 col-xs-12">
+                                <div style="text-align: right; width: 100%; padding: 0;">
+                                    <button type="button" id="exportChart" title="另存成圖片">
+                                        <img src="../../assets/images/download.jpg" style="width: 36.39px; height: 36.39px;">
+                                    </button>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-10">
+                                    <div id="chartpie_Count" style="height: 450px; max-width: 1000px; margin: 0px auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="dashboard_graph x_panel" id="Div_Shadow">
+                    <div class="x_content">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-8 col-xs-12">
+                                <div style="text-align: right; width: 100%; padding: 0;">
+                                    <button type="button" id="exportimage" title="另存成圖片">
+                                        <img src="../../assets/images/download.jpg" style="width: 36.39px; height: 36.39px;">
+                                    </button>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-10">
+                                    <div id="chartpie_Times" style="height: 450px; max-width: 1000px; margin: 0px auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="x_title">
+                        <h2><small></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <p class="text-muted font-13 m-b-30">
+                        </p>
+                        <table id="datatable-buttons" class="table table-bordered " cellspacing="0" width="100%">
+                            <thead>
+                                <%=ColumnsData%>
+                            </thead>
+                            <tbody>
+                                <%=RowsData%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- set Modal -->
+<!-- <div class="backdrop">
+    </div>
+    <div class="fab child" data-subitem="1" data-toggle="modal" data-target="#exampleModal_wrench1">
+        <span>
+            <i class="fa fa-wrench"></i>
+        </span>
+    </div>
+    <div class="fab child" data-subitem="2" data-toggle="modal" data-target="#exampleModal">
+        <span>
+            <i class="fa fa-search"></i>
+        </span>
+    </div>
+    <div class="fab" id="masterfab">
+        <span>
+            <i class="fa fa-list-ul"></i>
+        </span>
+    </div>
+    <!--/set Modal-->
+    <!-- Modal1 -->
+    <div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title modaltextstyle" id="myModalLabel2"><i class="fa fa-file-text"></i>資料檢索精靈</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="testmodal2" style="padding: 5px 20px;">
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down">產線名稱</i> <i></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <asp:DropDownList ID="DropDownList_LineName" runat="server" class="form-control" OnSelectedIndexChanged="DropDownList_Error_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down">區間快選</i> <i id="cbx_remind_fast"></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="btn-group btn-group-justified">
+                                        <!--------------------------------------------------------->
+                                        <asp:LinkButton ID="date_month" runat="server" CssClass="btn btn-default " OnClick="LinkButton_day_Click">月</asp:LinkButton>
+                                        <asp:LinkButton ID="date_fyear" runat="server" class="btn btn-default " OnClick="LinkButton_day_Click">上半年</asp:LinkButton>
+                                        <asp:LinkButton ID="date_byear" runat="server" class="btn btn-default " OnClick="LinkButton_day_Click">下半年</asp:LinkButton>
+                                        <asp:LinkButton ID="date_year" runat="server" class="btn btn-default " OnClick="LinkButton_day_Click">全年</asp:LinkButton>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down">自定義區間 <small>(ex:yyyyMMdd)</small></i> <i id="cbx_remind"></i>
+                            </h5>
+                            <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                            <input type="text" class="form-control has-feedback-left" id="txt_time_str" name="txt_time_str" runat="server" value="" placeholder="開始日期" aria-describedby="inputSuccess2Status1" autocomplete="off">
+                                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                            <span id="inputSuccess2Status1" class="sr-only">(success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                            <input type="text" class="form-control has-feedback-left" id="txt_time_end" name="txt_time_end" value="" runat="server" placeholder="結束日期" aria-describedby="inputSuccess2Status2" autocomplete="off">
+                                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                            <span id="inputSuccess2Status2" class="sr-only">(success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出作業</button>
+                    <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行運算</button>
+                    <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" Style="display: none" OnClick="button_select_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal1 -->
+    <div id="exampleModal_wrench1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title modaltextstyle" id="myModalLabel_wrench1"><i class="fa fa-file-text"></i>資料檢索精靈</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="testmoda22" style="padding: 5px 20px;">
+                        <div class="form-group">
+
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down">廠區選擇</i> <i id="cbx_Location_fast"></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                        <input id="bt_Ver" type="submit" class="btn btn-primary" value="立式" runat="server" onserverclick="bt_Ver_ServerClick" />
+                                        <input id="bt_Hor" type="submit" class="btn btn-warning" value="臥式" runat="server" onserverclick="bt_Ver_ServerClick" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="testmodal23" style="padding: 5px 20px;">
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down">單位選擇</i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <asp:RadioButtonList ID="RadioButtonList_select_type" runat="server" RepeatDirection="Vertical" CssClass="table-striped">
+                                        <asp:ListItem Value="0" Selected="True" style="color: deepskyblue">分鐘</asp:ListItem>
+                                        <asp:ListItem Value="1" style="color: deepskyblue">小時</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">取消</button>
+                    <button id="btncheck_wrench1" type="button" class="btn btn-primary antosubmit2">確認</button>
+                    <asp:Button ID="button_wrench1" runat="server" Text="執行檢索" class="btn btn-secondary" Style="display: none" OnClick="button_wrench_Click1" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--20191212新增產線多選-->
+    <div id="exampleModal_cbx" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title modaltextstyle" id="myModalLabel_wrench"><i class="fa fa-file-text"></i>產線選擇</h4>
+                </div>
+
+                <div id="testmodal33" style="padding: 5px 20px;">
+                    <div class="form-group">
+                        <h5 class="modaltextstyle">
+                            <i class="fa fa-caret-down"><b>產線選擇</b></i>
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-12" align="center">
+                                <asp:CheckBoxList ID="CheckBoxList_Line" runat="server" CssClass="table-striped" RepeatColumns="3" Font-Size="20px"></asp:CheckBoxList>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">取消</button>
+                    <button id="btncbx" type="button" class="btn btn-primary antosubmit2">確認</button>
+                    <asp:Button ID="btn_cbx" runat="server" Text="執行檢索" class="btn btn-secondary" Style="display: none" OnClick="btn_cbx_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--20191212新增產線多選-->
+    <!--將時間拉到最上面-->
+    <div id="exampleModal_time" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="testmodal32" style="padding: 5px 20px;">
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>區間快選</b></i> <i id="cbx_remind_fast3"></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="btn-group btn-group-justified">
+                                        <!--------------------------------------------------------->
+                                        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="btn btn-default " OnClick="LinkButton_day_Click">月</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton3" runat="server" class="btn btn-default " OnClick="LinkButton_day_Click">上半年</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton4" runat="server" class="btn btn-default " OnClick="LinkButton_day_Click">下半年</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton5" runat="server" class="btn btn-default " OnClick="LinkButton_day_Click">全年</asp:LinkButton>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>自定義區間</b><small><b>(ex:yyyyMMdd)</b></small></i>
+                            </h5>
+                            <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                            <input type="text" class="form-control has-feedback-left" id="Textstr" name="txt_time_str" runat="server" value="" placeholder="開始日期" aria-describedby="inputSuccess2Status1" autocomplete="off">
+                                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                            <span id="inputSuccess2Status4" class="sr-only">(success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                            <input type="text" class="form-control has-feedback-left" id="Textend" name="txt_time_end" value="" runat="server" placeholder="結束日期" aria-describedby="inputSuccess2Status2" autocomplete="off">
+                                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                            <span id="inputSuccess2Status3" class="sr-only">(success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出作業</button>
+                    <button id="btntime" type="button" class="btn btn-primary antosubmit2">執行運算</button>
+                    <asp:Button ID="buttontime" runat="server" Text="執行檢索" class="btn btn-secondary" Style="display: none" OnClick="button_select_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--將時間拉到最上面-->
+
+
+
+    <!-- Modal1 -->
+
+    <!-- /Modal1 -->
+    <!--/set Modal-->
+    <!-- Modal -->
+    <!-- /Modal -->
+    <!-- jQuery -->
+    <script src="../../assets/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../../assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../../assets/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../../assets/vendors/moment/min/moment.min.js"></script>
+    <script src="../../assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!-- iCheck -->
+    <script src="../../assets/vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../../assets/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../../assets/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../../assets/vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../../assets/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../../assets/vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../assets/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="../../assets/vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="../../assets/vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../../assets/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../../assets/vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../assets/build/js/custom.min.js"></script>
+    <!-- FloatingActionButton -->
+    <script src="../../assets/vendors/FloatingActionButton/js/index.js"></script>
+    <!-- canvasjs -->
+    <script src="../../assets/vendors/canvas_js/canvasjs.min.js"></script>
+    <!-- Datatables -->
+    <script src="../../assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../../assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <!-----------------------Chart-------------------------------------->
+    <script>
+
+        $('#ContentPlaceHolder1_CheckBoxList_Line input').change(function () {
+            var check = $(this).context.checked;
+            var val = $(this).val();
+            if (val == "" && check == true) {
+                seletedAllItem(true);
+            } else if (val == "" && check == false) {
+                seletedAllItem(false);
+            } else if (val != "" && check == false) {
+                if ($(this)[0].id.split("_")[3] != 0)//ContentPlaceHolder1[1]_checkBoxList[2]_LINE_0[3]
+                {
+                    var x = document.getElementById("ContentPlaceHolder1_CheckBoxList_Line_0");
+                    x.checked = false;
+                    //seletedItem(7, true);
+                }
+            }
+        });
+        function seletedAllItem(seleted) {
+            $('#ContentPlaceHolder1_CheckBoxList_Line input').each(function () {
+                $(this).context.checked = seleted;
+            });
+        }
+        function seletedItem(num, seleted) {
+            var x = document.getElementById("ContentPlaceHolder1_CheckBoxList_Line_" + num);
+            x.checked = true;
+        }
+        $("#btncheck").click(function () {
+            var start_time = document.getElementsByName("ctl00$ContentPlaceHolder1$txt_time_str")[0].value;
+            var end_time = document.getElementsByName("ctl00$ContentPlaceHolder1$txt_time_end")[0].value;
+            if (start_time != "" && end_time != "") {
+                if (start_time < end_time) {
+                    document.getElementById('<%=button_select.ClientID %>').click();
+                }
+                else {
+                    var remind = document.getElementById("cbx_remind");
+                    remind.innerHTML = "起始日期有誤,請重新檢查 !";
+                    remind.style.color = "#FF3333";
+                }
+            } else {
+                var remind = document.getElementById("cbx_remind");
+                remind.innerHTML = "日期不得為空,請重新檢查 !";
+                remind.style.color = "#FF3333";
+            }
+        });
+        $("#btncheck_wrench1").click(function () {
+            document.getElementById('<%=button_wrench1.ClientID %>').click();
+        });
+        $("#btntime").click(function () {
+            document.getElementById('<%=button_select.ClientID %>').click();
+        });
+        $("#btncbx").click(function () {
+            document.getElementById('<%=btn_cbx.ClientID %>').click();
+        });
+        $(function () {
+            $('#ContentPlaceHolder1_txt_time_str,#ContentPlaceHolder1_txt_time_end').daterangepicker({
+                singleDatePicker: true,
+                autoUpdateInput: false,
+                singleClasses: "picker_3",
+                locale: {
+                    cancelLabel: 'Clear',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                }
+            });
+            $('#ContentPlaceHolder1_txt_time_str,#ContentPlaceHolder1_txt_time_end').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('YYYYMMDD'));
+            });
+            $('#ContentPlaceHolder1_txt_time_str,#ContentPlaceHolder1_txt_time_end').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+        });
+        CanvasJS.addColorSet("greenShades", [
+            "#4656cc",
+            "#3d1b41",
+            "#c3cdf5",
+            "#e43849",
+            "#ea601b",
+            "#991f42",
+            "#f5b025",
+            "#84ac52",
+            "#5db0c3",
+            "#1ea1d1",
+            "#18478e",
+            "#003c55"]);
+        var chartpieC = new CanvasJS.Chart("chartpie_Count",
+            {
+                colorSet: "greenShades",
+                // exportEnabled: true,
+                animationEnabled: true,
+                title: {
+                    text: "數量(件)", fontFamily: "NotoSans",
+                    fontWeight: "bolder",
+                },
+                axisX: {
+                    interval: 1,
+                    intervalType: "year"
+                },
+                axisY: {
+                    lineThickness: 1,
+                    lineColor: "#d0d0d0",
+                    gridColor: "transparent",
+                },
+                legend: { cursor: "pointer" },
+                data: [{
+                    //20191115開會討論由圓餅圖改直方圖
+                    type: "column", toolTipContent: "{label}: <strong>{y}件</strong>", indexLabel: "{y}件",indexLabelBackgroundColor:"white",
+                    dataPoints: [
+                    <%=
+                    ChartData_Count
+                    %>
+                    ]
+                }]
+            });
+        chartpieC.render();
+
+        document.getElementById("exportChart").addEventListener("click", function () {
+            chartpieC.exportChart({ format: "png" });
+            parent.location.reload();
+        });
+        var chartpieT = new CanvasJS.Chart("chartpie_Times",
+            {
+                colorSet: "greenShades",
+                //exportEnabled: true,
+                animationEnabled: true,
+                title: {
+                    text: "時間" + '<%=TimeUnit %>', fontFamily: "NotoSans",
+                    fontWeight: "bolder",
+                },
+                axisX: {
+                    interval: 1,
+                    intervalType: "year"
+                },
+                axisY: {
+                    lineThickness: 1,
+                    lineColor: "#d0d0d0",
+                    gridColor: "transparent",
+                    //reversed: true, //第四象限 正值
+                    //break作法
+                    /*scaleBreaks: {
+                        customBreaks: [{
+                            startValue:300000,
+                            endValue:  800000
+                        }]
+                    }*/
+                },
+                legend: { cursor: "pointer" },
+                data: [{
+                    //20191115開會討論由圓餅圖改直方圖
+                    type: "column",
+                    toolTipContent: "{label}: <strong>{y}" + '<%=TimeUnit %>' + "</strong>", indexLabel: "{y}" + '<%=TimeUnit %>',indexLabelBackgroundColor:"white",
+                    dataPoints: [
+                    <%=ChartData_Time%>
+                    ]
+                }]
+            });
+        chartpieT.render();
+        document.getElementById("exportimage").addEventListener("click", function () {
+            chartpieT.exportChart({ format: "png" });
+            parent.location.reload();
+        });
+
+        function toolTipContent(e) {
+            var str = "";
+            var total = 0;
+            var str2, str3;
+            for (var i = 0; i < e.entries.length; i++) {
+                var str1 = "<span style= 'color:" + e.entries[i].dataSeries.color + "'> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong><br/>";
+                total = e.entries[i].dataPoint.y + total;
+                str = str.concat(str1);
+            }
+            str2 = "<span style = 'color:DodgerBlue;'><strong>" + (e.entries[0].dataPoint.label) + "</strong></span><br/>";
+            str3 = "<span style = 'color:Tomato'>Total:</span><strong>" + total + "</strong><br/>";
+            return (str2.concat(str)).concat(str3);
+        }
+    </script>
+</asp:Content>

@@ -1,0 +1,321 @@
+﻿using System;
+using Support;
+using dek_erpvis_v2.cls;
+using System.Collections.Generic;
+using System.Web.UI;
+using System.Linq;
+using System.Web;
+using System.Data;
+
+namespace dek_erpvis_v2.pages.dp_CNC
+{
+    public partial class Analysis : System.Web.UI.Page
+    {
+        public string color = "";
+        public string timerange = "";
+        public DateTime FirstDay = new DateTime();
+        public DateTime LastDay = new DateTime();
+        public string Type = "week";
+        public string dev_name = "";
+
+        public string StatusInfo_th = "";
+        public string StatusInfo_tr = "";
+        public string js_ = "";
+        public string js = "";
+        public string OperRate_Str = "";            //折線圖
+        public string Chart_Percent = "";           //圓餅圖   
+        public string StatusRate_Str = "";          //圓餅圖      
+
+        string acc = "", URL_NAME = "";
+        public bool b_Page_Load = true;
+
+        public List<string> ls_data = new List<string>();
+        public bool is_ok = false;
+        public string s_data = null;
+        public DataTable dt_data = null;
+        CNC_Web_Data Web_Data = new CNC_Web_Data();
+
+        myclass myclass = new myclass();
+        CNCUtils cNC_Class = new CNCUtils();
+        public string devName;
+
+        //porcess
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);  //單位：周
+            LastDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 7).AddSeconds(-1);
+            if (LastDay > DateTime.Now) LastDay = DateTime.Now;
+
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                URL_NAME = "Analysis_oper_rate";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        set_page_content();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+        }
+
+        private void set_page_content()
+        {
+            Read_Data();
+            Get_MachType_List();
+        }
+
+        //fuction
+        public void Read_Data()
+        {
+            string data_first = "", oper_date = "";
+            string[] date_week = { "0", "0", "0", "0", "0", "0", "0" };
+            double[] operate_rate_week = { 0, 0, 0, 0, 0, 0, 0 };//紀錄預設當周每日稼動率
+            double[] operate_time_week = { 0, 0, 0, 0, 0, 0, 0 };//紀錄預設當周每日總運轉工時
+            double[] work_time_week = { 0, 0, 0, 0, 0, 0, 0 };//紀錄預設當周每日總工時
+            double[] status_rate_day = { 0, 0, 0, 0 };
+            double[] status_time = { 0, 0, 0, 0, 0 };
+            double[] status_time_table = { 0, 0, 0, 0, 0 };
+            double[] status_rate = { 0, 0, 0, 0 };
+            List<string> Status_Rate = new List<string>();
+            List<string> Status_Value = new List<string>();
+
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+
+            ls_data.Clear();
+            if (b_Page_Load || DropDownList_MachGroup.Text == "--Select--" || DropDownList_MachGroup.Text == "")
+            {
+                DataRow SQL_row = DataTableUtils.DataTable_GetRowHeader("mach_type_group").NewRow();
+                SQL_row["read_status"] = "False";
+                is_ok = DataTableUtils.Update_DataRow("mach_type_group", "read_status = 'True'", SQL_row);
+                foreach (DataRow row in DataTableUtils.GetDataTable("select mach_name from mach_info order by id desc").Rows)
+                    ls_data.Add(row.ItemArray[0].ToString());
+            }
+            else
+                ls_data = DataTableUtils.GetDataTable("select mach_name from mach_group where group_name = '" + DropDownList_MachGroup.SelectedItem.Text + "' order by id desc").Rows[0].ItemArray[0].ToString().Split(',').ToList();
+
+
+
+            if (ls_data != null && ls_data.Count != 0)
+            {
+                for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+                {
+                    string data_sec = "";
+                    if (Type == "day")  //當日初//當日末
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), FirstDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    else if (Type == "week")    //當周初//當周末
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), LastDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    else if (Type == "month")   //當月初//當月末
+                    {
+                        FirstDay = FirstDay.AddDays(1 - FirstDay.Day);
+                        LastDay = FirstDay.AddMonths(1).AddSeconds(-1);
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), LastDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    }
+                    else if (Type == "season")  //當季初//當季末
+                    {
+                        FirstDay = FirstDay.AddMonths(0 - (FirstDay.Month - 1) % 3).AddDays(1 - FirstDay.Day);
+                        LastDay = FirstDay.AddMonths(3).AddSeconds(-1);
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), LastDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    }
+                    else if (Type == "firsthalf")   //上半年初//上半年末
+                    {
+                        FirstDay = new DateTime(FirstDay.Year, 1, 1);
+                        LastDay = FirstDay.AddMonths(6).AddSeconds(-1);
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), LastDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    }
+                    else if (Type == "lasthalf")    //下半年初//下半年末
+                    {
+                        FirstDay = new DateTime(FirstDay.Year, 7, 1);
+                        LastDay = FirstDay.AddMonths(6).AddSeconds(-1);
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), LastDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    }
+                    else if (Type == "year")    //當年初//當年末
+                    {
+                        FirstDay = new DateTime(FirstDay.Year, 1, 1);
+                        LastDay = new DateTime(FirstDay.Year, 12, 31).AddSeconds(-1);
+                        Status_Value = Web_Data.Get_Operate_Rate(FirstDay.ToString("yyyyMMdd"), LastDay.ToString("yyyyMMdd"), ls_data[iIndex]);
+                    }
+                    for (int iIndex_1 = 0; iIndex_1 < Status_Value.Count; iIndex_1++)
+                    {
+                        for (int iIndex_3 = 0; iIndex_3 < status_time.Length; iIndex_3++)
+                        {
+                            status_time[iIndex_3] += DataTableUtils.toDouble(Status_Value[iIndex_1].Split(':')[1].Split(',')[iIndex_3]);
+                            status_time_table[iIndex_3] += DataTableUtils.toDouble(Status_Value[iIndex_1].Split(':')[1].Split(',')[iIndex_3]);
+                        }
+                        if (b_Page_Load)//第一次
+                        {
+                            work_time_week[iIndex_1] += DataTableUtils.toDouble(Status_Value[iIndex_1].Split(':')[1].Split(',')[0]);
+                            operate_time_week[iIndex_1] += DataTableUtils.toDouble(Status_Value[iIndex_1].Split(':')[1].Split(',')[4]);
+                            date_week[iIndex_1] = Status_Value[iIndex_1].Split(':')[0].Substring(6, 2) + "號";
+                            string ss = date_week[iIndex_1];
+                            if (iIndex == ls_data.Count - 1 && iIndex_1 == Status_Value.Count - 1)
+                            {
+                                for (int iIndex_2 = 0; iIndex_2 < Status_Value.Count; iIndex_2++)
+                                {
+                                    operate_rate_week[iIndex_2] = cNC_Class.Math_Round(operate_time_week[iIndex_2], work_time_week[iIndex_2], 2) * 100;
+                                    if (double.IsNaN(operate_rate_week[iIndex_2])) operate_rate_week[iIndex_2] = 0;//避免=非數值
+                                    data_first += "{ label:'" + date_week[iIndex_2] + "' , y:" + operate_rate_week[iIndex_2] + " },";
+                                }
+                                OperRate_Str += "{type: 'line',showInLegend: true,name: '平均稼動率',indexLabel: '{y}',dataPoints: [" + data_first + "]},";  //畫第一次折線圖                                
+                            }
+                            if (iIndex_1 == Status_Value.Count - 1)
+                            {
+                                status_rate_day[0] = cNC_Class.Math_Round(status_time_table[1], status_time_table[0], 2) * 100;
+                                status_rate_day[1] = cNC_Class.Math_Round(status_time_table[2], status_time_table[0], 2) * 100;
+                                status_rate_day[2] = cNC_Class.Math_Round(status_time_table[3], status_time_table[0], 2) * 100;
+                                status_rate_day[3] = cNC_Class.Math_Round(status_time_table[4], status_time_table[0], 2) * 100;
+                                Status_Rate.Add("Dev_Name:" + ls_data[iIndex] + ",DISCONNECT:" + status_rate_day[0] + ",STOP:" + status_rate_day[1] + ",EMERGENCY:" + status_rate_day[2] + ",OPERATE:" + status_rate_day[3] + ",SHUTDOWN:0");
+                                for (int iIndex_5 = 0; iIndex_5 < status_time_table.Length; iIndex_5++)
+                                    status_time_table[iIndex_5] = 0;
+                            }
+                        }
+                        else
+                        {
+                            double work_time_now = DataTableUtils.toDouble(Status_Value[iIndex_1].Split(':')[1].Split(',')[0]);
+                            double oper_time_now = DataTableUtils.toDouble(Status_Value[iIndex_1].Split(':')[1].Split(',')[4]);
+                            oper_date = Status_Value[iIndex_1].Split(':')[0].Substring(6, 2) + "號";
+
+                            status_rate_day[3] = cNC_Class.Math_Round(oper_time_now, work_time_now, 2) * 100;//operate_time
+                            if (double.IsNaN(status_rate_day[3])) status_rate_day[3] = 0;//避免=非數值
+
+
+
+                            data_sec += "{ label:'" + oper_date + "' , y:" + status_rate_day[3] + " },";  //畫表(單獨線)
+
+
+                            if (iIndex_1 == Status_Value.Count - 1)
+                            {
+                                ls_data[iIndex] = CNCUtils.MachName_translation(ls_data[iIndex]);
+
+                                OperRate_Str += "{type: 'line',showInLegend: true,name: '" + ls_data[iIndex] + "',indexLabel: '{y}',dataPoints: [" + data_sec + "]},\n";//畫折線
+                                //算 Table    
+                                status_rate_day[0] = cNC_Class.Math_Round(status_time_table[1], status_time_table[0], 2) * 100;
+                                status_rate_day[1] = cNC_Class.Math_Round(status_time_table[2], status_time_table[0], 2) * 100;
+                                status_rate_day[2] = cNC_Class.Math_Round(status_time_table[3], status_time_table[0], 2) * 100;
+                                status_rate_day[3] = cNC_Class.Math_Round(status_time_table[4], status_time_table[0], 2) * 100;
+                                Status_Rate.Add("Dev_Name:" + ls_data[iIndex] + ",DISCONNECT:" + status_rate_day[0] + ",STOP:" + status_rate_day[1] + ",EMERGENCY:" + status_rate_day[2] + ",OPERATE:" + status_rate_day[3] + ",SHUTDOWN:0");
+                                for (int iIndex_4 = 0; iIndex_4 < status_time_table.Length; iIndex_4++)
+                                    status_time_table[iIndex_4] = 0;
+                                //算 Table 
+                            }
+                        }
+                    }
+                }
+            }
+            Status_Table(Status_Rate);  //表格資料
+            status_rate[0] = cNC_Class.Math_Round(status_time[1], status_time[0], 2) * 100;
+            status_rate[1] = cNC_Class.Math_Round(status_time[2], status_time[0], 2) * 100;
+            status_rate[2] = cNC_Class.Math_Round(status_time[3], status_time[0], 2) * 100;
+            status_rate[3] = cNC_Class.Math_Round(status_time[4], status_time[0], 2) * 100;
+            StatusRate_Str = "Device Name: ,DISCONNECT:" + status_rate[0] + ",STOP:" + status_rate[1] + ",EMERGENCY:" + status_rate[2] + ",OPERATE:" + status_rate[3] + ",SHUTDOWN:0";//圓餅圖
+            string date_s = Support.DB.DtUtils.toString(FirstDay).Replace('-', '/');
+            string date_e = Support.DB.DtUtils.toString(LastDay).Replace('-', '/');
+            timerange = date_s + " ~ " + date_e;
+        }
+
+        private void Status_Table(List<string> Status_Rate)//表格資料
+        {
+            StatusInfo_th = "<tr style='background-color:dimgray;color: white;'>\n";
+            StatusInfo_th += "<th>名稱</th>\n<th>運轉</th>\n<th>待機</th>\n<th>警報</th>\n<th>離線</th>\n";
+            string devicename = "";
+            foreach (string Status_List in Status_Rate)
+            {
+                if (Status_List != "--")
+                {
+                    devicename = CNCUtils.MachName_translation(Status_List.Split(',')[0].Split(':')[1]);
+                    StatusInfo_tr += "<tr>";
+                    StatusInfo_tr += "<td>" + devicename + "</td>";//devname
+                    StatusInfo_tr += "<td>" + Status_List.Split(',')[4].Split(':')[1] + "</td>";//operate
+                    StatusInfo_tr += "<td>" + Status_List.Split(',')[2].Split(':')[1] + "</td>";//stop
+                    StatusInfo_tr += "<td>" + Status_List.Split(',')[3].Split(':')[1] + "</td>";//emergency
+                    StatusInfo_tr += "<td>" + Status_List.Split(',')[1].Split(':')[1] + "</td>";//disconnect
+                    //StatusInfo_tr += "<td>" + Status_List.Split(',')[5].Split(':')[1] + "</td>\n";//shutdown
+                    StatusInfo_tr += "</tr>";
+                }
+            }
+        }
+        private void Get_MachType_List()//取type list
+        {
+            DropDownList_MachType.Items.Clear();
+            dt_data = DataTableUtils.GetDataTable("select type_name from mach_type");
+            if (dt_data != null && dt_data.Rows.Count != 0)
+            {
+                DropDownList_MachType.Items.Add("--Select--");
+                for (int iIndex = 0; iIndex < dt_data.Rows.Count; iIndex++)
+                    DropDownList_MachType.Items.Add(dt_data.Rows[iIndex]["type_name"].ToString());
+            }
+        }
+        public string get_MachList_html(string dev_name)
+        {
+            string html_ = "'<div class=\"col-md-12 col-sm-12 col-xs-12\"><div id = \"" + dev_name + "\" style=\"height: 450px;max-width: 920px; margin: 0px 0px 0px -23px;\"></div></div>';";//-23
+            return js_ += "document.getElementById('mach_list').innerHTML += " + html_ + "";
+        }
+        public void get_javascrtpt_pie(string dev_status)
+        {
+            devName = dev_status.Split(':')[1].Split(',')[0];    //MTLINKi設備命名限制如宣告命名方式
+            js += "var " + devName + "_ch" + " = new CanvasJS.Chart(\"" + devName + "\", {" +
+           "animationEnabled: true," +
+           "title:{text: \"" + devName + "\"}," +
+           "legend:{cursor: \"pointer\"}," +
+           "data: [{type: \"pie\",toolTipContent: \"{name}: <strong>{y}%</strong>\",indexLabel: \"{name} - {y}%\",dataPoints: [" + get_dataponts(dev_status) + "]}]" +
+           "}); " + devName + "_ch.render();";
+
+        }
+        private string get_dataponts(string dev_status)
+        {
+            Chart_Percent = "";
+            for (int iIndex = 1; iIndex < dev_status.Split(',').Length - 1; iIndex++)
+            {
+                string dev_status_title = dev_status.Split(',')[iIndex].Split(':')[0];
+                if (dev_status_title == "SHUTDOWN") dev_status_title = "NONE";//關機先用none取代
+                string dev_value = dev_status.Split(',')[iIndex].Split(':')[1];
+                Chart_Percent += "{ y:" + dev_value + " , name: \"" + cNC_Class.mach_status_EN2CH(dev_status_title) + "\",color: '" + cNC_Class.mach_status_Color(dev_status_title) + "' },";
+            }
+            return Chart_Percent;
+        }
+        //event      
+        protected void Select_MachGroupClick(object sender, EventArgs e)    //執行運算
+        {
+            if (DropDownList_MachType.SelectedItem.Text != "--Select--" && DropDownList_MachGroup.SelectedItem.Text != "--Select--")
+            {
+                b_Page_Load = false;
+                Read_Data();
+            }
+        }
+        protected void button_select_Click(object sender, EventArgs e)  //時間篩選
+        {
+            List<string> ST_First_Last_Time = cNC_Class.get_search_time(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), "", "");
+            FirstDay = DateTime.ParseExact(ST_First_Last_Time[0].Split(',')[0], "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture);
+            LastDay = DateTime.ParseExact(ST_First_Last_Time[0].Split(',')[1], "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture);
+            if (LastDay > DateTime.Now) LastDay = DateTime.Now;
+            Type = ST_First_Last_Time[1];
+            b_Page_Load = false;
+            Read_Data();
+        }
+        protected void DropDownList_MachType_SelectedIndexChanged(object sender, EventArgs e)//cbx select事件//取group list
+        {
+            if (DropDownList_MachType.SelectedItem.Text != "--")
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+                ls_data.Clear();
+                DropDownList_MachGroup.Items.Clear();
+                ls_data = DataTableUtils.GetDataTable("select group_name from mach_type where type_name = '" + DropDownList_MachType.SelectedItem.Text + "'").Rows[0].ItemArray[0].ToString().Split(',').ToList();
+                DropDownList_MachGroup.Items.Add("--Select--");
+                for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+                    DropDownList_MachGroup.Items.Add(ls_data[iIndex]);
+            }
+        }
+    }
+}

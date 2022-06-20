@@ -1,0 +1,99 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+#chartContainer, #mach_list {
+    height: 528px;
+    width: 100%;
+    margin: 0px auto;
+}
+
+._BottomImg {
+    height: 450px;
+    max-width: 920px;
+    margin: 0px 0px 0px -23px;
+}
+
+#mach_list_Pei {
+    height: 450px;
+    max-width: 920px;
+    margin: 0px 0px 0px -23px;
+}
+
+@media screen and (max-width:768px) {
+
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    .x_panel {
+        padding: 0;
+    }
+
+    #tab_content1 {
+        position: relative;
+    }
+
+    #exportChart, #exportimage {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+    }
+
+    #chartContainer {
+        margin: 50px 0 0 0;
+    }
+
+    #chartContainer, #mach_list {
+        height: 400px;
+    }
+    /*圖片模式*/
+    #tab_content1 > div.x_panel > div.row {
+        margin: 0;
+    }
+
+    #tab_content1 div {
+        padding: 0;
+    }
+
+    ._TopImage {
+        margin: 10px 0;
+        padding: 10px;
+    }
+
+    #tab_content1 ._TopImage .x_panel {
+        padding: 10px;
+    }
+
+    ._BottomImg {
+        width: 100%;
+        height: 400px;
+        margin: 50px 0 0 0;
+    }
+
+    #tab_content1 > div.x_panel > div.row > div:nth-child(2) > div.x_panel {
+        padding: 10px;
+    }
+    /*safe*/
+    #btncheck {
+        width: 100%;
+    }
+
+    /*表格模式*/
+    #tab_content2 .x_panel {
+        padding: 0 10px;
+    }
+
+    ._select {
+        padding: 10px !important;
+    }
+
+        ._select .x_panel {
+            padding: 0 !important;
+        }
+
+    #ContentPlaceHolder1_UpdatePanel1 span {
+        font-size: 16px !important;
+    }
+}

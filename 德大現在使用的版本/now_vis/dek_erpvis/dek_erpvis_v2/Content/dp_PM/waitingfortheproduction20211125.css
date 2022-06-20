@@ -1,0 +1,73 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+#chart_bar {
+    height: 670px;
+    max-width: 100%;
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    .x_panel {
+        padding: 0;
+    }
+
+    #tab_content1 > div.x_panel > div.row {
+        margin: 0;
+    }
+
+    #tab_content1 > div.x_panel div {
+        padding: 0;
+    }
+
+    #chart_bar {
+        height: 400px;
+        max-width: 95%;
+        margin: 0 auto;
+        padding-top: 10px;
+    }
+
+    #hidepercent > div.dashboard_graph > div.x_content > div.row > div:nth-child(2) > div {
+        width: 25%;
+        font-size: 0.7em;
+    }
+
+        #hidepercent > div.dashboard_graph > div.x_content > div.row > div:nth-child(2) > div div {
+            width: 100%;
+        }
+    /*#ContentPlaceHolder1_UpdatePanel1 > div > div:first-child {
+        width: 40%;
+        display: inline-block;
+    }
+    #ContentPlaceHolder1_UpdatePanel1 > div > div:nth-child(2) {
+        width: 60%;
+        display: inline-block;
+    }*/
+    #ContentPlaceHolder1_checkBoxList_LINE tbody tr td input {
+        margin: 0 10px;
+    }
+
+    #btncheck {
+        width: 100%;
+    }
+
+    #tab_content1 > .x_panel > .row > div.col-md-9 {
+        padding-top: 20px;
+    }
+
+    ._sumcount {
+        padding: 0 10px !important;
+    }
+
+    ._select {
+        padding: 10px !important;
+    }
+    /*表格*/
+    #tab_content2 > .x_panel {
+        padding: 10px;
+    }
+}

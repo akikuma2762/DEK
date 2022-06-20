@@ -1,0 +1,59 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+    .x_content, .x_panel {
+        padding: 5px;
+    }
+
+    #btncheck {
+        width: 100%;
+    }
+    /*選取人員*/
+    #ContentPlaceHolder1_CheckBoxList_staff {
+        width: 100%;
+    }
+
+    #ContentPlaceHolder1_CheckBoxList_staff tbody tr {
+        width: 50%;
+        display: inline-block;
+    }
+    #_Title,
+    #_Title > .x_panel > .x_content > .col-xs-12,
+    #_Title > .x_panel > .x_content > .col-xs-12 > .x_panel {
+        padding: 0!important;
+    }
+    /*select*/
+    ._select .dashboard_graph div.h2,
+    ._select .dashboard_graph div.h4 {
+        font-size:1.2em;
+    }
+    ._select .dashboard_graph > .x_content div.h2 h4,
+    ._select .dashboard_graph > .x_content div.h2 .count {
+        width: 48%;
+        display: inline-block;
+    }
+    ._select .dashboard_graph > .x_content div.h2 .count {
+        text-align:right;
+    }
+    ._select {
+        padding:10px!important;
+    }
+    ._select .dashboard_graph {
+        padding:0!important;
+    }
+    /*table*/
+    #ContentPlaceHolder1_CheckBoxList_staff tbody tr td label {
+        margin-left:10px;
+    }
+    #ContentPlaceHolder1_CheckBoxList_staff {
+        margin:5px 0!important;
+    }
+    #ContentPlaceHolder1_CheckBoxList_staff tbody tr td {
+        line-height:25px;
+    }
+}

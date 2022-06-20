@@ -1,0 +1,373 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_WH
+{
+    public partial class scrapped : System.Web.UI.Page
+    {
+        public string color = "";
+        public string timerange = "";
+        public string date_str = "";// new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd");
+        public string date_end = "";// new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1).ToString("yyyyMMdd");
+        public string title_text = "";
+        public string th = "";
+        public string tr = "";
+        public string item_type_name = "";
+        public string item_type_code = "";
+        public string overdate = "";
+        public string selected_orver_day = "";
+        public string 總報廢金額 = "";
+        public string 最大金額品名規格 = "";
+        int money = 0;
+        public string col_data_points_報廢金額 = "";
+        public string col_data_points_報廢數量 = "";
+        public string col_data_points_報廢次數 = "";
+        public string pie_data_points = "";
+        public string path = "";
+        string URL_NAME = "";
+        string acc = "";
+        string view_YN = "N";
+        string titlename = "";
+        DataTable public_dt = null;
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            URL_NAME = "scrapped";
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("WHE");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_WH/scrapped.aspx'>報廢數量統計表</a></u></li></ol>");
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        string[] s = 德大機械.德大專用月份(acc).Split(',');
+                        date_str = s[0];
+                        date_end = s[1];
+                        iniCbx();
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        private void iniCbx()
+        {
+            CheckBoxList_staff.Items.Clear();
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            // 2019/07/03，checkboxlist動態產生
+            string sqlcmd = 德大機械.倉管部_報廢數量統計表.取得報廢人列表(date_str, date_end);
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                string staff = DataTableUtils.toString(dt.Rows[i]["報廢人"]);
+                ListItem listItem = new ListItem(staff, staff);
+                listItem.Selected = true;
+                CheckBoxList_staff.Items.Add(listItem);
+            }
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+
+            }
+        }
+        private void load_page_data()
+        {
+            title_text = "''";
+            Response.BufferOutput = false;
+            // 2019/07/03，控管"報廢金額"是否有權查看
+            view_YN = 德大機械.function_yn(acc, "報廢金額");
+            Set_Html_Table();
+        }
+        private void block_1(string sqlCmd)
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            sqlCmd = 德大機械.倉管部_報廢數量統計表.找最大者(德大機械.倉管部_報廢數量統計表.報廢數量統計表(date_str, date_end, get_seleted_staff()));
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlCmd);
+            if (dt != null)
+            {
+                DataRow row = dt.Rows[0];
+                總報廢金額 = DataTableUtils.toString(row["金額小計"]).Split('.')[0];
+                最大金額品名規格 = DataTableUtils.toString(row["品名規格"]);
+            }
+        }
+        private void set_col_value()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            string sql_cmd = 德大機械.倉管部_報廢數量統計表.取得報廢統計資料(date_str, date_end, get_seleted_staff());
+            DataTable dt = clsDB_sw.DataTable_GetTable(sql_cmd);
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    string 不良原因 = "";
+                    if (DataTableUtils.toString(row["不良原因"]).Split(':').Length > 1)
+                    {
+                        不良原因 = myclass.檢查是否符合規則(DataTableUtils.toString(row["不良原因"]).Split(':')[1], "^[\u4e00-\u9fa5_a-zA-Z0-9]+$");
+                    }
+
+                    string 不良次數 = DataTableUtils.toString(row["次數"]);
+                    string 報廢數量 = DataTableUtils.toString(row["報廢數量"]);
+                    string 總報廢金額 = DataTableUtils.toString(row["總報廢金額"]);
+                    //col_data_points_報廢次數 += "{ y: " + 不良次數 + ", label:'" + 不良原因 + "' },";
+                    col_data_points_報廢數量 += "{ y: " + 報廢數量 + ", label:'" + 不良原因 + "' },";
+
+                    if (view_YN == "Y")
+                    {
+                        col_data_points_報廢金額 += "{ y: " + 總報廢金額 + ", label:'" + 不良原因 + "' },";
+                    }
+                }
+                //title_text = "'總報廢金額 : "+ total_val + " NTD'";
+            }
+            else
+            {
+                //col_data_points = "";
+                title_text = "'此區間內尚無資料'";
+
+            }
+        }
+        private void set_pie_value()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            int i = 0;
+            string sqlcmd = 德大機械.倉管部_報廢數量統計表.取得報廢次數(date_str, date_end, get_seleted_staff());
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    i++;
+                    string 次數 = DataTableUtils.toString(row["次數"]);
+                    string 不良原因 = "";
+                    if (DataTableUtils.toString(row["不良原因"]).Split(':').Length > 1)
+                    {
+                        不良原因 = myclass.檢查是否符合規則(DataTableUtils.toString(row["不良原因"]).Split(':')[1], "^[\u4e00-\u9fa5_a-zA-Z0-9]+$");
+                    }
+
+                    if (i == dt.Rows.Count)
+                    {
+                        pie_data_points += "{y:" + 次數 + ",name:'" + 不良原因 + "', label:'" + 不良原因 + "',exploded: true},";
+                    }
+                    else
+                    {
+                        pie_data_points += "{y:" + 次數 + ",name:'" + 不良原因 + "', label:'" + 不良原因 + "'},";
+                    }
+                }
+            }
+            else
+            {
+                title_text = "'此區間內尚無資料'";
+            }
+        }
+        private void Set_Html_Table()
+        {
+            string date_s = HtmlUtil.changetimeformat(date_str);
+            string date_e = HtmlUtil.changetimeformat(date_end);
+            timerange = date_s + " ~ " + date_e;
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            string sqlCmd = 德大機械.倉管部_報廢數量統計表.報廢數量統計表(date_str, date_end, get_seleted_staff());
+            public_dt = clsDB_sw.DataTable_GetTable(sqlCmd);
+            string col_name = "";
+            //印出欄位名稱
+            if (public_dt.Rows.Count > 0)
+            {
+                if (view_YN == "N")
+                {
+                    public_dt.Columns.Remove("金額小計");
+                    public_dt.Columns.Remove("標準成本");
+                }
+
+                for (int i = 0; i < public_dt.Columns.Count; i++)
+                {
+                    col_name = public_dt.Columns[i].ColumnName;
+                    if (col_name != "單位" && col_name != "備註")
+                    {
+                        th += "<th>" + col_name + "</th>\n                                            ";
+                        titlename += col_name + ",";
+                    }
+                }
+                // 2019/07/03，透過ERP單據的備註欄拆解這四個資訊
+                th += "<th>覆驗單號</th>\n                                            ";
+                th += "<th>不良原因</th>\n                                            ";
+                th += "<th>責任歸屬</th>\n                                            ";
+                th += "<th>備註</th>\n                                            ";
+
+                titlename = titlename + "覆驗單號,不良原因,責任歸屬,備註,";
+                block_1(sqlCmd);
+
+
+                //新增覆驗單號、不良原因、責任歸屬的欄位，以避免程式錯誤
+                public_dt.Columns.Add("覆驗單號");
+                public_dt.Columns.Add("不良原因");
+                public_dt.Columns.Add("責任歸屬");
+                //把備註移至最後方
+                public_dt.Columns["備註"].SetOrdinal(public_dt.Columns.Count - 1);
+                //印出欄位內容
+                tr = HtmlUtil.Set_Table_Content(public_dt, titlename, scrapped_callback);
+                總報廢金額 = money.ToString("N0");
+            }
+            else
+                title_text = HtmlUtil.NoData(out th, out tr);
+        }
+        //callback的事件(有些欄位需要特殊的動作時使用)
+        private string scrapped_callback(DataRow row, string field_name)
+        {
+            string value = "";
+            if (field_name == "標準成本")
+            {
+                if (view_YN == "Y")
+                {
+                    value = "<td>" + DataTableUtils.toString(row["標準成本"]).Split('.')[0] + "</td>\n";
+                }
+            }
+            if (field_name == "金額小計")
+            {
+                if (view_YN == "Y")
+                {
+                    value = "<td>" + DataTableUtils.toString(row["金額小計"]).Split('.')[0] + "</td>\n";
+                    money += DataTableUtils.toInt(DataTableUtils.toString(row["金額小計"]).Split('.')[0]);
+                }
+            }
+            if (field_name == "報廢數量")
+            {
+                value = "<td>" + DataTableUtils.toString(row["報廢數量"]).Split('.')[0] + " " + DataTableUtils.toString(row["單位"]) + "</td>\n";
+            }
+
+            string[] soure = DataTableUtils.toString(row["備註"]).Split(';');
+
+
+       /*     if (soure.Length == 1)
+            {
+                string ss = DataTableUtils.toString(row["備註"]).Replace("\n", "\n;");
+                soure = ss.Split(';');
+            }*/
+
+
+            if (field_name == "覆驗單號")
+            {
+                if (soure.Length >= 4 )
+                {
+                    //0覆驗單號
+                    value = "<td>" + soure[0].Split(':')[1] + "</td>\n";
+                }
+               /* else if (soure.Length >= 2 && soure.Length <= 4)
+                    value = "<td>" + soure[0].Split(':')[1] + "</td>\n";*/
+                else
+                {
+                    //0覆驗單號
+                    value = "";
+                }
+            }
+            if (field_name == "不良原因")
+            {
+                if (soure.Length >= 4)
+                {
+                    //1不良原因
+                    value = "<td>" + soure[1].Split(':')[1] + "</td>\n";
+                }
+                /*else if (soure.Length >= 2 && soure.Length <= 4)
+                    value = "<td>" + soure[2].Split(':')[1] + "</td>\n";*/
+                else
+                {
+                    //1不良原因
+                    value = "";
+                }
+            }
+            if (field_name == "責任歸屬")
+            {
+                if (soure.Length >= 4)
+                {
+                    //2責任歸屬
+                    value = "<td>" + soure[2].Split(':')[1] + "</td>\n";
+                }
+
+                else
+                {
+                    //2責任歸屬
+                    value = "";
+                }
+            }
+            if (field_name == "備註")
+            {
+                if (soure.Length >= 4)
+                {
+                    //3備註
+                    if (soure[3].Split(':').Length >= 2)
+                        value = "<td>" + soure[3].Split(':')[1] + "</td>\n";
+                    else
+                    {
+                        value = "";
+                    }
+                }
+                else
+                {
+                    //3備註
+                    value = "<td>"+DataTableUtils.toString(row["備註"]) + "</td>\n";
+                }
+                string va = value;
+            }
+            return value;
+        }
+
+        private string get_seleted_staff()
+        {
+            string staff = "";
+            foreach (ListItem li in CheckBoxList_staff.Items)
+            {
+                if (li.Selected == true)
+                {
+                    staff += li.Value + ",";
+                }
+            }
+            return staff;
+        }
+
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            HtmlUtil.Button_Click(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), s, DataTableUtils.toString(txt_time_str.Value), DataTableUtils.toString(txt_time_end.Value), out date_str, out date_end);
+            GotoCenn();
+            iniCbx();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+
+        }
+    }
+}

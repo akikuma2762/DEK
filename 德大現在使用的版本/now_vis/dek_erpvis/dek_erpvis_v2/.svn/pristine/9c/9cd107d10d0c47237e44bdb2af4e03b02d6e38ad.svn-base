@@ -1,0 +1,41 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="dek_erpvis_v2.WebForm1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>資料輸出測試1:</div>
+        <% foreach (var item in data)
+            { %>
+        <div>machName : <%=item.Name %> </div>
+        <%};%>
+
+        <div>資料輸出測試2:</div>
+        <table>
+            <thead>
+                <tr>
+                    <%  dek_erpvis_v2.models.MachData machData = new dek_erpvis_v2.models.MachData(); %>
+                    <% foreach (System.Reflection.PropertyInfo pi in machData.GetType().GetProperties())
+                        { %>
+                    <th><%=pi.Name %></th>
+                    <%}%>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    for (int i = 0; i < data.Count; i++)
+                    {
+
+
+                    }
+                %>
+            </tbody>
+        </table>
+    </form>
+</body>
+</html>

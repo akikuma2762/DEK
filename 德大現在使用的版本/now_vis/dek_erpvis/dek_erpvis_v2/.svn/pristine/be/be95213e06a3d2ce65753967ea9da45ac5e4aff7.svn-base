@@ -1,0 +1,297 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+
+namespace dek_erpvis_v2.cls
+{
+    public class HtmlUtil
+    {
+        德大機械 德大機械 = new 德大機械();
+        public static string GetConnByDekVisErp = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisErp", "sa", "asus54886961");
+        /* public static string AttibuteAssign(string item,string value)
+         {
+             return string.Format("{0}='{1}'", item, value);
+         }
+
+         public static string AttibuteQuot(string item, string value)
+         {
+             return string.Format("{0}:'{1}'", item, value);
+         }*/
+        //把等號兩邊做成制式化格式
+        public static string AttibuteValue(string item, string value, string quotsymbol = "'")
+        {
+            return string.Format("{0}={2}{1}{2}", item, value, quotsymbol);
+        }
+        //把文字加底線拉、斜體等等
+        public static string ToTag(string tagname, string value)
+        {
+            return string.Format("<{0}>{1}</{0}>", tagname, value);
+        }
+        //html的格式
+        public static string ToHref(string text, string href, string target = "", string title = "")
+        {
+            // <a href="要連結的 URL 放這裡" target="連結目標" title="連結替代文字"> 要顯示的連結文字或圖片放這裡 </a>
+            string result = "<a " + AttibuteValue("href", href);
+            if (target != "")
+                result += AttibuteValue("target", target);
+            if (title != "")
+                result += AttibuteValue("title", title);
+            result += string.Format(">{0}</a>", text);
+            return result;
+        }
+        //印出每個欄位的名稱(dt→表格,field_name→迴圈的欄位名稱,Add_title→與輸出表格不符合時，要新增的欄位名稱)
+        public static string Set_Table_Title(DataTable dt, out string field_name, string Add_title = "")//Add_title→要印出之列的欄位名稱
+        {
+            string th = "";
+            string title_name = "";//紀錄每個資料欄位名稱用
+            string col_name = "";
+            //dt與輸出表格相符
+            if (Add_title == "")
+            {
+                //沒有資料的處理方式
+                if (dt.Rows.Count <= 0)
+                {
+                    th = "<th class='center'>沒有資料載入</th>";
+                    title_name = "";
+                }
+                else
+                {
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        col_name = dt.Columns[i].ColumnName;
+                        th += "<th>" + col_name + "</th>\n                                            ";
+                        title_name += col_name + ",";
+                    }
+                }
+            }
+            //dt與輸入表格不符(要新增欄位名稱)
+            else
+            {
+                //沒有資料的處理方式
+                if (dt.Rows.Count <= 0)
+                {
+                    th = "<th class='center'>沒有資料載入</th>";
+                    title_name = "";
+                }
+                else
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row[Add_title] != null)
+                        {
+                            if (col_name != DataTableUtils.toString(row[Add_title]))
+                            {
+                                col_name = DataTableUtils.toString(row[Add_title]);
+                                title_name += col_name + ",";
+                                th += "<th>" + col_name + "</th>\n                                            ";
+                            }
+                        }
+                    }
+                }
+            }
+            field_name = title_name;
+            return th;
+        }
+        //利用表格以及字串去獲取每個欄位內容(dt→表格,第二個是欄位名稱,callback事件)
+        public static string Set_Table_Content(DataTable dt, string[] TitleList, Func<DataRow, string, string> callback = null)
+        {
+            string tr = "";
+            string field_value;
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    tr += "<tr>\n";
+                    for (int i = 0; i < TitleList.Length - 1; i++)
+                    {
+                        field_value = "";
+                        if (callback != null)
+                            field_value = callback(row, TitleList[i]);
+                        if (field_value == "" || field_value == "<td></td>\n")
+                        {
+                            if (TitleList[i] != "備註")
+                                field_value = "<td>" + DataTableUtils.toString(row[TitleList[i]]) + "</td>\n";
+                        }
+                        tr += field_value;
+                    }
+                    tr += "</tr>\n";
+                }
+            }
+            else
+            {
+                tr = "<tr> <td class='center'> no data </td></tr>";
+            }
+            return tr;
+        }
+        public static string Set_Table_Content(DataTable dt, string Title_comma_text, Func<DataRow, string, string> callback = null)
+        {
+            return Set_Table_Content(dt, Title_comma_text.Split(','), callback);
+        }
+        public static string Set_Table_Content(DataTable dt, List<string> TitleList, Func<DataRow, string, string> callback = null)
+        {
+            return Set_Table_Content(dt, TitleList.ToArray(), callback);
+        }
+        //計算兩日期間的差距
+        public static int DaysBetween(DateTime date_str, DateTime date_end)
+        {
+            TimeSpan span = date_end.Subtract(date_str);
+            return (int)span.TotalDays;
+        }
+        //沒有資料時顯示
+        public static string NoData(out string th, out string tr)
+        {
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr> <td class='center'> no data </ td ></ tr >";
+            return "'沒有資料'";
+        }
+        //繪製長條圖(dt→表格,x_value→x軸,y_value→y軸,unit→單位,backvalue→合計數量/金額)
+        public static string Set_Chart(DataTable dt, string x_value, string y_value, string unit, out int backvalue)
+        {
+            string value = "";
+            string x_text;
+            string y_text;
+            int add_value = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                x_text = DataTableUtils.toString(row[x_value]);
+                y_text = (DataTableUtils.toString(row[y_value])).Split('.')[0];
+                add_value += DataTableUtils.toInt(y_text);
+                value += "{ y: " + y_text + ", label: '" + x_text + "',indexLabel:' " + y_text + unit + "' },";
+            }
+            backvalue = add_value;
+            return value;
+        }
+        //按鈕的事件
+        public static string Button_Click(string btnID, string[] s, string txt_time_str, string txt_time_end, out string date_str, out string date_end)
+        {
+            string dt_st = "";
+            string dt_ed = "";
+            string wairning = "";
+            switch (btnID)
+            {
+                case "week":
+                    dt_st = DateTime.Now.Date.AddDays(-(int)(DateTime.Now.DayOfWeek) + 1).ToString("yyyyMMdd");//当前周的开始日期
+                    dt_ed = DateTime.Now.Date.AddDays(7 - (int)(DateTime.Now.DayOfWeek)).ToString("yyyyMMdd");//当前周的结束日期
+                    break;
+                case "month":
+                    dt_st = s[0];
+                    dt_ed = s[1];
+                    break;
+                case "firsthalf":
+                    dt_st = DateTime.Now.ToString("yyyy0101");
+                    dt_ed = DateTime.Now.ToString("yyyy0630");
+                    break;
+                case "lasthalf":
+                    dt_st = DateTime.Now.ToString("yyyy0701");
+                    dt_ed = DateTime.Now.ToString("yyyy1231");
+                    break;
+                case "year":
+                    dt_st = DateTime.Now.ToString("yyyy0101");
+                    dt_ed = DateTime.Now.ToString("yyyy1231");
+                    break;
+                case "select":
+                    DateTime d_st = DateTime.ParseExact(DataTableUtils.toString(txt_time_str), "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                    DateTime d_ed = DateTime.ParseExact(DataTableUtils.toString(txt_time_end), "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                    dt_st = d_st.ToString("yyyyMMdd");
+                    dt_ed = d_ed.ToString("yyyyMMdd");
+                    break;
+            }
+            date_str = dt_st;
+            date_end = dt_ed;
+            return wairning;
+        }
+        public static string changetimeformat(string date)
+        {
+            date = date.Insert(6, "/");
+            date = date.Insert(4, "/");
+            return date;
+        }
+        //找到使用者選擇的CSS  然後展示出來
+        public static string change_color(string acc)
+        {
+            clsDB_Server clsDB = new clsDB_Server(GetConnByDekVisErp);
+            string color = "";
+            clsDB.dbOpen(myclass.GetConnByDekVisErp);
+            string sqlcmd = "SELECT * FROM Account_Image where Account_name = '" + acc + "' and Image_link is null";
+            DataTable dt = clsDB.DataTable_GetTable(sqlcmd);
+            if (dt.Rows.Count > 0)
+            {
+                color = DataTableUtils.toString(dt.Rows[0]["background"]);
+            }
+            else
+            {
+                color = "custom";
+            }
+            if (color == "custom")
+                color = "<link href=\"../../assets/build/css/" + color + ".css\" rel=\"stylesheet\" />\n" + "<link href=\"../../assets/build/css/Change_Table_Button.css\" rel=\"stylesheet\" />";
+            else if (color == "custom_old")
+                color = "<link href=\"../../assets/build/css/" + color + ".css\" rel=\"stylesheet\" />\n" + "<link href=\"../../assets/build/css/Change_Table_Button_old.css\" rel=\"stylesheet\" />";
+            else if (color == "custom_person")
+                color = "<link href=\"../../assets/build/css/" + color + ".css\" rel=\"stylesheet\" />\n" + "<link href=\"../../assets/build/css/Change_Table_Button_person.css\" rel=\"stylesheet\" />";
+            return color;
+        }
+        //計算載入網站所需的時間
+        public static void Time_Look(string acc, string page, DateTime start_time, DateTime end_time)
+        {
+            clsDB_Server clsDB = new clsDB_Server(GetConnByDekVisErp);
+            clsDB.dbOpen(myclass.GetConnByDekVisErp);
+            string sqlcmd = "SELECT * FROM Time_Look";
+            DataTable dt = clsDB.DataTable_GetTable(sqlcmd);
+
+            DataRow row = dt.NewRow();
+            row["Account"] = acc;
+            row["Page_name"] = page;
+            row["Load_Time"] = start_time;
+            row["Start_Time"] = start_time;
+            row["End_Time"] = end_time;
+            TimeSpan ts = end_time - start_time;
+            row["Count_Time"] = ts.TotalSeconds.ToString();
+
+            if (clsDB.Insert_DataRow("Time_Look", row))
+            {
+
+            }
+
+        }
+        //回傳字串分割的陣列
+        public static string[] Return_str(string value, string key = "")
+        {
+            string keyword = ConfigurationManager.AppSettings["URL_ENCODE"];
+            string[] str = null;
+            if (keyword == "1")
+            {
+                if (key == "")
+                    value = WebUtils.UrlStringDecode(value);
+            }
+            value = value.Trim();
+            value = value.Replace(",", " ").Replace("=", " ");
+            str = value.Split(' ');
+            return str;
+        }
+        //提供權限
+        public static bool Return_ok(string acc)
+        {
+            bool ok = false;
+
+            if(acc != "")
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                string sqlcmd = "Select * From Users where User_acc = '" + acc + "'";
+
+                DataRow row = DataTableUtils.DataTable_GetDataRow(sqlcmd);
+                if(row != null)
+                {
+                    if (DataTableUtils.toString(row["Power"]) == "Y")
+                        ok = true;
+                }
+            }
+
+            return ok;
+        }
+    }
+}

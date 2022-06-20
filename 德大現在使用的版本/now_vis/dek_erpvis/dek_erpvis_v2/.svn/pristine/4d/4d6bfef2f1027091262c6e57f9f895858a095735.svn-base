@@ -1,0 +1,315 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class stockanalysis : System.Web.UI.Page
+    {
+        public string color = "";
+        public string nstock = "";
+        public string ostock = "";
+        public string _val總庫存 = "";
+        public string _val一般庫存 = "";
+        public string _val逾期庫存 = "";
+        public string pie_data_points = "";
+        public string col_data_points_nor = "";
+        public string col_data_points_sply = "";
+        public string th = "";
+        public string tr = "";
+        public string date_str = "";
+        public string date_end = "";
+        public string title_msg = "";
+        public string title_msg_list = "";
+        public string title_text = "";
+        public string path = "";
+        public string timerange = "";
+        public string range = "";
+        string title = "";
+        string sql_condi = "";
+        string URL_NAME = "";
+        string acc = "";
+        string[] str = null;
+        int CUST_TOTAL;
+        DataTable dw = null;
+        DataTable public_dt = null;
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("WHE");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_WH/stockanalysis.aspx'>成品庫存分析</a></u></li></ol>");
+                URL_NAME = "stockanalysis";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        get_SqlConndi();
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    //Response.Redirect(myclass.logout_url);
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        //function
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        private void 無資料處理()
+        {
+            title_text = HtmlUtil.NoData(out th, out tr);
+            _val總庫存 = "0";
+            _val一般庫存 = "0";
+            _val逾期庫存 = "0";
+        }
+        private void load_page_data()
+        {
+            //title_text = "''";
+            Response.BufferOutput = false;
+            set_col_value();
+            Set_Html_Table();
+        }
+        private void set_col_value()
+        {
+            //string dt1 = DateTime.Now.ToString("ss.fff");
+            string LINE_GROUP = "";
+            float 逾期數量 = 0, 一般庫存 = 0, 總數量 = 0;
+            float TOTAL_逾期數量 = 0, TOTAL_一般庫存 = 0, TOTAL_總數量 = 0;
+            int i = 0, j = 0;
+
+            string sqlcmd = 德大機械.業務部_成品庫存分析.數量詳細表(sql_condi);
+            public_dt = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(sqlcmd)).ToTable();
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+            foreach (DataRow row in public_dt.Rows)
+            {
+                j++;
+                string 產線群組 = DataTableUtils.toString(row["產線群組"]);
+                if (產線群組 != LINE_GROUP)
+                {
+                    if (i > 0)
+                    {
+                        col_data_points_sply += "{ y: " + 逾期數量 + ", label: '" + LINE_GROUP + "' },";
+                        col_data_points_nor += "{ y: " + 一般庫存 + ", label: '" + LINE_GROUP + "' },";
+                    }
+
+                    逾期數量 = 0; 一般庫存 = 0; 總數量 = 0;
+
+                    逾期數量 += DataTableUtils.toInt(DataTableUtils.toString(row["逾期數量"]));
+                    一般庫存 += DataTableUtils.toInt(DataTableUtils.toString(row["一般數量"]));
+                    總數量 += DataTableUtils.toInt(DataTableUtils.toString(row["總數量"]));
+                    LINE_GROUP = DataTableUtils.toString(row["產線群組"]);
+
+                }
+                else if (產線群組 == LINE_GROUP)
+                {
+                    i++;
+                    逾期數量 += DataTableUtils.toInt(DataTableUtils.toString(row["逾期數量"]));
+                    一般庫存 += DataTableUtils.toInt(DataTableUtils.toString(row["一般數量"]));
+                    總數量 += DataTableUtils.toInt(DataTableUtils.toString(row["總數量"]));
+
+                    if (j == public_dt.Rows.Count)
+                    {
+                        col_data_points_sply += "{ y: " + 逾期數量 + ", label: '" + LINE_GROUP + "' },";
+                        col_data_points_nor += "{ y: " + 一般庫存 + ", label: '" + LINE_GROUP + "' },";
+                    }
+                }
+
+                TOTAL_逾期數量 += DataTableUtils.toInt(DataTableUtils.toString(row["逾期數量"]));
+                TOTAL_一般庫存 += DataTableUtils.toInt(DataTableUtils.toString(row["一般數量"]));
+                TOTAL_總數量 += DataTableUtils.toInt(DataTableUtils.toString(row["總數量"]));
+            }
+            set_pie_value(TOTAL_逾期數量, TOTAL_一般庫存, TOTAL_總數量);
+            //啟動效能報告--------------------------------------------------------------------------------------------
+            //double end_time = DataTableUtils.toDouble(DateTime.Now.ToString("ss.fff"))-DataTableUtils.toDouble(dt1);
+            //Response.Write("<script language='javascript'>alert('伺服器回應 : col -> "+ end_time + "');</script>");
+            //runtime = 2.845/s ------> 0.0/s
+        }
+        private void set_pie_value(float 逾期數量, float 一般庫存, float 總數量)
+        {
+            //string dt1 = DateTime.Now.ToString("ss.fff");
+            string _per一般庫存 = DataTableUtils.toString(一般庫存 / 總數量 * 100).Split('.')[0];
+            string _per逾期庫存 = DataTableUtils.toString(逾期數量 / 總數量 * 100).Split('.')[0];
+
+            pie_data_points = "{y:" + _per一般庫存 + ", name:'一般庫存 " + _per一般庫存 + "%' , label:'一般庫存',color:'#5b59ac'}," +
+                              "{y:" + _per逾期庫存 + ",name:'逾期庫存 " + _per逾期庫存 + "%', label:'逾期庫存',color:'#ff4d4d',exploded: true}";
+            nstock = _per一般庫存 + "%";
+            ostock = _per逾期庫存 + "%";
+
+            _val總庫存 = DataTableUtils.toString(總數量);
+            _val一般庫存 = DataTableUtils.toString(一般庫存);
+            _val逾期庫存 = DataTableUtils.toString(逾期數量);
+
+            //啟動效能報告--------------------------------------------------------------------------------------------
+            //double end_time = DataTableUtils.toDouble(DateTime.Now.ToString("ss.fff"))-DataTableUtils.toDouble(dt1);
+            //Response.Write("<script language='javascript'>alert('伺服器回應 : pie -> "+ end_time + "');</script>");
+            ///runtime = 1.6/s ------> 0.0/s
+        }
+        private string Set_Html_Table()
+        {
+            //title
+            th = "<th>客戶/產線</th>\n                                            ";
+            th += HtmlUtil.Set_Table_Title(public_dt, out title, "產線群組");
+            th += "<th>小計</th>\n                                            ";
+            title = "客戶/產線," + title + "小計,";
+            str = title.Split(',');
+            //月份
+            if (date_str == "" && date_end == "")
+            {
+                date_str = myclass.date_trn(DataTableUtils.toString(DropDownList_dayval.SelectedValue));
+                date_end = "";
+            }
+            //Content
+            string sqlcmd = 德大機械.業務部_成品庫存分析.客戶列表(sql_condi);
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            for (int i = 1; i < str.Length - 1; i++)
+                dt.Columns.Add(str[i]);//自製表格的部分
+            dt.Dispose();
+            tr = HtmlUtil.Set_Table_Content(dt, title, stockanalysis_callback);
+            return "";
+        }
+        private string stockanalysis_callback(DataRow row, string field_name)//這裡之後要重新寫過，太吃效能了
+        {
+            string value = "";
+            if (field_name != "客戶/產線" && field_name != "小計")
+            {
+                //確定為產線的話，就把總計歸0
+                if (field_name == str[1])
+                {
+                    CUST_TOTAL = 0;
+                    string cust_sname = DataTableUtils.toString(row["客戶簡稱"]);
+                    string sqlcmd = 德大機械.業務部_成品庫存分析.客戶庫存明細(cust_sname, sql_condi);
+                    dw = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(sqlcmd)).ToTable();//先抓到目前客戶的產線及數量
+                }
+                int LINE_TOTAL = 0;
+                //比對產線是否吻合，吻合的話有數值，不吻合則給0
+                for (int j = 0; j < dw.Rows.Count; j++)
+                {
+                    if (field_name == DataTableUtils.toString(dw.Rows[j]["產線群組"]))
+                    {
+                        LINE_TOTAL += DataTableUtils.toInt(DataTableUtils.toString(dw.Rows[j]["小計"]));
+                    }
+                }
+                Response.Write(value);
+                Response.Flush();
+                Response.Clear();
+                dw.Dispose();
+                value = DataTableUtils.toString(LINE_TOTAL);
+                CUST_TOTAL += LINE_TOTAL;
+            }
+            //小計的地方需要用到超連結
+            if (field_name == "小計")
+            {
+                string url = HtmlUtil.AttibuteValue("cust_name", DataTableUtils.toString(row["客戶簡稱"]).Trim(), "") + "," +
+                     HtmlUtil.AttibuteValue("date_str", date_str, "") + "," +
+                     HtmlUtil.AttibuteValue("date_end", date_end, "");
+                string href = string.Format("stockanalysis_details.aspx?key={0}",
+                    WebUtils.UrlStringEncode(url)
+                     );
+
+                value = DataTableUtils.toString(CUST_TOTAL);
+                value = HtmlUtil.ToTag("u", HtmlUtil.ToHref(value, href));
+            }
+            if (field_name == "客戶/產線")
+            {
+                value = DataTableUtils.toString(row["客戶簡稱"]);
+            }
+            return "<td>" + value + "</td>\n";
+        }
+        private void get_SqlConndi()
+        {
+            //2019/06/21，將天數轉換成日期字串，組合到SQL語法中(ru)
+            //default condi => only one
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            sql_condi = "and (SELECT MAX(ITEMIO.TRN_DATE) FROM ITEMIOS LEFT JOIN ITEMIO ON ITEMIOS.IO=ITEMIO.IO AND ITEMIOS.TRN_NO=ITEMIO.TRN_NO WHERE ITEMIOS.IO='2' AND ITEMIOS.MKORD_NO=MKORDSUB.TRN_NO AND ITEMIOS.MKORD_SN=MKORDSUB.SN AND ITEMIO.S_DESC< >'歸還' AND ITEMIO.MK_TYPE='成品入庫') <=" + myclass.date_trn(DataTableUtils.toString(DropDownList_dayval.SelectedValue)) + "";
+            title_text = "'庫存期限大於" + DataTableUtils.toString(DropDownList_dayval.SelectedValue) + "天'";
+            string date_s = HtmlUtil.changetimeformat(s[0]);
+            string date_e = HtmlUtil.changetimeformat(s[1]);
+            range = date_s + " ~ " + date_e;
+
+            timerange = DataTableUtils.toString(DropDownList_dayval.SelectedValue);
+        }
+
+        //event
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) == "select")
+            {
+                if (txt_time_str.Value != "" || txt_time_end.Value != "")
+                {
+
+                }
+                else
+                {
+                    Response.Write("<script>alert('請確認開始及結束日期都有輸入')</script>");
+                    txt_time_str.Value = s[0];
+                    txt_time_end.Value = s[1];
+
+                }
+            }
+           
+
+
+            HtmlUtil.Button_Click(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), s, DataTableUtils.toString(txt_time_str.Value), DataTableUtils.toString(txt_time_end.Value), out date_str, out date_end);
+            sql_condi = "and (SELECT MAX(ITEMIO.TRN_DATE) FROM ITEMIOS LEFT JOIN ITEMIO ON ITEMIOS.IO=ITEMIO.IO AND ITEMIOS.TRN_NO=ITEMIO.TRN_NO WHERE ITEMIOS.IO='2' AND ITEMIOS.MKORD_NO=MKORDSUB.TRN_NO AND ITEMIOS.MKORD_SN=MKORDSUB.SN AND ITEMIO.S_DESC< >'歸還' AND ITEMIO.MK_TYPE='成品入庫') >=" + date_str + "" +
+                         "and(SELECT MAX(ITEMIO.TRN_DATE) FROM ITEMIOS LEFT JOIN ITEMIO ON ITEMIOS.IO = ITEMIO.IO AND ITEMIOS.TRN_NO = ITEMIO.TRN_NO WHERE ITEMIOS.IO = '2' AND ITEMIOS.MKORD_NO = MKORDSUB.TRN_NO AND ITEMIOS.MKORD_SN = MKORDSUB.SN AND ITEMIO.S_DESC < > '歸還' AND ITEMIO.MK_TYPE = '成品入庫') <= " + date_end + "";
+            title_text = "'" + date_str + " - " + date_end + "'";
+            string date_s = HtmlUtil.changetimeformat(date_str);
+            string date_e = HtmlUtil.changetimeformat(date_end);
+            range = date_s + " ~ " + date_e;
+            timerange = DataTableUtils.toString(DropDownList_dayval.SelectedValue);
+            txt_time_str.Value = "";
+            txt_time_end.Value = "";
+            GotoCenn();
+
+        }
+
+        protected void DropDownList_dayval_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            sql_condi = "and (SELECT MAX(ITEMIO.TRN_DATE) FROM ITEMIOS LEFT JOIN ITEMIO ON ITEMIOS.IO=ITEMIO.IO AND ITEMIOS.TRN_NO=ITEMIO.TRN_NO WHERE ITEMIOS.IO='2' AND ITEMIOS.MKORD_NO=MKORDSUB.TRN_NO AND ITEMIOS.MKORD_SN=MKORDSUB.SN AND ITEMIO.S_DESC< >'歸還' AND ITEMIO.MK_TYPE='成品入庫') <=" + myclass.date_trn(DataTableUtils.toString(DropDownList_dayval.SelectedValue)) + "";
+            title_text = "'庫存期限大於" + DataTableUtils.toString(DropDownList_dayval.SelectedValue) + "天'";
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+
+            }
+        }
+    }
+}

@@ -1,0 +1,442 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using Support;
+using dek_erpvis_v2.cls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class Orders : System.Web.UI.Page
+    {
+        public string color = "";//顏色修改相關
+        public string path = "";
+        public string title = "";
+        public string subtitle = "";
+        public string xString = "";
+        public string yString = "";
+        public string xText = "";
+        public string yText = "";
+        public string dt_st = "";
+        public string dt_ed = "";
+        public string count = "";
+        public string unit = "";
+        public string chart_unit = "數量";
+        public string chartType = "";
+        public string status = "";
+        public string statusText = "";
+        public string chartData = "";
+        public string th = "";
+        public string tr = "";
+        public string right_title = "";
+        public string 排行內總計 = "";
+        public string rate = "";
+        public string Total = "";
+        public int yTotal = 0;
+        string sqlCmd_Total = "";
+        string sqlCmd = "";
+        string LineGrouptitle = "";
+        string acc = "";
+        string URL_NAME = "";
+        string title_text = "";
+        string sql = "";
+        string view_YN = "N";
+        string titlename = "";
+        string cust_name = "";
+        int CUST_TOTAL;
+        string[] str = null;
+        class FiledString
+        {
+            public string FILED_TableName = "CORDSUB";
+            public string FILED_Pline = "PLINE_NO";
+            public string FILED_PlineGroup = "PLINE_GROUP";
+            public string FILED_Cust = "CUST_NO";
+            public string FILED_CustNM2 = "CUSTNM2";
+        }
+
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        DataTable dt = new DataTable();
+        FiledString filedString = new FiledString();
+        clsDB_Server clsDB_Server = new clsDB_Server(cls.myclass.GetConnByDetaSowon);
+        clsDB_Server clsDB_sw = new clsDB_Server(cls.myclass.GetConnByDekVisErp);
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("SLS");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_SD/Orders.aspx'>訂單數量與金額統計</a></u></li></ol>");
+                URL_NAME = "Orders";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        string[] s = 德大機械.德大專用月份(acc).Split(',');
+                        dt_st = s[0];
+                        dt_ed = s[1];
+                        textbox_dt1.Text = s[0];
+                        textbox_dt2.Text = s[1];
+                        get_yStringContent();
+                        MainProcess();
+                    }
+                }
+                else { Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>"); }
+            }
+            else { Response.Redirect(myclass.logout_url); }
+
+            //啟動效能報告--------------------------------------------------------------------------------------------
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        //Process-------------------------------
+        private void MainProcess()
+        {
+            GetCondition();
+            CreatingSQL();
+            GetChartData();
+            Set_HTML_Table();
+        }
+        private void GetCondition()
+        {
+            xString = dropdownlist_X.SelectedValue;
+            yString = dropdownlist_y.SelectedValue;
+            xText = dropdownlist_X.SelectedItem.Text;
+            yText = dropdownlist_y.SelectedItem.Text;
+            statusText = DropDownList_orderStatus.SelectedItem.Text;
+            title = dt_st + "~" + dt_ed + " " + statusText + "統計"; //"(依" + xText + ")";
+                                                                   //2019.07.29，與Amy通話確認:總經理說圖標題移除"依產線/客戶"
+            status = DropDownList_orderStatus.SelectedValue;
+            count = txt_showCount.Text;
+            //count = dropdownlist_count.SelectedValue;
+            chartType = dropdownlist_chartType.SelectedValue;
+            //if (yString == "AMOUNT") unit = "NTD ";
+        }
+        private void CreatingSQL()
+        {
+            if (xString == filedString.FILED_Pline) //產線
+            {
+                string Columns = " item_22.PLINE_NO ";
+                sqlCmd = 德大機械.業務部_訂單統計.訂單數量與金額圖形數據("", Columns, "", dt_st, dt_ed, status);
+                sqlCmd_Total = 德大機械.業務部_訂單統計.訂單數量與金額圖形數據("", Columns, "", dt_st, dt_ed, status);
+            }
+            else if (xString == filedString.FILED_Cust) //客戶
+            {
+                string Columns = filedString.FILED_CustNM2;
+                string Top = count;
+                xString = Columns;
+                sqlCmd = 德大機械.業務部_訂單統計.訂單數量與金額圖形數據(Top, Columns, yString, dt_st, dt_ed, status);
+                sqlCmd_Total = 德大機械.業務部_訂單統計.訂單數量與金額圖形數據("", Columns, yString, dt_st, dt_ed, status);
+            }
+        }
+        private void GetChartData()
+        {
+            clsDB_Server clsDB_Server = new clsDB_Server(cls.myclass.GetConnByDetaSowon);
+            dt = clsDB_Server.DataTable_GetTable(sqlCmd);
+
+            //2019.08.05，計算總數量or總金額(For右上方小圖)
+            DataTable dt_total = clsDB_Server.DataTable_GetTable(sqlCmd_Total);
+            if (dt_total.Rows.Count > 0)
+            {
+                int quantity_ = 0;
+                foreach (DataRow row in dt_total.Rows)
+                    quantity_ += DataTableUtils.toInt(DataTableUtils.toString(row[yString]).Split('.')[0]);
+                Total = TransThousand(quantity_);
+            }
+            else
+                Total = "0";
+
+            //當X軸= 產線，加入"產線群組"
+            if (xString == filedString.FILED_Pline)
+            {
+                dt = myclass.Add_LINE_GROUP(dt, filedString.FILED_PlineGroup, filedString.FILED_Pline).ToTable();
+                xString = filedString.FILED_PlineGroup;
+            }
+
+            // 組合長條圖資訊
+            if (dt.Rows.Count > 0)
+            {
+                yTotal = 0;
+
+                chartData = HtmlUtil.Set_Chart(dt, xString, yString,"", out yTotal);
+
+                //判斷Y軸"數量"或"金額"，區分顯示標題
+                if (yString == "AMOUNT")  //Y軸= 金額
+                {
+                    unit = "NTD ";
+                    chart_unit = "金額";
+                    排行內總計 = "NTD " + TransThousand(yTotal);
+                }
+                else                      //Y軸= 數量
+                {
+                    排行內總計 = TransThousand(yTotal) + " 台";
+                }
+
+                //判斷X軸"客戶"或"產線"，區分顯示標題
+                if (xString == filedString.FILED_CustNM2) //X軸= 客戶
+                {
+                    subtitle = "前" + count + "名客戶總" + yText + "  " + unit + TransThousand(yTotal);
+                    right_title = "前" + count + "名客戶下單總" + yText;
+                    divBlock.Attributes["style"] = "display:block";
+                }
+                else                                      //X軸= 產線
+                {
+                    subtitle = "總" + yText + "  " + unit + TransThousand(yTotal);
+                    right_title = "訂單總" + yText;
+                    divBlock.Attributes["style"] = "display:none";
+                }
+                //平均占比 = 前幾名數量 / 總數量 * 100 (For右上方小圖)            
+                rate = DataTableUtils.toString(DataTableUtils.toDouble(yTotal) / DataTableUtils.toDouble(Total) * 100).Split('.')[0];
+            }
+            else
+            {
+                subtitle = "沒有資料";
+                排行內總計 = "沒有資料";
+                rate = "0";
+            }
+        }
+        private void Set_HTML_Table()
+        {
+            if (xString != filedString.FILED_PlineGroup)
+            {
+                sql = 德大機械.業務部_訂單統計.產線代號列表(dt_st, dt_ed);
+                dt = clsDB_Server.DataTable_GetTable(sql);
+                dt = myclass.Add_LINE_GROUP(dt, filedString.FILED_PlineGroup, filedString.FILED_Pline).ToTable();
+            }
+
+            th = "<th>" + xText + "</th>\n";
+            th += HtmlUtil.Set_Table_Title(dt, out titlename, filedString.FILED_PlineGroup);
+            th += "<th>小計</th>\n";
+            titlename = xText + "," + titlename + "小計,";
+            //----------------------------------------------------------------------------------------------------
+            if (xString == filedString.FILED_PlineGroup)
+            {
+                sqlCmd = 德大機械.業務部_訂單統計.訂單客戶列表("", "", dt_st, dt_ed, status);
+                dt = clsDB_Server.DataTable_GetTable(sqlCmd);
+
+            }
+            else if (xString == filedString.FILED_CustNM2)
+            {
+                //2019.07.31，X軸依客戶查詢，全部顯示，不按顯示筆數查詢
+                //sqlCmd = 德大機械.業務部_訂單統計.訂單客戶列表(count, yString, dt_st, dt_ed, status);
+                sqlCmd = 德大機械.業務部_訂單統計.訂單客戶列表("", yString, dt_st, dt_ed, status);
+                dt = clsDB_Server.DataTable_GetTable(sqlCmd);
+            }
+            str = titlename.Split(',');
+            for (int i = 1; i < str.Length - 1; i++)
+                dt.Columns.Add(str[i]);
+
+            tr = HtmlUtil.Set_Table_Content(dt, titlename, order_callback);
+
+        }
+
+        private string order_callback(DataRow row ,string field_name)
+        {
+            string value = "";
+            if(field_name == xText)
+            {
+                value =">" + DataTableUtils.toString(row["客戶簡稱"]); 
+            }
+            if(field_name != xText && field_name != "小計")
+            {         
+                int LINE_TOTAL = 0;
+                if (field_name == str[1])
+                {
+                    CUST_TOTAL = 0;
+                    sqlCmd = 德大機械.業務部_訂單統計.訂單客戶明細(DataTableUtils.toString(row["客戶簡稱"]), dt_st, dt_ed, status);
+                    dt = clsDB_Server.DataTable_GetTable(sqlCmd);
+                    dt = myclass.Add_LINE_GROUP(dt, filedString.FILED_PlineGroup, filedString.FILED_Pline).ToTable();
+                }
+                for(int i=0;i<dt.Rows.Count;i++)
+                {
+                    if (field_name == DataTableUtils.toString(dt.Rows[i]["PLINE_GROUP"]))
+                    {
+                        LINE_TOTAL += DataTableUtils.toInt(DataTableUtils.toString(dt.Rows[i][yText]).Split('.')[0]);
+                    }
+                }
+                CUST_TOTAL += LINE_TOTAL;
+                Response.Write(value);
+                Response.Flush();
+                Response.Clear();
+                dt.Dispose();
+                value = " align='right'>" + TransThousand(LINE_TOTAL) ;
+            }
+            if (field_name == "小計")
+            {
+                string url = HtmlUtil.AttibuteValue("cust", DataTableUtils.toString(row["客戶簡稱"]), "").Trim() + "," + 
+                            HtmlUtil.AttibuteValue("date_str", dt_st, "") + ","+
+                            HtmlUtil.AttibuteValue("date_end", dt_ed, "") + "," + 
+                            HtmlUtil.AttibuteValue("condi", DropDownList_orderStatus.SelectedValue, "");
+                string href = string.Format("Orders_Details.aspx?key={0} ' target='_blank'", 
+                    WebUtils.UrlStringEncode(url));
+
+                value = TransThousand(CUST_TOTAL);
+                value = " align='right'>" + HtmlUtil.ToTag("u", HtmlUtil.ToHref(value, href));
+            }
+            return "<td" + value + "</td>\n";
+        }  
+        //Function------------------------------
+        private string TransThousand(object yValue)//金額，千分位轉換
+        {
+            int yValue_trans = DataTableUtils.toInt(DataTableUtils.toString(yValue));
+            return DataTableUtils.toString(yValue_trans.ToString("N0"));
+        }
+        private void get_search_time(string btnID)
+        {
+            switch (btnID)
+            {
+                case "month":
+                    string[] s = 德大機械.德大專用月份(acc).Split(',');
+                    dt_st = s[0];
+                    dt_ed = s[1];
+                    break;
+                case "submit":
+                    string st_m = textbox_dt1.Text;
+                    string ed_m = textbox_dt2.Text;
+                    if (st_m == "" && ed_m == "") break;
+
+                    DateTime st = DateTime.ParseExact(st_m, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                    DateTime ed = DateTime.ParseExact(ed_m, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                    dt_st = st.ToString("yyyyMMdd");
+                    dt_ed = ed.ToString("yyyyMMdd");
+                    break;
+            }
+        }
+        private void get_yStringContent()
+        {
+            // 2019.07.02，動態DropDownList，控管金額權限顯示(ru)
+            view_YN = 德大機械.function_yn(acc, "訂單金額");
+            if (view_YN == "Y")
+            {
+                dropdownlist_y.Items.Add(new ListItem("數量", "QUANTITY"));
+                dropdownlist_y.Items.Add(new ListItem("金額", "AMOUNT"));
+            }
+            else
+            {
+                dropdownlist_y.Items.Add(new ListItem("數量", "QUANTITY"));
+            }
+        }
+
+        //Event-------------------------------
+        protected void Button_submit_Click(object sender, EventArgs e)
+        {
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            dt_st = s[0];
+            dt_ed = s[1];
+            get_search_time(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]));
+            MainProcess();
+        }
+    }
+}
+
+
+
+//private string SQLCMD(string TOP, string Columns, string OrderBy, string dt_st, string dt_ed, string status)
+//{
+//    string InA22_Fab = "";
+//    string GroupBy = Columns;
+//    string Scloce = SQLCMD_SCLOCE(ref InA22_Fab);
+//    if (TOP != "") TOP = " TOP ( " + TOP + " ) ";
+//    if (OrderBy != "") OrderBy = " order by " + OrderBy + " desc ";
+//    string sqlCmd_ = " SELECT                                                                              " +
+//                     " " + TOP + "                                                                         " +
+//                     " sum(QUANTITY) as QUANTITY,                                                          " +
+//                     " sum(AMOUNT) as AMOUNT,                                                              " +
+//                     " " + Columns + "                                                                     " +
+//                     " FROM CORDSUB                                                                        " +
+//                     " left join ITEM_22 on ITEM_22.ITEM_NO = CORDSUB.ITEM_NO                              " +
+//                     " left join CUST on  CUST.CUST_NO = CORDSUB.CUST_NO                                   " +
+//                     " where ITEM_22.PLINE_NO > 0 and D_DATE >= " + dt_st + " and D_DATE <= " + dt_ed + "  " +
+//                     " " + Scloce + "                                                                      " +
+//                     " " + InA22_Fab + "                                                                   " +
+//                     " group by " + GroupBy + "                                                            " +
+//                       OrderBy;
+//    return sqlCmd_;
+//}
+//private string SQLCMD_SCLOCE(ref string InA22_Fab)
+//{
+//    string Closed = " AND CORDSUB.SCLOSE !='未結' ";
+//    string NotClosed = " AND CORDSUB.SCLOSE ='未結'  ";
+//    string IN = " IN                          ";
+//    string NotIN = " NOT IN                      ";
+//    string Sclose = "";
+//    switch (status)
+//    {
+//        case "1":
+//            //已結案訂單
+//            Sclose = Closed;
+//            break;
+//        case "2":
+//            //未結案訂單
+//            Sclose = NotClosed;
+//            break;
+//        case "3":
+//            //未結案訂單+已排程訂單
+//            Sclose = NotClosed;
+//            InA22_Fab = SQLCMD_A22FAB(IN);
+//            break;
+//        case "4":
+//            //未結案訂單+未排程訂單
+//            Sclose = NotClosed;
+//            InA22_Fab = SQLCMD_A22FAB(NotIN);
+//            break;
+//    }
+//    return Sclose;
+//}
+//private string SQLCMD_A22FAB(string Condition)
+//{
+//    return " AND (CORDSUB.TRN_NO + CORDSUB.SN)                                  " +
+//           " " + Condition + "                                                  " +
+//           " (SELECT A22_FAB.CORD_NO + A22_FAB.CORD_SN                          " +
+//           " FROM A22_FAB AS A22_FAB                                            " +
+//           " WHERE                                                              " +
+//           " CORDSUB.TRN_NO = A22_FAB.CORD_NO AND CORDSUB.SN = A22_FAB.CORD_SN) ";
+//}
+//private string SQLTableCust(string TOP, string OrderBy, string dt_st, string dt_ed, string status)//表身SQL，取得客戶清單
+//{
+//    if (TOP != "") TOP = " TOP ( " + TOP + " ) ";
+//    string InA22_Fab = "";
+//    string Scloce = SQLCMD_SCLOCE(ref InA22_Fab);
+//    if (OrderBy != "") OrderBy = " order by " + OrderBy + " desc ";
+//    string sqlCmd_ = "SELECT                                                                                " +
+//                     " distinct " + TOP + " CUST.CUSTNM2 as 客戶簡稱,                                        " +
+//                     " sum(QUANTITY) as QUANTITY,                                                           " +
+//                     " sum(AMOUNT) as AMOUNT                                                                " +
+//                     " FROM CORDSUB                                                                         " +
+//                     " LEFT JOIN item_22 ON cordsub.ITEM_NO = item_22.ITEM_NO                               " +
+//                     " left join CUST on CUST.CUST_NO = CORDSUB.CUST_NO                                     " +
+//                     " WHERE  ITEM_22.PLINE_NO > 0 and D_DATE >= " + dt_st + " and D_DATE <= " + dt_ed + "  " +
+//                     " " + Scloce + "                                                                       " +
+//                     " " + InA22_Fab + "                                                                    " +
+//                     " GROUP BY CUST.CUSTNM2                                                                " +
+//                       OrderBy;
+//    return sqlCmd_;
+//}
+//private string SQLTableDetail(string cust)//表身SQL，取得客戶訂單明細
+//{
+//    string InA22_Fab = "";
+//    string Scloce = SQLCMD_SCLOCE(ref InA22_Fab);
+//    string sqlCmd_ = " SELECT                                                                              " +
+//                     " CUST.CUSTNM2 as 客戶名稱,                                                            " +
+//                     " item_22.PLINE_NO,                                                                   " +
+//                     " COUNT(cordsub.trn_no) as 數量,                                                       " +
+//                     " LEFT(sum(CORDSUB.AMOUNT), CHARINDEX('.', sum(CORDSUB.AMOUNT)) - 1) AS 金額           " +
+//                     //" sum(CORDSUB.SCOST) as 成本                                                         " +
+//                     " FROM CORDSUB AS cordsub                                                              " +
+//                     " LEFT JOIN CUST AS cust ON cust.CUST_NO = CORDSUB.CUST_NO                             " +
+//                     " LEFT JOIN item_22 AS item_22 ON item_22.ITEM_NO = cordsub.ITEM_NO                    " +
+//                     " WHERE item_22.PLINE_NO > 0 and D_DATE >= " + dt_st + " and D_DATE <= " + dt_ed + "   " +
+//                     " " + Scloce + "                                                                       " +
+//                     " " + InA22_Fab + "                                                                    " +
+//                     "   and cust.CUSTNM2 = '" + cust + "'                                                  " +
+//                     " GROUP BY cust.CUSTNM2,item_22.PLINE_NO";
+//    return sqlCmd_;
+//}

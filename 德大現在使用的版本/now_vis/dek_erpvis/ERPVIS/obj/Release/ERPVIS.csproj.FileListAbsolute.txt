@@ -1,0 +1,70 @@
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\ERPVIS.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\ERPVIS.pdb
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Bson.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoUtils.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\Support.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Driver.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Driver.Core.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\System.Runtime.InteropServices.RuntimeInformation.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\Support.pdb
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Bson.xml
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.csprojAssemblyReference.cache
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.dll
+D:\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.pdb
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\ERPVIS.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\ERPVIS.pdb
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Bson.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoUtils.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\Support.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Driver.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Driver.Core.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\System.Runtime.InteropServices.RuntimeInformation.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\Support.pdb
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Bson.xml
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.csprojAssemblyReference.cache
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.dll
+D:\新增資料夾 (3)\新增資料夾 (2)\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.pdb
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\ERPVIS.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\ERPVIS.pdb
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Bson.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoUtils.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\Support.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Driver.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Driver.Core.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\System.Runtime.InteropServices.RuntimeInformation.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\Support.pdb
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\bin\Release\MongoDB.Bson.xml
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.csprojAssemblyReference.cache
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.dll
+D:\VIS_PROJECT\鉅茂\deta_sowon_vis\dek_erpvis\dek_erpvis_v2\ERPVIS\obj\Release\ERPVIS.pdb
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.dll
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.pdb
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.dll
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\Support.dll
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\EPPlus.dll
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.xml
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.dll
+C:\Users\user\Desktop\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.pdb
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.dll
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.pdb
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.dll
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.xml
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CoreCompileInputs.cache
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.dll
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.pdb
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.AssemblyReference.cache
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.dll
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.pdb
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.dll
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.xml
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.AssemblyReference.cache
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CoreCompileInputs.cache
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.dll
+D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.pdb

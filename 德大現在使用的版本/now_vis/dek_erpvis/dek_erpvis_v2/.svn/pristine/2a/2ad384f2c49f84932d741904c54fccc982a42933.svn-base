@@ -1,0 +1,242 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class OrderProgress : System.Web.UI.Page
+    {
+        public string path = "";
+        public string tr = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        public string th = "<th class='center'>沒有資料載入</th>";
+        string acc = "";
+        string URL_NAME = "";
+        string 訂單編號 = "";
+        string 刀庫編號 = "";
+        string 客戶 = "";
+        string 訂單狀態 = "";
+        string sqlcmd = "";
+        string 條件式 = "";
+        int count = 0;
+
+        DataTable dt = new DataTable();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            //if (userInfo != null)
+            //{
+            path = 德大機械.get_title_web_path("SLS");
+            URL_NAME = "OrderProgress";
+            //acc = DataTableUtils.toString(userInfo["user_ACC"]);
+            //if (myclass.user_view_check(URL_NAME, acc) == true)
+            //{           
+            //}else{
+            //    Response.Redirect(myclass.logout_url);
+            //}
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        private void 無資料處理()
+        {
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            set_table_title();
+        }
+        private void set_table_title()
+        {
+            DataTable dt_assm = new DataTable();
+            DataTable dt_cord = new DataTable();            
+            string sqlcmd = 德大機械.業務部_訂單進度查詢.訂單列表(條件式);
+            dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            dt.Columns.Add("進度");
+            dt.Columns.Add("狀態");
+
+            clsDB_sw.dbOpen(myclass.GetConnByDekdekVisAssm);
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    string sqlcmd_assm = 德大機械.業務部_訂單進度查詢.依刀庫編號取得生產進度(DataTableUtils.toString(dt.Rows[i]["刀庫編號"]));
+                    //string sqlcmd_assm = "SELECT 排程編號 as 刀庫編號,進度,狀態 FROM 工作站狀態資料表 where 排程編號 = '" + dt.Rows[i]["刀庫編號"] + "' ";
+                    dt_assm = clsDB_sw.DataTable_GetTable(sqlcmd_assm);
+
+                    if (DataTableUtils.toString(dt.Rows[i]["刀庫編號"]) == "") // 無刀庫編號
+                    {
+                        dt.Rows[i]["進度"] = "";
+                        dt.Rows[i]["狀態"] = "";
+                    }
+                    else
+                    {
+                        if (dt_assm.Rows.Count != 0) //有刀庫編號，有進度、狀態
+                        {
+                            dt.Rows[i]["進度"] = DataTableUtils.toString(dt_assm.Rows[0]["進度"]);
+                            dt.Rows[i]["狀態"] = DataTableUtils.toString(dt_assm.Rows[0]["狀態"]);
+                        }
+                        else //有刀庫編號，無進度、狀態
+                        {
+                            dt.Rows[i]["進度"] = "";
+                            dt.Rows[i]["狀態"] = "";
+                        }
+                    }
+                    //string sqlcmd_assm = 德大機械.業務部_訂單進度查詢.依刀庫編號取得生產進度(DataTableUtils.toString(dt.Rows[i]["刀庫編號"]));
+                    ////string sqlcmd_assm = "SELECT 排程編號 as 刀庫編號,進度,狀態 FROM 工作站狀態資料表 where 排程編號 = '" + dt.Rows[i]["刀庫編號"] + "' ";
+                    //dt_assm = clsDB_sw.DataTable_GetTable(sqlcmd_assm);
+                    //if (dt_assm.Rows.Count != 0)
+                    //{
+                    //    dt.Rows[i]["進度"] = DataTableUtils.toString(dt_assm.Rows[0]["進度"]);
+                    //    dt.Rows[i]["狀態"] = DataTableUtils.toString(dt_assm.Rows[0]["狀態"]);
+                    //}
+                    //else
+                    //{
+                    //    dt.Rows[i]["進度"] = "";
+                    //    dt.Rows[i]["狀態"] = "";
+                    //}
+                }
+            }
+
+            //table_title
+            th = "";
+            //for (int k = 0; k < dt.Columns.Count; k++)
+            //{
+            //    string col_name = dt.Columns[k].ColumnName;               
+            //    th += "<th>" + col_name + "</th>\n";
+            //}
+            th += "<th>訂單號-明細序</th>\n";
+            th += "<th>CCS</th>\n";
+            th += "<th>品名規格</th>\n";
+            th += "<th>客戶名稱</th>\n";
+            th += "<th>訂單狀態</th>\n";
+            th += "<th>刀庫編號</th>\n";
+            th += "<th>出貨日期</th>\n";
+            th += "<th>進度</th>\n";
+            th += "<th>狀態</th>\n";
+        }
+        public string set_table_content()
+        {            
+            tr = "";
+            if (dt != null)
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        tr += "<tr>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["訂單單號"]) + "-" + DataTableUtils.toString(row["明細序"]) + "</td>\n";
+                        //tr += "<td>" + DataTableUtils.toString(row["明細序"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["CCS"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["品名規格"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["客戶名稱"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["訂單狀態"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["刀庫編號"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["出貨日期"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["進度"]) + "</td>\n";
+
+                        string status = DataTableUtils.toString(row["狀態"]);
+                        switch (status)
+                        {
+                            case "完成":
+                                tr += "<td class='green'>" + status + "</td>\n";
+                                break;
+                            case "未動工":
+                                tr += "<td class='red'>" + status + "</td>\n";
+                                break;
+                            case "啟動":
+                                tr += "<td class='blue'>" + status + "</td>\n";
+                                break;
+                            default:
+                                tr += "<td>" + status + "</td>\n";
+                                break;
+                        }
+                           
+                        //tr += "<td>" + DataTableUtils.toString(row["狀態"]) + "</td>\n";
+                        tr += "</tr>\n";
+                        Response.Write(tr);
+                        Response.Flush();
+                        Response.Clear();
+                    }
+                    dt.Dispose();
+                }
+                else
+                {
+                    無資料處理();
+                }
+                dt.Dispose();
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+            return "";
+        }
+        
+        private void get_order_condi()
+        {            
+            if (訂單編號 != "")
+            {
+                條件式 += "  cordsub.TRN_NO like '" + 訂單編號 + "%'";
+                count += 1;               
+            }
+            if (刀庫編號 != "")
+            {
+                條件式 = sql_condi(條件式) + "  MKORDSUB.LOT_NO like '" + 刀庫編號 + "%'";                
+                count += 1;
+            }
+            if (客戶 != "")
+            {
+                條件式 = sql_condi(條件式) + "  CUSTNM2 like '%" + 客戶 + "%'";
+                count += 1;               
+            }
+            switch (訂單狀態)
+            {
+                case "已結案": 
+                    條件式 = sql_condi(條件式) + "  CORDSUB.SCLOSE = '結案'";
+                    break;
+                case "未結案": 
+                    條件式 = sql_condi(條件式) + "  CORDSUB.SCLOSE = '未結'";
+                    break;
+            }
+        }
+        private string sql_condi(string 條件式)
+        {
+            if (count >= 1)
+            {
+                條件式 = 條件式 + " and ";
+            }
+            return 條件式;
+        }
+
+        protected void btn_select_click(object sender, EventArgs e)
+        {
+            訂單編號 = txt_SO.Text;
+            刀庫編號 = txt_lot.Text;
+            客戶 = txt_cust.Text;
+            訂單狀態 = DropDownList_status.SelectedItem.Text;
+            get_order_condi();
+            GotoCenn();
+        }
+    }
+}

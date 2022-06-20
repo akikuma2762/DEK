@@ -1,0 +1,66 @@
+﻿<?xml version="1.0"?>
+<!--
+  如需如何設定 ASP.NET 應用程式的詳細資訊，請前往
+  https://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+<configuration>
+  <system.webServer>
+    <defaultDocument>
+      <files>
+        <add value="login.aspx"/>
+      </files>
+    </defaultDocument>
+  </system.webServer>
+  <!--20191014修改-->
+  <location path="SYS_CONTROL/Add_Report">
+    <system.web>
+      <httpRuntime requestValidationMode="2.0" />  
+    </system.web>
+  </location>
+  <!--20191014修改-->
+  <system.web>
+    <compilation debug="true" targetFramework="4.6.1">
+      <assemblies>
+        <add assembly="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+      </assemblies>
+    </compilation>
+    <!--20191030加上 executionTimeout="10000" 檔案上傳大小 100MB-->
+    <httpRuntime targetFramework="4.6.1"  maxRequestLength="102400" executionTimeout="10000"/>
+    <!--webServices必用-->
+    <webServices>
+      <protocols>
+        <add name="HttpSoap"/>
+        <add name="HttpPost"/>
+        <add name="HttpGet"/>
+        <add name="Documentation"/>
+      </protocols>
+    </webServices>
+    <!--/webServices必用-->
+    <customErrors mode="Off"/>
+    <pages>
+      <controls>
+        <add tagPrefix="ajaxToolkit" assembly="AjaxControlToolkit" namespace="AjaxControlToolkit"/>
+      </controls>
+    </pages>
+  </system.web>
+ <!--20200120檔案上傳大小修改-->
+  <system.webServer>
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="1073741824" />
+      </requestFiltering>
+    </security>
+  </system.webServer>
+  <!--20200120檔案上傳大小修改-->
+  <system.codedom>
+    <compilers>
+      <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701"/>
+      <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"/>
+    </compilers>
+  </system.codedom>
+
+  <appSettings>
+    <!--資料加密用-->
+    <add key="URL_ENCODE" value="1" />
+  </appSettings>
+</configuration>

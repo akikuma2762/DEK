@@ -1,0 +1,136 @@
+﻿:root {
+    --Color_Column: #000000;
+    --Color_ColumnText: #ffffff;
+    --Color_DataTable: #000000;
+    --Color_DataTableText: #ffffff;
+}
+
+.table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+/*表格斑馬條紋*/
+.table-ts > tbody > tr:nth-of-type(odd) {
+    /*background-color: rgb(var(--RedZ), var(--GreenZ), var(--BlueZ));
+    color: rgb(var(--RedTZ), var(--GreenTZ), var(--BlueTZ));*/
+    background-color: var(--Color_DataTable);
+    color: var(--Color_DataTableText);
+}
+
+/*thead的欄位CSS*/
+.StandardTable thead th {
+    background-color: var(--Color_Column);
+    color: var(--Color_ColumnText);
+    /*background-color: rgb(var(--RedT), var(--GreenT), var(--BlueT));
+    color: rgb(var(--RedTT), var(--GreenTT), var(--BlueTT));*/
+}
+
+/*設定陰影*/
+#Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+
+/*表格欄位CSS*/
+#tr_row {
+    background-color: var(--Color_Column);
+    color: var(--Color_ColumnText);
+    /*background-color: rgb(var(--RedT), var(--GreenT), var(--BlueT));
+    color: rgb(var(--RedTT), var(--GreenTT), var(--BlueTT));*/
+}
+
+#thead_row {
+    background-color: var(--Color_Column);
+    color: var(--Color_ColumnText);
+    /*background-color: rgb(var(--RedT), var(--GreenT), var(--BlueT));
+    color: rgb(var(--RedTT), var(--GreenTT), var(--BlueTT));*/
+}
+
+/*設定字型的地方*/
+@font-face {
+    font-family: 'NotoSans';
+    src: url(../font/NotoSansTC-Regular.eot) format("embedded-opentype"), url(../font/NotoSansTC-Regular.otf) format("opentype"), url(../font/NotoSansTC-Regular.ttf) format("truetype"), url(../font/NotoSansTC-Regular.woff) format("woff"), url(../font/NotoSansTC-Regular.woff2) format("woff2"), url(../font/NotoSansTC-Regular.svg) format("svg");
+    font-style: normal;
+}
+
+td {
+    font-family: "NotoSans";
+}
+
+tr {
+    font-family: "NotoSans";
+}
+
+th {
+    font-family: "NotoSans";
+}
+
+h1 {
+    font-family: "NotoSans";
+}
+
+h2 {
+    font-family: "NotoSans";
+}
+
+h3 {
+    font-family: "NotoSans";
+}
+
+h4 {
+    font-family: "NotoSans";
+}
+
+h5 {
+    font-family: "NotoSans";
+}
+
+div {
+    font-family: "NotoSans";
+}
+
+thead {
+    font-family: "NotoSans";
+}
+
+tbody {
+    font-family: "NotoSans";
+}
+
+ul {
+    font-family: "NotoSans";
+}
+
+li {
+    font-family: "NotoSans";
+}
+
+a {
+    font-family: "NotoSans";
+}
+
+label {
+    font-family: "NotoSans";
+}
+
+body {
+    font-family: "NotoSans";
+}
+
+b {
+    font-family: "NotoSans";
+}
+
+text {
+    font-family: "NotoSans";
+}
+
+title {
+    font-family: "NotoSans";
+}
+
+span {
+    font-family: "NotoSans";
+}

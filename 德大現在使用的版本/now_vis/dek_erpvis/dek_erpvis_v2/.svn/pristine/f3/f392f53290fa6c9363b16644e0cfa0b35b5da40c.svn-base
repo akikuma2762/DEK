@@ -1,0 +1,180 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class Orders_Details : System.Web.UI.Page
+    {
+        public string color = "";
+        public string cust_name = "";
+        public string url_text = "";
+        public string Get_cust = "";
+        public string Get_Dstart = "";
+        public string Get_Dend = "";
+        public string Get_SOStatus = "";
+        public string title_text = "";
+        public string tr = "";
+        public string th = "";
+        string sql = "";
+        string acc = "";
+
+        DataTable public_dt = null;
+        myclass myclass = new myclass();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (acc != "")
+                {
+                    if (!IsPostBack)
+                    {
+                        MainProcess();
+                    }
+                }
+                else
+                {
+                    Response.Redirect("Orders.aspx", false);
+                }
+            }
+            else
+            {
+                Response.Redirect("Orders.aspx", false);
+            }
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        private void MainProcess()
+        {
+            GetCondi();
+            CreateSQL();
+            Set_Html_Table();
+        }
+        private void GetCondi()
+        {
+            Response.Buffer = false;
+            if (Request.QueryString["key"] != null)
+            {
+                string[] str = HtmlUtil.Return_str(Request.QueryString["key"]);
+                Get_cust = str[1];
+                Get_Dstart = str[3];
+                Get_Dend = str[5];
+                Get_SOStatus = str[7];
+            }
+            else
+            {
+                Response.Redirect("Orders.aspx", false);
+            }
+        }
+        private void CreateSQL()
+        {
+            //sql = SQL_CMD(Get_cust, Get_Dstart, Get_Dend, Get_SOStatus);
+            sql = 德大機械.業務部_訂單統計.訂單詳細資訊(Get_cust, Get_Dstart, Get_Dend, Get_SOStatus);
+        }
+        private void Set_Html_Table()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            public_dt = DataTableUtils.GetDataTable(sql);
+            public_dt = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(sql)).ToTable("Table", false, "客戶簡稱", "CCS", "製造批號", "產線群組", "訂單狀況", "預計開工日", "入庫日", "數量");
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+            //用於存放所有的欄位名稱(out的方式的話，可以直接回傳字串)
+            string titlename = "";
+            th = HtmlUtil.Set_Table_Title(public_dt, out titlename);
+            tr = HtmlUtil.Set_Table_Content(public_dt, titlename);
+        }
+    }
+}
+
+//func
+//private string SQL_CMD(string cust, string start, string end, string status)
+//{
+//    string InA22_Fab = "";
+//    string Scloce = SQLCMD_SCLOCE(ref InA22_Fab, status);
+//    string sqlcmd = "SELECT cust.custnm2  AS 客戶簡稱,                                                " +
+//                    "cordsub.trn_no AS 訂單號碼,                                                      " +
+//                    "mkordsub.item_no AS CCS,                                                        " +
+//                    "mkordsub.lot_no AS 製造批號,                                                     " +
+//                    "item_22.pline_no AS 產線代號,                                                    " +
+//                    "cordsub.sclose AS 訂單狀況,                                                      " +
+//                    "a22_fab.str_date AS 預計開工日,                                                  " +
+//                    "(SELECT Max(itemio.trn_date)                                                    " +
+//                    " FROM itemios                                                                   " +
+//                    " LEFT JOIN itemio ON itemios.io = itemio.io AND itemios.trn_no = itemio.trn_no  " +
+//                    " WHERE itemios.io = '2'                                                         " +
+//                    " AND itemios.mkord_no = mkordsub.trn_no AND itemios.mkord_sn = mkordsub.sn      " +
+//                    " AND itemio.s_desc < > '歸還'                                                   " +
+//                    " AND itemio.mk_type = '成品入庫') AS 入庫日,                                     " +
+//                    " CONVERT(VARCHAR(12), CONVERT(MONEY, cordsub.quantity), 1) AS 數量              " +
+//                    //" cord.currency AS 幣別,                                                         " +
+//                    //" CONVERT(VARCHAR(20), CONVERT(MONEY, cord.rate), 1)        AS 匯率,             " +
+//                    //" CONVERT(VARCHAR(20), CONVERT(MONEY, cordsub.o_price), 1)  AS 外幣單價,         " +
+//                    //" CONVERT(VARCHAR(20), CONVERT(MONEY, cordsub.amount), 1)   AS 台幣單價          " +
+//                    " FROM cordsub AS cordsub                                                       " +
+//                    "  LEFT JOIN a22_fab ON cordsub.trn_no = a22_fab.cord_no AND cordsub.sn = a22_fab.cord_sn " +
+//                    "  LEFT JOIN mkordsub AS mkordsub ON cordsub.trn_no = mkordsub.cord_no AND cordsub.sn = mkordsub.cord_sn " +
+//                    "  LEFT JOIN cust AS cust ON cust.cust_no = cordsub.cust_no                     " +
+//                    "  LEFT JOIN item_22 AS item_22 ON item_22.item_no = cordsub.item_no            " +
+//                    "  LEFT JOIN cord AS cord ON cord.trn_no = cordsub.trn_no                       " +
+//                    " WHERE item_22.pline_no > 0                                                    " +
+//                    " " + Scloce + "                                                                " +
+//                     " " + InA22_Fab + "                                                            " +
+//                    "  AND cordsub.d_date >= " + start + " AND cordsub.d_date <= " + end + "         " +
+//                    "  AND cust.custnm2 = '" + cust + "'                                            ";
+//    return sqlcmd;
+//}
+//private string SQLCMD_SCLOCE(ref string InA22_Fab, string status)
+//{
+//    string Closed = " AND CORDSUB.SCLOSE !='未結' ";
+//    string NotClosed = " AND CORDSUB.SCLOSE ='未結'  ";
+//    string IN = " IN                          ";
+//    string NotIN = " NOT IN                      ";
+//    string Sclose = "";
+//    switch (status.ToString())
+//    {
+//        case "0":
+//            //全部
+//            Sclose = "";
+//            break;
+//        case "1":
+//            //已結案訂單
+//            Sclose = Closed;
+//            break;
+//        case "2":
+//            //未結案訂單
+//            Sclose = NotClosed;
+//            break;
+//        case "3":
+//            //未結案訂單+已排程訂單
+//            Sclose = NotClosed;
+//            InA22_Fab = SQLCMD_A22FAB(IN);
+//            break;
+//        case "4":
+//            //未結案訂單+未排程訂單
+//            Sclose = NotClosed;
+//            InA22_Fab = SQLCMD_A22FAB(NotIN);
+//            break;
+//    }
+//    return Sclose;
+//}
+//private string SQLCMD_A22FAB(string Condition)
+//{
+//    return " AND (CORDSUB.TRN_NO + CORDSUB.SN)                                  " +
+//           " " + Condition + "                                                  " +
+//           " (SELECT A22_FAB.CORD_NO + A22_FAB.CORD_SN                          " +
+//           " FROM A22_FAB AS A22_FAB                                            " +
+//           " WHERE                                                              " +
+//           " CORDSUB.TRN_NO = A22_FAB.CORD_NO AND CORDSUB.SN = A22_FAB.CORD_SN) ";
+//}

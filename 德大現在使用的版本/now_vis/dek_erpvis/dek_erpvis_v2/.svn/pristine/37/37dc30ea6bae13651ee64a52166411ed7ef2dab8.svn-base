@@ -1,0 +1,176 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class recordsofchangetheorder1 : System.Web.UI.Page
+    {
+        public string color = "";
+        public string date_str = "";//new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd");
+        public string date_end = ""; //new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1).ToString("yyyyMMdd");
+        public string time_array = "";
+        public string th = "";
+        public string tr = "";
+        public string col_data_Points = "";
+        public string data_name = "";
+        public string title_text = "";
+        public string time_area_text = "訂單變更紀錄列表";
+        public string path = "";
+        public string timerange = "";
+        string TOP = "";
+        string URL_NAME = "";
+        string acc = "";
+        string[] s = null;
+        DataTable public_dt = null;
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("SLS");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_SD/recordsofchangetheorder.aspx'>訂單變更紀錄</a></u></li></ol>");
+                URL_NAME = "recordsofchangetheorder";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        string[] s = 德大機械.德大專用月份(acc).Split(',');
+                        date_str = s[0];
+                        date_end = s[1];
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    //Response.Redirect(myclass.logout_url);
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+
+
+        }
+        //function
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+        private void load_page_data()
+        {
+            col_data_Points = "";
+
+            Response.BufferOutput = false;
+            set_col_value();
+            Set_Html_Table();
+
+        }
+        private void set_col_value()
+        {
+            //data
+            data_name = "'變更次數'";
+            TOP = DataTableUtils.toString(DataTableUtils.toDouble(DataTableUtils.toString(demo_vertical2.Value)));
+            time_array = "<div style='color:#CC0000'>由 20190521 起算</div> 變更日期 " + date_str + " - " + date_end + " <br> 累計訂單變更次數前 " + TOP + " 名客戶";
+            string date_s = HtmlUtil.changetimeformat(date_str);
+            string date_e = HtmlUtil.changetimeformat(date_end);
+            timerange = date_s + " ~ " + date_e;
+            /*----------------------------------------------------------------------------------------*/
+            public_dt = new DataTable();
+            clsDB_sw.dbOpen(myclass.GetConnByDetaEip);
+            string sqlcmd = 德大機械.業務部_訂單變更紀錄.客戶列表(date_str, date_end, TOP);
+            public_dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            //-----------------------------------------------------------------------
+            string connstr = Support.DB.dbIOServer.GetConntionString_MsSQL("192.168.1.210", "Eip", "dek", "asus54886961");
+            Support.DB.dbIOServer dbServer = new Support.DB.dbIOServer();
+            dbServer.Open(connstr);
+            public_dt = dbServer.GetTable(sqlcmd, null);
+            dbServer.Close();
+            //-----------------------------------------------------------------------
+            if (public_dt.Rows.Count > 0)
+            {
+                string title_val = "";
+                int y_subtotal = 0;    // 變更總計
+                col_data_Points = HtmlUtil.Set_Chart(public_dt, "客戶名稱", "變更次數", "次", out y_subtotal);
+                title_val = DataTableUtils.toString(y_subtotal);
+                title_text = "'" + date_str + "~" + date_end + " 共變更" + title_val + " 次'";
+            }
+            else
+            {
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+
+            public_dt.Dispose();
+        }
+
+        private string recordsofchangetheorder_callback(DataRow row, string field_name)
+        {
+            string value = "";
+            if (field_name == "變更次數")
+            {
+                string url = HtmlUtil.AttibuteValue("cust_name", DataTableUtils.toString(row["客戶名稱"]).Trim(), "") + "," + 
+                    HtmlUtil.AttibuteValue("date_str", date_str, "") +"," + 
+                    HtmlUtil.AttibuteValue("date_end", date_end, "");
+                //"<td><u><a href=supplierscore_details.aspx?sup_sname=" + myclass.Base64Encode(DataTableUtils.toString(row["供應商"])) + ",date_str=" + date_str + ",date_end=" + date_end + ">" + DataTableUtils.toString(row["達交率"]) + "</u></a></td>\n";
+                string href = string.Format("recordsofchangetheorder_details.aspx?key={0}",
+                    WebUtils.UrlStringEncode(url));
+
+                value = DataTableUtils.toString(row[field_name]);
+                value = "<td>" + HtmlUtil.ToTag("u", HtmlUtil.ToHref(value, href)) + "</td>\n";
+            }
+            return value;
+        }
+
+        private void Set_Html_Table()
+        {
+            //用於存放所有的欄位名稱(out的方式的話，可以直接回傳字串)
+            string titlename = "";
+            th = HtmlUtil.Set_Table_Title(public_dt, out titlename);
+            tr = HtmlUtil.Set_Table_Content(public_dt, titlename, recordsofchangetheorder_callback);
+        }
+        private string get_datetime(int num)
+        {
+            return DateTime.Now.AddDays(-num).ToString("yyyyMMdd");
+        }
+
+        //event
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            HtmlUtil.Button_Click(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), s, DataTableUtils.toString(txt_time_str.Value), DataTableUtils.toString(txt_time_end.Value), out date_str, out date_end);
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+        }
+
+    }
+}

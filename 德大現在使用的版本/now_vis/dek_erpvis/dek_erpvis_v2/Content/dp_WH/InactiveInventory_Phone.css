@@ -1,0 +1,41 @@
+﻿
+#ContentPlaceHolder1_CheckBox_All {
+    margin-right: 5px;
+}
+
+/*設置分隔線*/
+.Div_Shadow .x_content .dashboard_graph {
+    padding: 10px;
+    box-shadow: 0 0 3px gray;
+}
+
+/*表格*/
+.table th, .table td {
+    max-width: 150px;
+    min-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table th:first-child, .table td:first-child {
+    padding-right:10px!important;
+}
+.table th:last-child, .table td:last-child {
+    max-width:50px;
+    min-width:50px;
+    padding-right:10px!important;
+}
+.table th:nth-last-child(2), .table td:nth-last-child(2) {
+    padding-right: 10px !important;
+    max-width:50px;
+    min-width:50px;
+}
+/*存放儲位*/
+#ContentPlaceHolder1_CheckBoxList_spaces tbody tr{
+    width:50%;
+    float:left;
+}
+/*button*/
+#btncheck {
+    width: 100%;
+}

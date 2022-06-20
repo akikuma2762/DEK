@@ -1,0 +1,317 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="Analysis_oper_rate.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_CNC.Analysis" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>設備稼動統計 | 德大機械</title>
+    <link href="../../assets/vendors/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.css" rel="stylesheet" type="text/css" media="all">
+    <%=color %>
+     <!--<link href="../../assets/build/css/custom.css" rel="stylesheet" />
+    <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <ol class='breadcrumb_'>
+            <li><u><a href='../index.aspx'>加工部 </a></u></li>
+            <li><u><a href='Analysis_oper_rate.aspx'>稼動比例統計</a></u></li>
+        </ol>
+        <br>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <h4>[搜尋條件]分析時間：<u><asp:LinkButton ID="LinkButton1" runat="server" data-toggle="modal" data-target="#exampleModal"><%=timerange %></asp:LinkButton></u>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-8 col-sm-12 col-xs-12" style="padding-right: 1px">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="x_title">
+                        <h1><b>稼動率</b></h1>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div style="text-align: right; width: 100%; padding: 0;">
+                            <button type="button" id="exportChart" title="另存成圖片">
+                                <img src="../../assets/images/download.jpg" style="width: 36.39px; height: 36.39px;">
+                            </button>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-10">
+                        <div id="chartContainer" style="height: 450px; max-width: 1400px; margin: 0px auto;"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12" style="padding-left: 5px">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="x_title">
+                        <h1><b>狀態百分比</b></h1>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div style="text-align: right; width: 100%; padding: 0;">
+                            <button type="button" id="exportimage" title="另存成圖片">
+                                <img src="../../assets/images/download.jpg" style="width: 36.39px; height: 36.39px;">
+                            </button>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-10">
+                        <div id="mach_list"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12" id="alarm_detail_count">
+                <div class="x_panel" id="Div_Shadow">
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-circle-up"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="x_title">
+                        <h1><strong>狀態百分比(單位: %)</strong></h1>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="datatable_status_info" class="table table-ts table-bordered" style="margin: 0px 0px -10px 0px;">
+                            <thead style="background-color: #ffffff">
+                                <%=StatusInfo_th %>
+                            </thead>
+                            <tbody>
+                                <%=StatusInfo_tr %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%--<div class="row"></div>   <!--Panel縮放使用-->--%>
+    </div>
+    <!-----以下檢索精靈相關--->
+    <!-- set Modal -->
+
+<!-- <div class="backdrop"></div>
+    <div class="fab child" data-subitem="1" data-toggle="modal" data-target="#exampleModal">
+        <span><i class="fa fa-search"></i></span>
+    </div>
+    <div class="fab" id="masterfab">
+        <span><i class="fa fa-list-ul"></i></span>
+    </div>
+    <!--/set Modal-->
+    <!-- Modal -->
+    <div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel2"><i class="fa fa-file-text"></i><b>資料檢索精靈</b></h4>
+                </div>
+                <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px">
+                    <div id="testmodal2" style="padding: 0px 20px;">
+                        <div class="form-group" style="margin-bottom: 0px">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>設備篩選</b></i> <i id="cbx_remind"></i>
+                            </h5>
+                            <div class="row" style="padding-bottom: 15px">
+                                <div class="btn-group btn-group-justified">
+                                    <!--局部更新-->
+                                    <asp:ScriptManager ID="ScriptManager1" runat="server">
+                                    </asp:ScriptManager>
+                                    <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
+                                        <ContentTemplate>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-2 col-sm-2 col-xs-2" style="font-family: Arial">
+                                                    <label>類型:</label>
+                                                </div>
+                                                <div class="col-md-4 col-sm-4 col-xs-4">
+                                                    <asp:DropDownList ID="DropDownList_MachType" runat="server" OnSelectedIndexChanged="DropDownList_MachType_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                </div>
+                                                <div class="col-md-2 col-sm-2 col-xs-2" style="font-family: Arial">
+                                                    <label>群組:</label>
+                                                </div>
+                                                <div class="col-md-4 col-sm-4 col-xs-4">
+                                                    <asp:DropDownList ID="DropDownList_MachGroup" runat="server"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>計算區間快選</b></i> <i id="cbx_remind"></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12" style="padding-bottom: 15px">
+                                    <div class="btn-group btn-group-justified">
+                                        <asp:LinkButton ID="LinkButton_day" runat="server" CssClass="btn btn-default" OnClick="button_select_Click">當日</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton_week" runat="server" CssClass="btn btn-default " OnClick="button_select_Click">當週</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton_month" runat="server" CssClass="btn btn-default " OnClick="button_select_Click">當月</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton_season" runat="server" CssClass="btn btn-default " OnClick="button_select_Click">當季</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton_firsthalf" runat="server" class="btn btn-default " OnClick="button_select_Click">上半年</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton_lasthalf" runat="server" class="btn btn-default " OnClick="button_select_Click">下半年</asp:LinkButton>
+                                        <asp:LinkButton ID="LinkButton_year" runat="server" class="btn btn-default " OnClick="button_select_Click">全年</asp:LinkButton>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <asp:LinkButton ID="LinkButton_ok" runat="server" Style="position: absolute; right: 0;" OnClick="Select_MachGroupClick" class="btn btn-primary antosubmit2">執行運算</asp:LinkButton>
+                            </div>
+                            <br></br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-----以上檢索精靈相關----->
+    <!-- /page content -->
+    <!-- jQuery -->
+    <script src="../../assets/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../../assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../../assets/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../../assets/vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../../assets/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../../assets/vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../../assets/vendors/moment/min/moment.min.js"></script>
+    <script src="../../assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../../assets/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../../assets/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../../assets/vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../../assets/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../../assets/vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../assets/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="../../assets/vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="../../assets/vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../../assets/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../../assets/vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../assets/build/js/custom.min.js"></script>
+    <!-- FloatingActionButton -->
+    <script src="../../assets/vendors/FloatingActionButton/js/index.js"></script>
+    <!-- canvasjs -->
+    <script src="../../assets/vendors/canvas_js/canvasjs.min.js"></script>
+    <!-- Datatables -->
+    <script src="../../assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../../assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <script>
+        //===========================================表格===========================================
+        $('#datatable_status_info').dataTable(
+            {
+                 destroy: true,
+                language: {
+                    "processing": "處理中...",
+                    "loadingRecords": "載入中...",
+                    "lengthMenu": "顯示 _MENU_ 項結果",
+                    "zeroRecords": "沒有符合的結果",
+                    "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                    "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+                    "infoFiltered": "(從 _MAX_ 項結果中過濾)",
+                    "infoPostFix": "",
+                    "search": "搜尋:",
+                    "paginate": {
+                        "first": "第一頁",
+                        "previous": "上一頁",
+                        "next": "下一頁",
+                        "last": "最後一頁"
+                    }
+                },
+                "aLengthMenu": [[-1], ["All"]],
+                "order": [[3, "desc"]]
+            });
+        //===========================================折線===========================================
+        var chart = new CanvasJS.Chart("chartContainer", {
+            //exportEnabled: true,
+            axisY: { titleFontSize: 30, title: "稼動率(%)", fontFamily: "NotoSans", fontWeight: "bolder" },
+            axisX: { titleFontSize: 30, title: "時間", fontFamily: "NotoSans", fontWeight: "bolder" },
+            legend: {
+                fontSize: 20,
+                cursor: "pointer",
+                fontFamily: "NotoSans", fontWeight: "bolder",
+                itemclick: toggleDataSeries,
+            },
+            data: [
+                    <%=OperRate_Str%>
+            ]
+        });
+        chart.render();
+        document.getElementById("exportChart").addEventListener("click", function () {
+            chart.exportChart({ format: "png" });
+            parent.location.reload();
+        });
+        function toggleDataSeries(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else {
+                e.dataSeries.visible = true;
+            }
+            chart.render();
+        }
+        //===========================================圓餅圖===========================================
+
+        <%
+        get_MachList_html(" ");
+        if (StatusRate_Str != "")
+            get_javascrtpt_pie(StatusRate_Str);
+        %>
+        <%=js_%>
+        <%=js %>
+        document.getElementById("exportimage").addEventListener("click", function () {
+            <%=devName%>_ch.exportChart({ format: "png" });
+            parent.location.reload();
+        });
+        //============================================================================================ 
+        $(function () {
+            $('#ContentPlaceHolder1_txt_time_str,#ContentPlaceHolder1_txt_time_end').daterangepicker({
+                timePicker: true,
+                singleDatePicker: true,
+                autoUpdateInput: false,
+                singleClasses: "picker_3",
+                locale: {
+                    cancelLabel: 'Clear',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                }
+            });
+            $('#ContentPlaceHolder1_txt_time_str,#ContentPlaceHolder1_txt_time_end').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('YYYYMMDDhhmm,A'));//時間格式
+            });
+            $('#ContentPlaceHolder1_txt_time_str,#ContentPlaceHolder1_txt_time_end').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+        });
+    //============================================================================================
+    </script>
+</asp:Content>

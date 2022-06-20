@@ -1,0 +1,54 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+#mach_list {
+    height: 450px;
+    max-width: 100%;
+    margin: 0px auto;
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    .x_panel {
+        padding: 10px;
+    }
+
+    #mach_list {
+        height: 400px;
+    }
+
+    #exportChart {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+    }
+
+    #ContentPlaceHolder1_CheckBox_All {
+        margin-right: 5px;
+    }
+    /*safe*/
+    #btncheck {
+        width: 100%;
+    }
+
+    #tab_content1 > div.x_panel > div.row > div {
+        padding: 0;
+    }
+
+        #tab_content1 > div.x_panel > div.row > div:first-child > div:first-child {
+            padding: 0;
+        }
+    /*表格*/
+    #tab_content2 {
+        overflow: hidden;
+    }
+
+        #tab_content2 div#datatable-buttons_paginate {
+            margin: 0;
+        }
+}

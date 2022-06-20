@@ -1,0 +1,167 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_PD
+{
+    public partial class ShortageMaterial_Details : System.Web.UI.Page
+    {
+        public string path = "";
+        public string supplier = "";
+        public string dt_date = "";        
+        public string item = "";
+        public string th = "";
+        public string tr = "";
+        public string title_text = "";
+        string sql = "";
+
+
+        DataTable dt = null;
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                MainProcess();
+            }
+
+        }
+        private void MainProcess()
+        {
+            GetCondi();
+            CreateSQL();
+            SetTableTitle();
+            SetTableContent();
+        }
+        private void GetCondi()
+        {
+            if (Request.QueryString["supplier"] != null)
+            {
+                supplier = Request.QueryString["supplier"].Split(',')[0];
+                dt_date = Request.QueryString["supplier"].Split(',')[1].Split('=')[1];                
+                item = Request.QueryString["supplier"].Split(',')[2].Split('=')[1];
+            }
+            else{ Response.Redirect("ShortageMaterial.aspx", false); }
+        }
+        private void CreateSQL()
+        {
+            sql = SQLCMD(supplier, dt_date, item);
+        }
+        private void SetTableTitle()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+            if (clsDB_sw.IsConnected == true)
+            {
+                //string col_name = "";
+                dt = clsDB_sw.DataTable_GetTable(sql);
+                clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+                if (dt.Columns.Count > 0)
+                {
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        th = "";
+                        th += "<th>採購/加工單</th>\n";
+                        th += "<th>明細序</th>\n";
+                        th += "<th>廠商名稱</th>\n";
+                        th += "<th>品號</th>\n";
+                        th += "<th>品名規格</th>\n";
+                        th += "<th>預交日期</th>\n";
+                        th += "<th>應交量</th>\n";
+                        th += "<th>已交量</th>\n";
+                        th += "<th>未交量</th>\n";
+
+                        //col_name = dt.Columns[i].ColumnName;
+                        //th += "<th>" + col_name + "</th>\n";
+                    }
+                }
+                else { 無資料處理(); }
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        private void SetTableContent()
+        {
+            if(clsDB_sw.IsConnected == true)
+            {
+                if(dt.Rows.Count > 0)
+                {
+                    foreach(DataRow row in dt.Rows)
+                    {
+                        tr += "<tr>\n";
+                        tr += "<td style='color:red;'>" + DataTableUtils.toString(row["採購單號"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["明細序"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["廠商名稱"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["品號"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["品名規格"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["預交日期"]) + "</td>\n";
+                        tr += "<td align='right'>" + DataTableUtils.toString(row["應交量"]) + "</td>\n";
+                        tr += "<td align='right'>" + DataTableUtils.toString(row["已交量"]) + "</td>\n";
+                        tr += "<td align='right' style='color:red;'>" + DataTableUtils.toString(row["未交量"]) + "</td>\n";
+                        tr += "</tr>\n";
+                    }
+                }
+                dt.Dispose();
+            }
+            else { 無資料處理(); }
+        }
+
+        private void 無資料處理()
+        {
+            title_text = "'沒有資料'";
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        }
+
+        private string SQLCMD(string supplier, string dt_date, string item)
+        {
+            string sqlcmd = "select TRN_NO as 採購單號 , SN as 明細序,                                                    " +
+                            " factnm2 AS 廠商名稱,                                                                        " +
+                            " item_no AS 品號,                                                                            " +
+                            " NAME AS 品名規格,                                                                           " +
+                            " d1 AS 預交日期,                                                                             " +
+                            " LEFT(Sum(quantity), Charindex('.', Sum(quantity)) - 1) AS 應交量,                           " +
+                            " LEFT(Sum(q_delied), Charindex('.', Sum(q_delied)) - 1) AS 已交量,                           " +
+                            " LEFT(Sum(quantity - q_delied), Charindex('.', Sum(quantity - q_delied)) - 1) AS 未交量      " +
+                            " from sordsub                                                                                " +
+                            "  LEFT JOIN fact ON sordsub.fact_no = fact.fact_no                                           " +
+                            "  WHERE(quantity - q_delied) > 0                                                             " +
+                            "  AND factnm2 = '" + supplier + "'                                                           " +
+                            "  AND d1 = " + dt_date + "                                                                   " +
+                            "  AND ITEM_NO = '" + item + "'                                                               " +
+                            " GROUP BY trn_no,sn,sordsub.fact_no, factnm2, item_no, NAME, d1                              " +
+                            " union                                                                                       " +
+                            " SELECT TRN_NO  AS 採購單號,                                                                  " +
+                            "         sn AS 明細序,                                                                        " +
+                            "        factnm2 AS 廠商名稱,                                                                  " +
+                            "        sosub.item_no AS 品號,                                                                " +
+                            "        itemnm AS 品名規格,                                                                   " +
+                            "        d1 AS 預交日期,                                                                       " +
+                            "        LEFT(Sum(quantity), Charindex('.', Sum(quantity)) - 1) AS 應交量,                       " +
+                            "        LEFT(Sum(q_delied), Charindex('.', Sum(q_delied)) - 1) AS 已交量,                       " +
+                            "        LEFT(Sum(quantity - q_delied), Charindex('.', Sum(quantity - q_delied)) - 1) AS 未交量  " +
+                            " FROM sosub                                                                                    " +
+                            "        LEFT JOIN fact ON sosub.fact_no = fact.fact_no                                         " +
+                            "        LEFT JOIN item ON sosub.item_no = item.item_no                                         " +
+                            " WHERE(quantity - q_delied) > 0                                                                " +
+                            "       AND factnm2 = '" + supplier + "'                                                        " +
+                            "       AND d1 = " + dt_date + "                                                                " +
+                            "       AND sosub.item_no = '" + item + "'                                                      " +
+                            " GROUP BY sosub.trn_no,sosub.sn, factnm2, sosub.item_no, itemnm, d1                            " +
+                            " ORDER  BY LEFT(Sum(quantity -q_delied), Charindex('.', Sum(quantity - q_delied)) - 1) desc    ";
+            return sqlcmd;
+        }
+
+    }
+}

@@ -1,0 +1,153 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class UntradedCustomer : System.Web.UI.Page
+    {
+        public string color = "";
+        public string date_str = "";//new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd");
+        public string date_end = ""; //new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1).ToString("yyyyMMdd");
+        public string th = "";
+        public string tr = "";
+        public string data_name = "";
+        public string title_text = "";
+        public string path = "";
+        string acc = "";
+        string sql_condi = "";
+        string URL_NAME = "";
+        string 運算符號 = "";
+        public string 交易天數 = "";
+        string st_m = "";
+        string ed_m = "";
+        public string timerange = "";
+
+        DataTable public_dt = null;
+        myclass myclass = new myclass();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("SLS");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_SD/UntradedCustomer.aspx'>未交易客戶</a></u></li></ol>");
+                URL_NAME = "UntradedCustomer";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        get_SqlConndi();
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    //Response.Redirect(myclass.logout_url);
+                }
+                
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        private void get_SqlConndi()
+        {
+            運算符號 = DataTableUtils.toString(DropDownList_selectedcondi.SelectedValue);
+            交易天數 = DataTableUtils.toString(TextBox_dayval.Text);
+            sql_condi = "  未交易天數 >= " + 交易天數 + "";
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            set_table_title();
+            
+        }
+        private void set_table_title()
+        {
+            public_dt = new DataTable();
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            string sqlcmd = 德大機械.業務部_訂單統計.未交易客戶(sql_condi);
+            public_dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+
+            string titlename = "";
+            th = HtmlUtil.Set_Table_Title(public_dt, out titlename);
+            tr = HtmlUtil.Set_Table_Content(public_dt, titlename);
+            timerange = 交易天數;
+        }
+       
+        private void get_search_time(string btnID)
+        {
+            DateTime dt_st = DateTime.ParseExact(st_m, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime dt_ed = DateTime.ParseExact(ed_m, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+            if (HtmlUtil.DaysBetween(dt_st, dt_ed) > 730)
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 日期起始不得大於 730 天 !');</script>");
+            }
+            else
+            {
+                date_str = dt_st.ToString("yyyyMMdd");
+                date_end = dt_ed.ToString("yyyyMMdd");
+            }
+        }
+
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+
+            get_SqlConndi();
+            st_m = DataTableUtils.toString(txt_time_str.Value);
+            ed_m = DataTableUtils.toString(txt_time_end.Value);
+
+            if (交易天數 != "" && st_m == "")
+            {
+                sql_condi = "未交易天數 " + 運算符號 + 交易天數 + "";
+            }
+            else if (st_m != "" && 交易天數 == "")
+            {
+                get_search_time(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]));
+                sql_condi = "最後交易日 between " + date_str + " and " + date_end + "";
+            }
+            else if (交易天數 != "" && st_m != "" && ed_m != "")
+            {
+                get_search_time(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]));
+                sql_condi = "最後交易日 between " + date_str + " and " + date_end + " and 未交易天數 " + 運算符號 + 交易天數 + "";
+            }
+
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+        }
+    }
+}

@@ -1,0 +1,117 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class recordsofchangetheorder_details1 : System.Web.UI.Page
+    {
+        public string color = "";
+        public string th = "";
+        public string tr = "";
+        public string title = "";
+        public string title_msg = "";
+        public string title_msg_list = "";
+        public string title_text = "";
+        public string cust_name = "";
+        public string date_str = "";
+        public string date_end = "";
+        public int HTML_交期變更總次數 = 0;
+        public int HTML_數量變更總次數 = 0;
+        public int HTML_品號變更總次數 = 0;
+        public int HTML_客戶單號變更總次數 = 0;
+        string acc = "";
+
+        DataTable public_dt = null;
+        myclass myclass = new myclass();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (acc != "")
+                {
+                    if (!IsPostBack)
+                    {
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Redirect("recordsofchangetheorder.aspx", false);
+                }
+            }
+            else
+            {
+                Response.Redirect("recordsofchangetheorder.aspx", false);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+       
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            if (Request.QueryString["key"] != null)
+            {
+                string[] str = HtmlUtil.Return_str(Request.QueryString["key"]);
+                cust_name = str[1];
+                date_str = str[3];
+                date_end = str[5];
+                Set_Html_Table();
+            }
+            else
+            {
+                Response.Redirect("recordsofchangetheorder.aspx", false);
+            }
+        }
+        private void Set_Html_Table()
+        {
+            //title
+            public_dt = new DataTable();
+            bool is_ok = clsDB_sw.IsConnected;
+            clsDB_sw.dbOpen(myclass.GetConnByDetaEip);
+            string strCmd = 德大機械.業務部_訂單變更紀錄.客戶訂單變更歷程(cust_name, date_str, date_end);
+            public_dt = clsDB_sw.DataTable_GetTable(strCmd);
+            if (public_dt.Rows.Count <= 0) is_ok = false;
+
+            string titlename = "";
+            th = HtmlUtil.Set_Table_Title(public_dt, out titlename);
+            tr = HtmlUtil.Set_Table_Content(public_dt, titlename);
+
+            foreach (DataRow row in public_dt.Rows)
+            {
+                HTML_交期變更總次數 += DataTableUtils.toInt(DataTableUtils.toString(row["交期變更次數"]));
+                HTML_數量變更總次數 += DataTableUtils.toInt(DataTableUtils.toString(row["數量變更次數"]));
+                HTML_品號變更總次數 += DataTableUtils.toInt(DataTableUtils.toString(row["品號變更次數"]));
+                HTML_客戶單號變更總次數 += DataTableUtils.toInt(DataTableUtils.toString(row["客戶單號變更次數"]));
+            }
+        }      
+    }
+}

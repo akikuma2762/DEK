@@ -1,0 +1,37 @@
+//if (val.Split(',').Length >= 5)//check error
+                //{
+                //    try
+                //    {
+                //        row["Update_time"] = val.Split(',')[0].Split('=')[1];
+                //        row["Start_time"] = val.Split(',')[1].Split('=')[1];
+                //        row["Cycle_time"] = val.Split(',')[2].Split('=')[1];
+                //        row["Nc_Status"] = val.Split(',')[3].Split('=')[1];
+                //        row["Start_time_line"] = "開始時間：" + val.Split(',')[4].Split('=')[1].Substring(0, 2) + "/" + val.Split(',')[4].Split('=')[1].Substring(2, 2) + " " +
+                //                                 val.Split(',')[4].Split('=')[1].Substring(4, 2) + ":" + val.Split(',')[4].Split('=')[1].Substring(6, 2) + ":" + val.Split(',')[4].Split('=')[1].Substring(8, 2);
+                //        row["End_time_line"] = "結束時間：" + val.Split(',')[5].Split('=')[1].Substring(0, 2) + "/" + val.Split(',')[5].Split('=')[1].Substring(2, 2) + " " +
+                //                               val.Split(',')[5].Split('=')[1].Substring(4, 2) + ":" + val.Split(',')[5].Split('=')[1].Substring(6, 2) + ":" + val.Split(',')[5].Split('=')[1].Substring(8, 2);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        string s = ex.Message;
+                //    }
+                //}
+                //else
+                //{
+                //    string cycletime = status_web[0].Split(',')[0];//秒轉分鐘
+                //    TimeSpan Min = new TimeSpan(0, 0, Convert.ToInt32(cycletime.Split('=')[1]));
+                //    cycletime = Min.TotalMinutes.ToString();
+                //    string cycletime1 = "Cycle_time=" + cycletime + "";                    
+                //    string ncstatus = status_web[0].Split(',')[1];
+                //    string endtime = FirstDay.AddSeconds(Convert.ToDouble(cycletime = status_web[0].Split(',')[0].Split('=')[1])).ToString("MMddHHmmss");
+                //    string data_str = "Update_time=" + FirstDay.ToString("yyyyMMddHHmmss") + ",Start_time=0," + cycletime1 + "," + ncstatus + ",Start_time_line=" + FirstDay.ToString("MMddHHmmss") + ",End_time_line=" + endtime + "";
+
+                //    row["Update_time"] = data_str.Split(',')[0].Split('=')[1];
+                //    row["Start_time"] = data_str.Split(',')[1].Split('=')[1];
+                //    row["Cycle_time"] = data_str.Split(',')[2].Split('=')[1];
+                //    row["Nc_Status"] = data_str.Split(',')[3].Split('=')[1];
+                //    row["Start_time_line"] = "開始時間：" + data_str.Split(',')[4].Split('=')[1].Substring(0, 2) + "/" + data_str.Split(',')[4].Split('=')[1].Substring(2, 2) + " " +
+                //                             data_str.Split(',')[4].Split('=')[1].Substring(4, 2) + ":" + data_str.Split(',')[4].Split('=')[1].Substring(6, 2) + ":" + data_str.Split(',')[4].Split('=')[1].Substring(8, 2);
+                //    row["End_time_line"] = "結束時間：" + data_str.Split(',')[5].Split('=')[1].Substring(0, 2) + "/" + data_str.Split(',')[5].Split('=')[1].Substring(2, 2) + " " +
+                //                           data_str.Split(',')[5].Split('=')[1].Substring(4, 2) + ":" + data_str.Split(',')[5].Split('=')[1].Substring(6, 2) + ":" + data_str.Split(',')[5].Split('=')[1].Substring(8, 2);
+                //}

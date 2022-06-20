@@ -1,0 +1,66 @@
+版號 00.22.01.00.00
+第一版 0613-eric
+
+版號 00.22.01.00.01
+第二版 0614-bear
+1.
+一.位置:dek_erpvis_v2\pages\dp_PM\Asm_Cahrt_Error.aspx 
+二.BUG紀錄:原本checkbox無法使用全選功能
+三.BUG原因:checkList包在selectItem中,selectItem使用autoposback,觸發page_load後,會使checkList前端監聽失效
+四.修正歷程:前端監聽器綁訂page_load(),使其在autopostback觸發後,重新載入監聽器
+
+2.
+一.位置:dek_erpvis_v2\pages\dp_PM\waitingfortheproduction.aspx
+二.BUG紀錄:原本checkbox功能失效
+三.BUG原因:Class flat中 Css樣式導致功能失效
+四.修正歷程:去除 Class flat
+
+3.
+一.位置:dek_erpvis_v2\pages\dp_PM\waitingfortheproduction.aspx.cs
+二.BUG紀錄:大圓盤廠資料無法顯示
+三.BUG原因:資料庫資料表欄位調整過,導致失效
+四.修正歷程:將sql語法欄位調整成修改後欄位 ws.user_field06-->ws.PLINE_NO	
+
+版號 00.22.01.00.02
+第三版 0616-bear
+1.
+一.位置:dek_erpvis\dek_erpvis_v2\pages\dp_SD\Orders.aspx.cs
+二.BUG紀錄:
+三.BUG原因:
+四.修正歷程:每月產線統計數量增加超連結,新增逾期數量及超連結
+2.
+一.位置:dek_erpvis_v2\pages\dp_SD\Orders_Details.aspx.cs
+二.BUG紀錄:
+三.BUG原因:
+四.修正歷程:.新增功能:新增接收參數,及資料表搜尋條件
+
+版號 00.22.01.00.03
+第四版 0616-bear
+1.
+一.位置:dek_erpvis\dek_erpvis_v2\pages\dp_SD\Orders.aspx.cs
+二.BUG紀錄:
+三.BUG原因:
+四.修正歷程:增加逾期數量總計判斷
+2.
+一.位置:dek_erpvis_v2\pages\dp_SD\Orders_Details.aspx.cs
+二.BUG紀錄:
+三.BUG原因:
+四.修正歷程:增加逾期數量總計判斷
+
+版號 00.22.01.00.04
+第五版 0617-bear
+1.
+一.位置:dek_erpvis\dek_erpvis_v2\pages\dp_SD\Orders.aspx.cs
+二.BUG紀錄:選擇客戶搜尋後,會跳回首頁
+三.BUG原因:SQL搜尋總計條件時少判斷客戶
+四.修正歷程:SQL判斷補上判斷客戶
+2.
+一.位置:dek_erpvis_v2\pages\dp_SD\Orders_Details.aspx.cs
+二.BUG紀錄:同上
+三.BUG原因:同上
+四.修正歷程:同上
+3.
+一.位置:dek_erpvis_v2\pages\dp_SD\Orders_Details.aspx
+二.BUG紀錄:
+三.BUG原因:
+四.修正歷程:修改table標題音用參數

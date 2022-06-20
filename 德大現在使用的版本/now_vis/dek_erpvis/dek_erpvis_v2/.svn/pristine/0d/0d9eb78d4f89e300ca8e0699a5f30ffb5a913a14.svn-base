@@ -1,0 +1,436 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class orderstatistics : System.Web.UI.Page
+    {
+        public string date_str = "";// new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd");
+        public string date_end = "";// new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1).ToString("yyyyMMdd");
+        public string timespan = "";
+        public string orders_status = "";
+        public string orders_status_CN = "";
+        public string time_array = "";
+        public string select_day = "";
+        public string select_week = "";
+        public string select_month = "";
+        public string select_firsthalf = "";
+        public string select_lasthalf = "";
+        public string select_year = "";
+        public string title_text = "";
+        public string col_data_Points = "";
+        public string col_data_Points_cost = "";
+        public string th = "";
+        public string tr = "";
+        public string data_name = "";
+        public string page_name = "";
+        public string time_area_text = "";
+        public string path = "";
+        public string show_sql= "";
+        public string type_count = "";
+        public string type_sls = "";
+        public string type_count_sls = "";
+        string date_text = "~";
+        string 客戶訂單列表 = "";
+        string 各產線訂單資料 = "";
+        string title = "";
+        string Ttype = "";
+        string col_chang = "";
+        string unit = "";
+        string URL_NAME = "";
+        string acc = "";
+        string sls = "sales.aspx";
+        string cou = "count.aspx";
+
+        DataTable public_dt = null;
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            get_page_type();
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("SLS");
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        var s = 德大機械.德大專用月份(acc);
+                        date_str = s.Split(',')[0];
+                        date_end = s.Split(',')[1];
+                        //date_str = 德大機械.德大專用月份().Split(',')[0];
+                        //date_end = 德大機械.德大專用月份().Split(',')[1];
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+        }
+        //function
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        private void load_page_data()
+        {
+            col_data_Points = "";
+
+            Response.BufferOutput = false;
+            get_order_status();
+            set_col_value();
+            set_table_title();
+            set_table_content();
+            //time_array = orders_status_CN + " (" + date_str + " - " + date_end + ")";
+        }
+        private void set_col_value()
+        {
+            public_dt = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(各產線訂單資料)).ToTable();
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (public_dt.Rows.Count > 0)
+            {
+                string title_val = "";
+                string group_name = "";
+                string y_val = "";
+                string y_val_cost = "";
+                //int y_subtotal_cost = 0;
+                int y_subtotal = 0;
+
+                foreach (DataRow row in public_dt.Rows)
+                {
+                    //產線訂單數量
+                    group_name = DataTableUtils.toString(row["產線群組"]);
+                    y_val = DataTableUtils.toString(row[col_chang]);
+                    y_subtotal += DataTableUtils.toInt(y_val);
+                    col_data_Points += "{ y: " + y_val + ", label: '" + group_name + "',indexLabel:'" + trb_num_for_this_page(y_val) + "" + unit + "' },";
+
+                    //產線訂單成本
+                    //y_val_cost = DataTableUtils.toString(row["成本"]);                    
+                    //col_data_Points_cost += "{ y: " + y_val_cost + ", label: '" + group_name + "',indexLabel:'" + trb_num_for_this_page(y_val_cost) + "" + unit + "' },";
+                }
+                title_val = DataTableUtils.toString(y_subtotal);
+                title_text = "'" + "" + date_text + "" + "" + orders_status_CN + " " + data_name + " : " + trb_num_for_this_page(title_val) + " " + unit + "'";
+
+                type_count = "{type: 'column'," +
+                    "indexLabelPlacement: 'outside'," +
+                    "name: '" + data_name + "' , " +
+                    "dataPoints: [" + col_data_Points + "]} ";
+                //type_sls = type_count + ",{type: 'column' ,indexLabelPlacement: 'outside',name: '成本',dataPoints: [" + col_data_Points_cost + "]}";
+
+                //if (Ttype == sls) { type_count_sls = type_sls; }                    
+                //else if (Ttype == cou) { type_count_sls = type_count; }   
+            }
+            else
+            {
+                無資料處理();
+            }
+
+            public_dt.Dispose();
+        }
+        private void set_table_title()
+        {
+            string col_name = "";
+
+            if (public_dt.Rows.Count > 0)
+            {
+                th = "<th>客戶/產線</th>\n                                            ";
+                foreach (DataRow row in public_dt.Rows)
+                {
+                    if (row["產線群組"] != null)
+                    {
+                        if (col_name != DataTableUtils.toString(row["產線群組"]))
+                        {
+                            col_name = DataTableUtils.toString(row["產線群組"]);
+                            title += col_name + ",";
+                            th += "<th>" + col_name + "</th>\n                                            ";
+                        }
+                    }
+                }
+                th += "<th>小計</th>\n                                            ";
+                //if (Ttype == sls) th += "<th>成本</th>\n                                            ";
+            }
+            else
+            {
+                無資料處理();
+            }
+        }
+        public void set_table_content()
+        {
+            string cust_sname = "";
+            tr = "";
+
+            //content
+            if (clsDB_sw.IsConnected == true && myclass.user_view_check(URL_NAME, acc) == true)
+            {
+                int CUST_TOTAL = 0, COST_TOTAL =0;
+                string sqlcmd = 客戶訂單列表;
+                DataTable dt =  clsDB_sw.DataTable_GetTable(sqlcmd);
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        CUST_TOTAL = 0;
+                        COST_TOTAL = 0;
+                        cust_sname = DataTableUtils.toString(row["客戶簡稱"]);
+
+                        switch (DropDownList_order_status.SelectedValue.ToString())
+                        {
+                            case "0":
+                                sqlcmd = 德大機械.業務部_訂單統計.客戶訂單明細_訂單總數(cust_sname, timespan);
+                                break;
+                            case "1":
+                                sqlcmd = 德大機械.業務部_訂單統計.客戶訂單明細_已結案(cust_sname, timespan, orders_status);
+                                break;
+                            case "2":
+                                sqlcmd = 德大機械.業務部_訂單統計.客戶訂單明細_未結案(cust_sname, timespan, orders_status);
+                                break;
+                            case "3":
+                                sqlcmd = 德大機械.業務部_訂單統計.客戶訂單明細_已排程(cust_sname, timespan, orders_status);
+                                break;
+                            case "4":
+                                sqlcmd = 德大機械.業務部_訂單統計.客戶訂單明細_未排程(cust_sname, timespan, orders_status);
+                                break;
+                        }
+                        DataTable dw = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(sqlcmd)).ToTable();
+                        clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+                        tr += "<tr>\n";
+                        tr += "<td>" + cust_sname + "</td>\n";
+                        for (int j = 0; j < title.Split(',').Length - 1; j++)
+                        {
+                            int LINE_TOTAL = 0;
+                            //int LINE_COST = 0 ;
+                            string 產線群組 = DataTableUtils.toString(title.Split(',')[j]);
+
+                            if (dw.Rows.Count > 0)
+                            {
+                                for (int k = 0; k < dw.Rows.Count; k++)
+                                {
+                                    if (產線群組 == DataTableUtils.toString(dw.Rows[k]["產線群組"]))
+                                    {
+                                        LINE_TOTAL += DataTableUtils.toInt(DataTableUtils.toString(dw.Rows[k][col_chang]).Split('.')[0]);
+                                        //LINE_COST += DataTableUtils.toInt(DataTableUtils.toString(dw.Rows[k]["成本"]).Split('.')[0]);
+                                    }
+                                }
+                            }
+                            //Cumulative += LINE_TOTAL;
+                            CUST_TOTAL += LINE_TOTAL;
+                            //COST_TOTAL += LINE_COST;
+
+
+                            tr += "<td align='right'>" + trb_num_for_this_page(LINE_TOTAL) + "</td>\n";
+                        }
+                        //tr += "<td>" + Cumulative + " </td>\n"; 
+                        tr += "<td align='right'><u><a href='orderstatistics_details.aspx?cust_name=" + cust_sname + ",date_str=" + date_str + ",date_end=" + date_end + ",condi=" + DropDownList_order_status.SelectedValue + ",type=" + Ttype + "' target='_blank'>" + trb_num_for_this_page(CUST_TOTAL) + " </u></td>\n";
+                        //if (Ttype == sls) tr += "<td style='color:#ff0000' align='right';><u> " + trb_num_for_this_page(COST_TOTAL) + " </u></td>\n";
+                        tr += "</tr>\n";
+                        //Response.Write(tr);
+                        //Response.Flush();
+                        //Response.Clear();
+                        //tr = "";
+                    }
+                }
+                dt.Dispose();
+            }
+            else
+            {
+                無資料處理();
+            }
+            //dw.Dispose();
+        }
+        private void get_order_status()
+        {
+            timespan = 德大機械.業務部_訂單統計.取得日期語法(date_str, date_end, "CORDSUB");
+            switch (DropDownList_order_status.SelectedValue)
+            {
+                case "0":
+                    orders_status_CN = "訂單總數";
+                    date_text = date_str + date_text + date_end;
+                    各產線訂單資料 = 德大機械.業務部_訂單統計.各產線訂單資料_訂單總數(timespan);
+                    客戶訂單列表 = 德大機械.業務部_訂單統計.客戶列表_訂單總數(timespan);
+                    break;
+
+                case "1":
+                    orders_status_CN = "已結案";
+                    date_text        = date_str + date_text + date_end;
+                    orders_status    = 德大機械.業務部_訂單統計.取得訂單狀態語法("!='未結'");
+                    各產線訂單資料    = 德大機械.業務部_訂單統計.各產線訂單資料_已結案(timespan, orders_status);
+                    客戶訂單列表      = 德大機械.業務部_訂單統計.客戶列表_已結案(timespan, orders_status);
+                    break;
+                case "2":
+                    orders_status_CN = "未結案訂單";
+                    date_text        = date_str + date_text + date_end;
+                    orders_status    = 德大機械.業務部_訂單統計.取得訂單狀態語法("='未結'");
+                    各產線訂單資料    = 德大機械.業務部_訂單統計.各產線訂單資料_未結案by已上線加未上線(timespan, orders_status);
+                    客戶訂單列表      = 德大機械.業務部_訂單統計.客戶列表_未結案(timespan, orders_status,"","");
+                    break;
+                case "3":
+                    orders_status_CN = "已排程";
+                    date_text        = date_str + date_text + date_end;
+                    orders_status    = 德大機械.業務部_訂單統計.取得訂單狀態語法("='未結'");
+                    各產線訂單資料    = 德大機械.業務部_訂單統計.各產線訂單資料_已排程(timespan, orders_status);
+                    客戶訂單列表      = 德大機械.業務部_訂單統計.客戶列表_已排程(timespan, orders_status);
+                    break;
+                case "4":
+                    orders_status_CN = "未排程";
+                    date_text        = date_str + date_text + date_end;
+                    orders_status    = 德大機械.業務部_訂單統計.取得訂單狀態語法("='未結'");
+                    //NoExists         = " NOT EXISTS ( SELECT * FROM A22_FAB as a22_fab WHERE cordsub.TRN_NO = a22_fab.CORD_NO AND cordsub.SN = a22_fab.CORD_SN) and ";
+                    各產線訂單資料 = 德大機械.業務部_訂單統計.各產線訂單資料_未排程(timespan, orders_status);
+                    客戶訂單列表 = 德大機械.業務部_訂單統計.客戶列表_未排程(timespan, orders_status);
+                    break;
+            }
+            //if (myclass.check_user_power(acc) == "Y") show_sql = 各產線訂單資料;
+        }
+        private void get_page_type()
+        {
+            if (Request.QueryString["type"] != null)
+            {
+                Ttype = DataTableUtils.toString(Request.QueryString["type"]);
+                if (Ttype == sls)
+                {
+                    unit = " NTD";
+                    col_chang = "訂單金額";
+                    data_name = "金額";
+                    page_name = "訂單金額統計";
+                    time_area_text = "訂單金額統計列表";
+                    URL_NAME = "orderstatistics.aspx?type=sales";
+                }
+                else if (Ttype == cou)
+                {
+                    unit = "";
+                    col_chang = "訂單數量";
+                    data_name = "數量";
+                    page_name = "訂單數量統計";
+                    time_area_text = "訂單數量統計列表";
+                    URL_NAME = "orderstatistics.aspx?type=count";
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+        }
+        private string get_datetime(int num)
+        {
+            return DateTime.Now.AddDays(-num).ToString("yyyyMMdd");
+        }
+
+        private string trb_num_for_this_page(object num)
+        {
+            int num_str = DataTableUtils.toInt(DataTableUtils.toString(num));
+
+            if (Ttype == sls)
+            {
+                return DataTableUtils.toString(num_str.ToString("N0"));
+            }
+            else if (Ttype == cou)
+            {
+                return DataTableUtils.toString(num_str);
+            }
+
+            return "Error";
+        }
+        private void 無資料處理()
+        {
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr> <td class='center'> no data </ td ></ tr >";
+            title_text = "'沒有資料'";
+        }
+        private int DaysBetween(DateTime d1, DateTime d2)
+        {
+            TimeSpan span = d2.Subtract(d1);
+            return (int)span.TotalDays;
+        }
+        private void get_search_time(string btnID)
+        {
+            switch (btnID)
+            {
+                //case "day":
+                //    date_str = get_datetime(0);
+                //    date_end = get_datetime(0);
+                //    break;
+                //case "week":
+                //    date_str = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1).ToString("yyyyMMdd");
+                //    date_end = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 5).ToString("yyyyMMdd");
+                //    break;
+                case "month":
+                    var s = 德大機械.德大專用月份(acc);
+                    date_str = s.Split(',')[0];
+                    date_end = s.Split(',')[1];
+                    break;
+                case "firsthalf":
+                    date_str = DateTime.Now.ToString("yyyy0101");
+                    date_end = DateTime.Now.ToString("yyyy0630");
+                    break;
+                case "lasthalf":
+                    date_str = DateTime.Now.ToString("yyyy0701");
+                    date_end = DateTime.Now.ToString("yyyy1231");
+                    break;
+                case "year":
+                    date_str = DateTime.Now.ToString("yyyy0101");
+                    date_end = DateTime.Now.ToString("yyyy1231");
+                    break;
+                case "select":
+                    string st_m = DataTableUtils.toString(txt_time_str.Value);
+                    string ed_m = DataTableUtils.toString(txt_time_end.Value);
+                    if (st_m == "" && ed_m == "") break;
+
+                    DateTime dt_st = DateTime.ParseExact(st_m, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                    DateTime dt_ed = DateTime.ParseExact(ed_m, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                    if (DaysBetween(dt_st, dt_ed) > 730)
+                    {
+                        /*Response.Write("<script language='javascript'>alert('伺服器回應 : 日期起始不得大於 730 天 !');</script>");
+                        date_str = myclass.德大專用月份().Split(',')[0];
+                        date_end = myclass.德大專用月份().Split(',')[1];*/
+                        date_str = dt_st.ToString("yyyyMMdd");
+                        date_end = dt_ed.ToString("yyyyMMdd");
+                    }
+                    else
+                    {
+                        date_str = dt_st.ToString("yyyyMMdd");
+                        date_end = dt_ed.ToString("yyyyMMdd");
+                    }
+                    break;
+            }
+        }
+
+        //event
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            get_search_time(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]));
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+
+        }
+    }
+}

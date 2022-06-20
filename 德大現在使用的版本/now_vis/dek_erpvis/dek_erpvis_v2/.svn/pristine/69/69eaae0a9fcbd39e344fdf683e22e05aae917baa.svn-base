@@ -1,0 +1,147 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_APS
+{
+    public partial class WorkHourList : System.Web.UI.Page
+    {
+        public string order_num = "";
+        public string product_num = "";
+        public string color = "";
+        string acc = "";
+        public string th = "";
+        public string tr = "";
+        myclass myclass = new myclass();
+        //------------------------------------------事件-----------------------------------------------------
+        //網頁載入事件
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                if (TextBox_Start.Text == "" && TextBox_End.Text == "")
+                {
+                    TextBox_Start.Text = "2019-01-01";
+                    TextBox_End.Text = "2200-12-31";
+                }
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+
+                if (!IsPostBack)
+                {
+                    Load_Data();
+                    Set_Table(TextBox_Start.Text, TextBox_End.Text);
+                }
+
+            }
+            else Response.Redirect(myclass.logout_url);
+        }
+        //搜尋事件
+        protected void Button_Search_Click(object sender, EventArgs e)
+        {
+            Load_Data();
+            string sql = "";
+            if (DropDownList_Resource.Text != "All")
+                sql = "and Resource = '" + DropDownList_Resource.Text + "'";
+            Set_Table(TextBox_Start.Text, TextBox_End.Text, sql);
+        }
+        //------------------------------------------------------方法----------------------------------------------------------
+        //載入相關資訊
+        private void Load_Data()
+        {
+            if (Request.QueryString["OrderNum"] != null)
+            {
+                order_num = Request.QueryString["OrderNum"];
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAps);
+                //顯示所有資訊的DATATABLE
+                string sql_cmd = "SELECT * FROM dek_aps.workhour where Project = '" + order_num + "'";
+                DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    product_num = DataTableUtils.toString(row["Job"]);
+                    break;
+                }
+
+            }
+            else
+                Response.Redirect("OrderList.aspx");
+        }
+        //載入表格
+        private void Set_Table(string start, string end, string type = "")
+        {
+            string[] str = { "工藝名稱", "機台名稱", "預定起始時間", "預定結束時間", "累積數量", "需求總數量", "備註", " ", "" };
+            for (int i = 0; i < str.Length - 1; i++)
+            {
+                th += "<th>" + str[i] + "</th>";
+            }
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAps);
+            double Start_Time = DataTableUtils.toDouble(start.Replace("-", "") + "000000");
+            double End_Time = DataTableUtils.toDouble(end.Replace("-", "") + "235959");
+            //顯示所有資訊的DATATABLE
+            string sql_cmd = "SELECT id," +
+                                    "TaskName as 工藝名稱," +
+                                    "Resource as 機台名稱," +
+                                    "StartTime as 預定起始時間,	" +
+                                    "EndTime as 預定結束時間,	" +
+                                    "CurrentPiece as 累積數量, 	" +
+                                    "TagetPiece as 需求總數量,	" +
+                                    "Note as 備註  	" +
+                                    "FROM dek_aps.workhour     " +
+                                    "where " +
+                                    "Project = '" + order_num + "'and (StartTime >= '" + Start_Time + "' and StartTime <= '" + End_Time + "') " + type +
+                                    "or " +
+                                    "Project = '" + order_num + "' and (EndTime >= '" + Start_Time + "' and EndTime <= '" + End_Time + "')" + type;
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            dt.Columns.Add(" ");
+
+            tr = HtmlUtil.Set_Table_Content(dt, str, WorkHourListback);
+            Give_Dropdownlist(dt);
+        }
+        //把選項塞入下拉式選單
+        private void Give_Dropdownlist(DataTable dt)
+        {
+            DropDownList_Resource.Items.Clear();
+            ListItem list = null;
+            list = list = new ListItem("All", "All");
+            DropDownList_Resource.Items.Add(list);
+            foreach (DataRow row in dt.Rows)
+            {
+                list = new ListItem(DataTableUtils.toString(row["機台名稱"]), DataTableUtils.toString(row["機台名稱"]));
+                DropDownList_Resource.Items.Add(list);
+            }
+        }
+        //執行callback事件
+        private string WorkHourListback(DataRow row, string fieldname)
+        {
+            string value = "";
+            if (fieldname == " ")
+            {
+                value = "<b><input type=\"button\"  class=\"btn btn-warning\"  id=" + DataTableUtils.toString(row["id"]) + " value = \"報工明細\" onclick=\"javascript:location.href='WorkHourDetail.aspx?WorkHourID=" + DataTableUtils.toString(row["id"]) + ",Project=" + order_num + ",TaskName=" + DataTableUtils.toString(row["工藝名稱"]) + "'\"></b>";
+            }
+            if (fieldname == "預定起始時間" || fieldname == "預定結束時間")
+            {
+                DateTime dt = DateTime.ParseExact(DataTableUtils.toString(row[fieldname]), "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture);
+                value = dt.ToString("yyyy/MM/dd tt hh:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+            }
+            if (fieldname == "累積數量")
+            {
+                string sql_cmd = "SELECT Piece from dek_aps.workhour_detail where Project = '" + order_num + "' and TaskName = '" + DataTableUtils.toString(row["工藝名稱"]) + "'";
+                DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+                int total = 0;
+                foreach (DataRow rew in dt.Rows)
+                    total += DataTableUtils.toInt(DataTableUtils.toString(rew["piece"]));
+                value = total.ToString();
+            }
+
+            return "<td>" + value + "</td>\n";
+        }
+    }
+}

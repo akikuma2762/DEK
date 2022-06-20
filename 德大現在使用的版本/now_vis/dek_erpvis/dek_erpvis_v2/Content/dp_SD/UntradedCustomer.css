@@ -1,0 +1,62 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+._select .x_content .col-xs-12 span {
+    margin-left: -5px
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+    #_Title {
+        padding:0;
+    }
+    /*將標題的下距歸0*/
+    #_Title .x_title {
+        margin: 0;
+    }
+
+    #_Title > div.x_panel > div.x_content > div.col-md-9 {
+        margin: 0;
+        padding: 0 !important;
+    }
+
+    #_Title > div.x_panel {
+        border: none !important;
+    }
+
+    ._select {
+        padding: 10px;
+    }
+    ._select .dashboard_graph > div {
+        margin-bottom:10px;
+    }
+    ._select .dashboard_graph select,
+    ._select .dashboard_graph input {
+        font-size: 0.7em !important;
+        width:100%;
+    }
+    ._select .dashboard_graph > div .controls .col-xs-12 {
+        padding-right:0;
+    }
+    #btncheck {
+        width: 100%;
+    }
+
+    
+    /*調整select欄位*/
+    ._select .x_content .col-xs-12 span {
+        margin-left: 0;
+    }
+    ._select > div.col-xs-12 {
+        padding:0!important;
+    }
+    /**/
+    .dashboard_graph > div {
+        
+        line-height: 34px;
+    }
+    
+}

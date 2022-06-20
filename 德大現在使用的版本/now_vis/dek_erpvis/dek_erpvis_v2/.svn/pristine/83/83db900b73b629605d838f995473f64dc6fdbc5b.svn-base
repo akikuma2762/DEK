@@ -1,0 +1,574 @@
+﻿using System;
+using System.Collections.Generic;
+using MTLinkiDB;
+using System.Linq;
+using System.Web;
+using Support;
+using System.Data;
+using System.Net;
+using System.Text;
+using System.IO;
+using System.Timers;
+using System.Globalization;
+
+namespace dek_erpvis_v2.cls
+{
+    public class CNC_Web_Data
+    {
+        public DataTable dt_data = null;
+        public DataTable dt_data_1 = null;
+        public DataTable dt_data_2 = null;
+        public List<string> ls_data = new List<string>();
+        public string Mysql_conn_str = clsDB_Server.GetConntionString_MySQL("192.168.1.46", "cnc_db", "erp", "erp89886066");
+        private static Timer AlarmTimer;
+        public DataTable Get_MachInfo(string Dev_Name)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            dt_data_1 = DataTableUtils.GetDataTable("select * from aps_info where work_type = '校機' and mach_name = '" + Dev_Name + "' and start_time < '" + DateTime.Now.ToString("yyyyMMddHHmmss") + "' and end_time > '" + DateTime.Now.ToString("yyyyMMddHHmmss") + "'");
+            dt_data_2 = DataTableUtils.GetDataTable("select * from aps_info where work_type = '加工' and mach_name = '" + Dev_Name + "' and start_time < '" + DateTime.Now.ToString("yyyyMMddHHmmss") + "' and end_time > '" + DateTime.Now.ToString("yyyyMMddHHmmss") + "'");
+            if (dt_data_1 != null && dt_data_1.Rows.Count != 0) return dt_data_1; //校機
+            else if (dt_data_2 != null && dt_data_2.Rows.Count != 0)  //加工
+            {
+                string product_name = dt_data_2.Rows[0]["product_name"].ToString();
+                string product_number = dt_data_2.Rows[0]["product_number"].ToString();
+                string craft_name = dt_data_2.Rows[0]["craft_name"].ToString();
+                dt_data_1 = DataTableUtils.GetDataTable("select * from aps_info where work_type = '校機' and mach_name = '" + Dev_Name + "' and product_name = '" + product_name + "' and product_number = '" + product_number + "' and craft_name = '" + craft_name + "'");
+                dt_data_2.Columns.Add("check_staff", typeof(string));
+                if (dt_data_1 != null && dt_data_1.Rows.Count != 0) dt_data_2.Rows[0]["check_staff"] = dt_data_1.Rows[0]["work_staff"].ToString();
+                else dt_data_2.Rows[0]["check_staff"] = "";
+                return dt_data_2;
+            }
+            else return dt_data;
+        }
+        public string Get_WorkType(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["work_type"].ToString();//工作類型           
+        }
+        public string Get_CheckStaff(DataTable dt_Mach_Info)
+        {
+            if (dt_Mach_Info.Columns["check_staff"] != null)
+                return dt_Mach_Info.Rows[0]["check_staff"].ToString();//校機人員    
+            else return dt_Mach_Info.Rows[0]["work_staff"].ToString();
+        }
+        public string Get_WorkStaff(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["work_staff"].ToString();//加工人員           
+        }
+        public string Get_MachName(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["mach_name"].ToString();//設備名稱           
+        }
+        public string Get_MachShowName(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["mach_show_name"].ToString();//顯示名稱           
+        }
+        public string Get_CustomName(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["custom_name"].ToString();//客戶名稱         
+        }
+        public string Get_ManuID(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["manu_id"].ToString();//製令單號         
+        }
+        public string Get_ProductName(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["product_name"].ToString();//產品(料件)名稱        
+        }
+        public string Get_ProductNumber(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["product_number"].ToString();//產品(料件)編號        
+        }
+        public string Get_CraftName(DataTable dt_Mach_Info)
+        {
+            return dt_Mach_Info.Rows[0]["craft_name"].ToString();//工藝名稱       
+        }
+        public string Get_CountTotal(DataTable dt_Mach_Info)//設備生產總數
+        {
+            return dt_Mach_Info.Rows[0]["product_count"].ToString();
+        }
+        public string Get_CountToday(DataTable dt_Mach_Info)//今日生產總數
+        {
+            return dt_Mach_Info.Rows[0]["product_count_day"].ToString();
+        }
+        public string Get_ExpCountToday(DataTable dt_Mach_Info)//預計今日生產總數
+        {
+            return dt_Mach_Info.Rows[0]["exp_product_count_day"].ToString();
+        }
+        public string Get_CountTodayRate(DataTable dt_Mach_Info)//今日生產進度
+        {
+            return dt_Mach_Info.Rows[0]["product_rate_day"].ToString();
+        }
+        public string Get_FinishTime(DataTable dt_Mach_Info)//預計完成時間
+        {
+            return dt_Mach_Info.Rows[0]["finish_time"].ToString();
+        }
+        public string Get_Operate_Rate(DataTable dt_Mach_Info)//今日目前稼動率
+        {
+            return dt_Mach_Info.Rows[0]["operate_rate"].ToString();
+        }
+        public string Get_ProgramRun(DataTable dt_Mach_Info)//目前執行程式
+        {
+            return dt_Mach_Info.Rows[0]["prog_run"].ToString();
+        }
+        public string Get_ProgramMain(DataTable dt_Mach_Info)//目前主程式
+        {
+            return dt_Mach_Info.Rows[0]["prog_main"].ToString();
+        }
+        public string Get_AlarmMesg(DataTable dt_Mach_Info)//目前警報
+        {
+            return dt_Mach_Info.Rows[0]["alarm_mesg"].ToString();
+        }
+        public string Get_MachStatus(DataTable dt_Mach_Info)//目前狀態
+        {
+            return dt_Mach_Info.Rows[0]["mach_status"].ToString();
+        }
+
+        public void Get_LineTwtter(string sceptercol, string mach_name, DataTable dt_Mach_Info)//警報推播
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            DataTable dt_line_data = DataTableUtils.GetDataTable("select return_status, return_time from line_info where line_sceptercol = '" + sceptercol + "'");
+
+            if (dt_line_data != null && dt_line_data.Rows.Count != 0)
+            {
+                string ReturnStatus = dt_line_data.Rows[0].ItemArray[0].ToString();
+                if (ReturnStatus == "true")
+                {
+                    string AlarmMesg = dt_Mach_Info.Rows[0]["alarm_mesg"].ToString();
+                    if (AlarmMesg != "")
+                        lineNotify(sceptercol, mach_name + " 異常：" + AlarmMesg);
+                }
+            }
+        }
+
+        private static void lineNotify(string token, string msg)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create("https://notify-api.line.me/api/notify");
+                var postData = string.Format("message={0}", msg);
+                var data = Encoding.UTF8.GetBytes(postData);
+
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = data.Length;
+                request.Headers.Add("Authorization", "Bearer " + token);
+
+                using (var stream = request.GetRequestStream()) stream.Write(data, 0, data.Length);
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        public List<string> Get_Operate_Rate(string s_time, string e_time, string MachName)//稼動率//統計分析用
+        {
+            List<string> Operate_Rate = new List<string>();
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            DataTable dt_operate_rate = DataTableUtils.GetDataTable("select * from status_realtime_info where mach_name = '" + MachName + "'and work_date >= '" + s_time + "' and work_date <= '" + e_time + "'");
+            if (dt_operate_rate != null && dt_operate_rate.Rows.Count != 0)
+            {
+                s_time = HtmlUtil.changetimeformat(s_time);
+                DateTime st = DateTime.Parse(s_time.ToString());//取得該區間開始時間
+                DateTime end = DateTime.Now;//取得該區間結束時間(+1式)
+                DateTime noon = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd")+ " 下午 12:00:00");
+                List<string> list = new List<string>();//將時間放置於此
+                List<string> list_num = new List<string>();
+                TimeSpan ts = end - st;//日期相減
+                TimeSpan distance = end - noon;
+                int day = 0;
+                //判斷是否大於0
+                if (DataTableUtils.toDouble(distance.TotalHours.ToString()) >= 0)
+                {
+                    day = Int16.Parse(ts.TotalDays.ToString("00"));//取得整數 
+                }else
+                {
+                    day = Int16.Parse(ts.TotalDays.ToString("00"))+1;//取得整數 
+                }
+
+                //當月到目前為止非假日的時間點
+                for (int i = 0; i < day; i++)
+                {
+                    if (st.AddDays(i).ToString() != "")
+                        list.Add(st.AddDays(i).ToString("yyyyMMdd"));
+                }
+                //機台所有非假日時間點
+                for (int iIndex = 0; iIndex < dt_operate_rate.Rows.Count; iIndex++)
+                {
+                    if (HtmlUtil.changetimeformat(dt_operate_rate.Rows[iIndex]["work_date"].ToString()) != "")
+                    {
+                        list_num.Add(dt_operate_rate.Rows[iIndex]["work_date"].ToString() + ":" + dt_operate_rate.Rows[iIndex]["work_time"].ToString() + "," + dt_operate_rate.Rows[iIndex]["disc_time"].ToString() + "," + dt_operate_rate.Rows[iIndex]["idle_time"].ToString() + "," + dt_operate_rate.Rows[iIndex]["alarm_time"].ToString() + "," + dt_operate_rate.Rows[iIndex]["operate_time"].ToString());
+                    }
+                }
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    bool isok = false;
+                    for (int j = 0; j < list_num.Count; j++)
+                    {
+                        if (isok == false)
+                        {
+                            //有存在
+                            if (list_num[j].IndexOf(list[i]) != -1)
+                            {
+                                Operate_Rate.Add(list_num[j]);
+                                isok = true;
+                            }
+                        }
+                    }
+                    if (isok == false)
+                        Operate_Rate.Add(list[i] + ":" + 0 + "," + 0 + "," + 0 + "," + 0 + "," + 0);
+                }
+            }
+            return Operate_Rate;
+        }
+
+        public DateTime EndTime(DateTime end_time)
+        {
+            if (end_time >= DateTime.Now) end_time = DateTime.Now;
+            return end_time;
+        }
+
+        //public void SetTimer(string sceptercol)
+        //{
+        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+        //    DataTable dt_line_data = DataTableUtils.GetDataTable("select return_status, return_time from line_info where line_sceptercol = '" + sceptercol + "'");
+        //    string ReturnStatus = "", ReturnTime = "";
+        //    if (dt_line_data != null && dt_line_data.Rows.Count != 0)
+        //        ReturnStatus = dt_line_data.Rows[0].ItemArray[0].ToString();
+        //    if (ReturnStatus == "true")
+        //    {
+        //        ReturnTime = dt_line_data.Rows[0].ItemArray[1].ToString();
+        //        if (ReturnTime != "")
+        //            AlarmTimer = new Timer(DataTableUtils.toDouble(ReturnTime) * 60000);
+        //        AlarmTimer.Elapsed += OnTimedEvent;
+        //        AlarmTimer.AutoReset = true;
+        //        AlarmTimer.Enabled = true;
+        //    }
+        //}
+        //private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        //{
+        //    List<string> ls_data = new List<string>();
+        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+        //    DataTable dt = DataTableUtils.GetDataTable("mach_info", "");
+        //    if (dt != null && dt.Rows.Count != 0) 
+        //    { 
+        //        foreach (DataRow row in dt.Rows)
+        //            ls_data.Add(row["mach_name"].ToString());
+        //        for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+        //        {
+        //            string sceptercol = "MnT23WBtSHxfe7E8EQGGbesKgHRAAcUc2GiPH3XHrAG";
+        //            DataTable dt_line_data = DataTableUtils.GetDataTable("select return_status from line_info where line_sceptercol = '" + sceptercol + "'");
+        //            string ReturnStatus = "";
+        //            if (dt_line_data != null && dt_line_data.Rows.Count != 0)
+        //                ReturnStatus = dt_line_data.Rows[0].ItemArray[0].ToString();
+        //            if (ReturnStatus == "true")
+        //            {
+        //                string AlarmMesg = Get_AlarmMesg(ls_data[iIndex]);
+        //                if (AlarmMesg != "")
+        //                    lineNotify(sceptercol, ls_data[iIndex] + " 異常：" + AlarmMesg);
+        //            }
+        //            else
+        //                AlarmTimer.Enabled = false;
+        //        }
+        //    }
+        //}
+    }
+
+    public class CNCUtils
+    {
+        private string str_FirstDay = "";
+        private string str_LastDay = "";
+        MTLinkiDB.MTLinkiDB MTLinki_DB = new MTLinkiDB.MTLinkiDB();
+
+        public List<string> Status_Bar_Info(DataTable DT_Data, DateTime FirstDay)
+        {
+            string Update_time_date, Start_time_min, Cycle_time_min, Status, Start_time_line, End_time_line;
+            DateTime Start_time, End_time;
+            List<string> status_web = new List<string>();
+            if (DT_Data != null && DT_Data.Rows.Count != 0)
+            {
+                for (int iIndex_1 = 0; iIndex_1 < DT_Data.Rows.Count; iIndex_1++)
+                {
+                    Update_time_date = "Update_time=" + DT_Data.Rows[iIndex_1]["update_time"].ToString().Split('.')[0];
+                    Start_time = DateTime.ParseExact(DT_Data.Rows[iIndex_1]["update_time"].ToString(), "yyyyMMddHHmmss.f", null, DateTimeStyles.AllowWhiteSpaces);
+                    Start_time_min = "Start_time=" + Math.Round(Start_time.Subtract(FirstDay).Duration().TotalMinutes, 2, MidpointRounding.AwayFromZero).ToString();
+                    End_time = DateTime.ParseExact(DT_Data.Rows[iIndex_1]["enddate_time"].ToString(), "yyyyMMddHHmmss.f", null, DateTimeStyles.AllowWhiteSpaces);
+                    Cycle_time_min = "Cycle_time=" + Math.Round(End_time.Subtract(Start_time).Duration().TotalMinutes, 2, MidpointRounding.AwayFromZero).ToString();
+                    Status = "Nc_Status=" + DT_Data.Rows[iIndex_1]["status"].ToString();
+                    Start_time_line = "Start_time_line=" + DT_Data.Rows[iIndex_1]["update_time"].ToString().Substring(4, 10);
+                    End_time_line = "End_time_line=" + DT_Data.Rows[iIndex_1]["enddate_time"].ToString().Substring(4, 10);
+
+                    status_web.Add(Update_time_date + "," + Start_time_min + "," + Cycle_time_min + "," + Status + "," + Start_time_line + "," + End_time_line);
+                }
+            }
+            return status_web;
+        }
+
+        public static string MachName_translation(string id)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            string sqlcmd = "select * from mach_info where mach_name = '" + id + "'";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+
+            if (dt.Rows.Count > 0)
+            {
+                id = DataTableUtils.toString(dt.Rows[0]["mach_show_name"]);
+            }
+
+            return id;
+        }
+
+        static Dictionary<CNCStatusCode, string> CNCStatusColor_list = new Dictionary<CNCStatusCode, string>()
+        {
+            { CNCStatusCode.OPERATE,"#04ba26"}, { CNCStatusCode.SUSPEND, "#808000"},//運轉//暫停
+            { CNCStatusCode.MANUAL,"#00EFEF"}, { CNCStatusCode.WARMUP,"#890F27"},//手動//暖機
+            { CNCStatusCode.ALARM,"#f73939"}, { CNCStatusCode.EMERGENCY, "#f73939"},//警告//警報
+            { CNCStatusCode.STOP,"#ff9900"},//閒置
+            { CNCStatusCode.DISCONNECT, "#737373"},//離線
+            { CNCStatusCode.NONE, "#000000"}//關機//先用none代替
+        };
+
+        public string mach_status_Color(CNCStatusCode status)
+        {
+            string color;
+            try
+            {
+                color = CNCStatusColor_list[status];
+            }
+            catch { color = "0x000000"; }
+            return color;
+        }
+
+        public string mach_status_Color(string status)
+        {
+            CNCStatusCode code = CNCStatus.toCNCStatusCode(status);
+            return mach_status_Color(code);
+        }
+
+        public string mach_font_Color(string status)
+        {
+            string color = "";
+            if (status == "閒置" || status == "待機" || status == "離線") color = "black";
+            else color = "white";
+            return color;
+        }
+
+        public string mach_background_Color(string status)
+        {
+            string color = "";
+            if (status == "運轉" || status == "暫停" || status == "手動" || status == "暖機") color = "green";
+            else if (status == "警報" || status == "緊急") color = "red";
+            else if (status == "閒置" || status == "待機") color = "yellow";
+            else if (status == "離線") color = "gray";
+            return color;
+        }
+
+        public string mach_status_EN2CH(string status_en)
+        {
+            string status_ch = "";
+            switch (status_en)
+            {
+                case "OPERATE":
+                    status_ch = "運轉";
+                    break;
+                case "DISCONNECT":
+                    status_ch = "離線";
+                    break;
+                case "ALARM":
+                    status_ch = "警報";
+                    break;
+                case "EMERGENCY":
+                    status_ch = "警報";
+                    break;
+                case "SUSPEND":
+                    status_ch = "暫停";
+                    break;
+                case "STOP":
+                    status_ch = "閒置";
+                    break;
+                case "MANUAL":
+                    status_ch = "手動";
+                    break;
+                case "WARMUP":
+                    status_ch = "暖機";
+                    break;
+                case "SHUTDOWN":
+                case "NONE":
+                    status_ch = "關機";
+                    break;
+            }
+            return status_ch;
+        }
+
+        public List<string> get_search_time(string btnID, string str_time = "", string end_time = "")
+        {
+            List<string> ST_First_Last_Time = new List<string>();
+            switch (btnID)
+            {
+                case "day":
+                    str_FirstDay = DateTime.Today.ToString("yyyyMMddHHmmss");
+                    str_LastDay = DateTime.Today.AddDays(1).AddSeconds(-1).ToString("yyyyMMddHHmmss");
+                    break;
+                case "week":
+                    str_FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek).ToString("yyyyMMddHHmmss");  //單位：周
+                    str_LastDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 7).AddSeconds(-1).ToString("yyyyMMddHHmmss");
+                    break;
+                case "month":
+                    str_FirstDay = DateTime.Now.AddMonths(0).Date.AddDays(1 - DateTime.Now.Day).ToString("yyyyMMddHHmmss");
+                    str_LastDay = DateTime.Now.AddDays(1 - DateTime.Now.Day).Date.AddMonths(1).AddSeconds(-1).ToString("yyyyMMddHHmmss");
+                    break;
+                case "season":
+                    DateTime dTime = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM"));                  //自訂月份//{2019/8/1 上午 12:00:00}
+                    DateTime FirstDay = dTime.AddMonths(0 - (dTime.Month - 1) % 3).AddDays(1 - dTime.Day);  //本季度初
+                    DateTime LastDay = FirstDay.AddMonths(3).AddSeconds(-1);
+                    str_FirstDay = FirstDay.ToString("yyyyMMddHHmmss");
+                    str_LastDay = LastDay.ToString("yyyyMMddHHmmss");
+                    break;
+                case "firsthalf":
+                    str_FirstDay = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyyMMddHHmmss");  //2019-01-01
+                    str_LastDay = new DateTime(DateTime.Now.Year, 7, 1).AddSeconds(-1).ToString("yyyyMMddHHmmss"); //2019-12-31
+                    break;
+                case "lasthalf":
+                    str_FirstDay = new DateTime(DateTime.Now.Year, 7, 1).ToString("yyyyMMddHHmmss");  //2019-01-01
+                    str_LastDay = new DateTime(DateTime.Now.Year, 12, 1).AddMonths(1).AddSeconds(-1).ToString("yyyyMMddHHmmss"); //2019-12-31
+                    break;
+                case "year":
+                    str_FirstDay = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyyMMddHHmmss");  //2019-01-01
+                    str_LastDay = new DateTime(DateTime.Now.Year, 12, 1).AddMonths(1).AddDays(-1).AddSeconds(-1).ToString("yyyyMMddHHmmss"); //2019-12-31
+                    break;
+                case "select":
+                    if (DaysBetween(ret_date(str_time), ret_date(end_time)) > 730)
+                    {
+                        HttpContext.Current.Response.Write("<script language='javascript'>alert('伺服器回應 : 日期搜尋範圍不得大於 730 天 !');</script>");
+                        str_FirstDay = DateTime.Now.AddMonths(0).Date.AddDays(1 - DateTime.Now.Day).ToString("yyyyMMddHHmmss");
+                        str_LastDay = DateTime.Now.AddDays(1 - DateTime.Now.Day).Date.AddMonths(1).AddSeconds(-1).ToString("yyyyMMddHHmmss");
+                    }
+                    else
+                    {
+                        str_FirstDay = ret_date(str_time).ToString("yyyyMMddHHmmss");
+                        str_LastDay = ret_date(end_time).ToString("yyyyMMddHHmmss");
+                    }
+                    break;
+                case "selectdate"://status_bar
+                    str_FirstDay = ret_date(str_time).ToString("yyyyMMddHHmmss");
+                    end_time = DateTime.ParseExact(str_FirstDay, "yyyyMMddHHmmss", null, DateTimeStyles.AllowWhiteSpaces).AddDays(1).ToString("yyyyMMddHHmmss");
+                    str_LastDay = ret_date(end_time.Substring(0, 8)).ToString("yyyyMMddHHmmss");
+                    break;
+            }
+            ST_First_Last_Time.Add(str_FirstDay + "," + str_LastDay);
+            ST_First_Last_Time.Add(btnID);
+            return ST_First_Last_Time;
+        }
+
+        public int DaysBetween(DateTime d1, DateTime d2)
+        {
+            TimeSpan span = d2.Subtract(d1);
+            return (int)span.TotalDays;
+        }
+
+        public DateTime ret_date(string date)
+        {
+            DateTime NewDate = new DateTime();
+            var isContain = date.IndexOf(",", StringComparison.OrdinalIgnoreCase);
+            if (isContain != -1 && date.Split(',')[1] == "PM")
+                NewDate = (DateTime.ParseExact(date.Split(',')[0], "yyyyMMddhhmm", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces)).AddHours(12);
+            else if (isContain != -1 && date.Split(',')[1] == "AM")
+                NewDate = DateTime.ParseExact(date.Split(',')[0], "yyyyMMddhhmm", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            else
+                NewDate = DateTime.ParseExact(date + "0000".Split(',')[0], "yyyyMMddhhmm", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            return NewDate;
+        }
+
+        public double Math_Round(double value_1, double value_2, int point)
+        {
+            return Math.Round(value_1 / value_2, point, MidpointRounding.AwayFromZero);
+        }
+
+        public static string namechange(string Info)
+        {
+            switch (Info)
+            {
+                case "check_staff":
+                    Info = "校機人員";
+                    break;
+                case "work_staff":
+                    Info = "加工人員";
+                    break;
+                case "custom_name":
+                    Info = "客戶名稱";
+                    break;
+                case "product_name":
+                    Info = "產品名稱";
+                    break;
+                case "product_number":
+                    Info = "料件編號";
+                    break;
+                case "program_run":
+                    Info = "加工程式";
+                    break;
+                case "finish_time":
+                    Info = "預計完工時間";
+                    break;
+                case "operate_rate":
+                    Info = "設備稼動率";
+                    break;
+
+                case "count_total":
+                    Info = "生產件數";
+                    break;
+                case "count_today_rate":
+                    Info = "生產進度";
+                    break;
+                case "exp_product_count_day":
+                    Info = "今日預期件數";
+                    break;
+                case "count_today":
+                    Info = "今日生產件數";
+                    break;
+                case "alarm_mesg":
+                    Info = "異警資訊";
+                    break;
+
+            }
+
+            return Info;
+        }
+        public static string date_day(DateTime dt)
+        {
+            string value = "";
+            if (dt.DayOfWeek == DayOfWeek.Monday)
+            {
+                value = "星期一";
+            }
+            else if (dt.DayOfWeek == DayOfWeek.Tuesday)
+            {
+                value = "星期二";
+            }
+            else if (dt.DayOfWeek == DayOfWeek.Wednesday)
+            {
+                value = "星期三";
+            }
+            else if (dt.DayOfWeek == DayOfWeek.Thursday)
+            {
+                value = "星期四";
+            }
+            else if (dt.DayOfWeek == DayOfWeek.Friday)
+            {
+                value = "星期五";
+            }
+            else if (dt.DayOfWeek == DayOfWeek.Saturday)
+            {
+                value = "星期六";
+            }
+            else if (dt.DayOfWeek == DayOfWeek.Sunday)
+            {
+                value = "星期日";
+            }
+            return value;
+        }
+
+    }
+}

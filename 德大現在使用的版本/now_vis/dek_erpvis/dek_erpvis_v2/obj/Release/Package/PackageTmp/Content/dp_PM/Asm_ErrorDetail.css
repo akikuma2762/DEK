@@ -1,0 +1,231 @@
+﻿input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: auto;
+    -webkit-appearance: default-button;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(15, 3fr);
+    grid-auto-rows: minmax(10px, 10px);
+}
+
+.style1 {
+    resize: none;
+}
+
+._hr {
+    border-top: 2px solid #D0D0D0 !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+
+.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+#_Middle > div._status, #_Middle > div._update, #_Middle > div._delete {
+    width: 7%;
+    display: inline-block;
+}
+
+#_Response {
+    padding: 0;
+}
+
+#_Response > div._update, #_Response > div._delete {
+    width: 7%;
+    display: inline-block;
+}
+
+._EndDescription {
+    margin: 0px 0px 0px 30px
+}
+
+#_NoContent {
+    padding: 0;
+}
+
+#_NoContent > div._status, #_NoContent > div._update, #_NoContent > div._delete {
+    width: 7%;
+    display: inline-block;
+}
+#datatable-checkbox0 thead tr th:nth-child(3), #datatable-checkbox0 tbody tr td:nth-child(3) {
+    width:10%;
+    min-width:8%;
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    .breadcrumb_ li a {
+        font-size: 15px;
+    }
+
+    .x_panel {
+        padding: 0;
+    }
+
+    .x_content .control-label {
+        margin-right: 5px;
+    }
+
+    ._select {
+        /*font-size: 0.7em;*/
+        padding: 10px !important;
+    }
+    ._select ._button {
+        padding:0;
+    }
+    ._select #ContentPlaceHolder1_MantStr {
+        margin:5px 0 0 0;    
+    }
+    ._type label {
+        width: 35%;
+        display: inline-block;
+    }
+
+    ._type select {
+        width: 60%;
+        display: inline-block;
+        margin-left: 3%;
+    }
+
+    ._line label {
+        width: 35%;
+        display: inline-block;
+        margin: 0;
+    }
+
+    ._line table {
+        width: 60%;
+        display: inline-block;
+        margin-left: 3%;
+    }
+
+    ._UpdateImg label {
+        width: 40%;
+        display: inline-block;
+        margin: 0;
+    }
+
+    ._UpdateImg input {
+        width: 55%;
+        display: inline-block;
+    }
+
+    #Mant_Btn {
+        width: 100%;
+    }
+
+    ._button {
+        width: 100%;
+        height: 30px;
+    }
+    /*異常*/
+    #datatable-checkbox0 {
+        padding: 0;
+    }
+
+    #_InformationDetail {
+        margin-top: 10px;
+        overflow-y: scroll;
+        /*border-top:1px solid gray;*/
+        font-size: 0.7em;
+    }
+
+    #_InformationDetail::-webkit-scrollbar {
+        display: none;
+    }
+
+    .x_content {
+        padding: 0 5px 0 0;
+    }
+
+    #_InformationDetail > div {
+        padding: 0;
+    }
+    /*表格*/
+    #datatable-checkbox0 {
+        width: 100%;
+    }
+
+    #datatable-checkbox0 thead tr th:nth-child(1), #datatable-checkbox0 tbody tr td:nth-child(1) {
+        width: 20%;
+    }
+
+    #datatable-checkbox0 thead tr th:nth-child(2), #datatable-checkbox0 tbody tr td:nth-child(2) {
+        width: 60%;
+    }
+
+    /*#datatable-checkbox0 thead tr th:nth-child(3), #datatable-checkbox0 tbody tr td:nth-child(3) {
+        width: 20%;
+    }*/
+
+    #datatable-checkbox0 tbody tr td:first-child span {
+        font-size: 4px !important;
+    }
+    tr.gradeX td:first-child {
+        font-size: 0.7em;
+    }
+
+    tr.gradeX td:first-child span {
+        line-height: 20px;
+    }
+
+    tr.gradeX td:nth-child(2) > div.wrapper > div:nth-last-child(3),
+    tr.gradeX td:nth-child(2) > div.wrapper > div:nth-last-child(2),
+    tr.gradeX td:nth-child(2) > div.wrapper > div:last-child {
+        width: 100%;
+        text-align: center;
+        display: inline-block;
+        background-color: pink;
+    }
+    /*中間資訊*/
+    /*有內容*/
+    #_Middle {
+        padding: 0;
+    }
+
+    #_Middle > div._status, #_Middle > div._update, #_Middle > div._delete {
+        width: 15%;
+        text-align: center;
+    }
+
+    tr.gradeX td:nth-child(2) div:last-child {
+        padding: 0;
+    }
+    /*回覆內容*/
+
+    #_Response > div._update, #_Response > div._delete {
+        width: 15%;
+        text-align: center;
+    }
+    /*距離左邊30px*/
+    ._EndDescription {
+        margin: 5px 0 0 0;
+        padding: 5px 0;
+    }
+
+    tr.gradeX td div._EndDescription:first-child {
+        border: 0;
+    }
+    /*無內容*/
+    #_NoContent > div._status, #_NoContent > div._update, #_NoContent > div._delete {
+        width: 15%;
+        text-align: center;
+    }
+    /*設定gradeX_Img*/
+    .gradeX_Img {
+        height: 70px;
+        overflow: hidden;
+    }
+
+        .gradeX_Img a img {
+            height: 100%;
+            object-fit: cover;
+        }
+}

@@ -1,0 +1,293 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Change_Color.aspx.cs" Inherits="dek_erpvis_v2.pages.SYS_CONTROL.Change_Color" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        :root {
+            --RedB: 0;
+            --GreenB: 0;
+            --BlueB: 0;
+            --RedS: 0;
+            --GreenS: 0;
+            --BlueS: 0;
+            --RedL: 0;
+            --GreenL: 0;
+            --BlueL: 0;
+            --RedT: 0;
+            --GreenT: 0;
+            --BlueT: 0;
+            --RedZ: 0;
+            --GreenZ: 0;
+            --BlueZ: 0;
+        }
+        /*背景顏色的部分*/
+        #backgroundB {
+            background: rgb(var(--RedB), var(--GreenB), var(--BlueB));
+        }
+        /*側欄顏色的部分*/
+        #backgroundS {
+            background: rgb(var(--RedS), var(--GreenS), var(--BlueS));
+        }
+        /*標籤顏色的部分*/
+        #backgroundL {
+            background: rgb(var(--RedL), var(--GreenL), var(--BlueL));
+        }
+        /*表頭顏色的部分*/
+        #backgroundT {
+            background: rgb(var(--RedT), var(--GreenT), var(--BlueT));
+        }
+
+        /*表格顏色的部分*/
+        #backgroundZ {
+            background: rgb(var(--RedZ), var(--GreenZ), var(--BlueZ));
+        }
+        .auto-style2 {
+            font-size: x-large;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!--背景顏色-->
+        <h2>背景顏色</h2>
+        <div class="controlB">
+            <div class="input">
+                <label for="RedB">紅：</label>
+                <input id="RedB" type="range" name="RedB" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="GreenB">綠：</label>
+                <input id="GreenB" type="range" name="GreenB" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="BlueB">藍：</label>
+                <input id="BlueB" type="range" name="BlueB" min="0" max="255" value="0" data-unit="" />
+            </div>
+        </div>
+        <div>
+            <h2><b>顏色預覽</b></h2>
+            <input id="backgroundB" type="text" />
+        </div>
+        <!--側欄顏色-->
+        <h2>側欄顏色</h2>
+        <div class="controlS">
+            <div class="input">
+                <label for="RedB">紅：</label>
+                <input id="RedS" type="range" name="RedS" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="GreenB">綠：</label>
+                <input id="GreenS" type="range" name="GreenS" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="BlueB">藍：</label>
+                <input id="BlueS" type="range" name="BlueS" min="0" max="255" value="0" data-unit="" />
+            </div>
+        </div>
+        <div>
+            <h2><b>顏色預覽</b></h2>
+            <input id="backgroundS" type="text" />
+        </div>
+        <!--標籤顏色-->
+        <h2>標籤顏色</h2>
+        <div class="controlL">
+            <div class="input">
+                <label for="RedB">紅：</label>
+                <input id="RedL" type="range" name="RedL" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="GreenB">綠：</label>
+                <input id="GreenL" type="range" name="GreenL" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="BlueB">藍：</label>
+                <input id="BlueL" type="range" name="BlueL" min="0" max="255" value="0" data-unit="" />
+            </div>
+        </div>
+        <div>
+            <h2><b>顏色預覽</b></h2>
+            <input id="backgroundL" type="text" />
+        </div>
+
+
+        <!--表頭顏色-->
+        <h2>表頭顏色</h2>
+        <div class="controlT">
+            <div class="input">
+                <label for="RedB">紅：</label>
+                <input id="RedT" type="range" name="RedT" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="GreenB">綠：</label>
+                <input id="GreenT" type="range" name="GreenT" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="BlueB">藍：</label>
+                <input id="BlueT" type="range" name="BlueT" min="0" max="255" value="0" data-unit="" />
+            </div>
+        </div>
+        <div>
+            <h2><b>顏色預覽</b></h2>
+            <input id="backgroundT" type="text" />
+        </div>
+
+        <!--表格顏色-->
+        <h2>表格顏色</h2>
+        <div class="controlZ">
+            <div class="input">
+                <label for="RedB">紅：</label>
+                <input id="RedZ" type="range" name="RedZ" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="GreenB">綠：</label>
+                <input id="GreenZ" type="range" name="GreenZ" min="0" max="255" value="0" data-unit="" />
+            </div>
+            <div class="input">
+                <label for="BlueB">藍：</label>
+                <input id="BlueZ" type="range" name="BlueZ" min="0" max="255" value="0" data-unit="" />
+            </div>
+        </div>
+        <div>
+            <h2><b>顏色預覽</b></h2>
+            <input id="backgroundZ" type="text" />
+        </div>
+        <br>
+        <input type="button" value="儲存" onclick="Saveclick()" class="auto-style2" style="background-color:#337ab7;color:#ffffff;font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="button" value="返回參數設定畫面" onclick="backpage()" class="auto-style2" style="background-color:#d9534f;color:#ffffff;font-size:20px">
+        <input type="button" value="清除設定顏色的cookie" onclick="clearclick()">
+<asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click" />
+    </form>
+    
+    <script>
+        //從cookie裡面做字串分割後的結果
+        var x = document.cookie.split(';');
+                var colorname = ["RedB_Color=", "GreenB_Color=", "BlueB_Color=",
+                    "RedS_Color=", "GreenS_Color=", "BlueS_Color=",
+                    "RedTS_Color=", "GreenTS_Color=", "BlueTS_Color=",
+                    "RedL_Color=", "GreenL_Color=", "BlueL_Color=",
+                    "RedT_Color=", "GreenT_Color=", "BlueT_Color=",
+                    "RedTT_Color=", "GreenTT_Color=", "BlueTT_Color=",
+                    "RedZ_Color=", "GreenZ_Color=", "BlueZ_Color=",
+                    "RedTZ_Color=", "GreenTZ_Color=", "BlueTZ_Color="
+                ];
+        var colorvalue = [];
+        for (var i = 0; i < x.length; i++) {
+            var item = x[i].trim();
+            for (var j = 0; j < colorname.length; j++) {
+                if (item.indexOf(colorname[j]) == 0) {
+                    colorvalue[j] = item.substring(colorname[j].length, item.length);
+                    break;
+                }
+            }
+        }
+
+        var colors = ["RedB", "GreenB", "BlueB",
+            "RedS", "GreenS", "BlueS",
+            "RedL", "GreenL", "BlueL",
+            "RedT", "GreenT", "BlueT", "RedZ", "GreenZ", "BlueZ"];
+        if (colorvalue.length == 15) {
+            for (var i = 0; i < colors.length; i++) {
+                document.getElementById(colors[i]).value = colorvalue[i];
+            }
+        }
+
+
+
+        // 選擇網頁上的元素
+        const inputB = document.querySelectorAll('.controlB input');
+        const inputS = document.querySelectorAll('.controlS input');
+        const inputL = document.querySelectorAll('.controlL input');
+        const inputT = document.querySelectorAll('.controlT input');
+        const inputZ = document.querySelectorAll('.controlZ input');
+
+        // 當使用者拉動更新元素時設定 CSS 變數值
+        function updateProperty() {
+            document.documentElement.style.setProperty(`--${this.name}`, this.value + this.dataset.unit);
+            //console.log(`--${this.name}`, this.value + this.dataset.unit);
+        }
+
+        function showProperty() {
+            if (colorvalue.length == 15) {
+                for (var i = 0; i < colors.length; i++) {
+                    document.documentElement.style.setProperty(`--${colors[i]}`, colorvalue[i]);
+                    console.log(`--${colors[i]}`, colorvalue[i]);
+                }
+            }
+        }
+
+        window.onload = showProperty();
+
+        // 監控每一個 input 元素
+        inputB.forEach(input => {
+            input.addEventListener('input', updateProperty);
+        })
+        inputS.forEach(input => {
+            input.addEventListener('input', updateProperty);
+        })
+        inputL.forEach(input => {
+            input.addEventListener('input', updateProperty);
+        })
+        inputT.forEach(input => {
+            input.addEventListener('input', updateProperty);
+        })
+        inputZ.forEach(input => {
+            input.addEventListener('input', updateProperty);
+        })
+
+        //將數值存入cookies
+        function Saveclick() {
+            //背景顏色
+            var Red_B = document.getElementById("RedB").value;
+            var Green_B = document.getElementById("GreenB").value;
+            var Blue_B = document.getElementById("BlueB").value;
+            //側欄顏色
+            var Red_S = document.getElementById("RedS").value;
+            var Green_S = document.getElementById("GreenS").value;
+            var Blue_S = document.getElementById("BlueS").value;
+            //標籤
+            var Red_L = document.getElementById("RedL").value;
+            var Green_L = document.getElementById("GreenL").value;
+            var Blue_L = document.getElementById("BlueL").value;
+            //表頭
+            var Red_T = document.getElementById("RedT").value;
+            var Green_T = document.getElementById("GreenT").value;
+            var Blue_T = document.getElementById("BlueT").value;
+            //表格
+            var Red_Z = document.getElementById("RedZ").value;
+            var Green_Z = document.getElementById("GreenZ").value;
+            var Blue_Z = document.getElementById("BlueZ").value;
+
+            //用陣列去跑迴圈比較簡潔
+            var colornum = [Red_B, Green_B, Blue_B,
+                Red_S, Green_S, Blue_S,
+                Red_L, Green_L, Blue_L,
+                Red_T, Green_T, Blue_T,
+                Red_Z, Green_Z, Blue_Z
+            ];
+
+            for (var i = 0; i < colorname.length; i++) {
+                //先清除後寫入
+                document.cookie = colorname[i] + "; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie = colorname[i] + colornum[i] + ";path=/";
+            }
+            alert('儲存成功!'); location.href = 'set_parameter.aspx';
+        }
+        function backpage() {
+            alert(document.cookie);
+
+        }
+        function clearclick() {
+            for (var i = 0; i < colorname.length; i++) {
+                //有跨資料夾存取之cookie必須要加上"Path=/"
+                document.cookie = colorname[i] + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            }
+            alert(document.cookie);
+        }
+
+    </script>
+</body>
+</html>

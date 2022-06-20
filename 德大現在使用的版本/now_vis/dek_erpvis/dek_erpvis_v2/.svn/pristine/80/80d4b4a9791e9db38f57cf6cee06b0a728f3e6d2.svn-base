@@ -1,0 +1,274 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class shipment : System.Web.UI.Page
+    {
+        public string color = "";
+        public string date_str = "";//new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd");
+        public string date_end = "";//new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1).ToString("yyyyMMdd");
+        public string select_day = "";
+        public string select_week = "";
+        public string select_month = "";
+        public string select_firsthalf = "";
+        public string select_lasthalf = "";
+        public string select_year = "";
+        public string title_text = "";
+        public string title_text_cust = "";
+        public string col_data_Points = "";
+        public string col_data_Points_cust = "";
+        public string time_area_text = "";
+        public string th = "";
+        public string tr = "";
+        public string timerange = "";
+        public string path = "";
+        string title = "";
+        string URL_NAME = "";
+        string acc = "";
+        int CUST_TOTAL;
+        string[] str = null;
+        DataTable dt_CustList;
+        DataTable dw = null;
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        DataTable public_dt = null;
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("SLS");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_SD/shipment.aspx'>出貨統計表</a></u></li></ol>");
+                URL_NAME = "shipment";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        string[] s = 德大機械.德大專用月份(acc).Split(',');
+                        date_str = s[0];
+                        date_end = s[1];
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    //Response.Redirect(myclass.logout_url);
+                }
+
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        // function
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            string date_s = HtmlUtil.changetimeformat(date_str);
+            string date_e = HtmlUtil.changetimeformat(date_end);
+            timerange = date_s + " ~ " + date_e;
+            set_time_area();
+            set_col_value();
+            set_table_title();
+        }
+        private void set_time_area()
+        {
+            time_area_text = "出貨日期 " + date_str + " ~ " + date_end;
+
+        }
+        private void set_col_value()
+        {
+            string sqlCmd = 德大機械.業務部_出貨統計.各產線成品出貨數(date_str, date_end);
+            public_dt = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(sqlCmd)).ToTable();
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+
+            if (public_dt.Rows.Count > 0)
+            {
+                int Total_Quantity;
+                col_data_Points = HtmlUtil.Set_Chart(public_dt, "產線群組", "出貨數量", "台", out Total_Quantity);
+                title_text = "' " + date_str + "~" + date_end + " 總出貨數量 : " + Total_Quantity + "'";
+            }
+            else
+            {
+                col_data_Points = "";
+                title_text = "'此區間內尚無資料'";
+
+            }
+            public_dt.Dispose();
+        }
+        private void set_table_title()
+        {
+            //title
+            if (public_dt.Rows.Count > 0)
+            {
+                th = "<th>客戶/產線</th>\n                                            ";
+                th += HtmlUtil.Set_Table_Title(public_dt, out title, "產線群組");
+                th += "<th>小計</th>\n                                            ";
+                title = "客戶/產線," + title + "小計,";
+            }
+            else
+            {
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+            //content
+            string sqlcmd = 德大機械.業務部_出貨統計.客戶列表(date_str, date_end);
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            str = title.Split(',');
+            for (int i = 0; i < str.Length - 1; i++)
+                dt.Columns.Add(str[i]);
+
+            //總計的表格
+            dt_CustList = new DataTable();
+            dt_CustList.Columns.Add("cust", typeof(string));
+            dt_CustList.Columns.Add("count", typeof(int));
+            dt.Dispose();
+
+            tr = HtmlUtil.Set_Table_Content(dt, title, shipment_callback);
+
+            set_col_value_cust(dt_CustList, demo_vertical2.Value);
+
+        }
+        private string shipment_callback(DataRow row, string field_name)
+        {
+            string value = "";
+            if (field_name == "客戶/產線")
+            {
+                value = DataTableUtils.toString(row["客戶簡稱"]);
+            }
+            if (field_name != "客戶/產線" && field_name != "小計")
+            {
+                //進入第一個產線後，將上一個總和歸0
+                if (field_name == str[1])
+                {
+                    CUST_TOTAL = 0;
+                    string cust_sname = DataTableUtils.toString(row["客戶簡稱"]);
+                    string sqlcmd = 德大機械.業務部_出貨統計.客戶出貨明細(cust_sname, date_str, date_end);
+                    dw = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(sqlcmd)).ToTable();
+                    if (cust_sname == "達佛羅")
+                    {
+                        int x = 0;
+                    }
+                    for (int i = 0; i < dw.Rows.Count; i++)
+                    {
+                        if (i != 0)
+                        {
+                            DataRow rew = dw.NewRow();
+                            if (DataTableUtils.toString(dw.Rows[i]["產線代號"]) == DataTableUtils.toString(dw.Rows[i - 1]["產線代號"]))
+                            {
+                                rew["客戶簡稱"] = DataTableUtils.toString(dw.Rows[i]["客戶簡稱"]);
+                                rew["產線代號"] = DataTableUtils.toString(dw.Rows[i]["產線代號"]);
+                                rew["小計"] = DataTableUtils.toDouble(DataTableUtils.toString(dw.Rows[i]["小計"])) + DataTableUtils.toDouble(DataTableUtils.toString(dw.Rows[i - 1]["小計"]));
+                                rew["產線群組"] = DataTableUtils.toString(dw.Rows[i]["產線群組"]);
+                                dw.Rows.Add(rew);
+                                dw.Rows.RemoveAt(i);
+                                dw.Rows.RemoveAt(i-1);
+                            }
+                        }
+                    }
+                }
+                int LINE_TOTAL = 0;
+                for (int i = 0; i < dw.Rows.Count; i++)
+                {
+                    if (field_name == DataTableUtils.toString(dw.Rows[i]["產線群組"]))
+                    {
+
+                        LINE_TOTAL += DataTableUtils.toInt(DataTableUtils.toString(dw.Rows[i]["小計"]).Split('.')[0]);
+                        break;
+                    }
+                }
+                Response.Write(value);
+                Response.Flush();
+                Response.Clear();
+                dw.Dispose();
+
+                value = DataTableUtils.toString(LINE_TOTAL);
+                CUST_TOTAL += LINE_TOTAL;
+            }
+
+            if (field_name == "小計")
+            {
+                string url = HtmlUtil.AttibuteValue("cust_name", DataTableUtils.toString(row["客戶簡稱"]).Trim(), "") + "," +
+                    HtmlUtil.AttibuteValue("date_str", date_str, "") + "," +
+                    HtmlUtil.AttibuteValue("date_end", date_end, "");
+                string href = string.Format("shipment_details.aspx?key={0}",
+                     WebUtils.UrlStringEncode(url));
+
+                value = DataTableUtils.toString(CUST_TOTAL);
+                value = HtmlUtil.ToTag("u", HtmlUtil.ToHref(value, href));
+                dt_CustList.Rows.Add(DataTableUtils.toString(row["客戶簡稱"]), CUST_TOTAL);//這裡是把客戶跟總計列出來的地方
+            }
+            return "<td>" + value + "</td>\n";
+        }
+        //20190605，客戶出貨數量排行_7，處理長條圖資料(ru)
+        private void set_col_value_cust(DataTable dt_CustList, string cust_count)
+        {
+            title_text_cust = "' " + date_str + "~" + date_end + " 客戶出貨數量排行前 " + demo_vertical2.Value + " 名'";
+            DataTable sortedDT = new DataTable();                         //1.DataTable依照出貨數遞減排序(ru)
+            DataView dv = dt_CustList.DefaultView;
+            dv.Sort = "count desc";
+            sortedDT = dv.ToTable();
+
+            int max = 0;                                                  //2.決定長條圖筆數(ru)
+            if (sortedDT.Rows.Count >= DataTableUtils.toInt(cust_count))
+            {
+                max = DataTableUtils.toInt(cust_count);
+            }
+            else if (sortedDT.Rows.Count < DataTableUtils.toInt(cust_count))
+            {
+                max = sortedDT.Rows.Count;
+            }
+
+            for (int i = 0; i < max; i++)                                 //3.利用迴圈組合長條圖資料(ru)
+            {
+                col_data_Points_cust += "{ y: " + sortedDT.Rows[i]["count"].ToString() + ", label:'" + sortedDT.Rows[i]["cust"].ToString() + "',indexLabel:'" + sortedDT.Rows[i]["count"].ToString() + "台'  },";
+            }
+            sortedDT.Dispose();
+            sortedDT.Clear();
+        }
+        // 20190605，日期快選_2 OnClick 觸發 event(ru)
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            HtmlUtil.Button_Click(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), s, DataTableUtils.toString(txt_time_str.Value), DataTableUtils.toString(txt_time_end.Value), out date_str, out date_end);
+
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+        }
+    }
+}

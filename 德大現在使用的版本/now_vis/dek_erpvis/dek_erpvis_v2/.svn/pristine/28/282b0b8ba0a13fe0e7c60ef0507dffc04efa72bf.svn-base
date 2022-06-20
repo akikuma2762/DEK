@@ -1,0 +1,96 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_APS
+{
+    public partial class OrderList : System.Web.UI.Page
+    {
+        public string color = "";
+        string acc = "";
+        public string th = "";
+        public string tr = "";
+        myclass myclass = new myclass();
+        //-------------------------------------------------------------事件---------------------------------------
+        //網頁載入事件
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                //如果進入網頁沒有文字的話，就幫他補上
+                if (TextBox_Start.Text == "")
+                {
+                    TextBox_Start.Text = "2019-01-01";
+                    TextBox_End.Text = "2200-12-31";
+                }
+                string URL_NAME = "OrderList";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        Read_Data(TextBox_Start.Text, TextBox_End.Text);
+                    }
+                }
+                else { Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>"); }
+            }
+            else Response.Redirect(myclass.logout_url);
+        }
+        //搜尋事件
+        protected void Button_Search_Click(object sender, EventArgs e)
+        {
+            Read_Data(TextBox_Start.Text, TextBox_End.Text);
+        }
+        //-------------------------------------------------------------方法----------------------------------------
+        //依照起始日期跟結束日期讀取資料庫資料
+        private void Read_Data(string start, string end)
+        {
+            string[] str = { "序號", "編號", "狀態", "", "" };
+
+            for (int i = 0; i < str.Length - 1; i++)
+                th += "<th>" + str[i] + "</th>\n";
+
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            double Start_Time = DataTableUtils.toDouble(start.Replace("-", "") + "000000");
+            double End_Time = DataTableUtils.toDouble(end.Replace("-", "") + "235959");
+
+            string sql_cmd = "SELECT ID as 序號,Project as 編號 ,Status as 狀態" +
+                " from dek_aps.workhour_oredr " +
+                "where (StartTime >= '" + Start_Time + "' and StartTime <= '" + End_Time + "')" +
+                "or (EndTime >= '" + Start_Time + "' and EndTime <= '" + End_Time + "')";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            dt.Columns.Add("");
+
+            tr = HtmlUtil.Set_Table_Content(dt, str, Orderlist_callback);
+        }
+        //callback執行的地方
+        private string Orderlist_callback(DataRow row, string field_name)
+        {
+            string value = "";
+
+            if (field_name == "")
+            {
+                value = "<div style=\"margin:0 auto;\" class=\"col-md-12 col-sm-12 col-xs-12\">" +
+                            "<div class=\"col-md-3 col-sm-3 col-xs-12\">" +
+                                 //執行的事件在前端的JS裡面
+                                 "<b><input type=\"button\"  class=\"btn btn-default\"  id=" + DataTableUtils.toString(row["編號"]) + " value = \"狀態變更\"onclick=\"Go_OrderStatusEdit(this," + DataTableUtils.toString(row["編號"]) + "," + TextBox_Start.Text.Replace("-", "") + "," + TextBox_End.Text.Replace("-", "") + ")\" ></b>" +
+                            "</div>" +
+                            "<div class=\"col-md-9 col-sm-9 col-xs-12\">" +
+                            //執行的事件在前端的JS裡面
+                            "<b><input type=\"button\" class=\"btn btn-info\" id=" + DataTableUtils.toString(row["編號"]) + " value = \"進入報工\"  onclick=\"Go_WorkHourList(this, " + DataTableUtils.toString(row["編號"]) + ")\" ></b>" +
+                            "</div>" +
+                        "</div>";
+            }
+            return "<td>" + value + "</td>\n";
+        }
+
+    }
+}

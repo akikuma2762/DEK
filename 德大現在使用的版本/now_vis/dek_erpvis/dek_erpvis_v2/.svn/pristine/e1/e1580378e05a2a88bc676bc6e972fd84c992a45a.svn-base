@@ -1,0 +1,332 @@
+﻿using System;
+using Support;
+using dek_erpvis_v2.cls;
+using System.Collections.Generic;
+using System.Linq;
+using MongoDB.Driver.Builders;
+using System.Net;
+using System.IO;
+using System.Text;
+using System.Timers;
+using System.Web;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Web.UI;
+
+namespace dek_erpvis_v2.pages.dp_APS
+{
+    public partial class APS_System : System.Web.UI.Page
+    {
+        public string color = "";
+        public DateTime FirstDay = new DateTime();
+        public DateTime LastDay = new DateTime();
+        public string str_First_Day = "";
+        public string str_Last_Day = "";
+        public string dev_name = "";
+        public int run = 0;//運轉
+        public int rest = 0;//待機
+        public int alert = 0;//警告
+        public int noline = 0;//離線
+        public double percent = 0;//稼動率
+        public double progress = 0;//生產進度
+        public string th = "";
+        public string tr = "";
+        public string area = "";
+        string acc = "";
+        List<string> RealTime_Info = new List<string>();
+        public string str_status = "";
+        public string str_Dev_Name = "";
+        public string str_Dev_Status = "";
+        public bool b_Page_Load = true;
+        myclass myclass = new myclass();
+        clsDB_Server clsDB_vis = new clsDB_Server("");
+        public int stop = 0;
+        public int shutdown = 0;
+        public string get_js = "";
+        public string information = "";
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                string URL_NAME = "APS_System";
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    set_page_content();
+                }
+                else { Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>"); }
+
+
+            }
+            else Response.Redirect(myclass.logout_url);
+
+        }
+        //------------------------------------------------方法事件----------------------------------------------------------
+        private void set_page_content()
+        {
+            Read_Data();
+            Set_information();
+            Set_Image();
+        }
+        private void Read_Data()
+        {
+            th = "<tr style='background-color:dimgray;color: white;'>\n";
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            string sql_cmd = "SELECT * FROM mach_content_select where show_status = 'Y'";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            List<string> field_name = new List<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                th += "<th>" + row["chinese_name"] + "</th>\n";
+                field_name.Add(DataTableUtils.toString(row["name"]));
+            }
+            Set_Table(field_name);
+        }
+        //表格模式
+        private void Set_Table(List<string> fieldname)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            //顯示所有資訊的DATATABLE
+            string sql_cmd = "SELECT * FROM mach_content";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                tr += "<tr style='color:white; background-color:" + backgroundcolor_change(DataTableUtils.toString(row["status"])) + ";'>";
+                for (int i = 0; i < fieldname.Count; i++)
+                {
+                    tr += "<td>" + DataTableUtils.toString(row[fieldname[i]]) + "</td>";
+                }
+                tr += "</tr>";
+                switch (DataTableUtils.toString(row["status"]))
+                {
+                    case "run":
+                        run++;
+                        break;
+                    case "stop":
+                        stop++;
+                        break;
+                    case "shutdown":
+                        shutdown++;
+                        break;
+                }
+            }
+        }
+        //圖塊模式
+        private void Set_Image()
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            //顯示所有資訊的DATATABLE
+            string sql_cmd = "SELECT * FROM mach_content";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            int i = 1;
+
+            DateTime now = DateTime.Now;
+            //TimeSpan ts = end - start;
+            int p_open = 0;
+            int p_end = 0;
+            string light = "";
+            foreach (DataRow row in dt.Rows)
+            {
+                DateTime start_time = DateTime.Parse(DataTableUtils.toString(row["Predict_Start"]));
+                DateTime end_time = DateTime.Parse(DataTableUtils.toString(row["Predict_End"]));
+
+                TimeSpan open = start_time - now;
+                TimeSpan end = end_time - now;
+
+                p_open = DataTableUtils.toInt(open.TotalMinutes.ToString("00"));
+                p_end = DataTableUtils.toInt(end.TotalMinutes.ToString("00"));
+
+                area += "<div id='chart_" + DataTableUtils.toString(row["id"]) + "' class='col-md-2 col-sm-3 col-xs-6' >\n";
+                area += "   <div class='dashboard_graph x_panel'>\n";
+
+                //名稱跟燈號
+                area += "       <div class='col-md-12 col-sm-12 col-xs-12' style='border-style:solid;'>\n";
+                area += "           <div class='col-md-10 col-sm-10 col-xs-10'>\n";
+                area += "               <div style='font-size:18px;'><b>" + DataTableUtils.toString(row["Mach_Name"]) + "</b></div>";
+                area += "           </div>";
+                area += "           <div class='col-md-2 col-sm-2 col-xs-2' >\n";
+                //-------------------------------------------------------------------------------------------------------------------
+                //判斷燈號的圖案 
+                if (p_open < 15 && p_open > 0)
+                    light = "               <img class='img-rounded' src='../../assets/images/run.gif' alt='...' style='width:35px;height:35px;align-items:left;'>";
+                else if (p_end < 15 && p_end > 0)
+                    light = "               <img class='img-rounded' src='../../assets/images/stop.gif' alt='...' style='width:35px;height:35px;align-items:left;'>";
+                else
+                    light = "               <img class='img-rounded' src='../../assets/images/" + DataTableUtils.toString(row["status"]) + ".PNG' alt='...' style='width:35px;height:35px;align-items:left;'>";
+
+                area += light;
+                area += "           </div>";
+                area += "      </div>\n";
+
+                //機種
+                area += "           <div class='col-md-12 col-sm-12 col-xs-12' style='border-style:solid;background-color:#ffffe7'>\n";
+                area += "                <div style='font-size:16px;' ><b> 機種：" + DataTableUtils.toString(row["Mach_Type"]) + "</b></div>";
+                area += "           </div>";
+
+                //序號
+                area += "           <div class='col-md-12 col-sm-12 col-xs-12' style='border-style:solid;background-color:#ffffe7'>\n";
+                area += "                <div style='font-size:16px;' ><b> 序號：" + DataTableUtils.toString(row["Number"]) + "</b></div>";
+                area += "           </div>";
+
+                //now
+                area += "           <div class='col-md-12 col-sm-12 col-xs-12' style='border-style:solid;background-color:#acecf6'>\n";
+                //area += "                <div style='font-size:16px;' ><b> Now：<u><asp:LinkButton ID=\"LinkButton_" + DataTableUtils.toString(row["id"]) + "\" runat=\"server\" data-toggle = \"modal\" data-target = \"#exampleModal_information\" > " + DataTableUtils.toString(row["Now_Task"]) + " </asp:LinkButton></u></b></div>";
+                //換成HTML button
+                area += "  <div style='font-size:16px;' ><b> Now：<input type=\"button\" data-toggle = \"modal\" data-target = \"#exampleModal_information\" id=" + DataTableUtils.toString(row["id"]) + " value=" + DataTableUtils.toString(row["Now_Task"]) + " name=" + DataTableUtils.toString(row["id"]) + " ></b></div>";
+                area += "           </div>";
+
+                //next
+                area += "           <div class='col-md-12 col-sm-12 col-xs-12' style='border-style:solid;background-color:#acecf6'>\n";
+                area += "                <div style='font-size:16px;' ><b> Next：<u><asp:LinkButton ID=\"LinkButton_" + DataTableUtils.toString(row["id"]) + "\" runat=\"server\" data-toggle = \"modal\" data-target = \"#exampleModal_information\" > " + DataTableUtils.toString(row["Next_Task"]) + " </asp:LinkButton></u></b></div>";
+                area += "           </div>";
+
+                //percent
+                area += "           <div class='col-md-12 col-sm-12 col-xs-12' style='border-style:solid'>\n";
+                area += "                <div style='font-size:16px;color:#ffffff;background-image:url(\"../../assets/images/Loading.png\");text-align:center;width:" + DataTableUtils.toString(row["percent"]) + "' ><b> " + DataTableUtils.toString(row["percent"]) + "</b></div>";
+                area += "           </div>";
+
+                area += "   </div>\n";
+                area += "</div>\n";
+                /*之後想一下怎麼修改比較方便*/
+                get_js += "$(\"#" + DataTableUtils.toString(row["id"]) + "\").click(function () {\n" +
+                            "$('#ContentPlaceHolder1_TextBox_textTemp').val(\"" + DataTableUtils.toString(row["id"]) + "\");\n" +
+                            "document.getElementById('ContentPlaceHolder1_button_search').click();\n" +
+                          "});\n";
+
+                i++;
+            }
+        }
+        //用checkbox給使用者選取
+        private void Set_information()
+        {
+            PlaceHolder_Items.Controls.Clear();
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            //顯示所有資訊的DATATABLE
+            string sql_cmd = "SELECT * FROM mach_content_select";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+
+            CheckBoxList checkBoxList = new CheckBoxList();
+            checkBoxList.RepeatColumns = 2;
+            checkBoxList.ID = "checkBoxList_LINE";
+            ListItem list = null;
+            foreach (DataRow row in dt.Rows)
+            {
+                list = new ListItem(DataTableUtils.toString(row["chinese_name"]), DataTableUtils.toString(row["name"]));
+                if (DataTableUtils.toString(row["show_status"]) == "Y")
+                    list.Selected = true;
+                checkBoxList.Items.Add(list);
+            }
+            PlaceHolder_Items.Controls.Add(checkBoxList);
+            dt.Dispose();
+            dt.Clear();
+        }
+        //變更顯示資料
+        private void update_right(ListItem li, string judge)
+        {
+            string text = DataTableUtils.toString(li.Value);
+
+            DataTableUtils.Conn_String = myclass.GetConnByDekAPS;
+            clsDB_vis.DB_Connect_Type = DBConnectType.ODBC;
+            clsDB_vis.dbOpen(myclass.GetConnByDekAPS);
+            string sqlcmd = "SELECT * FROM mach_content_select Where name = '" + text + "'";
+            DataTable dt = DataTableUtils.DataTable_GetTable(sqlcmd);
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.NewRow();
+                if (judge == "0")
+                    row["show_status"] = "N";
+                else
+                    row["show_status"] = "Y";
+                //因為寫好了，所以只需要資料表、更新條件以及你所寫好的row
+                if (DataTableUtils.Update_DataRow("mach_content_select", "name = '" + text + "' ", row) == true)
+                {
+
+                }
+            }
+        }
+        //依據狀態改變顏色(之後放到CLS裡面)
+        private string backgroundcolor_change(string status)
+        {
+            string back_color = "";
+            switch (status)
+            {
+                case "run":
+                    back_color = "#04Ba26";
+                    break;
+                case "stop":
+                    back_color = "#FFAE00";
+                    break;
+                case "shutdown":
+                    back_color = "#9C9C9C";
+                    break;
+            }
+            return back_color;
+        }
+        //按鈕按下去要顯示所有資訊
+        private void all_information(string id)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            //所有內容
+            string sql_cmd = "SELECT * FROM mach_content where id = '" + id + "'";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            //所有欄位名稱
+            string sqlcmd = "SELECT * FROM mach_content_select";
+            DataTable dr = DataTableUtils.GetDataTable(sqlcmd);
+
+            if (dt.Rows.Count > 0)
+            {
+                //印出符合的資料
+                foreach (DataRow row in dt.Rows)
+                {
+                    //印出所有欄位名稱
+                    foreach (DataRow field in dr.Rows)
+                    {
+                        information += " <div class='col-md-12 col-sm-12 col-xs-12'>\n";
+                        information += " <div style='font-size:18px;'><b>" + DataTableUtils.toString(field["chinese_name"]) + "：" + DataTableUtils.toString(row[DataTableUtils.toString(field["name"])]) + "</b></div>";
+                        information += "</div>";
+                    }
+                }
+            }
+        }
+        //------------------------------------------------按鈕事件----------------------------------------------------------
+        //使用者選擇要顯示的資訊
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            DataTableUtils.Conn_String = myclass.GetConnByDekAPS;
+
+            foreach (Control cbxlist in this.PlaceHolder_Items.Controls)
+            {
+                if (cbxlist is CheckBoxList)
+                {
+                    foreach (ListItem li in ((CheckBoxList)cbxlist).Items)
+                    {
+                        if (li.Selected == false)
+                            update_right(li, "0");
+                        else
+                            update_right(li, "1");
+
+                    }
+                }
+            }
+            Response.Write("<script>alert('變更成功!');location.href='APS_System.aspx';</script>");
+        }
+        //下拉式選單事件
+        protected void DropDownList_MachType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        //下拉式選單的按鈕事件
+        protected void Select_MachGroupClick(object sender, EventArgs e)
+        {
+
+        }
+        //後端產生的按鈕事件
+        protected void button_search_Click(object sender, EventArgs e)
+        {
+            all_information(TextBox_textTemp.Text);
+        }
+    }
+}

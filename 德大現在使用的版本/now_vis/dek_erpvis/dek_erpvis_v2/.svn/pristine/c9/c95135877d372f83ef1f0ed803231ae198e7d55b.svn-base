@@ -1,0 +1,240 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Data;
+using System.Web;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_WH
+{
+    public partial class InactiveInventory : System.Web.UI.Page
+    {
+        public string color = "";
+        public string title_text = "";
+        public string th = "";
+        public string tr = "";
+        public string item_type_name = "";
+        public string item_type_code = "";
+        public string overdate = "";
+        public string selected_orver_day = "";
+        public string path = "";
+        string URL_NAME = "";
+        string acc = "";
+        string spaces = "";
+        string view_YN = "N";
+        string titlename = "";
+        int total_count;
+        DataTable public_dt = null;
+        DataTable dt_column = null;
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            URL_NAME = "InactiveInventory";
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("WHE");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_WH/InactiveInventory.aspx'>呆滯物料統計表</a></u></li></ol>");
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        iniCbx();
+                        get_SqlConndi();
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        private void iniCbx()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            // 2019/06/18，取得儲位清單，提供給前端checkBoxList
+            string sqlcmd = 德大機械.倉管部_呆滯物料統計表.取得儲位列表(item_type_code, overdate);
+            dt_column = clsDB_sw.DataTable_GetTable(sqlcmd);
+            for (int i = 0; i < dt_column.Rows.Count; i++)
+            {
+                string col_name = DataTableUtils.toString(dt_column.Rows[i]["儲位"]);
+                ListItem listItem = new ListItem(col_name, col_name);
+                if (col_name.Trim() == "總倉")
+                {
+                    listItem.Selected = true;
+                }
+                CheckBoxList_spaces.Items.Add(listItem);
+            }
+            // 取得物料類別，提供前端DropDownList
+            sqlcmd = 德大機械.倉管部_呆滯物料統計表.物料類別列表();
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            int j = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                ListItem listItem = new ListItem(DataTableUtils.toString(row["C_NAME"]), DataTableUtils.toString(row["CLASS"]));
+                if (j++ == 0)
+                {
+                    listItem.Selected = true;
+                }
+                DropDownList_itemtype.Items.Add(listItem);
+            }
+        }
+        private void get_SqlConndi()
+        {
+            item_type_name = DataTableUtils.toString(DropDownList_itemtype.SelectedItem);       // 物料類別名稱
+            item_type_code = DataTableUtils.toString(DropDownList_itemtype.SelectedValue);      // 物料類別代碼
+            selected_orver_day = DataTableUtils.toString(TextBox_dayval.Value);                  // 庫存期限(天數)
+            overdate = date_trn();                                                              // 庫存期限(換算成日期)
+
+            // 組合勾選的儲位
+            foreach (ListItem li in CheckBoxList_spaces.Items)
+            {
+                if (li.Selected == true)
+                {
+                    spaces += li.Value + ",";
+                }
+            }
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            view_YN = 德大機械.function_yn(acc, "呆料金額");
+            Set_Html_Table();
+
+        }
+        private void Set_Html_Table()
+        {
+            //title
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            string sqlcmd = 德大機械.倉管部_呆滯物料統計表.呆滯物料列表(item_type_code, overdate, spaces);
+            string col_name = "";
+            public_dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            // 2019/06/18，依權限決定(金額)欄位是否顯示
+            for (int i = 0; i < public_dt.Columns.Count; i++)
+            {
+                col_name = public_dt.Columns[i].ColumnName;
+                if (view_YN == "N")
+                {
+                    if (col_name.Trim() != "標準成本")
+                    {
+                        th += "<th>" + col_name + "</th>\n";
+                        titlename += col_name + ",";
+                    }
+                }
+                else
+                {
+                    th += "<th>" + col_name + "</th>\n";
+                    titlename += col_name + ",";
+                }
+      
+            }
+
+            for (int i = 0; i < spaces.Split(',').Length - 1; i++)
+            {
+                col_name = spaces.Split(',')[i];
+                th += "<th>" + col_name + "</th>\n";
+                titlename += col_name + ",";
+                public_dt.Columns.Add(col_name);
+            }
+
+            th += "<th>總數量</th>\n";
+            titlename = titlename + "總數量,";
+            public_dt.Columns.Add("總數量");
+
+            if (view_YN == "Y")
+            {
+                th += "<th>金額小計</th>\n";
+                titlename = titlename + "金額小計,";
+                public_dt.Columns.Add("金額小計");
+            }
+
+           tr = HtmlUtil.Set_Table_Content(public_dt, titlename, InactiveInventory_callback);
+
+        }
+        private string InactiveInventory_callback(DataRow row, string field_name)
+        {
+            
+            string value = "";
+            if (field_name == "標準成本")
+            {
+                if (view_YN == "Y")
+                {
+                    value = "<td>" + DataTableUtils.toString(row["標準成本"]).Split('.')[0] + "</td>\n";
+                }
+            }
+            string[] str = spaces.Split(',');
+            //避免其他的欄位進入迴圈導致總數量=0
+            if (field_name == "總倉                "|| field_name == "待出貨倉            " || field_name == "售服倉              " || field_name == "備料倉" || field_name == "發料倉              ")
+            {
+                for (int i = 0; i < str.Length - 1; i++)
+                {
+                    if (i == 0)
+                        total_count = 0;
+                    if (field_name == str[i])
+                    {
+                        string sqlcmd = 德大機械.倉管部_呆滯物料統計表.呆料數量_依儲位(item_type_code, DataTableUtils.toString(row["品號"]), overdate, spaces.Split(',')[i]);
+                        DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+                        if (dt.Rows.Count == 0)
+                        {
+                            value = "<td>0</td>\n";
+                        }
+                        else
+                        {
+                            int count = DataTableUtils.toInt(DataTableUtils.toString(dt.Rows[0]["儲位數量"]).Split('.')[0]);
+                            total_count += count;
+                            value = "<td>" + count + "</td>\n";
+                        }
+                    }
+                }
+            }
+            if(field_name == "總數量")
+                value = "<td>" + total_count+ "</td>\n";
+            //總數量 * 每一筆的標準成本
+            if(field_name == "金額小計")
+                value = "<td>" + total_count * DataTableUtils.toInt(DataTableUtils.toString(row["標準成本"]).Split('.')[0]) + "</td>\n";
+            return value;
+        }
+        private string date_trn()
+        {
+            Double val = DataTableUtils.toDouble(TextBox_dayval.Value);
+            return DataTableUtils.toString(DateTime.Now.AddDays(-val).ToString("yyyyMMdd"));
+        }
+
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            get_SqlConndi();
+            load_page_data();
+        }
+
+    }
+}
+
+/*select MAX(a.最後領料日) as 最後領料日 ,a.品號,a.品名規格,a.庫存數,a.倉位 from ( select  MAX(itemios.trn_date) as 最後領料日 , ITEMIOS.item_no as 品號, ITEM.ITEMNM as 品名規格,  ITEM.PQTY_H as 庫存數, ITEM.PLACE as 倉位 --ITEM.COQTY as 已受訂量,ITEM.ISQTY as 分配量,ITEM.SMQTY as 加工未交量ITEM.SOQTY as 委外採購量  from itemios left join ITEM on ITEMIOS.ITEM_NO = ITEM.ITEM_NO where ITEM.PQTY_H > 0 and ITEM.CLASS = '"++"'  and ITEM.COQTY = 0 and ITEM.ISQTY = 0  and ITEM.SMQTY >=0 and ITEM.SOQTY >=0 group by ITEMIOS.item_no,ITEMIOS.trn_date,ITEM.PQTY_H,ITEM.ITEMNM,ITEM.COQTY,ITEM.PLACE having max(trn_date)<="+ +" ) as a group by a.品號,a.品名規格,a.庫存數,a.倉位 order by MAX(a.最後領料日) desc*/

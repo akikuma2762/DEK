@@ -1,0 +1,190 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+@media screen and (max-width:768px) {
+    #Content2 {
+        overflow: hidden;
+    }
+
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    .x_content {
+        padding: 0;
+    }
+
+    .x_content > .col-xs-12 {
+        padding: 0;
+    }
+
+    ._TopNav li {
+        display: inline-block;
+    }
+
+    #ContentPlaceHolder1_checkBoxListSLS,
+    #ContentPlaceHolder1_checkBoxListPCD,
+    #ContentPlaceHolder1_checkBoxListWHE,
+    #ContentPlaceHolder1_checkBoxListPMD,
+    #ContentPlaceHolder1_checkBoxListCNC {
+        font-size: 0.7em;
+    }
+
+    #ContentPlaceHolder1_Panel_contr label.control-label {
+        width: 100%;
+        padding: 5px 5px 5px 10px;
+        background-color: #26B99A;
+        color: white;
+    }
+
+    #ContentPlaceHolder1_checkBoxListSLS tbody tr,
+    #ContentPlaceHolder1_checkBoxListPCD tbody tr,
+    #ContentPlaceHolder1_checkBoxListWHE tbody tr,
+    #ContentPlaceHolder1_checkBoxListPMD tbody tr,
+    #ContentPlaceHolder1_checkBoxListCNC tbody tr {
+        width: 50%;
+        display: inline-block;
+        margin: 5px 0;
+    }
+
+    #ContentPlaceHolder1_checkBoxListSLS tbody tr .switchery,
+    #ContentPlaceHolder1_checkBoxListPCD tbody tr .switchery,
+    #ContentPlaceHolder1_checkBoxListWHE tbody tr .switchery,
+    #ContentPlaceHolder1_checkBoxListPMD tbody tr .switchery,
+    #ContentPlaceHolder1_checkBoxListCNC tbody tr .switchery {
+        margin-right: 5px;
+    }
+    /*safe*/
+    #ContentPlaceHolder1_Button_right {
+        width: 100%;
+    }
+    /*資料維護*/
+    ._info_update {
+        font-size: 0.7em;
+    }
+
+    #info_update label {
+        width: 40%;
+        line-height: 30px;
+    }
+
+    #info_update input {
+        width: 55%;
+        display: inline-block;
+        margin: 0 0 5px 0;
+    }
+    /*生日*/
+    ._birthday > div.row {
+        width: 55%;
+        display: inline-block;
+        height: 34px;
+        margin: 0;
+    }
+
+    #info_update ._birthday {
+        height: 39px;
+        line-height: 39px;
+    }
+
+    #info_update ._birthday > label {
+        height: 39px;
+        line-height: 39px;
+    }
+
+    ._birthday > div.row .xdisplay_inputx {
+        padding: 0;
+    }
+
+    ._birthday > div.row input {
+        width: 100% !important;
+        height: 34px;
+        line-height: 34px;
+    }
+
+    #ContentPlaceHolder1_DropDownList_dmt {
+        width: 55%;
+        display: inline-block;
+        height: 34px;
+        margin: 0;
+    }
+    /*原密碼*/
+    #ContentPlaceHolder1_Panel1 {
+        display: none;
+        /*height:70px;
+                overflow:hidden;
+                text-overflow: ellipsis;*/
+    }
+    /*#ContentPlaceHolder1_Panel1 #ContentPlaceHolder1_Label_psd {
+                font-size:0.7em;
+            }*/
+    #btninfo, #btncancel {
+        width: 46%;
+        display: inline-block;
+        margin: 0 1%;
+    }
+    /*變更密碼*/
+    #password_update {
+        font-size: 0.7em;
+        padding-left: 10px;
+        overflow: hidden;
+    }
+
+    #password_update > div.row > div.col-xs-12 {
+        padding: 0;
+    }
+
+    #password_update div.col-12 {
+        margin-bottom: 5px;
+    }
+
+    #password_update label {
+        width: 30%;
+        display: inline-block;
+    }
+
+    #password_update input {
+        width: 65%;
+        display: inline-block;
+    }
+
+    ._CheckPass label {
+        width: 45%;
+        display: inline-block;
+    }
+
+    ._CheckPass > div {
+        width: 55%;
+        display: inline-block;
+        margin: 0;
+    }
+    ._CheckPass {
+        height:34px;
+    }
+    ._CheckPass > div.row {
+        height:25px;    
+    }
+    ._CheckPass > div > div {
+        padding: 0;
+    }
+    ._CheckPass .col-sm-4 {
+        width:25%;
+        display:inline-block;
+        margin-right:5%;
+    }
+    ._CheckPass .col-sm-8 {
+        width: 70%;
+        display: inline-block;
+    }
+    #password_update ._VerificationCode input {
+        width: 100%;
+    }
+
+    ._CheckPass > div.row {
+        width: 65%;
+    }
+
+    #btnpassword, #btnCancel {
+        width: 47%;
+    }
+}

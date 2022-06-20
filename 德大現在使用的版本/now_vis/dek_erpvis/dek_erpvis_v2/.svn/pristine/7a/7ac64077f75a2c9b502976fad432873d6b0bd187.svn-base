@@ -1,0 +1,510 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using dek_erpvis_v2.cls;
+using System.Data;
+using Support;
+
+namespace dek_erpvis_v2.pages.dp_PM
+{
+    public partial class Asm_Cahrt_Error : System.Web.UI.Page
+    {
+        public string color = "";
+        public string ChartData_Count = "";
+        public string ChartData_Time = "";
+        public string date_str = "";// new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd");
+        public string date_end = "";//
+        public string timetype = "";
+        public string ColumnsData = "";
+        public string RowsData = "";
+        public string SelectLine = "'ALL";
+        public string chartName = "";
+        public string chartName_Single = "";
+        List<string> list = new List<string>();
+        public string Choose_Line = "所有產線";
+        public string LineNum = "";
+        public string AxisSet = "";
+        public string LineStatus = "";
+        public string TimeTypeForSubTitle = DateTime.Now.ToString("yyyy-MM-dd");
+        public string LineNameForSubTitle = "所有產線";
+        public string time_area_text = "";
+        public string TopStrForPieceCount = "0";
+        public string TopStrForPieceTimes = "0";
+        public string PieceUnit = ShareMemory.PieceUnit;
+        public string TimeUnit = "";
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        ShareFunction SFun = new ShareFunction();
+        myclass myclass = new myclass();
+        HttpCookie userOpRec = new HttpCookie("Rec");// Request.Cookies["userOpRec"];
+
+
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(SFun.GetConnByDekVisTmp);
+            DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+            if (clsDB_sw.IsConnected == true)
+            {
+                try
+                {
+                    load_page_data();
+                }
+                catch
+                {
+                    Response.Redirect("Asm_Cahrt_Error.aspx");
+                }
+            }
+            
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                NodataProcess();
+            }
+        }
+        private void NodataProcess()
+        {
+            ColumnsData = "<th class='center'>沒有資料載入</th>";
+            RowsData = "<tr class='even gradeX'> <td class='center'> no data </td ></tr>";
+        }
+        private void load_page_data()
+        {
+            if (GlobalVar.Conn_status == true) //資料庫連線成功要做的事()
+                LoadData();
+            else   //資料庫連線失敗要做的事()
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                NodataProcess();
+            }
+        }
+        private void LoadData()
+        {
+            set_time_area();
+            SetDropDownList();
+            GetErrorData();
+        }
+        private void set_time_area()
+        {
+            time_area_text = "時間範圍 " + txt_time_str.Value.ToString() + " ~ " + txt_time_end.Value.ToString();
+        }
+        private void GetErrorData()
+        {
+            HttpCookie userOpRec = Request.Cookies["Rec"];
+            string[] timeSet;
+            string timeTypeSource = "";
+            if (userOpRec["user_TimeType"] != null || userOpRec["user_TimeType"].ToString() != "")
+                timeTypeSource = SFun.TrsDate(userOpRec["user_TimeType"].ToString());
+            SelectLine = userOpRec["user_LineNum"].ToString();
+            if (!string.IsNullOrEmpty(timeTypeSource))//timeTypeSource != null && timeTypeSource != "")
+            {
+                timeSet = SFun.GetTimeType(timeTypeSource);
+                userOpRec["user_StartTime"] = timeSet[0];
+                userOpRec["user_EndTime"] = timeSet[1];
+                Response.Cookies.Add(userOpRec);
+                if (SelectLine == "0" || SelectLine == null || SelectLine == "")
+                    GetDataInf(timeTypeSource, timeSet);
+                else
+                    GetDataInf(timeTypeSource, timeSet, SelectLine);
+                TimeTypeForSubTitle = timeSet[4];
+                if (Session["time_s"] != null && Session["time_e"] != null)
+                {
+                    TimeTypeForSubTitle = HtmlUtil.changetimeformat(Session["time_s"].ToString().Replace("010101", "")) + "~" + HtmlUtil.changetimeformat(Session["time_e"].ToString().Replace("235959", ""));
+                    Session.Remove("time_s");
+                    Session.Remove("time_e");
+
+                }
+            }
+            else
+            {
+                if (SelectLine == "0" || SelectLine == null || SelectLine == "")
+                    GetDataInf(timeTypeSource, null);
+                else //First  -> show Today
+                {
+                    timeSet = SFun.GetTimeType("day");
+                    GetDataInf("day", timeSet, SelectLine);
+                    TimeTypeForSubTitle = timeSet[4];
+                    if (Session["time_s"] != null && Session["time_e"] != null)
+                    {
+                        TimeTypeForSubTitle = Session["time_s"].ToString() + "-" + Session["time_e"].ToString();
+                        Session.Remove("time_s");
+                        Session.Remove("time_e");
+                    }
+
+                }
+            }
+        }
+        private void GetDataInf(string TimeType, string[] timeset, string SelectLine = "0")
+        {
+            string time_st;
+            string time_ed;
+            if (list.Count == 0)
+            {
+                list.Add("0");
+                Choose_Line = "所有產線";
+            }
+            if (Session["list"] != null)
+                list = (List<string>)Session["list"];
+            if (Session["line"] != null)
+                Choose_Line = Session["line"].ToString();
+            if (Session["timetype"] != null)
+            {
+                TimeType = Session["timetype"].ToString();
+                TimeUnit = Session["timetype"].ToString();
+            }
+            else//沒有數值的時候，就讓他=分鐘
+            {
+                TimeUnit = "(分鐘)";
+            }
+            if (Session["time_s"] != null && Session["time_e"] != null)
+            {
+                time_st = Session["time_s"].ToString();
+                time_ed = Session["time_e"].ToString();
+            }
+            else
+            {
+                time_st = timeset[0];
+                time_ed = timeset[1];
+            }
+            string[] StrInf;
+            if (timeset != null && SelectLine == "0")
+            {
+                StrInf = SFun.GetErrorInf(DropDownList_LineName, TimeUnit, TimeType, time_st, time_ed, list);
+
+            }
+            else if (timeset != null && SelectLine != null)
+            {
+
+                StrInf = SFun.GetErrorInf(DropDownList_LineName, TimeUnit, TimeType, time_st, time_ed, list);
+            }
+            else if (timeset == null && SelectLine == "0")
+            {
+                StrInf = SFun.GetErrorInf(DropDownList_LineName, TimeUnit, TimeType, "Today", "Today", list);
+            }
+            else
+            {
+
+                StrInf = SFun.GetErrorInf(DropDownList_LineName, TimeUnit, TimeType, "Today", "Today", list);
+            }
+
+            if (StrInf.Length != 0 && StrInf[4] != null)
+            {
+                ChartData_Count = StrInf[0];
+                ChartData_Count = ChartData_Count.Replace("\n", "");
+                ChartData_Count = ChartData_Count.Replace("indexLabel", "label");
+                ChartData_Time = StrInf[2];
+                ChartData_Time = ChartData_Time.Replace("\n", "");
+                ChartData_Time = ChartData_Time.Replace("indexLabel", "label");
+                RowsData = StrInf[3];
+                TopStrForPieceCount = StrInf[4];
+                TopStrForPieceTimes = StrInf[5];
+            }
+            else
+                NodataProcess();
+        }
+
+        private void SetDropDownList()
+        {
+            DropDownList_LineName.DataTextField = "LineName";//default show Text
+            DropDownList_LineName.DataValueField = "LineID";
+            DropDownList_LineName.DataSource = SFun.GetLineList();
+            DropDownList_LineName.DataBind();
+
+            CheckBoxList_Line.DataTextField = "LineName";//default show Text
+            CheckBoxList_Line.DataValueField = "LineID";
+            CheckBoxList_Line.DataSource = SFun.GetLineList();
+            CheckBoxList_Line.DataBind();
+
+
+
+            //Creat Table Column
+            ColumnsData = SFun.GetCharstColumnName_Error("0", DropDownList_LineName, "Asm_Cahrt_Error");
+            if (RowsData == "<tr class='even gradeX'> <td class='center'> no data </td ></tr>")
+                ColumnsData = "<th class='center'>沒有資料載入</th>";
+            //add all
+            DropDownList_LineName.Items.Insert(0, new ListItem("全部", "0"));
+            CheckBoxList_Line.Items.Insert(0, new ListItem("全部", "0"));
+
+        }
+        public string GetPieceForSeries(int NumTh, string Type)
+        {
+            string[] TopPiece;
+            HttpCookie userOpRec = Request.Cookies["Rec"];
+            if (TopStrForPieceTimes != null && TopStrForPieceCount != null)
+            {
+                if (Type == "Count")
+                    TopPiece = TopStrForPieceCount.Split(',');
+                else
+                    TopPiece = TopStrForPieceTimes.Split(',');
+                //
+                if (TopPiece.Length >= NumTh)
+                {
+                    if (TopPiece[NumTh - 1] != "" && TopPiece[NumTh - 1] != null)
+                    {
+                        if (Type == "Count")
+                            return TopPiece[NumTh - 1];
+                        else
+                            return SFun.TrsTime(TopPiece[NumTh - 1], userOpRec["user_unit"].ToString());
+                    }
+                    else
+                        return "0";
+                }
+                else
+                    return "0";
+            }
+            else
+                return "0";
+        }
+        private string timeUnitForshow(string time)
+        {
+            if (time.Contains('m'))
+                return "(分鐘)";
+            else
+                return "(小時)";
+        }
+        //--------------------------------------Event--------------------------------------
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            string CompLoacation = "";
+            string acc = "";
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                string URL_NAME = "Asm_Cahrt_Error";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                string ped = DataTableUtils.toString(userInfo["user_PWD"]);
+                if (Session["Location"] != null)
+                    CompLoacation = Session["Location"].ToString();
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        userOpRec["user_unit"] = ShareMemory.TimeUnit;
+                        userOpRec["user_TimeType"] = "type_month";
+                        userOpRec["user_LineNum"] = "0";
+                        userOpRec["user_StartTime"] = DateTime.Now.ToString("yyyyMM" + "01010101");
+                        userOpRec["user_EndTime"] = DateTime.Now.ToString("yyyyMM" + "30235959");
+                        userOpRec.Expires = DateTime.Now.AddDays(1);
+                        Response.Cookies.Add(userOpRec);
+                        TimeUnit = timeUnitForshow(ShareMemory.TimeUnit);
+                        if (acc == "dek_ex")
+                            SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmTest;
+                        if (CompLoacation.ToUpper().Contains("HOR"))
+                            SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                        GotoCenn();
+                    }
+
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管主管申請權限!');location.href='../index.aspx';</script>");
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+
+        protected void LinkButton_day_Click(object sender, EventArgs e)
+        {
+            LinkButton Btn = (LinkButton)sender;
+            if (Btn.ID == "date_month" || Btn.ID == "date_fyear" || Btn.ID == "date_byear" || Btn.ID == "date_year")
+            {
+                Session.Remove("list");
+                Session.Remove("line");
+            }
+            if (Btn.Text == "月")
+            {
+                Btn.ID = "date_month";
+                Session["time_s"] = DateTime.Now.Year + "0" + DateTime.Now.Month + "01" + "010101";
+                Session["time_e"] = DateTime.Now.Year + "0" + DateTime.Now.Month + "31" + "235959";
+            }
+            if (Btn.Text == "上半年")
+            {
+                Btn.ID = "date_fyear";
+                Session["time_s"] = DateTime.Now.Year + "01" + "01" + "010101";
+                Session["time_e"] = DateTime.Now.Year + "06" + "31" + "235959";
+            }
+
+            if (Btn.Text == "下半年")
+            {
+                Btn.ID = "date_byear";
+                Session["time_s"] = DateTime.Now.Year + "07" + "01" + "010101";
+                Session["time_e"] = DateTime.Now.Year + "12" + "31" + "235959";
+            }
+
+            if (Btn.Text == "全年")
+            {
+                Btn.ID = "date_year";
+                Session["time_s"] = DateTime.Now.Year + "01" + "01" + "010101";
+                Session["time_e"] = DateTime.Now.Year + "12" + "31" + "235959";
+            }
+
+            timetype = Btn.ID;
+            HttpCookie userOpRec = Request.Cookies["Rec"];
+            if (ShareMemory.TimeUnit.Contains('m'))
+                userOpRec["user_unit"] = "min";
+            else
+                userOpRec["user_unit"] = "hr";
+            userOpRec["user_TimeType"] = timetype;
+            userOpRec["user_LineNum"] = DropDownList_LineName.SelectedValue.ToString();
+
+            Response.Cookies.Add(userOpRec);
+            TimeUnit = timeUnitForshow(ShareMemory.TimeUnit);
+            if (Session["Location"] != null)
+            {
+                if (Session["Location"].ToString() == "Hor")
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                else
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
+            }
+            GotoCenn();
+            GetErrorData();
+            SetDropDownList();//LineNum
+        }
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            string[] timeSet = new string[2];
+            HttpCookie userOpRec = Request.Cookies["Rec"];
+            if (txt_time_str.Value.ToString() != "")
+            {
+                timeSet[0] = txt_time_str.Value.ToString().Replace("-", String.Empty) + "010101";//add mmhhss           
+                timeSet[1] = txt_time_end.Value.ToString().Replace("-", String.Empty) + "235959";//
+                Session["time_s"] = timeSet[0];
+                Session["time_e"] = timeSet[1];
+            }
+            else
+            {
+                timeSet[0] = Textstr.Value.ToString().Replace("-", String.Empty) + "010101";//add mmhhss           
+                timeSet[1] = Textend.Value.ToString().Replace("-", String.Empty) + "235959";//
+                Session["time_s"] = timeSet[0];
+                Session["time_e"] = timeSet[1];
+            }
+
+            if (timeSet[0] != "" && timeSet[1] != "")
+            {
+                TimeTypeForSubTitle = DateTime.ParseExact(timeSet[0], "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture).ToString("yyyy/MM/dd") + "~"
+                                    + DateTime.ParseExact(timeSet[1], "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture).ToString("yyyy/MM/dd");
+                if (Session["time_s"] != null && Session["time_e"] != null)
+                    TimeTypeForSubTitle = Session["time_s"].ToString() + "-" + Session["time_e"].ToString();
+                set_time_area();
+                userOpRec["user_StartTime"] = timeSet[0];
+                userOpRec["user_EndTime"] = timeSet[1];
+                userOpRec["user_LineNum"] = DropDownList_LineName.SelectedValue.ToString();
+
+
+                Response.Cookies.Add(userOpRec);
+                TimeUnit = timeUnitForshow(ShareMemory.TimeUnit);
+                GetDataInf("define", timeSet, DropDownList_LineName.SelectedValue);
+
+                SetDropDownList();
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+            else
+            {
+                userOpRec["user_StartTime"] = timeSet[0];
+                userOpRec["user_EndTime"] = timeSet[1];
+                userOpRec["user_LineNum"] = DropDownList_LineName.SelectedValue;
+            }
+
+            if (Session["Location"] != null)
+            {
+                if (Session["Location"].ToString() == "Hor")
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                else
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
+            }
+            GotoCenn();
+        }
+
+        protected void DropDownList_Error_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LineNameForSubTitle = DropDownList_LineName.SelectedItem.Text;
+            LineNum = DropDownList_LineName.SelectedItem.Value;
+        }
+        protected void button_wrench_Click1(object sender, EventArgs e)
+        {
+            //帳號
+            HttpCookie userOpRec = Request.Cookies["Rec"];
+            if (RadioButtonList_select_type.SelectedValue == "0")
+            {
+                ShareMemory.TimeUnit = "min";
+                userOpRec["user_unit"] = "min";
+                Response.Cookies.Add(userOpRec);
+                TimeUnit = "(分鐘)";
+            }
+            else
+            {
+                ShareMemory.TimeUnit = "hr";
+                userOpRec["user_unit"] = "hr";
+                Response.Cookies.Add(userOpRec);
+                TimeUnit = "(小時)";
+            }
+            Session["timetype"] = TimeUnit;
+            GotoCenn();
+        }
+
+        protected void btn_cbx_Click(object sender, EventArgs e)
+        {
+            Choose_Line = "";
+            for (int i = 0; i < CheckBoxList_Line.Items.Count; i++)
+            {
+                if (CheckBoxList_Line.Items[i].Selected)
+                {
+                    list.Add(CheckBoxList_Line.Items[i].Value);
+                    Choose_Line += CheckBoxList_Line.Items[i].Text + "、";
+
+                }
+            }
+
+            Session["list"] = list;
+            Session["line"] = Choose_Line;
+            if (Session["Location"] != null)
+            {
+                if (Session["Location"].ToString() == "Hor")
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                else
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
+            }
+            GotoCenn();
+        }
+        protected void bt_Ver_ServerClick(object sender, EventArgs e)
+        {
+            Control bt = (Control)sender;
+            //HttpCookie cook = new HttpCookie("VisCompany");
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            string acc = DataTableUtils.toString(userInfo["user_ACC"]);//user_RW
+            if (bt.ID.Contains("Hor")) //&& (acc == "detatina" || acc == "lin@deta.com.tw" || acc == "dora" || acc == "eerp" || acc == "visrd"))
+            {
+                SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                //cook["Location"] = "Hor";
+                Session["Location"] = "Hor";
+                list.Clear();
+                Session.Remove("list");
+                Session.Remove("line");
+
+            }
+            else
+            {
+                SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
+                Session["Location"] = "Ver";
+                list.Clear();
+                Session.Remove("list");
+                Session.Remove("line");
+                //cook["Location"] = "Ver";
+            }
+            //Response.Cookies.Add(cook);
+            GotoCenn();
+
+        }
+    }
+}

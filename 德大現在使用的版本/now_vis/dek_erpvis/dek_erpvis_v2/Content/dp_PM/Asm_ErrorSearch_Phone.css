@@ -1,0 +1,44 @@
+﻿.Div_Shadow {
+    box-shadow: none!important;
+}
+
+#_Title {
+    padding:20px 0 0 0;
+}
+#_Title .x_panel {
+    padding:0;
+}
+#_Title .x_panel .x_content{
+    padding: 10px;
+}
+/*上面button*/
+._button {
+    margin-top:10px;
+}
+._button li {
+    width: 100%;
+    margin-top: 5px;
+}
+#ContentPlaceHolder1_bt_Ver {
+    width: 45%;
+    margin: 0 2.5%;
+    float:left;
+}
+#ContentPlaceHolder1_bt_Hor {
+    width: 45%;
+    margin: 0 2.5%;
+    float: left;
+}
+
+/*下拉式選單*/
+#ContentPlaceHolder1_DropDownList_Line option {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+/*datatable*/
+#datatable-buttons_wrapper #datatable-buttons_length {
+    font-size: 0.7em;
+}
+

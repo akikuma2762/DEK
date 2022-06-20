@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dek_erpvis_v2", "dek_erpvis_v2\dek_erpvis_v2.csproj", "{AAD9FE96-4379-495F-B2C6-6238F2B224E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Support", "..\..\Support\Support.csproj", "{8828B1C0-2BB8-459A-9438-A1E53722DB22}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8828B1C0-2BB8-459A-9438-A1E53722DB22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8828B1C0-2BB8-459A-9438-A1E53722DB22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8828B1C0-2BB8-459A-9438-A1E53722DB22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8828B1C0-2BB8-459A-9438-A1E53722DB22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49E35617-AE31-40C7-852A-48D68819195D}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,296 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_PD
+{
+    public partial class ShortageMaterial : System.Web.UI.Page
+    {
+        public string path = "";
+        public string title_text = "";
+        public string tr = "";
+        public string th = "";
+        public string supplier = "";
+        public string dt_st = "";
+        public string dt_ed = "";
+        public string searchDate = "";
+        string URL_NAME = "";
+        string acc = "";
+        string 條件式 = "";
+        string sql_MP = "";
+        string sql_RC = "";
+
+        DataTable dt_MP = null;
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            URL_NAME = "ShortageMaterial";
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("PCD");
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        //d_start.Value = "20190626";
+                        //d_end.Value = "20190725";
+                        GetDate();
+                    }
+                }
+                else { Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>"); }
+            }
+            else { Response.Redirect(myclass.logout_url); }
+        }
+        private void MainProcess()
+        {
+            GetCondi();
+            GetDate();
+            CreateSQL();
+            SetTableTitle();
+            SetTableContext();
+        }
+        private void GetCondi()
+        {
+            supplier = textbox_dt1.Text;   // 供應商代碼
+            dt_st = d_start.Value;         // 催料預交日(起)
+            dt_ed = d_end.Value;           // 催料預交日(訖)
+            //d_today = DateTime.Now.ToString("yyyyMMdd");
+        }
+        private void CreateSQL()
+        {         
+            sql_MP = SQLCMD_MP(supplier, searchDate,dt_st, dt_ed);
+            sql_RC = SQLCMD_RC();
+
+        }
+        private void SetTableTitle()
+        {
+            string col_name = "";
+            //clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            clsDB_sw.dbOpen(myclass.GetConnByDetaEip);
+            if (clsDB_sw.IsConnected == true)
+            {
+                dt_MP = clsDB_sw.DataTable_GetTable(sql_MP);
+                //clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+                clsDB_sw.dbOpen(myclass.GetConnByDetaEip);
+                if (dt_MP.Columns.Count > 0)
+                {
+                    for (int i = 0; i < dt_MP.Columns.Count; i++)
+                    {
+                        col_name = dt_MP.Columns[i].ColumnName;
+                        th += "<th>" + col_name + "</th>\n";
+                    }
+                    th += "<th>未交量</th>\n"; 
+                    //th = "";
+                    //th += "<th>預交日期</th>\n";
+                    //th += "<th>品號</th>\n";
+                    //th += "<th>品名規格</th>\n";
+                    //th += "<th>應交量</th>\n";
+                    //th += "<th>已交量</th>\n";
+                    //th += "<th>未交量</th>\n";
+                }
+                else
+                {
+                    無資料處理();
+                }
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        public void SetTableContext()
+        {
+            tr = "";
+            if (clsDB_sw.IsConnected == true && myclass.user_view_check(URL_NAME, acc) == true)
+            {
+                if (dt_MP.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt_MP.Rows)
+                    {
+                        tr += "<tr>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["催料表單號"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["廠商簡稱"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["採購開單日"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["品號"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["品名規格"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["催料預交日"]) + "</td>\n";
+                        tr += "<td align='right'>" + DataTableUtils.toString(row["應交量"]) + "</td>\n";
+                        //tr += "<td align='right'>" + DataTableUtils.toString(row["已交量"]) + "</td>\n";
+                        //tr += "<td align='right' style='color: red;'>" + DataTableUtils.toString(row["未交量"]) + "</td>\n";
+                        //tr += "<td align='right' style='color: red;'>" +
+                        //      "<u><a href = 'ShortageMaterial_Details.aspx?supplier=" + supplier +
+                        //          ",date=" + DataTableUtils.toString(row["預交日期"]) +
+                        //          ",item=" + DataTableUtils.toString(row["品號"]) + "' target='_blank' style='color:red;'>"
+                        //      + DataTableUtils.toString(row["未交量"]) + "</u></td>\n";
+                        tr += "</tr>\n";
+                    }
+                }
+                dt_MP.Dispose();
+            }
+            else
+            {
+                無資料處理();
+            }
+        }
+        private void 無資料處理()
+        {
+            title_text = "'沒有資料'";
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        }
+
+        //func
+        private string SQLCMD_MP(string supplier, string searchDate, string startDate, string endDate)
+        {
+            //if (startDate != "" && endDate != "")
+            //{
+            //    條件式 = "and d1 between '" + dt_st + "' and  '" + dt_ed + "'";
+            //}
+            //else
+            //{
+            //    條件式 = "";
+            //}
+            string sqlcmd = "SELECT urge_trn_no as 催料單號,                                    " +
+                            "        urge_item_b2b.FACT_NO as 廠商代碼,                         " +
+                            "        factnm2 AS 廠商簡稱,                                       " +
+                            " 	   origin_trn_date as 採購開單日,                               " +
+                            "        item_no AS 品號,                                           " +
+                            "        itemnm AS 品名規格,                                        " +
+                            "        d1 AS 催料預交期,                                          " +
+                            "        qty AS 應交量                                              " +
+                            " FROM[Eip].[dbo].[urge_item_b2b]                                  " +
+                            "         LEFT JOIN fjwsql.dbo.fact ON urge_item_b2b.fact_no = fact.fact_no " +
+                            "   WHERE urge_item_b2b.fact_no = 'A040'                            " +
+                            "       AND urge_trn_no = '080703001'                               " +
+                            " ORDER BY item_no,d1 desc                                         ";
+            //" urge_item_b2b.fact_no = '" + supplier +  "'                   " +
+            //" and urge_trn_no = '" + searchDate +  "'                           " +
+
+
+            return sqlcmd;
+        } 
+        private string SQLCMD_RC()
+        {
+            string sqlcmd = "select purcsub.trn_date as 進貨日期,                            " +
+                            "        purcsub.FACT_NO as 廠商代碼,                            " +
+                            "        FACTNM2 as 廠商簡稱,                                    " +
+                            " 	   item_no as 品號,                                          " +
+                            " 	   sum(QUANTITY) as 交貨量                                   " +
+                            " from purcsub                                                   " +
+                            " left join fact on fact.FACT_NO = purcsub.FACT_NO               " +
+                            " where purcsub.trn_date between 20190703 and 20190704           " +
+                            " and purcsub.FACT_NO = 'A040'                                   " +
+                            " group by purcsub.trn_date, purcsub.FACT_NO, FACTNM2, item_no   " +
+                            " order by item_no";
+            return sqlcmd;
+        }
+        private void GetDate()
+        {
+            // 抓今天是星期幾
+            // 抓本周三的日期是幾號
+            // 今天 跟 星期三比較， (今天>=星期三) => 本周三+7 ； (今天<星期三) => 本周三-7
+            string todayOfWeek = DateTime.Today.DayOfWeek.ToString("d"); //4 (今天星期4)
+            string datediff = "";
+            string today = DateTime.Today.ToString();            // 今天(周二) 2019.07.02
+            DateTime Wed = DateTime.Today;
+            string _year = "";           
+            string year_2 = "";
+
+            switch (todayOfWeek)//4
+            {
+                case "0":
+                    Wed = DateTime.Today.AddDays(-4);
+                    break;
+                case "1":
+                    Wed = DateTime.Today.AddDays(-5); 
+                    break;
+                case "2":
+                    Wed = DateTime.Today.AddDays(-6);
+                    break;
+                case "3":
+                    Wed = DateTime.Today;
+                    break;
+                case "4":
+                    Wed = DateTime.Today.AddDays(-1); // 7/3
+                    break;
+                case "5":
+                    Wed = DateTime.Today.AddDays(-2);
+                    break;
+                case "6":
+                    Wed = DateTime.Today.AddDays(-3);
+                    break;
+
+            }
+            _year = (Convert.ToInt32(DateTime.Today.AddDays(-6).ToString("yyyy")) - 1911).ToString(); //108
+            year_2 = _year.Substring(1, 2);//取兩位數 08
+            datediff = Wed.ToString("MMdd").ToString();//0703            
+            searchDate += year_2 + datediff + "001";   //定義最新催料單號
+
+            // 如果今天在本周三之前，日期區間: 上周三~本周二
+            // 如果今天在本周三之後，日期區間: 本周三~下周二
+            if (DateTime.Parse(today) < DateTime.Parse(Wed.ToString()))
+            {
+                d_start.Value = Wed.AddDays(-7).ToString("yyyyMMdd");
+                d_end.Value = Wed.AddDays(-1).ToString("yyyyMMdd");
+            }
+            else
+            {
+                d_start.Value = Wed.ToString("yyyyMMdd");
+                d_end.Value = Wed.AddDays(+6).ToString("yyyyMMdd");
+                //d_end.Value = DateTime.Parse(Wed.ToString()).AddDays(+6).ToString("yyyyMMdd");
+            }
+        }
+
+        //event
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            MainProcess();
+
+        }
+    }
+}
+
+
+
+//string sqlcmd = "select sordsub.FACT_NO as 廠商代碼,                                                                " +
+//                " FACTNM2 as 廠商名稱,                                                                              " +
+//                " ITEM_NO as 品號,                                                                                  " +
+//                " name as 品名規格,                                                                                  " +
+//                " D1 as 預交日期,                                                                                    " +
+//                " LEFT(sum(QUANTITY), CHARINDEX('.', sum(QUANTITY)) - 1) as 應交量,                                  " +
+//                " LEFT(sum(Q_DELIED), CHARINDEX('.', sum(Q_DELIED)) - 1) as 已交量,                                  " +
+//                " LEFT(sum(QUANTITY - Q_DELIED), CHARINDEX('.', sum(QUANTITY - Q_DELIED)) - 1) as 未交量             " +
+//                " from SORDSUB                                                                                      " +
+//                " left join FACT on sordsub.FACT_NO = fact.FACT_NO                                                  " +
+//                " where (QUANTITY - Q_DELIED) > 0                                                                   " +
+//                " and FACTNM2 = '" + supplier + "'                                                                  " +
+//                " and d1 between " + dt_st + " and " + dt_ed + "                                                    " +
+//                " group by sordsub.FACT_NO,FACTNM2,ITEM_NO,name,D1                                                  " +
+//                " union                                                                                             " +
+//                " select sosub.fact_no AS 廠商代碼,                                                                  " +
+//                " factnm2 AS 廠商名稱,                                                                               " +
+//                " sosub.ITEM_NO as 品號,                                                                             " +
+//                " ITEMNM AS 品名規格,                                                                                " +
+//                " D1 as 預交日期,                                                                                    " +
+//                " LEFT(Sum(quantity), Charindex('.', Sum(quantity)) - 1) AS 應交量,                                  " +
+//                " LEFT(Sum(q_delied), Charindex('.', Sum(q_delied)) - 1) AS 已交量,                                  " +
+//                " LEFT(Sum(quantity - q_delied), Charindex('.', Sum(quantity - q_delied)) - 1) AS 未交量             " +
+//                " from sosub                                                                                        " +
+//                " LEFT JOIN fact ON sosub.fact_no = fact.fact_no                                                    " +
+//                " LEFT JOIN ITEM on sosub.ITEM_NO = ITEM.ITEM_NO                                                    " +
+//                " WHERE(quantity - q_delied) > 0                                                                    " +
+//                "        AND factnm2 = '" + supplier + "'                                                           " +
+//                "        AND d1 BETWEEN " + dt_st + " and " + dt_ed + "                                             " +
+//                " GROUP BY sosub.fact_no, factnm2, sosub.ITEM_NO,ITEMNM,d1                                          " +
+//                " ORDER  BY d1                                                                                      ";

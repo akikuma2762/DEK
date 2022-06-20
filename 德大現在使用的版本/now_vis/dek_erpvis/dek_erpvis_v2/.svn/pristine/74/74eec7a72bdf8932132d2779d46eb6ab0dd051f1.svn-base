@@ -1,0 +1,144 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using dek_erpvis_v2.cls;
+using Support;
+
+namespace dek_erpvis_v2.pages.dp_PD
+{
+    public partial class supplier_score : System.Web.UI.Page
+    {
+        public string color = "";
+        string URL_NAME = "";
+        string acc = "";
+        public string th = "";
+        public string tr = "";
+        public string title_text = "";
+        public string date_str = "";// DateTime.Now.ToString("yyyy0101");
+        public string date_end = "";// DateTime.Now.ToString("yyyy1231");
+        public string time_array = "";
+        public string path = "";
+        public string timerange = "";
+
+        DataTable public_dt = null;
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            URL_NAME = "supplierscore";
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("PCD");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_PD/supplierscore.aspx'>供應商達交率</a></u></li></ol>");
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        string[] s = 德大機械.德大專用月份(acc).Split(',');
+                        date_str = s[0];
+                        date_end = s[1];
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    /*Response.Write("<script language=javascript>alert('第一種彈出框');</" + "script>");
+                    Response.Redirect(myclass.logout_url);*/
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+ 
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            Set_Html_Table();
+            time_array = " ( 採購單預交貨日 " + date_str + " - " + date_end + ")";
+            string date_s = HtmlUtil.changetimeformat(date_str);
+            string date_e = HtmlUtil.changetimeformat(date_end);
+            timerange = date_s + " ~ " + date_e;
+        }
+        //如果遇到達交率時，用callback的方式將他傳送到這裡，並加上超連結喔
+        private string suppliescore_callback(DataRow row, string field_name)
+        { 
+            string value = "";
+            if (field_name == "達交率")
+            {
+                string url = HtmlUtil.AttibuteValue("sup_sname", DataTableUtils.toString(row["供應商"]).Trim(), "") + "," +
+                    HtmlUtil.AttibuteValue("date_str", date_str, "") + "," +
+                    HtmlUtil.AttibuteValue("date_end", date_end, "");
+                //"<td><u><a href=supplierscore_details.aspx?sup_sname=" + myclass.Base64Encode(DataTableUtils.toString(row["供應商"])) + ",date_str=" + date_str + ",date_end=" + date_end + ">" + DataTableUtils.toString(row["達交率"]) + "</u></a></td>\n";
+                string href = string.Format("supplierscore_details.aspx?key={0}",
+                    WebUtils.UrlStringEncode(url) );
+
+                value = DataTableUtils.toString(row[field_name]);
+                value = "<td>"+ HtmlUtil.ToTag("u", HtmlUtil.ToHref(value, href))+"</td>\n";
+             }
+            return value;
+        }
+        private void Set_Html_Table()
+        {
+            string sqlcmd = 德大機械.資材部_供應商達交率.供應商達交率(date_str, date_end);
+            public_dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+            //用於存放所有的欄位名稱(out的方式的話，可以直接回傳字串)
+            string titlename = "";
+            th = HtmlUtil.Set_Table_Title(public_dt, out titlename);
+            tr = HtmlUtil.Set_Table_Content(public_dt, titlename,suppliescore_callback);
+        }
+        private string get_datetime(int num)
+        {
+            return DateTime.Now.AddDays(-num).ToString("yyyyMMdd");
+        }
+        private int DaysBetween(string date_str, string date_end)
+        {
+            DateTime dt1 = DateTime.ParseExact(date_str, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture);
+            DateTime dt2 = DateTime.ParseExact(date_end, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture);
+            int ans = (dt2.Year - dt1.Year) * 12 + (dt2.Month - dt1.Month);
+            if (ans <= 0) ans = 1;
+            return ans;
+        }
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            HtmlUtil.Button_Click(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), s, DataTableUtils.toString(txt_time_str.Value), DataTableUtils.toString(txt_time_end.Value), out date_str, out date_end);
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+        }
+    }
+}

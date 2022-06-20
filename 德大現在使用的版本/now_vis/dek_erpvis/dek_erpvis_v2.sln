@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dek_erpvis_v2", "dek_erpvis_v2\dek_erpvis_v2.csproj", "{AAD9FE96-4379-495F-B2C6-6238F2B224E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dekERP_dll", "dekERP_dll\dekERP_dll.csproj", "{6FD61BF1-1DEC-4455-9DDF-AE9486C20E07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPVIS", "ERPVIS\ERPVIS.csproj", "{79C3236E-B990-4F2E-91CD-A4B95CF29C2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAD9FE96-4379-495F-B2C6-6238F2B224E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FD61BF1-1DEC-4455-9DDF-AE9486C20E07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FD61BF1-1DEC-4455-9DDF-AE9486C20E07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FD61BF1-1DEC-4455-9DDF-AE9486C20E07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FD61BF1-1DEC-4455-9DDF-AE9486C20E07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C3236E-B990-4F2E-91CD-A4B95CF29C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C3236E-B990-4F2E-91CD-A4B95CF29C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C3236E-B990-4F2E-91CD-A4B95CF29C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C3236E-B990-4F2E-91CD-A4B95CF29C2E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49E35617-AE31-40C7-852A-48D68819195D}
+	EndGlobalSection
+EndGlobal

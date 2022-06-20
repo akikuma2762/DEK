@@ -1,0 +1,343 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="SupplierShortage.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_PD.SupplierShortage" %>
+<%@ OutputCache duration="10" varybyparam="None" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>供應商催料 | 德大機械</title>
+    <link href="../../assets/vendors/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.css" rel="stylesheet" type="text/css" media="all">
+    <%=color %>
+    <!--<link href="../../assets/build/css/custom.css" rel="stylesheet" />
+    <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
+
+    <link href="../../assets/vendors/jquery/dist/jquery-ui.min.css" rel="stylesheet" />
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div class="right_col" role="main">
+        <!-----------------title------------------>
+        <%= path %>
+        <br>
+        <div class="clearfix"></div>
+        <!-----------------/title------------------>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <h4>[搜尋條件]預交日：<u><asp:LinkButton ID="LinkButton1" runat="server" data-toggle="modal" data-target="#exampleModal"><%=timerange %></asp:LinkButton></u></h4>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <!-----------------content------------------>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-9 col-sm-12 col-xs-12">
+                    <div class="x_panel" id="Div_Shadow">
+                        <div class="x_title">
+                            <h2>送貨日期與天數說明 <small>依產品類別區分</small></h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="table-responsive">
+                                <table class="table table-ts table-bordered nowrap">
+                                    <thead>
+                                        <tr id="tr_row">
+                                            <th>物料類型</th>
+                                            <th>依轉催料表起算天數</th>
+                                            <th>最長可交貨日期</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">胚料</th>
+                                            <td>+ 45 天</td>
+                                            <td><%=基準日加45 %></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">物料須轉噴漆廠</th>
+                                            <td>+ 30 天</td>
+                                            <td><%=基準日加30 %></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">物料須轉下家供應商</th>
+                                            <td>+ 30 天</td>
+                                            <td><%=基準日加30 %></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">凸輪箱 </th>
+                                            <td>+ 16 天</td>
+                                            <td><%=基準日加16 %></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">刀套</th>
+                                            <td>+ 14 天</td>
+                                            <td><%=基準日加14 %></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">其餘直接入德大廠內物料</th>
+                                            <td>+ 23 天</td>
+                                            <td><%=基準日加23 %></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="dashboard_graph x_panel" id="Div_Shadow">
+                            <div class="x_content">
+                                <h3 style="color: black">總未交量</h3>
+                                <div class="h2 text-success count" style="color: darkred"><b><%=未交量總計 %> 台</b></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="x_title">
+                        <h2><span style='color: blue;'>催料單 <%=催料日期_RC %>
+                            <br />
+                            預交日 <%=dt_st %>~<%=dt_ed %></span> 未交物料列表<small></small></h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <p class="text-muted font-13 m-b-30">
+                        </p>
+                        <table id="datatable-buttons" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
+                            <thead>
+                                <tr id="tr_row">
+                                    <%=th%>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%= tr %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-----------------/content------------------>
+    </div>
+    <!-- set Modal -->
+    <!--<div class="backdrop">
+    </div>
+    <div class="fab child" data-subitem="1" data-toggle="modal" data-target="#exampleModal">
+        <span>
+            <i class="fa fa-search"></i>
+        </span>
+    </div>
+    <div class="fab" id="masterfab">
+        <span>
+            <i class="fa fa-list-ul"></i>
+        </span>
+    </div>
+    <!--/set Modal-->
+    <!-- Modal -->
+    <div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title modaltextstyle" id="myModalLabel2"><i class="fa fa-file-text"></i>資料檢索精靈</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="testmodal2" style="padding: 5px 20px;">
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>供應商</b></i>
+                            </h5>
+                            <!--2019.07.08 autocomplete call webService(ru)-->
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <asp:TextBox ID="textbox_dt1" CssClass="form-control" Text="" runat="server" placeholder="請輸入供應商代碼"></asp:TextBox>
+                                    <%--<input type="text" id="txt_supplier" class="form-control" placeholder="請輸入供應商簡稱">--%>
+                                    <input type="hidden" id="hidden2" runat="server" />
+                                </div>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>供應商簡稱</b></i>
+                            </h5>
+                            <!--2019.07.08 autocomplete call webService(ru)-->
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <asp:TextBox ID="textbox_dt2" CssClass="form-control" Text="" runat="server" placeholder="請輸入供應商簡稱"></asp:TextBox>
+                                    <%--<input type="text" id="txt_supplier" class="form-control" placeholder="請輸入供應商簡稱">--%>
+                                    <input type="hidden" id="hidden1" runat="server" />
+                                </div>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>品號</b></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <asp:TextBox ID="textbox_item" CssClass="form-control" Text="" runat="server" placeholder="請輸入品號關鍵字"></asp:TextBox>
+                                </div>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>催料單號</b></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <asp:TextBox ID="textbox_BillNo" CssClass="form-control" Text="" runat="server" placeholder="請輸入催料單號"></asp:TextBox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>催料預交日</b> <small><b>(ex:yyyyMMdd)</b></small></i> <i id="cbx_remind"></i>
+                            </h5>
+                            <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                            <input type="text" class="form-control has-feedback-left" id="d_start" name="txt_time_start" value="" runat="server" placeholder="開始日期" aria-describedby="inputSuccess2Status2" autocomplete="off">
+                                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                            <span id="inputSuccess2Status1" class="sr-only">(success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                                            <input type="text" class="form-control has-feedback-left " id="d_end" name="txt_time_end" value="" runat="server" placeholder="結束日期" aria-describedby="inputSuccess2Status2" autocomplete="off">
+                                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                            <span id="inputSuccess2Status2" class="sr-only">(success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出作業</button>
+                    <asp:Button ID="button_select" runat="server" Text="搜尋" class="btn btn-primary" OnClick="button_select_Click" Style="display: none" />
+                    <button id="btncheck" type="button" class="btn btn-primary antosubmit2">搜尋</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Modal -->
+    <!-- jQuery -->
+    <script src="../../assets/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../../assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../../assets/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../../assets/vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../../assets/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../../assets/vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../../assets/vendors/moment/min/moment.min.js"></script>
+    <script src="../../assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../../assets/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../../assets/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../../assets/vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../../assets/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../../assets/vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../assets/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Autosize -->
+    <script src="../../assets/vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../../assets/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../../assets/vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../assets/build/js/custom.min.js"></script>
+    <!-- FloatingActionButton -->
+    <script src="../../assets/vendors/FloatingActionButton/js/index.js"></script>
+    <!-- canvasjs -->
+    <script src="../../assets/vendors/canvas_js/canvasjs.min.js"></script>
+    <!-- Datatables -->
+    <script src="../../assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../../assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <!-- 2019.07.05 autocomplete -->
+    <script src="../../assets/vendors/jquery/dist/jquery-ui.min.js"></script>
+    <script>
+        $("#txt_supplier").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "SupplierShortage.aspx/Search",
+                    data: "{'FACTNM2':'" + document.getElementById('txt_supplier').value + "'}",
+                    dataType: "json",
+                    success: function (data) {
+                        response(data.d);
+                    },
+                    error: function (result) {
+                        alert("Error");
+                    }
+                });
+            },
+            select: function (event, ui) {
+                var selectedvalue = ui.item.value;
+                //alert(selectedvalue);
+                document.getElementById('ContentPlaceHolder1_hidden1').value = selectedvalue;
+            }
+        });
+
+        var remind = document.getElementById("cbx_remind");
+        remind.style.color = "#FF3333";
+        $("#btncheck").click(function () {
+            var start_time = document.getElementsByName("ctl00$ContentPlaceHolder1$d_start")[0].value;
+            var end_time = document.getElementsByName("ctl00$ContentPlaceHolder1$d_end")[0].value;
+            var item = document.getElementsByName("ctl00$ContentPlaceHolder1$textbox_item")[0].value;
+            var supplierId = document.getElementsByName("ctl00$ContentPlaceHolder1$textbox_dt1")[0].value;
+            var supplierNM = document.getElementsByName("ctl00$ContentPlaceHolder1$textbox_dt2")[0].value;
+            var BillNo = document.getElementsByName("ctl00$ContentPlaceHolder1$textbox_BillNo")[0].value;
+
+            if (supplierId == "" && supplierNM == "" && start_time == "" && end_time == "" && item == "" && BillNo == "") {
+                remind.innerHTML = "請設定至少一種查詢條件 !";
+            } else {
+                if (start_time != "" && end_time != "") {
+                    var re = /^[0-9]+$/;
+                    if (!re.test(start_time) && !re.test(end_time)) { remind.innerHTML = "只能輸入數字 !"; }
+                    else {
+                        if (start_time.length != 8 || end_time.length != 8) {
+                            remind.innerHTML = "輸入日期格式有誤,請重新檢查 ! !";
+                        } else {
+                            if (start_time <= end_time) {
+                                document.getElementById('<%=button_select.ClientID %>').click();
+                            }
+                            else { remind.innerHTML = "起始日期有誤,請重新檢查 !"; }
+                        }
+                    }
+                }
+                document.getElementById('<%=button_select.ClientID %>').click();
+            }
+        });
+
+    </script>
+</asp:Content>

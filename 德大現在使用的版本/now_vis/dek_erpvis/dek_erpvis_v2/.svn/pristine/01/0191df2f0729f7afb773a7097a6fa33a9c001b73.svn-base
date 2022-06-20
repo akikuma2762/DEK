@@ -1,0 +1,108 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_APS
+{
+    public partial class WorkHourDetail : System.Web.UI.Page
+    {
+
+        public string Super_Link = "";
+        public string G_Order = "";
+        public string O_Order = "";
+        public string T_Order = "";
+        public string color = "";
+        string acc = "";
+        public string get_js = "";
+        public string th = "";
+        public string tr = "";
+        myclass myclass = new myclass();
+        //------------------------------------------------------------事件----------------------------------------------------------
+        //網頁載入事件
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (!IsPostBack)
+                {
+                    Read_Data();
+                    Super_Link = "<ol class=\"breadcrumb_\">" +
+    "<li><u><a href=\"../index.aspx\">首頁 </a></u></li> " +
+    "<li><u><a href=\"../dp_APS/OrderList.aspx\"> 報工清單 </a></u></li> " +
+    "<li><u><a href=\"../dp_APS/WorkHourList.aspx?OrderNum=" + O_Order + "\"> 報工列表 </a></u></li> " +
+     "<li>報工明細</li> " +
+    "</ol>";
+
+                }
+                else { Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>"); }
+            }
+            else Response.Redirect(myclass.logout_url);
+        }
+        //跳至新增畫面
+        protected void Button_Add_Click(object sender, EventArgs e)
+        {
+            string URL = Request.Url.Query;
+            Response.Redirect("WorkHourDetailEdit.aspx" + URL);
+        }
+        //刪除該牌程(還沒做)
+        protected void Button_Delete_Click(object sender, EventArgs e)
+        {
+
+        }
+        //-------------------------------------------------------------方法--------------------------------------------------------
+        //讀取相關資料
+        private void Read_Data()
+        {
+            if (Request.QueryString["WorkHourID"] != null)
+            {
+                string[] str = Request.QueryString["WorkHourID"].Split(',');
+                G_Order = str[0];
+                O_Order = str[1].Split('=')[1];
+                T_Order = str[2].Split('=')[1];
+                Get_Datatable();
+            }
+            else
+                Response.Redirect("OrderList.aspx");
+        }
+        //載入表格
+        private void Get_Datatable()
+        {
+            string[] str = { "人員", "數量", "狀態", "日期", "時間", "", "" };
+            for (int i = 0; i < str.Length - 1; i++)
+                th += "<th>" + str[i] + "</th>";
+
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            string sqlcmd = "select id, staffname as 人員, piece as 數量,status as 狀態,workdate as 日期,worktime as 時間 FROM dek_aps.workhour_detail WHERE project = '" + O_Order + "' and WorkHourID = '" + G_Order + "' and TaskName = '" + T_Order + "'";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+
+            tr = HtmlUtil.Set_Table_Content(dt, str, WorkHourDetail_callback);
+        }
+        //callback事件
+        private string WorkHourDetail_callback(DataRow row, string field_name)
+        {
+            string value = "";
+            if (field_name == "")
+            {
+                value = "<div>" +
+                            "<div class=\"col-md-3 col-sm-3 col-xs-12\">" +
+                                "<b><input type=\"button\"  class=\"btn btn-info\"  id=" + DataTableUtils.toString(row["id"]) + " value = \"編輯明細\" onclick=\"javascript:location.href='WorkHourDetailEdit.aspx?detailID=" + DataTableUtils.toString(row["id"]) + "'\"></b> " +
+                            "</div>" +
+                            "<div class=\"col-md-9 col-sm-9 col-xs-12\">" +
+                                 "<b><input type=\"button\"  class=\"btn btn-danger\"  id=" + DataTableUtils.toString(row["id"]) + " value = \"刪除明細\" ></b>" +
+                            "</div>" +
+                        "</div>";
+            }
+            return "<td>" + value + "</td>\n";
+        }
+
+    }
+}

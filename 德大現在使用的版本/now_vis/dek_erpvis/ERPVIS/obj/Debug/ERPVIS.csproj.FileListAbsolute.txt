@@ -1,0 +1,3 @@
+D:\昱閔交接專案\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Debug\ERPVIS.csproj.CoreCompileInputs.cache
+D:\Project\Program\VIS\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Debug\ERPVIS.csproj.AssemblyReference.cache
+D:\Project\Program\VIS\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Debug\ERPVIS.csproj.CoreCompileInputs.cache

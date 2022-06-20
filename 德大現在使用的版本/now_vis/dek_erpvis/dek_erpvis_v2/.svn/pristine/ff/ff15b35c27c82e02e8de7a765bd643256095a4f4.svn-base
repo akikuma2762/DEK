@@ -1,0 +1,207 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="InactiveInventory.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_WH.InactiveInventory" %>
+<%@ OutputCache duration="10" varybyparam="None" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>呆滯物料統計表 | 德大機械</title>
+     <%=color %>
+    <!--<link href="../../assets/build/css/custom.css" rel="stylesheet" />
+    <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div class="right_col" role="main" style="height:930px">
+        <!-----------------title------------------>
+        <%=path %>
+        <br>
+        <div class="clearfix"></div>
+        <!-----------------/title------------------>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <h4>[搜尋條件] 選擇 <u>
+                        <asp:LinkButton ID="LinkButton1" runat="server" data-toggle="modal" data-target="#exampleModal">'<%=item_type_name %>' (呆滯 >= <%=selected_orver_day %>天)</asp:LinkButton></u> <small></small></h4>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <!-----------------content------------------>
+        <div id="block">
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="title">
+                    </div>
+                    <div class="x_content">
+                        <p class="text-muted font-13 m-b-30">
+                        </p>
+                        <!--<table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">-->
+                        <table id="datatable-buttons" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
+                            <thead>
+                                <tr id="tr_row">
+                                    <%=th%>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%= tr %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-----------------/content------------------>
+    </div>
+    <!-- set Modal -->
+<!--<div class="backdrop">
+    </div>
+    <div class="fab child" data-subitem="1" data-toggle="modal" data-target="#exampleModal">
+        <span>
+            <i class="fa fa-search"></i>
+        </span>
+    </div>
+    <div class="fab" id="masterfab">
+        <span>
+            <i class="fa fa-list-ul"></i>
+        </span>
+    </div>
+    <!--/set Modal-->
+    <!-- Modal -->
+    <div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title modaltextstyle" id="myModalLabel2"><i class="fa fa-file-text"></i>資料檢索精靈</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="testmodal2" style="padding: 5px 20px;">
+                        <div class="form-group">
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>存放儲位</b></i> <i id="cbx_remind"></i>
+                            </h5>
+                            <div class="row">
+                                <asp:CheckBoxList ID="CheckBoxList_spaces" Font-Names="NotoSans" runat="server" CssClass="table-striped">
+                                </asp:CheckBoxList>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>物料類別</b></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="form-group">
+                                        <asp:DropDownList ID="DropDownList_itemtype" Font-Names="NotoSans" runat="server" class="form-control">
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="modaltextstyle">
+                                <i class="fa fa-caret-down"><b>庫存期限 </b><small></small></i><i id="cbx_remind_day"></i>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="form-group">
+                                        <%--<asp:TextBox ID="TextBox_dayval" runat="server" class="form-control" Text="180" placeholder="請輸入期限(數字)"></asp:TextBox>--%>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" value="180" id="TextBox_dayval" name="TextBox_dayval" placeholder="請輸入天數" runat="server" />
+                                            <span class="input-group-addon">天</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出作業</button>
+                    <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_select_Click" Style="display: none" />
+                    <button id="btncheck" type="button"  class="btn btn-primary antosubmit2">執行運算</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal -->
+    <!-- jQuery -->
+    <script src="../../assets/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../../assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../../assets/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- iCheck -->
+    <script src="../../assets/vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../../assets/vendors/moment/min/moment.min.js"></script>
+    <script src="../../assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- Switchery -->
+    <script src="../../assets/vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../assets/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Autosize -->
+    <script src="../../assets/vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../../assets/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../assets/build/js/custom.min.js"></script>
+    <!-- FloatingActionButton -->
+    <script src="../../assets/vendors/FloatingActionButton/js/index.js"></script>
+    <!-- canvasjs -->
+    <script src="../../assets/vendors/canvas_js/canvasjs.min.js"></script>
+    <!-- bootstrap-touchspin-master -->
+    <script src="../../assets/vendors/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.js"></script>
+    <!-- Datatables -->
+    <script src="../../assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/dataTables.buttons.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../../assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <script>
+        $("form input:checkbox").addClass('flat');
+        $("#btncheck").click(function () {
+            var selectedValues = [];
+            // 2019/07/03，有被勾選的存放儲位
+            $("[id*=CheckBoxList_spaces] input:checked").each(function () {
+                selectedValues.push($(this).val());
+            });
+            if (selectedValues.length == 0) {
+                var remind = document.getElementById("cbx_remind");
+                remind.innerHTML = "至少選一項 ! !";
+                remind.style.color = "#FF3333";
+            } else {
+                var day_var = document.getElementById("ContentPlaceHolder1_TextBox_dayval").value;
+                if (day_var != "") {
+                    var re = /^[0-9]+$/;
+                    if (!re.test(day_var)) {
+                        var remind = document.getElementById("cbx_remind_day");
+                        remind.innerHTML = "只能輸入數字 !";
+                        remind.style.color = "#FF3333";
+                    } else {
+                        document.getElementById('<%=button_select.ClientID %>').click();
+                    }
+
+                } else {
+                    var remind = document.getElementById("cbx_remind_day");
+                    remind.innerHTML = "期限不得為空";
+                    remind.style.color = "#FF3333";
+                }
+            }
+        });
+        // 以下目前未使用
+        if ($("#per").text() == 'Y') {
+            document.getElementById("block").innerHTML = '<div class="row top_tiles" style="margin: 10px 0;"><div class="col-md-3 tile"><span><br>總呆滯金額</br></span><h2>$ ' + toCurrency($("#tal").text()) + '</h2><span class="sparkline_two" style="height: 160px;"><span></div></div>';
+        }
+        function toCurrency(num) {
+            var parts = num.toString().split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parts.join('.');
+        }
+
+    </script>
+</asp:Content>

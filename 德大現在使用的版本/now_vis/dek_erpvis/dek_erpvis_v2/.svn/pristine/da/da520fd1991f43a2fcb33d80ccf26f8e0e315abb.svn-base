@@ -1,0 +1,451 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using dek_erpvis_v2.cls;
+using System.Data;
+using Support;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace dek_erpvis_v2.pages.dp_PM
+{
+
+    public partial class Asm_ErrorDetail : System.Web.UI.Page
+    {
+        public string UrlLink = "";
+        public string replace_name = "";
+        public string color = "";
+        public string ColumnsData = "<th class='center'>沒有資料載入</th>";
+        public string RowsData = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        public string NowYear = "";
+        public string NowMonth = "";
+        public string NowDay = "";
+        public string Key = "";
+        public string ErrorType = "";
+        public string LineNum = "";
+        public string LineName = "";
+        public string[] RowsDataArray = new string[5] { "", "", "", "", "" };
+        public string[] ErrorTitleArray = new string[5] { "", "", "", "", "" };
+        public string[] ErrorTitleDisplayType = new string[5] { "nodata", "nodata", "nodata", "nodata", "nodata", };
+        public string[] ErrorTitleDisplayDep = new string[5] { "nodata", "nodata", "nodata", "nodata", "nodata", };
+        public string[] ErrorTitleDisplayStatus = new string[5] { "nodata", "nodata", "nodata", "nodata", "nodata", };
+        public string[] ErrorTitleDisplayStatusColor = new string[5] { "nodata", "nodata", "nodata", "nodata", "nodata", };
+        string acc = "";
+        string RW = "";
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        ShareFunction SFun = new ShareFunction();
+        myclass myclass = new myclass();
+
+        private void GotoCenn()
+        {
+            if (clsDB_sw.IsConnected == true)
+            {
+                clsDB_sw.dbOpen(SFun.GetConnByDekVisTmp);
+                DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+
+                if (clsDB_sw.IsConnected == true)
+                {
+                    try
+                    {
+                        load_page_data();
+                    }
+                    catch
+                    {
+                        Response.Redirect("Asm_ErrorDetail.aspx?key=" + Request.QueryString["key"]);
+                    }
+               
+                }
+         
+                else
+                {
+                    Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                    //SFun.NOdataProcess();
+                }
+            }
+            else
+            {
+                Response.Redirect("Asm_ErrorDetail.aspx?key=" + Request.QueryString["key"]);
+            }
+        }
+        private void GetTableData(string ErrorID, string LineNum)
+        {
+
+            //public string[] ErrorTitleDisplayDep = new string[5];
+            //public string[] ErrorTitleDisplayStatus = new string[5];
+            //public string[] ErrorTitleDisplayStatusColor = new string[5];
+            string[] result;
+            string[] ErrorTitleShow = new string[5] { "", "", "", "", "" };
+            ColumnsData = SFun.GetColumnName("Asm_ErrorDetail");
+            result = SFun.GetMantRowsData(ErrorID, LineNum, ref ErrorTitleShow, ref ErrorTitleDisplayDep, ref ErrorTitleDisplayStatus);
+            if (result[0] != "")
+            {
+                RowsDataArray = result;
+                ErrorTitleArray = ErrorTitleShow;
+            }
+            for (int i = 0; i < ErrorTitleArray.Length; i++)
+            {
+                if (ErrorTitleArray[i] != "")
+                {
+                    ErrorTitleDisplayType[i] = "style = 'display:normal'";
+                    if (ErrorTitleDisplayStatus[i].ToUpper() == "TRUE")
+                    {
+                        ErrorTitleDisplayStatus[i] = "結案";
+                        ErrorTitleDisplayStatusColor[i] = "style = 'color:green'";
+                    }
+                    else
+                    {
+                        ErrorTitleDisplayStatus[i] = "處理中";
+                        ErrorTitleDisplayStatusColor[i] = "style = 'color:red'";
+                    }
+                }
+                else
+                    ErrorTitleDisplayType[i] = "style = 'display:none'";
+            }
+        }
+        private void GetDateToshow()
+        {
+            string[] date = new string[3];
+            date = DateTime.Now.ToString("yyyy-MM-dd").ToString().Split('-');
+            NowYear = date[0];
+            NowMonth = date[1];
+            NowDay = date[2];
+        }
+        private void GetDropDownList_Error(string Key, string LineNum)
+        {
+            // DropDownList_ErrorType.DataTextField = "ErrorName";//default show Text
+            // DropDownList_ErrorType.DataValueField = "ErrorID";
+            DropDownList_ErrorType.DataSource = SFun.GetErrorType(Key, LineNum);
+            DropDownList_ErrorType.DataBind();
+        }
+        private void GetDropDownList_dep(string Acc)
+        {
+            string acc = Acc;
+            DropDownList_depart.DataSource = SFun.Getdepartment(ShareFunction.departmentSelect.列表, ref acc);
+            DropDownList_depart.DataBind();
+            //避免帳號變成採購而發生錯誤
+            if (acc != "德科" && acc != "業務部")
+                DropDownList_depart.SelectedValue = acc;
+        }
+        private void GetDropDownList_Status()
+        {
+            DropDownList_Status.DataSource = SFun.GetErrorProcessStatus();
+            DropDownList_Status.DataBind();
+        }
+        private void load_page_data()
+        {
+            if (GlobalVar.Conn_status == true) //資料庫連線成功要做的事()
+                LoadData();
+            else   //資料庫連線失敗要做的事()
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+        }
+        private void LoadData()
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            string acc = DataTableUtils.toString(userInfo["user_ACC"]);
+            GetDateToshow();
+            List<string> parameterList = new List<string>();
+            if (Request.QueryString["ErrorID"] != null)
+            {
+                parameterList = new List<string>(HtmlUtil.Return_str(Request.QueryString["ErrorID"], "0"));
+                parameterList.RemoveAt(3);
+                parameterList.RemoveAt(1);
+            }
+            else if (Request.QueryString["key"] != null)
+            {
+                parameterList = new List<string>(HtmlUtil.Return_str(Request.QueryString["key"]));
+                parameterList.RemoveAt(4);
+                parameterList.RemoveAt(2);
+                parameterList.RemoveAt(0);
+            }
+
+            if (parameterList.Count != 0)
+            {
+                if (parameterList.Count > 1)
+                {
+                    LineNum = parameterList[1];
+                    LineName = parameterList[2];
+                    SFun.GetConnByDekVisTmp = SFun.CheckConnectSting(parameterList);
+                }
+                Key = parameterList[0];
+                GetDropDownList_Error(Key, LineNum);
+                GetDropDownList_dep(acc);
+                GetDropDownList_Status();
+                GetTableData(Key, LineNum);
+            }
+            else
+                Response.Redirect("Asm_LineTotalView.aspx");
+        }
+        //---------------------------Event----------------------------------------
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            string CompLoacation = "";
+            //HttpCookie CompInfo = Request.Cookies["VisCompany"];
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                //string URL_NAME = "Asm_ErrorDetail";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+
+
+
+                CompLoacation = ShareFunction.Last_Place(acc);
+                while (CompLoacation == "")
+                {
+                    CompLoacation = ShareFunction.Last_Place(acc);
+                    if (CompLoacation != "")
+                        break;
+                }
+
+
+                string save = "";
+                /*此部分防呆用，如果沒有點選臥式就進入的話，新增的資料會跑到立式去，故加上此防呆*/
+                if (Request.QueryString["key"] != null)
+                {
+                    string[] str = HtmlUtil.Return_str(Request.QueryString["key"]);
+                    string catchvalue = str[5];
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                    DataTableUtils.Conn_String = SFun.GetConnByDekdekVisAssmHor;//要加上這一行確定會連結到
+                    DataTable ds = DataTableUtils.GetDataTable("select * from 工作站型態資料表 where 工作站名稱 = '" + catchvalue + "'");
+                    if (ds.Rows.Count > 0)
+                    {
+                        SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                        save = "Hor";
+                    }
+                    else
+                    {
+                        SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
+                        save = "Ver";
+                    }
+
+                    /*20200221修改這裡*/
+                    ShareFunction.Last_Place(acc, save);
+                    /*20200221修改這裡*/
+                    UrlLink = "LineNum=" + str[3] + ",ReqType=Line";
+                    UrlLink = WebUtils.UrlStringEncode(UrlLink);
+                }
+                else if(Request.QueryString["ErrorID"] != null)
+                {
+                    string[] str = HtmlUtil.Return_str(Request.QueryString["ErrorID"],"0");
+                    string catchvalue = str[4];
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                    DataTableUtils.Conn_String = SFun.GetConnByDekdekVisAssmHor;//要加上這一行確定會連結到
+                    DataTable ds = DataTableUtils.GetDataTable("select * from 工作站型態資料表 where 工作站名稱 = '" + catchvalue + "'");
+                    if (ds.Rows.Count > 0)
+                    {
+                        SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                        save = "Hor";
+                    }
+                    else
+                    {
+                        SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
+                        save = "Ver";
+                    }
+
+                    /*20200221修改這裡*/
+                    ShareFunction.Last_Place(acc, save);
+                    /*20200221修改這裡*/
+                    UrlLink = "LineNum=" + str[2] + ",ReqType=Line";
+                    UrlLink = WebUtils.UrlStringEncode(UrlLink);
+                }
+
+                /*-----------------------------------------------------------------------*/
+
+                if (!IsPostBack)
+                {
+                    if (acc == "dek_ex")
+                        SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmTest;
+                    if (CompLoacation.ToUpper().Contains("HOR"))
+                        SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                    GotoCenn();
+                }
+                //}
+                //else
+                //    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管主管申請權限!');location.href='../index.aspx';</script>");
+            }
+            else
+            {
+                //Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管主管申請權限!');location.href='../index.aspx';</script>");
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        protected void Unnamed_ServerClick(object sender, EventArgs e)
+        {
+            string CompLoacation = "";
+            //HttpCookie CompInfo = Request.Cookies["VisCompany"];
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            string msg = "";
+            acc = DataTableUtils.toString(userInfo["user_ACC"]);
+            RW = DataTableUtils.toString(userInfo["USER_RW"]);
+            if (acc != null)//acc!=null && RW=1
+            {
+                List<string> parameterList = new List<string>();
+                if (Request.QueryString["ErrorID"] != null)
+                {
+                    parameterList = new List<string>(HtmlUtil.Return_str(Request.QueryString["ErrorID"], "0"));
+                    parameterList.RemoveAt(3);
+                    parameterList.RemoveAt(1);
+                }
+                else if(Request.QueryString["key"] != null)
+                {
+                    parameterList = new List<string>(HtmlUtil.Return_str(Request.QueryString["key"]));
+                    parameterList.RemoveAt(4);
+                    parameterList.RemoveAt(2);
+                    parameterList.RemoveAt(0);
+                }
+
+
+                Key = parameterList[0];
+                if (parameterList.Count > 1)
+                    LineNum = parameterList[1];
+                if (acc == "dek_ex")
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmTest;
+                CompLoacation = ShareFunction.Last_Place(acc);
+                if (CompLoacation.ToUpper().Contains("HOR"))
+                    SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+                //bool aa = clsDB_sw.IsConnected;
+                //string str = DataTableUtils.Conn_String;
+                string Image_Save = "";
+                if (FileUpload_image.FileName != "")
+                {
+                    foreach (HttpPostedFile postedFile in FileUpload_image.PostedFiles)
+                    {
+                        string ext = Path.GetExtension(postedFile.FileName).Replace(".", "");
+                        Regex regex = new Regex(@"^PNG|JPG|HEIC|HEIF|JPEG|MP4$", RegexOptions.IgnoreCase);
+                        bool ok = regex.IsMatch(ext);
+                        if (ok == true)
+                        {
+                            Image_Save += checkImage(postedFile, Image_Save, ext);
+                        }
+                        else
+                        {
+                            string local = HttpContext.Current.Request.Url.AbsoluteUri;
+                            Response.Write("<script>alert('圖片格式錯誤，無法上傳!');location.href='" + local + "'; </script>");
+                            return;
+                            //  Response.Write("<script>alert('圖片格式錯誤，格式僅限.jpg以及.png!');window.location.href=document.URL;</script>");
+                        }
+                    }
+                }
+
+                if (!SFun.SetMantDataToDataTable(acc, Key, DropDownList_ErrorType.SelectedItem.Text, Mant_Str.Value, DropDownList_depart.SelectedItem.Text, DropDownList_Status.SelectedItem.Text, parameterList, RadioButtonList_Post.SelectedValue, Image_Save))
+                {
+                    msg = "新增異常，請洽管理者協助。";
+                    Response.Write("<script language='javascript'>alert('伺服器回應 : " + msg + "');</script>");
+                }
+                GetTableData(Key, LineNum);
+                LoadData();
+                RadioButtonList1.SelectedIndex = 0;
+                string url = "ErrorID=" + parameterList[0] + ",ErrorLineNum=" + parameterList[1] + ",ErrorLineName=" + parameterList[2];
+                Response.Redirect("../dp_PM/Asm_ErrorDetail.aspx?key=" + WebUtils.UrlStringEncode(url));
+            }
+            else
+            {
+                Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管主管申請權限!');location.href='../index.aspx';</script>");
+            }
+        }
+        //變更圖片名稱(改成日期)
+        private string checkImage(HttpPostedFile postedFile, string Image_Save, string ext)
+        {
+            string replace_name = "";
+            string image_name = "";//最後回傳的
+            string name = "";
+            string path2 = "D:\\Backup_Error_Image\\";
+            if (ext != "")
+            {
+                if (acc == "dek_ex")
+                    DataTableUtils.Conn_String = SFun.GetConnByDekdekVisAssmTest;
+                else
+                    DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+                //找到目前時間
+                string timenow = DateTime.Now.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-');
+                checkName(timenow, Image_Save, out replace_name);
+                //加上副檔名
+                replace_name += "." + ext;
+                postedFile.SaveAs(path2 + replace_name);
+                name = "Backup_Error_Image/" + replace_name;
+                image_name = name + "\n";
+            }
+
+            return image_name;
+        }
+        //看看目前時間是否已被使用
+        private string checkName(string name, string Image_Save, out string replace_name, int num = 1)
+        {
+            if (Image_Save.IndexOf(name) > 0)
+            {
+                name = name.Split('(')[0];
+                name = name + "(" + num + ")";
+                num++;
+                checkName(name, Image_Save, out replace_name, num);
+            }
+            else
+            {
+                replace_name = name;
+            }
+            return name;
+        }
+        protected void RadioButtonList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadData();
+            if (RadioButtonList1.SelectedValue == "維護")
+                GetDropDownList_Error(Key, LineNum);
+            else
+                GetDropDownList_Error(null, null);
+        }
+        protected void bt_del_ServerClick(object sender, EventArgs e)
+        {
+            string Message = "";
+            string CompLoacation = "";
+            //HttpCookie CompInfo = Request.Cookies["VisCompany"];
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            List<string> parameterList = new List<string>();
+            if (Request.QueryString["ErrorID"] != null)
+            {
+                parameterList = new List<string>(HtmlUtil.Return_str(Request.QueryString["ErrorID"], "0"));
+                parameterList.RemoveAt(3);
+                parameterList.RemoveAt(1);
+            }
+            else if (Request.QueryString["key"] != null)
+            {
+                parameterList = new List<string>(HtmlUtil.Return_str(Request.QueryString["key"]));
+                parameterList.RemoveAt(4);
+                parameterList.RemoveAt(2);
+                parameterList.RemoveAt(0);
+            }
+
+
+            acc = DataTableUtils.toString(userInfo["user_ACC"]);
+            Key = parameterList[0];
+
+            CompLoacation = ShareFunction.Last_Place(acc);
+            //if (CompInfo != null)
+            //    CompLoacation = DataTableUtils.toString(CompInfo["Location"]);
+            if (CompLoacation.ToUpper().Contains("HOR"))
+                SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
+            if (acc == "dek_ex")
+                SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmTest;
+            var num = Request.Form["items"];
+            if (num != null && num != "")
+            {
+                Message = SFun.ErrorDetailDeleteProcess(num, acc);
+                // Response.Write("<script>alert('"+ Message + "!')");
+                string url = "ErrorID=" + parameterList[0] + ",ErrorLineNum=" + parameterList[1] + ",ErrorLineName=" + parameterList[2];
+                Response.Write("<script language='javascript'>alert('伺服器回應 : " + Message + "');location.href='" + "../dp_PM/Asm_ErrorDetail.aspx?key=" + WebUtils.UrlStringEncode(url) + "';</script>");
+            }
+            else
+            {
+                Message = "請先選擇刪除項目。";
+                string url = "ErrorID=" + parameterList[0] + ",ErrorLineNum=" + parameterList[1] + ",ErrorLineName=" + parameterList[2];
+                Response.Write("<script language='javascript'>alert('伺服器回應 : " + Message + "');location.href='" + "../dp_PM/Asm_ErrorDetail.aspx?key=" + WebUtils.UrlStringEncode(url) + "';</script>");
+            }
+        }
+    }
+}

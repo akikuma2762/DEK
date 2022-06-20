@@ -1,0 +1,231 @@
+﻿using dek_erpvis_v2.cls;
+using MongoDB.Driver.Builders;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web.Services;
+using System.Xml;
+using System.Globalization;
+
+namespace dek_erpvis_v2.webservice
+{
+    [WebService(Namespace = "http://tempuri.org/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    // 若要允許使用 ASP.NET AJAX 從指令碼呼叫此 Web 服務，請取消註解下列一行。
+    [System.Web.Script.Services.ScriptService]
+    public class dpCNC_MachData : System.Web.Services.WebService
+    {
+        CNCUtils cNC_Class = new CNCUtils();
+        CNC_Web_Data Web_Data = new CNC_Web_Data();
+
+        [WebMethod]
+        public XmlNode GetMachineData()
+        {
+            DataTable dt_data = null;
+            List<string> ls_data = new List<string>();
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            dt_data = DataTableUtils.GetDataTable("mach_type_group", "read_status = 'True'");
+            if (dt_data != null && dt_data.Rows.Count != 0)
+                ls_data = dt_data.Rows[0]["mach_name"].ToString().Split(',').ToList();
+            else
+            {
+                dt_data = DataTableUtils.GetDataTable("select mach_name from mach_info");
+                if (dt_data != null && dt_data.Rows.Count != 0)
+                {
+                    foreach (DataRow row in dt_data.Rows)
+                        ls_data.Add(row.ItemArray[0].ToString());
+                }
+            }
+            XmlDocument xmlDoc = new XmlDocument();
+
+            if (ls_data.Count > 0)
+            {
+                XmlElement xmlElem = xmlDoc.CreateElement("ROOT_MACH");
+                //--------------------------------------
+                if (ls_data != null)
+                {
+                    if (ls_data.Count <= 0)
+                        xmlElem.SetAttribute("count", "0");
+                    else
+                    {
+                        xmlElem.SetAttribute("count", DataTableUtils.toString(ls_data.Count));
+                        xmlDoc.AppendChild(xmlElem);
+                        for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+                        {
+                            XmlElement xmlElemA = xmlDoc.CreateElement("Group");
+                            dt_data = Web_Data.Get_MachInfo(ls_data[iIndex]);
+                            if (dt_data != null)
+                            {
+                                string WorkType, CheckStaff, WorkStaff, MachName, MachShowName, CustomName, ManuId, ProductName, ProductNumber, CraftName, CountTotal, CountToday, ExpCountToday, CountTodayRate, FinishTime, OperRate, MachStatus, AlarmMesg, ProgramRun, ProgramMain;
+                                WorkType = Web_Data.Get_WorkType(dt_data);
+                                CheckStaff = Web_Data.Get_CheckStaff(dt_data);
+                                WorkStaff = Web_Data.Get_WorkStaff(dt_data);
+                                MachName = Web_Data.Get_MachName(dt_data);
+                                MachShowName = Web_Data.Get_MachShowName(dt_data);
+                                CustomName = Web_Data.Get_CustomName(dt_data);
+                                ManuId = Web_Data.Get_ManuID(dt_data);
+                                ProductName = Web_Data.Get_ProductName(dt_data);
+                                ProductNumber = Web_Data.Get_ProductNumber(dt_data);
+                                CraftName = Web_Data.Get_CraftName(dt_data);
+                                CountTotal = Web_Data.Get_CountTotal(dt_data);
+                                CountToday = Web_Data.Get_CountToday(dt_data);
+                                ExpCountToday = Web_Data.Get_ExpCountToday(dt_data);
+                                CountTodayRate = Web_Data.Get_CountTodayRate(dt_data);
+                                FinishTime = Web_Data.Get_FinishTime(dt_data);
+                                OperRate = Web_Data.Get_Operate_Rate(dt_data);
+                                MachStatus = Web_Data.Get_MachStatus(dt_data);
+                                AlarmMesg = Web_Data.Get_AlarmMesg(dt_data);
+                                ProgramRun = Web_Data.Get_ProgramRun(dt_data);
+                                ProgramMain = Web_Data.Get_ProgramMain(dt_data);
+                                //Web_Data.Get_LineTwtter("MnT23WBtSHxfe7E8EQGGbesKgHRAAcUc2GiPH3XHrAG", MachName, dt_data);
+
+                                xmlElemA.SetAttribute("Dev_Name", MachName);
+                                xmlElemA.SetAttribute("checkMachStaff", CheckStaff);
+                                xmlElemA.SetAttribute("prodCustomName", CustomName);
+                                xmlElemA.SetAttribute("prodNo", ProductNumber);
+                                xmlElemA.SetAttribute("curParts", CountTotal);//總件數
+                                xmlElemA.SetAttribute("prod_count", CountToday);//今日生產件數
+                                xmlElemA.SetAttribute("tarParts", ExpCountToday);//預計生產件數
+                                xmlElemA.SetAttribute("partsRate", CountTodayRate);
+                                xmlElemA.SetAttribute("operRate", OperRate);
+                                xmlElemA.SetAttribute("alarmMesg", AlarmMesg);
+                                xmlElemA.SetAttribute("status", MachStatus);
+                                xmlElemA.SetAttribute("workStaff", WorkStaff);
+                                xmlElemA.SetAttribute("prodName", ProductName);
+                                xmlElemA.SetAttribute("progRun", ProgramRun);
+                                xmlElemA.SetAttribute("partsTime", FinishTime);
+                            }
+                            xmlDoc.DocumentElement.AppendChild(xmlElemA);
+                        }
+                        return xmlDoc.DocumentElement;
+                    }
+                }
+                else
+                    xmlElem.SetAttribute("Value", "-1");
+                //------------------------------------------------------------------------
+            }
+            return xmlDoc.DocumentElement;
+        }
+
+        [WebMethod]
+        public XmlNode GetMachStatus(string Mach_ID, string First_Day, string Last_Day)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            XmlDocument xmlDoc = new XmlDocument();
+            DateTime FirstDay = Convert.ToDateTime(First_Day);
+            DateTime LastDay = Convert.ToDateTime(Last_Day);
+            LastDay = Web_Data.EndTime(LastDay);
+
+            List<string> status_web = new List<string>();
+            List<string> ST_Data_1 = new List<string>();
+            List<string> ST_Data_2 = new List<string>();
+            List<string> ST_Data_3 = new List<string>();
+            string Update_time_date, Start_time_min, Cycle_time_min, Status, Start_time_line, End_time_line;
+            DateTime Start_time, End_time;
+
+            DataTable dt1 = DataTableUtils.GetDataTable("select * from status_history_info where mach_name = '" + Mach_ID + "' and '" + FirstDay.ToString("yyyyMMddHHmmss") + "' >= update_time and enddate_time >= '" + FirstDay.ToString("yyyyMMddHHmmss") + "' and enddate_time <= '" + LastDay.ToString("yyyyMMddHHmmss") + "'");
+            if (dt1 != null && dt1.Rows.Count != 0)
+            {
+                End_time = DateTime.ParseExact(dt1.Rows[0]["enddate_time"].ToString(), "yyyyMMddHHmmss.f", null, DateTimeStyles.AllowWhiteSpaces);
+                Cycle_time_min = "Cycle_time=" + Math.Round(End_time.Subtract(FirstDay).Duration().TotalMinutes, 2, MidpointRounding.AwayFromZero).ToString();
+                Status = "Nc_Status=" + dt1.Rows[0]["status"].ToString();
+
+                Update_time_date = "Update_time=" + FirstDay.ToString("yyyyMMddHHmmss");
+                Start_time_min = "Start_time=0";
+                Start_time_line = "Start_time_line=" + FirstDay.ToString("MMddHHmmss");
+                End_time_line = "End_time_line=" + End_time.ToString("MMddHHmmss");
+
+                ST_Data_1.Add(Update_time_date + "," + Start_time_min + "," + Cycle_time_min + "," + Status + "," + Start_time_line + "," + End_time_line);
+            }
+            DataTable dt2 = DataTableUtils.GetDataTable("select * from status_history_info where mach_name = '" + Mach_ID + "' and '" + FirstDay.ToString("yyyyMMddHHmmss") + "' <= update_time and enddate_time <= '" + LastDay.ToString("yyyyMMddHHmmss") + "'");
+            ST_Data_2 = cNC_Class.Status_Bar_Info(dt2, FirstDay);
+
+            DataTable dt3 = DataTableUtils.GetDataTable("select * from status_currently_info where mach_name = '" + Mach_ID + "'");
+            if (dt3 != null && dt3.Rows.Count != 0)
+            {
+                Start_time = DateTime.ParseExact(dt3.Rows[0]["update_time"].ToString(), "yyyyMMddHHmmss.f", null, DateTimeStyles.AllowWhiteSpaces);
+
+                if (Start_time > FirstDay)
+                {
+                    Update_time_date = "Update_time=" + dt3.Rows[0]["update_time"].ToString().Split('.')[0];
+                    Start_time_min = "Start_time=" + Math.Round(Start_time.Subtract(FirstDay).Duration().TotalMinutes, 2, MidpointRounding.AwayFromZero).ToString();
+                    Cycle_time_min = "Cycle_time=" + Math.Round(LastDay.Subtract(Start_time).Duration().TotalMinutes, 2, MidpointRounding.AwayFromZero).ToString();
+                    Start_time_line = "Start_time_line=" + dt3.Rows[0]["update_time"].ToString().Substring(4, 10);
+                }
+                else
+                {
+                    Update_time_date = "Update_time=" + FirstDay.ToString("yyyyMMddHHmmss");
+                    Start_time_min = "Start_time=0";
+                    Cycle_time_min = "Cycle_time=" + Math.Round(LastDay.Subtract(FirstDay).Duration().TotalMinutes, 2, MidpointRounding.AwayFromZero).ToString();
+                    Start_time_line = "Start_time_line=" + FirstDay.ToString("MMddHHmmss");
+                }
+                Status = "Nc_Status=" + dt3.Rows[0]["status"].ToString();
+
+                End_time_line = "End_time_line=" + LastDay.ToString("yyyyMMddHHmmss").Substring(4, 10);
+
+                ST_Data_3.Add(Update_time_date + "," + Start_time_min + "," + Cycle_time_min + "," + Status + "," + Start_time_line + "," + End_time_line);
+            }
+
+            status_web = ST_Data_1.Concat(ST_Data_2).ToList<string>().Concat(ST_Data_3).ToList<string>();
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Update_time");
+            dt.Columns.Add("Start_time");
+            dt.Columns.Add("Cycle_time");
+            dt.Columns.Add("Nc_Status");
+            dt.Columns.Add("Start_time_line");
+            dt.Columns.Add("End_time_line");
+
+            foreach (string val in status_web)
+            {
+                string data_str = "";
+                DataRow row = dt.NewRow();
+                data_str = val;
+                row["Update_time"] = data_str.Split(',')[0].Split('=')[1];
+                row["Start_time"] = data_str.Split(',')[1].Split('=')[1];
+                row["Cycle_time"] = data_str.Split(',')[2].Split('=')[1];
+                row["Nc_Status"] = data_str.Split(',')[3].Split('=')[1];
+                row["Start_time_line"] = "開始時間：" + data_str.Split(',')[4].Split('=')[1].Substring(0, 2) + "/" + data_str.Split(',')[4].Split('=')[1].Substring(2, 2) + " " +
+                                         data_str.Split(',')[4].Split('=')[1].Substring(4, 2) + ":" + data_str.Split(',')[4].Split('=')[1].Substring(6, 2) + ":" + data_str.Split(',')[4].Split('=')[1].Substring(8, 2);
+                row["End_time_line"] = "結束時間：" + data_str.Split(',')[5].Split('=')[1].Substring(0, 2) + "/" + data_str.Split(',')[5].Split('=')[1].Substring(2, 2) + " " +
+                                       data_str.Split(',')[5].Split('=')[1].Substring(4, 2) + ":" + data_str.Split(',')[5].Split('=')[1].Substring(6, 2) + ":" + data_str.Split(',')[5].Split('=')[1].Substring(8, 2);
+                dt.Rows.Add(row);
+            }
+
+            XmlElement xmlElem = xmlDoc.CreateElement("ROOT");
+            if (dt != null)
+            {
+                if (dt.Rows.Count == 0)
+                {
+                    xmlElem.SetAttribute("Value", "0");
+                    xmlDoc.AppendChild(xmlElem);
+                    return xmlDoc.DocumentElement;
+                }
+                xmlElem.SetAttribute("Value", dt.Rows.Count.ToString());
+
+                xmlDoc.AppendChild(xmlElem);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    XmlElement xmlElemA = xmlDoc.CreateElement("Group");
+                    xmlElemA.SetAttribute("Nc_Status", dr["Nc_Status"].ToString());
+                    xmlElemA.SetAttribute("Cycle_time", dr["Cycle_time"].ToString());
+                    xmlElemA.SetAttribute("Start_time", dr["Start_time"].ToString());
+                    xmlElemA.SetAttribute("Update_time", dr["Update_time"].ToString());
+                    xmlElemA.SetAttribute("Start_time_line", dr["Start_time_line"].ToString());
+                    xmlElemA.SetAttribute("End_time_line", dr["End_time_line"].ToString());
+                    xmlDoc.DocumentElement.AppendChild(xmlElemA);
+                }
+                return xmlDoc.DocumentElement;
+            }
+            else
+            {
+                xmlElem.SetAttribute("Value", "-1");
+            }
+            xmlDoc.AppendChild(xmlElem);
+            return xmlDoc.DocumentElement;
+        }
+    }
+}

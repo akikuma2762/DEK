@@ -1,0 +1,301 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.SYS_CONTROL
+{
+    public partial class rights_mag_details : BasePage
+    {
+        public string color = "";
+        string acc = "";
+        string dpm = "";
+        string adm = "";
+        public string selected_user_name = "";
+        string selected_user_acc = "";
+        myclass myclass = new myclass();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+                GlobalVar.Open();
+
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                dpm = DataTableUtils.toString(userInfo["user_DPM"]);
+                adm = check_user_power(acc);
+                if (adm == "Y")
+                {
+                    //if (!IsPostBack)
+                    //{
+                    GotoCenn();
+                    iniDropdownlist();
+                    //}
+                }
+                else
+                {
+                    Response.Redirect("rights_mag.aspx", false);
+                }
+
+                if (acc == "visrd")
+                    Panel1.Visible = true;
+            }
+            else
+            {
+                Response.Redirect("rights_mag.aspx", false);
+            }
+
+
+            int i = 0;
+            foreach (Control ctl in this.Panel_contr.Controls)
+            {
+                if (ctl is CheckBoxList)
+                {
+                    i++;
+                }
+            }
+        }
+        private void GotoCenn()
+        {
+            load_page_data();
+            Label_code.Text = new Random().Next(9999).ToString();
+            TextBox_code.Text = "";
+        }
+        private void iniDropdownlist()
+        {
+            DropDownList_dmt.Items.Clear();
+            string sqlcmd = 德大機械.控制台_權限管理.取得部門("SYS");
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+            if (dt != null)
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    sqlcmd = 德大機械.控制台_權限管理.取得用戶個人資訊(selected_user_acc);
+                    DataTable dr = DataTableUtils.GetDataTable(sqlcmd);
+                    string dpm = DataTableUtils.toString(dr.Rows[0]["USER_DPM"]);
+                    ListItem li = new ListItem("--請選擇--", "NULL");
+                    DropDownList_dmt.Items.Add(li);
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        li = new ListItem(DataTableUtils.toString(row["DPM_NAME2"]), DataTableUtils.toString(row["DPM_NAME"]));
+                        if (DataTableUtils.toString(row["DPM_NAME"]) == dpm)
+                        {
+                            li.Selected = true;
+                        }
+                        DropDownList_dmt.Items.Add(li);
+                    }
+                    dr.Clear();
+                    dr.Dispose();
+                }
+            }
+            dt.Clear();
+            dt.Dispose();
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            string passwrod = DataTableUtils.toString(HttpContext.Current.Request.QueryString["password_"]);
+            if (passwrod != "")
+            {
+                string url = DataTableUtils.toString(myclass.Base64Decode(passwrod));
+                if (url != "")
+                {
+                    selected_user_acc = url.Split(',')[0].Split('=')[1];
+                    selected_user_name = url.Split(',')[1].Split('=')[1];
+                    set_control_panel();
+                    set_selected_user_data();
+                }
+                else
+                {
+                    Response.Redirect("rights_mag.aspx", false);
+                }
+            }
+            else
+            {
+                Response.Redirect("rights_mag.aspx", false);
+            }
+        }
+        private void set_control_panel()
+        {
+            int i = 0;
+            string sql_cmd = 德大機械.控制台_權限管理.取得部門_依網頁();
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            Panel_contr.Controls.Add(new LiteralControl("<div class=\"row\">\n"));
+            foreach (DataRow row in dt.Rows)
+            {
+                i += 2;
+                if (i % 12 == 0)
+                {
+                    Panel_contr.Controls.Add(new LiteralControl("<div class=\"row\">\n"));
+                    Panel_contr_Add(row);
+                    Panel_contr.Controls.Add(new LiteralControl("</div>\n"));
+                }
+                else
+                {
+                    Panel_contr_Add(row);
+                }
+            }
+            Panel_contr.Controls.Add(new LiteralControl("</div>\n"));
+        }
+        private void set_selected_user_data()
+        {
+            string sqlcmd = 德大機械.控制台_權限管理.取得用戶個人資訊(selected_user_acc);
+            DataRow row = DataTableUtils.DataTable_GetDataRow(sqlcmd);
+            if (row != null)
+            {
+                TextBox_fullname.Text = DataTableUtils.toString(row["USER_NAME"]);
+                TextBox_num.Text = DataTableUtils.toString(row["USER_NUM"]);
+                TextBox_birthday.Value = DataTableUtils.toString(row["USER_BIRTHDAY"]);
+                TextBox_email.Text = DataTableUtils.toString(row["USER_EMAIL"]);
+                Label_psd.Text = DataTableUtils.toString(row["USER_PWD"]);
+            }
+        }
+        private void Panel_contr_Add(DataRow row)
+        {
+            Panel_contr.Controls.Add(new LiteralControl("<div class=\"col-md-3 col-sm-4 col-xs-12\">\n"));
+            Panel_contr.Controls.Add(new LiteralControl("<label class=\"control-label \">" + DataTableUtils.toString(row["DPM_NAME2"]) + " " + DataTableUtils.toString(row["WEB_DPM"]) + "</label>\n"));
+            Panel_contr.Controls.Add(new LiteralControl("<div class=\"\">\n"));
+            Panel_contr.Controls.Add(new LiteralControl("<label>\n"));
+            set_createCheckBoxList(DataTableUtils.toString(row["WEB_DPM"]));
+            Panel_contr.Controls.Add(new LiteralControl("</label>\n"));
+            Panel_contr.Controls.Add(new LiteralControl("</div>\n"));
+            Panel_contr.Controls.Add(new LiteralControl("</div>\n"));
+        }
+        private void set_createCheckBoxList(string dep_item)
+        {
+            CheckBoxList checkBoxList = new CheckBoxList();
+            checkBoxList.ID = "checkBoxList" + dep_item;
+            checkBoxList.CssClass = "table-striped";
+            get_checkBoxList_Item(checkBoxList, dep_item);
+            Panel_contr.Controls.Add(checkBoxList);
+        }
+        private void get_checkBoxList_Item(CheckBoxList CheckBoxList, string dep_item)
+        {
+            ListItem listItem = null;
+            string sql_cmd = "select a.*, (CASE WHEN b.USER_ACC is null THEN '' ELSE b.USER_ACC END ) as USER_ACC from (select WEB_PAGES.WEB_DPM, WEB_PAGES.WEB_PAGENAME, WEB_PAGES.WEB_URL ,web_pages.web_open FROM WEB_PAGES) as a left join (SELECT WB_URL,USER_ACC FROM WEB_USER where USER_ACC = '" + selected_user_acc + "') as b on a.WEB_URL = b.WB_URL  where a.WEB_DPM = '" + dep_item + "' and a.WEB_open = 'Y'  ";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            foreach (DataRow row in dt.Rows)
+            {
+                listItem = new ListItem(DataTableUtils.toString(row["WEB_PAGENAME"]), DataTableUtils.toString(row["WEB_URL"]));
+                if (DataTableUtils.toString(row["USER_ACC"]) != "")
+                {
+                    listItem.Selected = true;
+                }
+                else
+                {
+                    listItem.Selected = false;
+                }
+                CheckBoxList.Items.Add(listItem);
+            }
+
+        }
+        private string check_user_power(string acc_)
+        {
+            DataRow row = DataTableUtils.DataTable_GetDataRow("USERS", "USER_ACC = '" + acc_ + "'");
+            return DataTableUtils.toString(row["ADM"]);
+        }
+        protected void Button_right_Click(object sender, EventArgs e)
+        {
+            if (!this.IsRefresh)
+            {
+                string msg = "";
+                string sqlcmd = "";
+                int ran = myclass.get_ran_id();
+                DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+                DataTableUtils.Delete_Record("WEB_USER", "user_acc = '" + selected_user_acc + "'");
+                foreach (Control cbxlist in this.Panel_contr.Controls)
+                {
+                    if (cbxlist is CheckBoxList)
+                    {
+                        foreach (ListItem li in ((CheckBoxList)cbxlist).Items)
+                        {
+                            if (li.Selected == true)
+                            {
+                                ran = ran + 1;
+                                sqlcmd += "INSERT INTO WEB_USER (WU_ID,WB_URL, USER_ACC,VIEW_NY) VALUES ('" + "WU" + ran + "','" + DataTableUtils.toString(li.Value) + "', '" + selected_user_acc + "','Y')";
+                            }
+                        }
+                    }
+                }
+                int i = DataTableUtils.ExecSQL(sqlcmd);
+                msg = selected_user_acc + "已異動! 可瀏覽頁面數 : " + i + "頁";
+                Response.Write("<script language='javascript'>alert('伺服器回應 : " + msg + "');</script>");
+            }
+        }
+
+        protected void Button_info_Click(object sender, EventArgs e)
+        {
+            if (!this.IsRefresh)
+            {
+                string tablename = "users";
+                string sql_condi = "USER_ACC = '" + selected_user_acc + "'";
+                bool OK = false;
+                string sqlcmd = "SELECT * FROM USERS where USER_NUM = '" + TextBox_num.Text.ToString() + "' and USER_ACC != '" + selected_user_acc + "'";
+                DataTable dr = DataTableUtils.DataTable_GetTable(sqlcmd);
+                if (dr.Rows.Count <= 0)
+                {
+                    DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+                    DataRow row = DataTableUtils.DataTable_GetDataRow(tablename, sql_condi);
+                    if (row != null)
+                    {
+                        row["USER_NAME"] = TextBox_fullname.Text.Trim();
+                        row["USER_BIRTHDAY"] = TextBox_birthday.Value.Trim();
+                        row["USER_EMAIL"] = TextBox_email.Text.Trim();
+                        row["USER_DPM"] = DropDownList_dmt.SelectedValue;
+                        row["USER_NUM"] = TextBox_num.Text.Trim();
+                        OK = DataTableUtils.Update_DataRow(tablename, sql_condi, row);
+                        if (OK == true)
+                        {
+                            Response.Write("<script language='javascript'>alert('伺服器回應 : 基本資料修改成功!');</script>");
+                        }
+                        else
+                        {
+                            Response.Write("<script language='javascript'>alert('伺服器回應 : 無法更新資料!請重新檢查您的項目或聯絡德科人員。');</script>");
+                        }
+                    }
+                }
+                else
+                {
+                    Response.Write("<script language='javascript'>alert('伺服器回應 : 此手機號碼已被登錄註冊! 請輸入其它號碼!');</script>");
+                }
+            }
+        }
+
+        protected void Button_pwd_Click(object sender, EventArgs e)
+        {
+            if (!this.IsRefresh)
+            {
+                string newpwd = TextBox_pwd1.Text;
+                string tablename = "users";
+                string sql_condi = "USER_ACC = '" + selected_user_acc + "'";
+                bool OK = false;
+                DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+                DataRow row = DataTableUtils.DataTable_GetDataRow(tablename, sql_condi);
+                if (row != null)
+                {
+                    row["USER_PWD"] = newpwd;
+                    OK = DataTableUtils.Update_DataRow(tablename, sql_condi, row);
+                    if (OK == true)
+                    {
+                        Response.Write("<script>alert('伺服器回應 : 密碼修改成功!請使用新密碼重新登入帳號!');</script>");
+                    }
+                    else
+                    {
+                        Response.Write("<script language='javascript'>alert('伺服器回應 : 無法更新資料!請重新檢查您的項目或聯絡德科人員。');</script>");
+                    }
+                }
+                else
+                {
+                    Response.Write("<script language='javascript'>alert('伺服器回應 : 原密碼錯誤!請重新檢查您的項目或聯絡德科人員。');</script>");
+                }
+            }
+        }
+    }
+}

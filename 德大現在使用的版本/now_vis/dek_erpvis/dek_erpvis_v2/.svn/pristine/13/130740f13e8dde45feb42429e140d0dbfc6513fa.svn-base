@@ -1,0 +1,337 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_PD
+{
+    public partial class materialrequirementplanning1 : System.Web.UI.Page
+    {
+        public string color = "";
+        public string th = "";
+        public string tr = "";
+        public string title_text = "";
+        public string type = "";
+        public string type_code = "";
+        public string title = "";
+        public string search_condi = "";
+        public string safty_text = "";
+        public string min_text = "";
+        public string chart_card_text = "";
+        public string date_str = "";// DateTime.Now.ToString("yyyy0101");
+        public string date_end = "";// DateTime.Now.ToString("yyyy1231");
+        public string path = "";
+        string URL_NAME = "";
+        string acc = "";
+        string[] str = null;
+        double total_var;
+        double month_var;
+        public string timerange = "";
+        DataTable dw = null;
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        myclass myclass = new myclass();
+        德大機械 德大機械 = new 德大機械();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("PCD");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_PD/materialrequirementplanning.aspx'>物料領用統計表</a></u></li></ol>");
+                URL_NAME = "materialrequirementplanning";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        string[] s = 德大機械.德大專用月份(acc).Split(',');
+                        date_str = s[0];
+                        date_end = s[1];
+                        search_condi = "item.ITEMNM";
+                        get_type();
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    //Response.Redirect(myclass.logout_url);
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+
+        }
+        // 取得物料類別(依'分類'檢索)
+        private void get_type()
+        {
+            type = DataTableUtils.toString(DropDownList_materialstype.SelectedValue);
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        private void 無資料處理()
+        {
+            title_text = "沒有資料載入";
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            Set_Html_Table();
+
+        }
+        private void Set_Html_Table ()
+        {
+            //set other data
+            title_text = DataTableUtils.toString(DropDownList_selectedcondi.SelectedItem) + "" + type + " , " + date_str + " ~ " + date_end + "";
+            string date_s = HtmlUtil.changetimeformat(date_str);
+            string date_e = HtmlUtil.changetimeformat(date_end);
+            timerange = DataTableUtils.toString(DropDownList_selectedcondi.SelectedItem) + "" + type + " , "+date_s + " ~ " + date_e;
+            safty_text = DataTableUtils.toString(DataTableUtils.toDouble(DataTableUtils.toString(demo_vertical3.Value)));   // 安全庫存量
+            min_text = DataTableUtils.toString(DataTableUtils.toDouble(DataTableUtils.toString(demo_vertical2.Value)));     // 最小採購量
+            //chart_card_text = type_code + "/" + type;
+
+            //set table data
+            string sqlcmd = 德大機械.資材部_物料領用統計.用途說明(type, search_condi, date_str, date_end);
+            DataTable dt = clsDB_sw.GetDataTable(sqlcmd);
+            if (dt.Rows.Count > 0)
+            {
+                th = "<th>品號</th>\n";
+                th += "<th>品名規格</th>\n";
+                th += HtmlUtil.Set_Table_Title(dt, out title, "用途說明");
+                th += "<th>總計</th>\n";
+                th += "<th>月用量</th>\n";
+                th += "<th>安全存量 (x" + safty_text + ")</th>\n";
+                th += "<th>最小採購量 (x" + min_text + ")</th>\n";
+                th += "<th>使用客戶與數量</th>\n";
+            }
+            else
+            {
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+            title = "品號,品名規格," + title + "總計,月用量,安全存量(x" + safty_text + "),最小採購量 (x" + min_text + "),使用客戶與數量,";
+            //-----------------------------------------------------------------------------------------------------
+            str = title.Split(',');
+            string selected = DataTableUtils.toString(DropDownList_selectedcondi.SelectedValue);
+            sqlcmd = 德大機械.資材部_物料領用統計.品名總領料列表(type, selected, search_condi, date_str, date_end, get_WordCounter());
+            dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            for (int i = 2; i < str.Length - 1; i++)
+                dt.Columns.Add(str[i]);
+
+            string delete_index = "";
+            string item_code_old = "";
+            string item_code_new = "";
+            if (DropDownList_substring.SelectedValue == "Y")
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    item_code_new = DataTableUtils.toString(dt.Rows[i]["品號"]);
+                    if (item_code_new == item_code_old)
+                    {
+                        int old_val = DataTableUtils.toInt(DataTableUtils.toString(dt.Rows[i - 1]["總領料數"]).Split('.')[0]);
+                        int new_val = DataTableUtils.toInt(DataTableUtils.toString(dt.Rows[i]["總領料數"]).Split('.')[0]);
+                        dt.Rows[i]["總領料數"] = old_val + new_val;
+                        delete_index += i - 1 + ",";
+                    }
+                    item_code_old = item_code_new;
+                }
+
+                for (int i = delete_index.Split(',').Length - 1; i >= 0; i--)
+                {
+                    if (delete_index.Split(',')[i] != "")
+                    {
+                        dt.Rows.RemoveAt(DataTableUtils.toInt(DataTableUtils.toString(delete_index.Split(',')[i])));
+                    }
+                }
+            }
+            dt.Dispose();
+            tr = HtmlUtil.Set_Table_Content(dt, title, materialrequirementplanning_callback);
+        }
+        private string materialrequirementplanning_callback(DataRow row, string field_name)
+        {
+            string value = "";
+            if (field_name == "品號")
+            {
+                string url = HtmlUtil.AttibuteValue("item_code", DataTableUtils.toString(row["品號"]), "") + "," +
+                    HtmlUtil.AttibuteValue("date_str", date_str, "") + "," +
+                    HtmlUtil.AttibuteValue("date_end", date_end, "");
+                string href = string.Format("materialrequirementplanning_details.aspx?key={0}",
+                    WebUtils.UrlStringEncode(url));
+
+                value = DataTableUtils.toString(row["品號"]);
+                value = HtmlUtil.ToTag("u", HtmlUtil.ToHref(value, href)) ;
+            }
+            if (field_name != "品號" && field_name != "品名規格" && field_name != "總計" && field_name.Contains("量")==false)
+            {
+                if(field_name == str[2])
+                {
+                    string sqlcmd = 德大機械.資材部_物料領用統計.品號領料細項(DataTableUtils.toString(row["品號"]), date_str, date_end);
+                    dw = clsDB_sw.DataTable_GetTable(sqlcmd);
+                }           
+                int tar = 0;
+                string check = "";
+                Response.Write(value);
+                Response.Flush();
+                Response.Clear();
+                for (int i =0;i<dw.Rows.Count;i++)
+                {
+                    if (field_name == DataTableUtils.toString(dw.Rows[i]["用途說明"]))
+                    {
+                        tar = i;
+                        check += "true,";
+                    }
+                    else
+                    {
+                        check += "false,";
+                    }
+                }
+                if (check.IndexOf("true") != -1)
+                {
+                    value =  DataTableUtils.toString(dw.Rows[tar]["領料數"]).Split('.')[0];
+                }
+                else
+                {
+                    value = "0";
+                }
+                dw.Dispose();
+            }
+            if(field_name == "總計")
+            {
+                total_var = 0;
+                total_var = DataTableUtils.toInt(DataTableUtils.toString(row["總領料數"]).Split('.')[0]); 
+                value = DataTableUtils.toString(total_var);
+            }
+            if (field_name == "月用量")
+            {
+                month_var = 0;
+                month_var = total_var / DaysBetween(date_str, date_end);
+                value = month_var.ToString("0.00");
+            }
+            if (field_name == "安全存量(x" + safty_text + ")")
+            {
+                double save = month_var * DataTableUtils.toDouble(demo_vertical3.Value);
+                value = save.ToString("0.00");
+            }
+            if (field_name == "最小採購量 (x" + min_text + ")")
+            {
+                double min = month_var * DataTableUtils.toDouble(demo_vertical2.Value);
+                value = min.ToString("0.00");
+            }
+            if(field_name == "使用客戶與數量")
+            {
+                string sqlcmd = 德大機械.資材部_物料領用統計詳細.品號領料紀錄(DataTableUtils.toString(row["品號"]), date_str, date_end);
+                DataTable dr = clsDB_sw.DataTable_GetTable(sqlcmd);
+
+                string company = "", custText = "";
+                double total = 0;
+                for (int i = 0; i < dr.Rows.Count; i++)
+                {
+                    string cust = DataTableUtils.toString(dr.Rows[i]["使用客戶"]);
+                    double count = DataTableUtils.toDouble(DataTableUtils.toString(dr.Rows[i]["領料數量"]));
+                    if (company == cust)
+                    {
+                        total += count;
+                    }
+                    else if (company != cust)
+                    {
+                        if (total != 0)
+                        {
+                            custText += company + ":" + total.ToString("0") + ", ";
+                        }
+                        company = cust;
+                        total = 1;
+                    }
+
+                    if (i == dr.Rows.Count - 1)
+                    {
+                        custText += company + ":" + total.ToString("0") + ", ";
+                    }
+                }
+                value = custText;
+            }
+            return "<td>" + value + "</td>\n";
+        }
+
+        private int DaysBetween(string date_str, string date_end)
+        {
+            DateTime dt1 = DateTime.ParseExact(date_str, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture);
+            DateTime dt2 = DateTime.ParseExact(date_end, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture);
+            int ans = (dt2.Year - dt1.Year) * 12 + (dt2.Month - dt1.Month);
+            if (ans <= 0) ans = 1;
+            return ans;
+        }
+        private void get_search_parameter()
+        {
+            string radio_list = RadioButtonList_select_type.SelectedValue;
+            switch (radio_list)
+            {
+                case "0"://品名
+                    search_condi = "item.ITEMNM";
+                    type = DataTableUtils.toString(DropDownList_materialstype.SelectedValue);
+                    break;
+                case "1"://料號
+                    search_condi = "ITEMIOS.ITEM_NO";
+                    type = DataTableUtils.toString(TextBox_keyword.Text);
+                    break;
+                case "2"://品名
+                    search_condi = "item.ITEMNM";
+                    type = DataTableUtils.toString(TextBox_keyword.Text);
+                    break;
+                //20191001新增"均不指定"
+                case "3":
+                    search_condi = "item.ITEMNM";
+                    type = "";
+                    break;
+            }
+        }
+        private int get_WordCounter()
+        {
+            int counter = -1;
+            if (DropDownList_substring.SelectedValue == "Y")
+            {
+                counter = DataTableUtils.toInt(DataTableUtils.toString(TextBox_substring.Text)) + 1;
+            }
+            return counter;
+        }
+        //event
+        protected void button_select_Click(object sender, EventArgs e)
+        {
+            get_search_parameter();
+            string[] s = 德大機械.德大專用月份(acc).Split(',');
+            HtmlUtil.Button_Click(DataTableUtils.toString(((Control)sender).ID.Split('_')[1]), s, DataTableUtils.toString(txt_time_str.Value), DataTableUtils.toString(txt_time_end.Value), out date_str, out date_end);
+            GotoCenn();
+            if (DataTableUtils.toString(((Control)sender).ID.Split('_')[1]) != "select")
+            {
+                txt_time_str.Value = "";
+                txt_time_end.Value = "";
+            }
+            TextBox_keyword.Text = "";
+        }
+
+    }
+}

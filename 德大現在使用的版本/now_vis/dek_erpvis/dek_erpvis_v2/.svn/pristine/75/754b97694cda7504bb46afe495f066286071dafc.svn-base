@@ -1,0 +1,394 @@
+﻿using System;
+using Support;
+using dek_erpvis_v2.cls;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI.WebControls;
+using System.Data;
+
+namespace dek_erpvis_v2.pages.dp_CNC
+{
+    public partial class Machine_list_info : System.Web.UI.Page
+    {
+        //丟到前端的資料
+        public string color = "";
+        double mach_count = 0;//機台總數
+        public int run = 0;//運轉
+        public int rest = 0;//待機
+        public int alert = 0;//警告
+        public int noline = 0;//離線
+        public double percent = 0;//稼動率
+        public double progress = 0;//生產進度
+        public string js_code = "";
+        //丟到前端的資料
+        public DateTime FirstDay = new DateTime();
+        public DateTime LastDay = new DateTime();
+        public string str_First_Day = "";
+        public string str_Last_Day = "";
+        public string dev_name = "";
+        public double[] Panel_StatusValue = { 0, 0, 0, 0 };//operate//stop//alarm//disconnect
+
+        public List<string> dev_list = null;
+        public List<string> ls_data = new List<string>();
+        public bool is_ok = false;
+        public DataTable dt_data = null;
+        CNC_Web_Data Web_Data = new CNC_Web_Data();
+
+        public string th = "";
+        public string tr = "";
+        public string area = "";
+        string acc = "";
+        string URL_NAME = "";
+
+        public string str_status = "";
+        public string str_Dev_Name = "";
+        public string str_Dev_Status = "";
+        public bool b_Page_Load = true;
+        myclass myclass = new myclass();
+        CNCUtils cNC_Class = new CNCUtils();
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            str_First_Day = DateTime.Now.ToString("yyyy/MM/dd");
+            str_Last_Day = DateTime.Now.AddDays(1).ToString("yyyy/MM/dd");
+
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                URL_NAME = "Machine_list_info";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        set_page_content();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+        }
+        private void set_page_content()
+        {
+
+            Read_Data();
+            Get_MachType_List();
+            Mach_Info_List("");
+        }
+
+        //fuction         
+        public void Read_Data()
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+            ls_data.Clear();
+            th = "<tr style='background-color:dimgray;color: white;'>\n";
+            //th += "<th>設備名稱</th>\n<th>校機人員</th>\n<th>加工人員</th>\n<th>設備狀態</th>\n<th>設備稼動率</th>\n<th>客戶名稱</th>\n<th>產品名稱</th>\n<th>料件編號</th>\n<th>加工程式</th>\n<th>今日生產件數</th>\n<th>預計生產件數</th>\n<th>預計完工時間</th>\n<th>生產進度(今日/預計)</th>\n<th>異警資訊</th>";
+            th += "<th>設備名稱</th>\n<th>校機人員</th>\n<th>加工人員</th>\n<th>設備狀態</th>\n<th>設備稼動率</th>\n<th>客戶名稱</th>\n<th>產品名稱</th>\n<th>料件編號</th>\n<th>加工程式</th>\n<th>生產進度(今日/預計)</th>\n<th>預計完工時間</th>\n<th>異警資訊</th>";
+            if (b_Page_Load || DropDownList_MachGroup.Text == "--Select--" || DropDownList_MachGroup.Text == "")
+            {
+                DataRow SQL_row = DataTableUtils.DataTable_GetRowHeader("mach_type_group").NewRow();
+                SQL_row["read_status"] = "False";
+                DataTableUtils.Update_DataRow("mach_type_group", "read_status = 'True'", SQL_row);
+                is_ok = DataTableUtils.Update_DataRow("mach_type_group", "read_status = 'True'", SQL_row);
+                foreach (DataRow row in DataTableUtils.GetDataTable("select mach_name from mach_info").Rows)
+                    ls_data.Add(row.ItemArray[0].ToString());
+            }
+            else
+                ls_data = DataTableUtils.GetDataTable("select mach_name from mach_group where group_name = '" + DropDownList_MachGroup.SelectedItem.Text + "'").Rows[0].ItemArray[0].ToString().Split(',').ToList();
+            mach_count = ls_data.Count;
+            if (ls_data != null && ls_data.Count != 0)
+            {
+                for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+                {
+                    dt_data = Web_Data.Get_MachInfo(ls_data[iIndex]);
+                    dev_name = ls_data[iIndex];
+                    if (dt_data != null)
+                    {
+                        string WorkType, CheckStaff, WorkStaff, MachName, MachShowName, CustomName, ManuId, ProductName, ProductNumber, CraftName, CountTotal, CountToday, ExpCountToday, CountTodayRate, FinishTime, StatusBar, OperRate, MachStatus, AlarmMesg, ProgramRun, ProgramMain;
+                        WorkType = Web_Data.Get_WorkType(dt_data);//工作型態
+                        CheckStaff = Web_Data.Get_CheckStaff(dt_data);//Y校機人員2
+                        WorkStaff = Web_Data.Get_WorkStaff(dt_data);//Y加工人員3
+                        MachName = Web_Data.Get_MachName(dt_data);//設備名稱
+                        MachShowName = Web_Data.Get_MachShowName(dt_data);//Y設備名稱1
+                        CustomName = Web_Data.Get_CustomName(dt_data);//Y客戶名稱5
+                        ManuId = Web_Data.Get_ManuID(dt_data);//Y製令單號6
+                        ProductName = Web_Data.Get_ProductName(dt_data);//Y產品名稱7
+                        ProductNumber = Web_Data.Get_ProductNumber(dt_data);//Y產品編號8
+                        CraftName = Web_Data.Get_CraftName(dt_data);//Y工藝名稱9
+                        CountTotal = Web_Data.Get_CountTotal(dt_data);//Y生產總數11             //註解
+                        CountToday = Web_Data.Get_CountToday(dt_data);//Y生產件數(當日)12         //註解
+                        ExpCountToday = Web_Data.Get_ExpCountToday(dt_data);//Y目標件數(當日)13
+                        CountTodayRate = Web_Data.Get_CountTodayRate(dt_data);//Y生產進度(當日)14       //註解
+                        FinishTime = Web_Data.Get_FinishTime(dt_data);//ok                 //註解  
+                        StatusBar = ls_data[iIndex];//狀態Bar
+                        OperRate = Web_Data.Get_Operate_Rate(dt_data);
+                        MachStatus = Web_Data.Get_MachStatus(dt_data);
+                        str_status = MachStatus;
+                        AlarmMesg = Web_Data.Get_AlarmMesg(dt_data);//Y異警資訊16               //註解
+                        ProgramRun = Web_Data.Get_ProgramRun(dt_data);//主程式                 //註解               
+                        ProgramMain = Web_Data.Get_ProgramMain(dt_data);//Y執行程式10           //註解
+                                                                        //Web_Data.Get_LineTwtter("MnT23WBtSHxfe7E8EQGGbesKgHRAAcUc2GiPH3XHrAG", MachName, dt_data);//Line通知 
+
+
+                        //當稼動率=非數值時 轉換成0
+                        if (OperRate == "非數值")
+                            OperRate = "0";
+
+                        設定圖塊(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday);
+                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday);
+
+                        if (Check_Status(MachStatus) == "OPERATE") Panel_StatusValue[0] += 1;
+                        else if (Check_Status(MachStatus) == "STOP") Panel_StatusValue[1] += 1;
+                        else if (Check_Status(MachStatus) == "EMERGENCY") Panel_StatusValue[2] += 1;
+                        else if (Check_Status(MachStatus) == "DISCONNECT") Panel_StatusValue[3] += 1;
+
+                        if (iIndex < ls_data.Count - 1) str_Dev_Status += MachStatus + ", ";
+                        else str_Dev_Status += MachStatus;
+                    }
+                }
+                if (!b_Page_Load)//要讓web service判斷哪些設備用
+                {
+                    is_ok = DataTableUtils.Delete_Record("mach_type_group", "");//先刪
+                    dt_data = DataTableUtils.GetDataTable("mach_group", "group_name = '" + DropDownList_MachGroup.SelectedItem.Text + "'");
+                    string group_machname = dt_data.Rows[0]["mach_name"].ToString();
+                    string group_machshowname = dt_data.Rows[0]["mach_show_name"].ToString();
+
+                    dt_data = DataTableUtils.GetDataTable("mach_type_group", "");
+                    DataRow SQL_row = null;
+                    SQL_row = dt_data.NewRow();
+                    SQL_row["mach_type"] = DropDownList_MachType.SelectedItem.Text;
+                    SQL_row["mach_group"] = DropDownList_MachGroup.SelectedItem.Text;
+                    SQL_row["mach_name"] = group_machname;
+                    SQL_row["mach_show_name"] = group_machshowname;
+                    SQL_row["read_status"] = "True";
+                    is_ok = DataTableUtils.Insert_DataRow("mach_type_group", SQL_row);
+                }
+            }
+        }
+        public string Check_Status(string status)
+        {
+            if (status == "ALARM" || status == "EMERGENCY") status = "EMERGENCY";
+            else if (status == "OPERATE" || status == "SUSPEND" || status == "MANUAL" || status == "WARMUP") status = "OPERATE";
+            else if (status == "STOP") status = "STOP";
+            else if (status == "DISCONNECT") status = "DISCONNECT";
+            return status;
+        }
+        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數)
+        {
+            string 設備狀態_色彩 = cNC_Class.mach_status_Color(Check_Status(設備狀態));
+            設備狀態 = cNC_Class.mach_status_EN2CH(Check_Status(設備狀態));
+
+
+
+            tr += "<tr style='color:white; background-color:" + 設備狀態_色彩 + ";' id='" + 設備名稱 + "'>";
+            string[] str = CNCUtils.MachName_translation(設備名稱).Split(' ');
+            if (str.Length > 1)
+                設備名稱 = str[0] + "&nbsp" + str[1];
+            加工程式 = 加工程式.Split('/')[加工程式.Split('/').Length - 1];
+
+
+            if (設備狀態 == "閒置")
+                設備狀態 = "待機";
+
+            switch (設備狀態)
+            {
+                case "運轉":
+                    run++;
+                    break;
+                case "待機":
+                    rest++;
+                    break;
+                case "警告":
+                    alert++;
+                    break;
+                case "離線":
+                    noline++;
+                    break;
+            }
+            percent += Math.Round(double.Parse(設備稼動) / mach_count, 1, MidpointRounding.AwayFromZero);
+            progress += Math.Round(double.Parse(生產進度) / mach_count, 1, MidpointRounding.AwayFromZero);
+            tr += "<td>" + 設備名稱 + "</td>\n";
+            tr += "<td>" + 校機人員 + "</td>\n";
+            tr += "<td>" + 加工人員 + "</td>\n";
+            tr += "<td>" + 設備狀態 + "</td>\n";
+            tr += "<td>" + 設備稼動 + "</td>\n";
+            tr += "<td>" + 客戶名稱 + "</td>\n";
+            tr += "<td>" + 產品名稱 + "</td>\n";
+            tr += "<td>" + 料件編號 + "</td>\n";
+            tr += "<td>" + 加工程式 + "</td>\n";
+            //    tr += "<td>" + 今日生產件數 + "</td>\n";
+            //   tr += "<td>" + 生產件數 + "</td>\n";
+            //   tr += "<td>" + 預計生產件數 + "</td>\n";
+            tr += "<td>" + 生產進度 + "&nbsp(" + 今日生產件數 + "/" + 預計生產件數 + ")" + "</td>\n";
+            tr += "<td>" + 預計完工時間.Substring(0,11) + "</td>\n";
+            tr += "<td>" + 異警資訊 + "</td>";
+            tr += "</tr>";
+        }
+        private void 設定圖塊(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態_燈號, string 設備稼動, string 設備稼動_長條圖, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數)
+        {
+            string 設備狀態 = cNC_Class.mach_status_EN2CH(設備狀態_燈號);
+            string 字體顏色 = cNC_Class.mach_font_Color(設備狀態);
+            string 背景顏色 = cNC_Class.mach_background_Color(設備狀態);
+
+            switch (設備狀態)
+            {
+                case "閒置":
+                    設備狀態 = "待機";
+                    break;
+                case "暫停":
+                    設備狀態 = "運轉";
+                    break;
+            }
+
+            area += "<div id='chart_" + 設備名稱 + "' class='col-md-6 col-sm-12 col-xs-12' >\n";
+            area += "   <div class='dashboard_graph x_panel'>\n";
+            area += "       <div class='col-md-12 col-sm-12 col-xs-12'>\n";
+            area += "           <div class='col-md-2 col-sm-12 col-xs-12'>\n";
+            area += "               <div id = 'ma_canvas_status" + 設備名稱 + "' style='font-size:44px;text-align:center;background-color:" + 背景顏色 + ";color:" + 字體顏色 + ";'><b>" + 設備狀態 + "</b></div>";
+            area += "           </div>\n";
+            area += "           <div class='col-md-1 col-sm-12 col-xs-12'>\n";
+            string[] str = CNCUtils.MachName_translation(設備名稱).Split(' ');
+            if (str.Length > 1)
+                設備名稱 = str[0] + "&nbsp" + str[1];
+
+
+            area += "               <div style='font-size:25px; text-align:center;line-height6:80px;' ><b>" + 設備名稱 + "</b></div>";//line-height:64px;垂直高度調整
+            area += "           </div>\n";
+            area += "           <div class='left col-md-12 col-sm-12 col-xs-12' style='font-size:23px;'>\n";
+            area += "               <div class ='col-md-4 col-sm-12 col-xs-12'>\n";
+            area += "                   <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/" + 設備名稱 + ".jpg' alt='...' style='width:266px;height:226px;align-items:center;'>";
+            area += "               </div>\n";
+            area += "               <div class ='col-md-4 col-sm-12 col-xs-12'>\n";
+            area += 顯示資訊("check_staff", 校機人員);
+            area += 顯示資訊("custom_name", 客戶名稱);
+            area += 顯示資訊("product_number", 料件編號);
+          //  area += 顯示資訊("count_total", 生產件數);
+            area += 顯示資訊("count_today_rate", 生產進度);
+            area += 顯示資訊("operate_rate", 設備稼動);
+            area += 顯示資訊("alarm_mesg", 異警資訊);
+            area += "               </div>\n";
+            area += "               <div class ='col-md-4 col-sm-12 col-xs-12'>\n";
+            area += 顯示資訊("work_staff", 加工人員);
+            area += 顯示資訊("product_name", 產品名稱);
+            加工程式 = 加工程式.Split('/')[加工程式.Split('/').Length - 1];
+            area += 顯示資訊("program_run", 加工程式);
+            area += 顯示資訊("count_today", 今日生產件數);
+            area += 顯示資訊("exp_product_count_day", 預計生產件數);
+            area += 顯示資訊("finish_time", 預計完工時間.Substring(0, 11));
+            area += "               </div>\n";
+            area += "           </div>\n";
+            area += "       </div>\n";
+            area += "           <div class='col-xs-12 col-sm-12'>\n";
+            area += 顯示資訊("status_bar", 設備稼動_長條圖);
+            area += "           </div>\n";
+            area += "   </div>\n";
+            area += "</div>\n";
+            //網頁開啟後兩秒,顯示狀態bar
+            js_code += "mTimer_status = setTimeout(function () { draw_Axial('" + 設備稼動_長條圖 + "'); }, 2000);\n";
+
+        }
+        public string 顯示資訊(string Info, string Value, string status = "")
+        {
+            dt_data = DataTableUtils.GetDataTable("select show_status from realtime_info where info_name = '" + Info + "'");
+            string Str = "";
+            if (dt_data != null && dt_data.Rows.Count != 0)
+            {
+                if (Info == "operate_rate" || Info == "count_today_rate" && dt_data.Rows[0]["show_status"].ToString() == "True")
+                {
+                    Info = CNCUtils.namechange(Info);
+                    if (str_status == "DISCONNECT" || Value == "--")
+                        Str += "                      <div><p><strong>" + Info + "：</strong><span>" + Value + "</span></p></div>\n";
+                    else
+                        Str += "                      <div><p><strong>" + Info + "：</strong><span>" + Value + " %" + "</span></p></div>\n";
+                }
+                else if (Info == "status_bar" && dt_data.Rows[0]["show_status"].ToString() == "True")
+                {
+                    Str += "           <div id = 'ma_div_" + Value + "'>";
+                    Str += "<canvas id = 'ma_canvas_" + Value + "' width = '500' height = '40'></canvas></div>";
+                }
+                else if (Info == "status_bar" && dt_data.Rows[0]["show_status"].ToString() == "False")
+                {
+
+                    Str += "           <div style='display: none'><div id = 'ma_div_" + Value + "'></div>";
+                    Str += "               <div style='display: none'><canvas id = 'ma_canvas_" + Value + "' width = '40' height = '500'></canvas></div></div>";
+                }
+                else if (dt_data.Rows[0]["show_status"].ToString() == "True")
+                {
+                    Info = CNCUtils.namechange(Info);
+                    Str += "                      <div><p><strong>" + Info + "：</strong><span>" + Value + "<span></p></div>\n";
+                }
+                else
+                {
+                    Info = CNCUtils.namechange(Info);
+                    Str += "                      <div style='display: none'><p><strong>" + Info + "：</strong><span>" + Value + "<span></p></div>\n";
+
+                }
+            }
+            return Str;
+        }
+        private void Get_MachType_List()//取type list
+        {
+            DropDownList_MachType.Items.Clear();
+            dt_data = DataTableUtils.GetDataTable("select type_name from mach_type");
+            if (dt_data != null && dt_data.Rows.Count != 0)
+            {
+                DropDownList_MachType.Items.Add("--Select--");
+                for (int iIndex = 0; iIndex < dt_data.Rows.Count; iIndex++)
+                    DropDownList_MachType.Items.Add(dt_data.Rows[iIndex]["type_name"].ToString());
+            }
+        }
+        public void Mach_Info_List(string MachGroup)    //畫status_bar使用
+        {
+            ls_data.Clear();
+            if (MachGroup == "")
+            {
+                foreach (DataRow row in DataTableUtils.GetDataTable("select mach_name from mach_info").Rows)
+                    ls_data.Add(row.ItemArray[0].ToString());
+            }
+            else
+                ls_data = DataTableUtils.GetDataTable("select mach_name from mach_group where group_name = '" + DropDownList_MachGroup.SelectedItem.Text + "'").Rows[0].ItemArray[0].ToString().Split(',').ToList();
+
+            if (ls_data != null && ls_data.Count != 0)
+            {
+                for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+                {
+                    if (iIndex < ls_data.Count - 1) str_Dev_Name += ls_data[iIndex] + ",";
+                    else str_Dev_Name += ls_data[iIndex];
+                }
+            }
+        }
+
+        //event   
+        protected void Select_MachGroupClick(object sender, EventArgs e)    //執行運算
+        {
+            if (DropDownList_MachType.SelectedItem.Text != "--Select--" && DropDownList_MachGroup.SelectedItem.Text != "--Select--")
+            {
+                b_Page_Load = false;
+                Read_Data();
+                Mach_Info_List(DropDownList_MachGroup.SelectedItem.Text);
+            }
+        }
+        protected void DropDownList_MachType_SelectedIndexChanged(object sender, EventArgs e)//cbx select事件//取group list
+        {
+            if (DropDownList_MachType.SelectedItem.Text != "--")
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisCnc_inside);
+                ls_data.Clear();
+                DropDownList_MachGroup.Items.Clear();
+                ls_data = DataTableUtils.GetDataTable("select group_name from mach_type where type_name = '" + DropDownList_MachType.SelectedItem.Text + "'").Rows[0].ItemArray[0].ToString().Split(',').ToList();
+                DropDownList_MachGroup.Items.Add("--Select--");
+                for (int iIndex = 0; iIndex < ls_data.Count; iIndex++)
+                    DropDownList_MachGroup.Items.Add(ls_data[iIndex]);
+            }
+        }
+    }
+}

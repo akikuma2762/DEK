@@ -1,0 +1,111 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Services;
+using System.Xml;
+using Support;
+using dek_erpvis_v2.cls;
+using System.Data;
+namespace dek_erpvis_v2.webservice
+{
+    /// <summary>
+    ///permission 的摘要描述
+    /// </summary>
+    [WebService(Namespace = "http://tempuri.org/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    // 若要允許使用 ASP.NET AJAX 從指令碼呼叫此 Web 服務，請取消註解下列一行。
+    [System.Web.Script.Services.ScriptService]
+    public class permission : System.Web.Services.WebService
+    {
+
+        [WebMethod]
+        public XmlNode authorize_permission(string key)
+        {
+            myclass myclass = new myclass();
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement xmlElem = xmlDoc.CreateElement("ROOT");
+            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+
+            string val = myclass.Base64Decode(key);
+            string table_name = "WEB_USER";
+            string id = "WU" + myclass.get_ran_id();
+            string user_acc = val.Split(',')[0];
+            string url = val.Split(',')[1];
+
+            DataTable dt = DataTableUtils.DataTable_GetRowHeader(table_name);
+            DataRow row = dt.NewRow();
+            row["WU_ID"] = id;
+            row["WB_URL"] = url;
+            row["USER_ACC"] = user_acc;
+            row["VIEW_NY"] = "N";
+            bool OK = DataTableUtils.Insert_DataRow(table_name, row);
+
+            if (OK == true)
+            {
+                xmlElem.SetAttribute("system_msg", "伺服器回應 : 申請成功!請等待管理員審核");
+            }
+            else
+            {
+                xmlElem.SetAttribute("system_msg", "伺服器回應 : 申請失敗!請重新操作");
+            }
+            xmlDoc.AppendChild(xmlElem);
+            dt.Dispose();
+            return xmlDoc.DocumentElement;
+        }
+        [WebMethod]
+        public XmlNode set_notice_for_adm(string key)
+        {
+            myclass myclass = new myclass();
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement xmlElem = xmlDoc.CreateElement("ROOT");
+            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+            string val = myclass.Base64Decode(key);
+            string adm_NY = DataTableUtils.DataTable_GetDataRow("USERS", "user_acc = '"+ val + "' and adm='Y'")["adm"].ToString();
+            if(adm_NY == "Y")
+            {
+                string 取得申請瀏覽權限的數量_cmd = "SELECT count(VIEW_NY) as VIEW_NY_COUNT FROM WEB_USER where VIEW_NY='N'";//
+                DataRow row = DataTableUtils.DataTable_GetDataRow(取得申請瀏覽權限的數量_cmd);
+                string count = DataTableUtils.toString(row["VIEW_NY_COUNT"]);
+                xmlElem.SetAttribute("system_msg", count);
+            }
+            xmlDoc.AppendChild(xmlElem);
+            return xmlDoc.DocumentElement;
+        }
+        [WebMethod]
+        public XmlNode delete_ACC(string key)
+        {
+            myclass myclass = new myclass();
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement xmlElem = xmlDoc.CreateElement("ROOT");
+            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+            string val = myclass.Base64Decode(key);
+            string YN = val.Split(',')[0]; 
+            string admACC = val.Split(',')[1];
+            string target = val.Split(',')[2];
+
+            string adm_NY = DataTableUtils.DataTable_GetDataRow("USERS", "user_acc = '" + admACC + "' and adm='" + YN + "'")["adm"].ToString();
+            if (adm_NY == "Y")
+            {
+                string SQLCMD = "DELETE FROM USERS WHERE USER_ACC = '"+ target + "' DELETE FROM WEB_USER WHERE USER_ACC = '" + target + "' DELETE FROM SYSTEM_USERSLOGIN_log WHERE USER_ACC = '" + target + "' DELETE FROM SYSTEM_PMR WHERE USER_ACC = '" + target + "'";//
+                int count = DataTableUtils.ExecSQL(SQLCMD);
+                //xmlElem.SetAttribute("system_msg", DataTableUtils.toString(count));
+
+                if (count > 0)
+                {
+                    
+                    xmlElem.SetAttribute("system_msg", "伺服器回應 : 刪除成功! "+ DataTableUtils.toString(count) + "");
+                }
+                else
+                {
+                    xmlElem.SetAttribute("system_msg", "伺服器回應 : 刪除失敗!請重新操作 "+ DataTableUtils.toString(count) + "");
+                }
+
+            }
+            xmlDoc.AppendChild(xmlElem);
+            return xmlDoc.DocumentElement;
+        }
+
+    }
+}

@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using dek_erpvis_v2.models;
+
+namespace dek_erpvis_v2
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        public List<MachData> data = new List<MachData>();
+        public string test = "";
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                data.Add(new MachData()
+                {
+                    ID = i.ToString(),
+                    Name ="FB"+i,
+                    Status = "run",
+                    dt_start = "0101",
+                    dt_end = "1201"
+                });
+            }
+
+            var t = data.Where(x => x.Name == "FB1").FirstOrDefault();
+        }
+    }
+}

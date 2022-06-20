@@ -1,0 +1,115 @@
+﻿
+.table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+/*表格斑馬條紋*/
+tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+/*thead的欄位CSS*/
+.StandardTable thead th {
+    background-color: #ffffff;
+    color: #000000;
+}
+/*設定陰影*/
+#Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+
+/*表格欄位CSS*/
+#tr_row {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/*設定字型的地方*/
+@font-face {
+    font-family: 'NotoSans';
+    src: url(../font/NotoSansTC-Regular.eot) format("embedded-opentype"), url(../font/NotoSansTC-Regular.otf) format("opentype"), url(../font/NotoSansTC-Regular.ttf) format("truetype"), url(../font/NotoSansTC-Regular.woff) format("woff"), url(../font/NotoSansTC-Regular.woff2) format("woff2"), url(../font/NotoSansTC-Regular.svg) format("svg");
+    font-style: normal;
+}
+
+td {
+    font-family: "NotoSans";
+}
+
+tr {
+    font-family: "NotoSans";
+}
+
+th {
+    font-family: "NotoSans";
+}
+
+h1 {
+    font-family: "NotoSans";
+}
+
+h2 {
+    font-family: "NotoSans";
+}
+
+h3 {
+    font-family: "NotoSans";
+}
+
+h4 {
+    font-family: "NotoSans";
+}
+
+h5 {
+    font-family: "NotoSans";
+}
+
+div {
+    font-family: "NotoSans";
+}
+
+thead {
+    font-family: "NotoSans";
+}
+
+tbody {
+    font-family: "NotoSans";
+}
+
+ul {
+    font-family: "NotoSans";
+}
+
+li {
+    font-family: "NotoSans";
+}
+
+a {
+    font-family: "NotoSans";
+}
+
+label {
+    font-family: "NotoSans";
+}
+
+body {
+    font-family: "NotoSans";
+}
+
+b {
+    font-family: "NotoSans";
+}
+
+text {
+    font-family: "NotoSans";
+}
+
+title {
+    font-family: "NotoSans";
+}
+
+span {
+    font-family: "NotoSans";
+}
+

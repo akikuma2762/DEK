@@ -1,0 +1,233 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class orderstatistics_details : System.Web.UI.Page
+    {
+        public string th = "";
+        public string tr = "";
+        public string title = "";
+        public string title_msg = "";
+        public string title_msg_list = "";
+        public string title_text = "";
+        public string cust_name = "";
+        public string date_str = "";
+        public string date_end = "";
+        public string order_status = "";
+        public string url_text = "";
+        string type = "";
+        string acc = "";
+        string 訂單詳細表 = "";
+        public string timespan = "";
+        public string NoExists = "";
+        public string union_cmd = "";
+
+        DataTable public_dt = null;
+        myclass myclass = new myclass();
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                if (acc != "")
+                {
+                    if (!IsPostBack)
+                    {
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Redirect("orderstatistics.aspx", false);
+                }
+            }
+            else
+            {
+                Response.Redirect("orderstatistics.aspx", false);
+            }
+        }
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                無資料處理();
+            }
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            get_order_status();
+
+            type = Request.QueryString["cust_name"].Split(',')[4].Split('=')[1];
+            if (Request.QueryString["cust_name"] != null)
+            {
+                            
+                if (type == "sales")
+                {
+                    url_text = "orderstatistics.aspx?type=sales";
+                }
+                else
+                {
+                    url_text = "orderstatistics.aspx?type=count";
+                }
+                set_table_title();
+            }
+            else
+            {
+                Response.Redirect("orderstatistics.aspx", false);
+            }
+        }
+        private void 無資料處理()
+        {
+            title_text = "'沒有資料'";
+            th = "<th class='center'>沒有資料載入</th>";
+            tr = "<tr class='even gradeX'> <td class='center'> no data </ td ></ tr >";
+        }
+        private void set_table_title()
+        {
+            //title
+            string col_name = "";
+            //string strCmd = 德大機械.業務部_訂單詳細.客戶訂單詳細表(cust_name, timespan, order_status,union_cmd,NoExists);
+            public_dt = myclass.Add_LINE_GROUP(clsDB_sw.DataTable_GetTable(訂單詳細表)).ToTable("Table", false, "客戶簡稱", "CCS", "製造批號", "產線群組", "訂單狀況", "預計開工日", "入庫日", "數量", "幣別", "匯率", "外幣單價", "台幣單價");
+
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+
+            if (type != "sales")
+            {
+                public_dt.Columns.Remove("台幣單價");
+                public_dt.Columns.Remove("幣別");
+                public_dt.Columns.Remove("匯率");
+                public_dt.Columns.Remove("外幣單價");
+            }
+
+
+            for (int i = 0; i < public_dt.Columns.Count; i++)
+            {
+                col_name = public_dt.Columns[i].ColumnName;
+                th += "<th>" + col_name + "</th>\n                                            ";
+            }
+        }
+        public string set_table_content()
+        {
+            tr = "";
+            //content
+            if (public_dt != null)
+            {
+                if (public_dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in public_dt.Rows)
+                    {
+                        //"客戶簡稱", "CCS", "製造批號", "產線群組", "訂單狀況", "預計開工日", "入庫日", "數量", "幣別", "匯率", "外幣單價", "台幣單價"
+                        tr += "<tr>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["客戶簡稱"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["CCS"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["製造批號"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["產線群組"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["訂單狀況"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["預計開工日"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["入庫日"]) + "</td>\n";
+                        tr += "<td>" + DataTableUtils.toString(row["數量"]) + "</td>\n";
+
+                        if (type == "sales")
+                        {
+                            tr += "<td>" + DataTableUtils.toString(row["幣別"]) + "</td>\n";
+                            tr += "<td>" + DataTableUtils.toString(row["匯率"]) + "</td>\n";
+                            tr += "<td>" + DataTableUtils.toString(row["外幣單價"]) + "</td>\n";
+                            tr += "<td>" + DataTableUtils.toString(row["台幣單價"]) + "</td>\n";
+                        }
+                        tr += "</tr>\n";
+                        Response.Write(tr);
+                        Response.Flush();
+                        Response.Clear();
+                        tr = "";
+                    }
+                }
+                else
+                {
+                    無資料處理();
+                }
+            }
+            else
+            {
+                Response.Redirect("orderstatistics.aspx", false);
+            }
+            return "";
+        }
+        private void get_order_status()
+        {
+            cust_name = Request.QueryString["cust_name"].Split(',')[0];
+            date_str = Request.QueryString["cust_name"].Split(',')[1].Split('=')[1];
+            date_end = Request.QueryString["cust_name"].Split(',')[2].Split('=')[1];
+            order_status = Request.QueryString["cust_name"].Split(',')[3].Split('=')[1];
+
+
+            switch (order_status)
+            {
+                case "0"://All
+                    timespan = 德大機械.業務部_訂單統計.取得日期語法(date_str, date_end, "CORDSUB");
+                    訂單詳細表 = 德大機械.業務部_訂單統計.訂單詳細表_訂單總數(cust_name, timespan);
+                    break;
+
+                case "1"://已結案
+                    timespan = 德大機械.業務部_訂單統計.取得日期語法(date_str, date_end, "CORDSUB");
+                    order_status = 德大機械.業務部_訂單統計.取得訂單狀態語法("!='未結'");
+                    訂單詳細表 = 德大機械.業務部_訂單統計.訂單詳細表_已結案(cust_name, timespan, order_status);
+                    break;
+                case "2"://未結案(預開工日/已上排程+未上排程)
+                    timespan = 德大機械.業務部_訂單統計.取得日期語法(date_str, date_end, "CORDSUB");
+                    order_status = 德大機械.業務部_訂單統計.取得訂單狀態語法("='未結'");
+                    訂單詳細表 = 德大機械.業務部_訂單統計.訂單詳細表_未結案(cust_name, timespan, order_status);
+                    break;
+                case "3"://已排程:已排入組進表
+                    timespan = 德大機械.業務部_訂單統計.取得日期語法(date_str, date_end, "CORDSUB");
+                    order_status = 德大機械.業務部_訂單統計.取得訂單狀態語法("='未結'");
+                    訂單詳細表 = 德大機械.業務部_訂單統計.訂單詳細表_已排程(cust_name,timespan, order_status);
+                    break;
+                case "4"://待排程:未排入組進表
+                    timespan = 德大機械.業務部_訂單統計.取得日期語法(date_str, date_end, "CORDSUB");
+                    order_status = 德大機械.業務部_訂單統計.取得訂單狀態語法("='未結'");
+                    訂單詳細表 = 德大機械.業務部_訂單統計.訂單詳細表_未排程(cust_name, timespan, order_status);
+                    break;
+            }
+
+            //switch (condi_code)
+            //{
+            //    case "1": //已結案
+            //        condi_code = "and cordsub.SCLOSE !='未結' ";
+            //        timespan = " A22_FAB.STR_DATE >=" + date_str + " and A22_FAB.STR_DATE <=" + date_end + " ";
+            //        break;
+            //    case "2": //未結案(預開工日/已上排程+未上排程)
+            //        condi_code = "and cordsub.SCLOSE ='未結' ";
+            //        timespan = " CORDSUB.TRN_DATE >=" + date_str + " and CORDSUB.TRN_DATE <=" + date_end + " ";
+            //        union_cmd = "union select cust.CUSTNM2 as 客戶簡稱,CORDSUB.TRN_NO as 訂單號碼,mkordsub.ITEM_NO as CCS,mkordsub.LOT_NO as 製造批號,item_22.PLINE_NO as 產線代號,cordsub.SCLOSE as 訂單狀況,A22_FAB.STR_DATE as 預計開工日,(SELECT MAX(ITEMIO.TRN_DATE) FROM ITEMIOS LEFT JOIN ITEMIO ON ITEMIOS.IO=ITEMIO.IO AND ITEMIOS.TRN_NO=ITEMIO.TRN_NO WHERE ITEMIOS.IO='2' AND ITEMIOS.MKORD_NO=MKORDSUB.TRN_NO AND ITEMIOS.MKORD_SN=MKORDSUB.SN AND ITEMIO.S_DESC< >'歸還' AND ITEMIO.MK_TYPE='成品入庫') as 入庫日,Convert(Varchar(12),CONVERT(money,cordsub.QUANTITY),1) as 數量,cord.CURRENCY as 幣別,Convert(Varchar(20),CONVERT(money,cord.RATE),1) as 匯率,Convert(Varchar(20),CONVERT(money,CORDSUB.O_PRICE),1)as 外幣單價,Convert(Varchar(20),CONVERT(money,CORDSUB.AMOUNT),1)as 台幣單價 from CORDSUB as cordsub left join A22_FAB on cordsub.TRN_NO = A22_FAB.CORD_NO and cordsub.sn = A22_FAB.CORD_SN left join MKORDSUB as mkordsub on cordsub.TRN_NO=mkordsub.CORD_NO and cordsub.SN=mkordsub.CORD_SN left join CUST as cust on cust.CUST_NO=CORDSUB.CUST_NO left join item_22 as item_22 on item_22.ITEM_NO=cordsub.ITEM_NO left join CORD as cord on cord.TRN_NO = cordsub.TRN_NO where NOT EXISTS ( SELECT * FROM A22_FAB as a22_fab WHERE cordsub.TRN_NO = a22_fab.CORD_NO AND cordsub.SN = a22_fab.CORD_SN) and item_22.PLINE_NO > 0 and cust.CUSTNM2 = '"+ cust_name+"' and cordsub.SCLOSE ='未結' ";
+            //        break;
+            //    case "3": //已排程:已排入組進表
+            //        condi_code = "and cordsub.SCLOSE ='未結' ";
+            //        timespan = " A22_FAB.STR_DATE >=" + date_str + " and A22_FAB.STR_DATE <=" + date_end + " ";
+            //        break;
+            //    case "4": //待排程:未排入組進表
+            //        condi_code = "and cordsub.SCLOSE ='未結' ";
+            //        timespan = " and CORDSUB.TRN_DATE >=" + date_str + " and CORDSUB.TRN_DATE <=" + date_end + " ";
+            //        NoExists = " NOT EXISTS ( SELECT * FROM A22_FAB as a22_fab WHERE cordsub.TRN_NO = a22_fab.CORD_NO AND cordsub.SN = a22_fab.CORD_SN) ";
+            //        break;
+            //}
+            //return condi_code;
+        }
+    }
+}

@@ -1,0 +1,168 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using dek_erpvis_v2.cls;
+using System.Data;
+using Support;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace dek_erpvis_v2.pages.dp_PM
+{
+    public partial class Upload_Image : System.Web.UI.Page
+    {
+        public string sst = "";
+        string acc = "";
+        clsDB_Server clsDB_sw = new clsDB_Server("");
+        ShareFunction SFun = new ShareFunction();
+        myclass myclass = new myclass();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                if (acc != "")
+                {
+                    if (Request.QueryString["ErrorID"] != null)
+                    {
+                        string[] str = Request.QueryString["ErrorID"].Split(',');
+                        if (acc == "dek_ex")
+                            DataTableUtils.Conn_String = SFun.GetConnByDekdekVisAssmTest;
+                        else
+                            DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+
+                        DataRow dr = DataTableUtils.DataTable_GetDataRow("工作站型態資料表", "工作站編號='" + str[1].Split('=')[1] + "'");
+                        Label_name.Text = dr["工作站名稱"].ToString();//工作站編號
+                        Label_num.Text = str[0];
+                        Label4.Text = str[2].Split('=')[1];//ID
+                        //Label5.Text = acc;
+                    }
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+        }
+        //按鈕事件
+        protected void Button_Upload_Click(object sender, EventArgs e)
+        {
+            string Image_Save = "";
+            if (FileUpload_image.FileName != "")
+            {
+                foreach (HttpPostedFile postedFile in FileUpload_image.PostedFiles)
+                {
+                    string ext = Path.GetExtension(postedFile.FileName).Replace(".", "");
+                    Regex regex = new Regex(@"^PNG|JPG|HEIC|HEIF|JPEG|MP4$", RegexOptions.IgnoreCase);
+                    bool ok = regex.IsMatch(ext);
+                    if (ok == true)
+                    {
+                        Image_Save += checkImage(postedFile, Image_Save, ext);
+                    }
+                    else
+                    {
+                        string url = HttpContext.Current.Request.Url.AbsoluteUri;
+                        Response.Write("<script>alert('圖片格式錯誤，無法上傳!');location.href='" + url + "'; </script>");
+                        return;
+                    }
+                }
+            }
+            int Change_ID = Int32.Parse(Label4.Text);
+            //確定無誤才上傳資料庫
+            if (Label_name.Text != "" && Label_num.Text != "")
+            {
+                Upload_Data(Change_ID, Image_Save);
+                Response.Write("<script>alert('上傳完畢!');location.href='../index.aspx';</script>");
+            }
+        }
+        //修改名稱
+        private string checkImage(HttpPostedFile postedFile, string Image_Save, string ext)
+        {
+            string replace_name = "";
+            string image_name = "";//最後回傳的
+            string name = "";
+            string path2 = "D:\\Backup_Error_Image\\";
+            if (ext != "")
+            {
+                if (acc == "dek_ex")
+                    DataTableUtils.Conn_String = SFun.GetConnByDekdekVisAssmTest;
+                else
+                    DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+                //把檔案名稱改為當下時間
+                string timenow = DateTime.Now.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-');
+
+                checkName(timenow, Image_Save, out replace_name);
+                replace_name += "." + ext;
+                postedFile.SaveAs(path2 + replace_name);
+                name = "Backup_Error_Image/" + replace_name;
+                image_name = name + "\n";
+            }
+            return image_name;
+        }
+        //檢查修改的名稱是否使用過
+        private string checkName(string name, string Image_Save, out string replace_name, int num = 1)
+        {
+            if (Image_Save.IndexOf(name) > 0)
+            {
+                name = name.Split('(')[0];
+                name = name + "(" + num + ")";
+                num++;
+                checkName(name, Image_Save, out replace_name, num);
+            }
+            else
+            {
+                replace_name = name;
+            }
+            return name;
+        }
+        //修改
+        private void Upload_Data(int ID, string Image_name)
+        {
+            if (acc == "dek_ex")
+                DataTableUtils.Conn_String = SFun.GetConnByDekdekVisAssmTest;
+            else
+                DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+
+            string SqlStr = "select Top 1 * From 工作站異常維護資料表 where 異常維護編號 = '" + ID + "' ORDER BY " + "異常維護編號" + " desc";
+            DataTable dt = DataTableUtils.DataTable_GetTable(SqlStr);
+
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.NewRow();
+                row["圖片檔名"] = Image_name;
+
+                if (acc == "dek_ex")
+                    clsDB_sw.dbOpen(SFun.GetConnByDekdekVisAssmTest);
+                else
+                    clsDB_sw.dbOpen(SFun.GetConnByDekVisTmp);
+
+                if (clsDB_sw.Update_DataRow("工作站異常維護資料表", "異常維護編號= '" + ID + "'", row) == true)
+                {
+
+                }
+
+            }
+            else
+            {
+                DataRow row = dt.NewRow();
+                row["異常維護編號"] = ID;
+                row["圖片檔名"] = Image_name;
+
+                if (acc == "dek_ex")
+                    clsDB_sw.dbOpen(SFun.GetConnByDekdekVisAssmTest);
+                else
+                    clsDB_sw.dbOpen(SFun.GetConnByDekVisTmp);
+
+                if (clsDB_sw.Insert_DataRow("工作站異常維護資料表", row) == true)
+                {
+
+                }
+            }
+        }
+
+    }
+}

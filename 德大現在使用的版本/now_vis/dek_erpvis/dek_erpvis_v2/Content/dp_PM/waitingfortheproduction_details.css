@@ -1,0 +1,18 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+    .x_panel {
+        padding: 0;
+    }
+    .x_content {
+        padding:0;
+    }
+    #datatable-buttons_wrapper {
+        padding:0 10px;
+    }
+}

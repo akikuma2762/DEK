@@ -1,0 +1,261 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_SD
+{
+    public partial class transportrackstatistics : System.Web.UI.Page
+    {
+        public string color = "";
+        public string th = "";
+        public string tr = "";
+        public string title_text = "";
+        public string time_area_text = "運輸架未歸還列表";
+        public string col_data_points_nor = "";
+        public string col_data_points_sply = "";
+        public string path = "";
+        string title = "";
+        string[] str = null;
+        int TOTAL;
+        DataTable dw = null;
+        myclass myclass = new myclass();
+        string URL_NAME = "";
+        string acc = "";
+        Support.clsDB_Server clsDB_sw = new clsDB_Server("");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                path = 德大機械.get_title_web_path("SLS");
+                path = path.Replace("</ol>", "<li><u><a href='../dp_SD/transportrackstatistics.aspx'>運輸架未歸還統計</a></u></li></ol>");
+                URL_NAME = "transportrackstatistics";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        GotoCenn();
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>");
+                    //Response.Redirect(myclass.logout_url);
+                }
+            }
+            else
+            {
+                Response.Redirect(myclass.logout_url);
+            }
+
+            DateTime end = DateTime.Now;
+            string url = System.IO.Path.GetFileName(Request.PhysicalPath).Split('.')[0];
+            HtmlUtil.Time_Look(acc, url, start, end);
+        }
+        //funcition
+        private void GotoCenn()
+        {
+            clsDB_sw.dbOpen(myclass.GetConnByDetaSowon);
+            if (clsDB_sw.IsConnected == true)
+            {
+                load_page_data();
+            }
+            else
+            {
+                Response.Write("<script language='javascript'>alert('伺服器回應 : 無法載入資料，" + clsDB_sw.ErrorMessage + " 請聯絡德科人員或檢查您的網路連線。');</script>");
+                title_text = HtmlUtil.NoData(out th, out tr);
+            }
+        }
+        private void load_page_data()
+        {
+            Response.BufferOutput = false;
+            set_col_value();
+            Set_Html_Table();
+            time_area_text = "";//" < "+date_trn()+"";
+        }
+
+        private void set_col_value()
+        {
+            col_data_points_nor = "";
+            col_data_points_sply = "";
+            get_col_data_points_nor();     // 正常運輸架
+            get_col_data_points_sply();    // 異常運輸架
+        }
+        private void get_col_data_points_nor()
+        {
+            string slqCmd = 德大機械.業務部_運輸未歸還統計.正常運輸架品號列表(date_trn());
+            DataTable dt = clsDB_sw.DataTable_GetTable(slqCmd);
+            if (dt.Rows.Count > 0)
+            {
+                string tsr_name = "";
+                string y_val = "";
+                DataTable dr = null;
+                foreach (DataRow _row in dt.Rows)
+                {
+                    tsr_name = DataTableUtils.toString(_row["運輸架品號"]);
+                    slqCmd = 德大機械.業務部_運輸未歸還統計.正常運輸架數量(tsr_name, date_trn());
+                    dr = clsDB_sw.DataTable_GetTable(slqCmd);
+                    y_val = DataTableUtils.toString(dr.Rows[0]["數量"]);
+
+                    col_data_points_nor += "{ y: " + y_val + ", label:'" + get_trn_name(tsr_name) + " " + tsr_name + "',indexLabel: '" + y_val.Split('.')[0] + "'  },";
+                }
+                slqCmd = 德大機械.業務部_運輸未歸還統計.在外運輸架總數(date_trn());
+                dr = clsDB_sw.DataTable_GetTable(slqCmd);
+                title_text = "'在外運輸架總數 : " + DataTableUtils.toString(dr.Rows[0]["總數量"]).Split('.')[0] + "'";
+            }
+
+            dt.Dispose();
+        }
+        private void get_col_data_points_sply()
+        {
+            int y_val = 0;
+            string tsr_name = "";
+            string sqlCmd = 德大機械.業務部_運輸未歸還統計.異常運輸架品號列表(date_trn());
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlCmd);
+            foreach (DataRow row in dt.Rows)
+            {
+                tsr_name = DataTableUtils.toString(row["運輸架品號"]);
+
+                sqlCmd = 德大機械.業務部_運輸未歸還統計.異常運輸架數量(tsr_name, date_trn());
+                DataTable dr = clsDB_sw.DataTable_GetTable(sqlCmd);
+
+                if (dr.Rows.Count > 0)
+                {
+                    y_val = 0;
+                    for (int i = 0; i < dr.Rows.Count; i++)
+                    {
+                        y_val += DataTableUtils.toInt(DataTableUtils.toString(dr.Rows[i]["數量"]).Split('.')[0]);
+                    }
+
+                    col_data_points_sply += "{ y: " + Math.Abs(y_val) + ", label:'" + get_trn_name(tsr_name) + " " + tsr_name + "'},";
+                }
+                else
+                {
+                    col_data_points_sply += "{ y: 0, label:'" + get_trn_name(tsr_name) + " " + tsr_name + "'},";
+                }
+                dr.Dispose();
+            }
+            dt.Dispose();
+        }        
+        //2019/06/11，組合長條圖x軸品項名稱 (ru)
+        private string get_trn_name(string trn_code)
+        {
+            switch (trn_code)
+            {
+                case "MC4A-00MMA04":
+                    trn_code = "40側掛";
+                    break;
+                case "MC4BQ-0MMB04":
+                    trn_code = "40鍊下鎖";
+                    break;
+                case "MC5A-00ZZB05":
+                    trn_code = "50側掛";
+                    break;
+                case "MR4A-00ZZA08":
+                    trn_code = "40盤";
+                    break;
+                case "MR5D-00ZZA06":
+                    trn_code = "50盤";
+                    break;
+            }
+            return trn_code;
+        }
+        //2019/06/11，取得今天日期，為了SQL可依即時日期查詢 (ru)
+        private string date_trn()
+        {
+            //1025 0452 只要即時  from tony
+
+            //Double val = DataTableUtils.toDouble(DropDownList_dayval.SelectedValue);
+            return DataTableUtils.toString(DateTime.Now.AddDays(1).ToString("yyyyMMdd"));
+        }
+        private void Set_Html_Table()
+        {
+            string combine = "";
+            //title
+            string sqlcmd = 德大機械.業務部_運輸未歸還統計.表格欄位名稱(date_trn());
+            DataTable dt = clsDB_sw.DataTable_GetTable(sqlcmd);
+            th = "<th>客戶/運輸架品號</th>\n                                            ";
+            HtmlUtil.Set_Table_Title(dt, out title, "運輸架品號");
+            string[] sr = title.Split(',');
+            for(int a=0;a<sr.Length-1;a++)
+            {
+                combine += "<th>" + get_trn_name(sr[a]) + "" + sr[a] + "</th>\n                                            ";
+            }
+            th += combine;
+            th += "<th>小計</th>\n                                            ";
+            title = "客戶簡稱," + title + "小計," ;
+            //----------------------------------------------------------------------------------------------------------
+            sqlcmd = 德大機械.業務部_運輸未歸還統計.未歸還運輸架客戶列表(date_trn());
+            dt = clsDB_sw.GetDataTable(sqlcmd);
+            
+            str = title.Split(',');
+            for (int i = 1; i < str.Length - 1; i++)
+                dt.Columns.Add(str[i]);
+            dt.Dispose();
+            tr = HtmlUtil.Set_Table_Content(dt, title, transportrackstatistics_call);
+
+        }
+        private string transportrackstatistics_call(DataRow row,string field_name)
+        {
+            string value = "";
+            if(field_name == "客戶簡稱")
+                value = DataTableUtils.toString(row["客戶簡稱"]);
+
+            if (field_name != "客戶簡稱" && field_name != "小計")
+            {
+                if(field_name == str[1])
+                {
+                    string cust_sname = DataTableUtils.toString(row["客戶簡稱"]);
+                    string sqlcmd = 德大機械.業務部_運輸未歸還統計.未歸還運輸架客戶詳細(cust_sname, date_trn());
+                    dw = clsDB_sw.GetDataTable(sqlcmd);
+                }
+                int tar = 0;
+                string check = "";
+                Response.Write(value);
+                Response.Flush();
+                Response.Clear();
+                for (int i = 0; i < dw.Rows.Count; i++)
+                {
+                    if (field_name == str[1])
+                        TOTAL = 0;
+                    // 比對欄1(A04)，是否等同客戶未歸還的品項相符 (A04、A06、A08)
+                    if (field_name == DataTableUtils.toString(dw.Rows[i]["運輸架品號"]))
+                    {
+                        tar = i;
+                        check += "true,";
+                    }
+                    else
+                    {
+                        check += "false,";
+                    }                  
+                }
+                if (check.IndexOf("true") != -1)
+                {
+                    value = DataTableUtils.toString(dw.Rows[tar]["數量"]).Split('.')[0];
+                    TOTAL += DataTableUtils.toInt(DataTableUtils.toString(dw.Rows[tar]["數量"]).Split('.')[0]);
+                }
+                else
+                {
+                    value = "0";
+                }
+               
+                dw.Dispose();
+            }
+            if(field_name == "小計")
+            {
+                value = DataTableUtils.toString(TOTAL);
+            }
+            return "<td>" + value + "</td>\n";
+        }
+     
+    }
+}

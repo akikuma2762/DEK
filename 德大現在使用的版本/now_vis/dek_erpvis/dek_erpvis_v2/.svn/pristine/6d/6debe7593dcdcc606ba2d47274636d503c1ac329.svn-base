@@ -1,0 +1,728 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="Machine_list_info.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_CNC.Machine_list_info" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>機台總覽 | 德大機械</title>
+
+    <%=color %>
+    <style>
+        .x_panel {
+            padding: 14px 14px;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: auto;
+            -webkit-appearance: default-button;
+        }
+
+        .col-md-55,
+        .col-xs-1,
+        .col-sm-1,
+        .col-md-1,
+        .col-lg-1,
+        .col-xs-2,
+        .col-sm-2,
+        .col-md-2,
+        .col-lg-2,
+        .col-xs-3,
+        .col-sm-3,
+        .col-md-3,
+        .col-lg-3,
+        .col-xs-4,
+        .col-sm-4,
+        .col-md-4,
+        .col-lg-4,
+        .col-xs-5,
+        .col-sm-5,
+        .col-md-5,
+        .col-lg-5,
+        .col-xs-6,
+        .col-sm-6,
+        .col-md-6,
+        .col-lg-6,
+        .col-xs-7,
+        .col-sm-7,
+        .col-md-7,
+        .col-lg-7,
+        .col-xs-8,
+        .col-sm-8,
+        .col-md-8,
+        .col-lg-8,
+        .col-xs-9,
+        .col-sm-9,
+        .col-md-9,
+        .col-lg-9,
+        .col-xs-10,
+        .col-sm-10,
+        .col-md-10,
+        .col-lg-10,
+        .col-xs-11,
+        .col-sm-11,
+        .col-md-11,
+        .col-lg-11,
+        .col-xs-12,
+        .col-sm-12,
+        .col-md-12,
+        .col-lg-12 {
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+    </style>
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="right_col" role="main">
+        <ol class='breadcrumb_'>
+            <li><u><a href='../index.aspx'>加工部 </a></u></li>
+            <li><u><a href='Machine_list_info.aspx'>設備監控看板</a></u></li>
+        </ol>
+        <br>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <h4>[搜尋條件]設備清單篩選：<u><asp:LinkButton ID="LinkButton1" runat="server" data-toggle="modal" data-target="#exampleModal">選擇機台</asp:LinkButton></u></h4>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: -10px">
+            <%--兩div間隙--%>
+            <div class="x_panel" id="Div_Shadow">
+                <div class="col-md-2 col-sm-12 col-xs-12" style="padding-right: 3px; margin-bottom: -14px">
+                    <div class="x_panel" style='background-color: #009efa; border-style: outset; border-width: 4px; padding-bottom: 10px'>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <h1 align="center" style="font-size: 20px; color: black; font-family: Arial; margin-top: -2px;"><strong>稼動比例</strong></h1>
+                            <%--<H1 align="center" style="font-size:56px; color:black; margin-top:-10px;margin-bottom:-2px;"><b>77.6</b></H1>--%>
+                            <h1 align="center" style="font-size: 56px; color: black; margin-top: -10px; margin-bottom: -2px;"><b id="Oper_Rate"></b></h1>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/VIS icons-24.png' alt='...' style="width: 75%; height: 75%; display: block; margin: auto; line-height: 25%; max-height: 80px; max-width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12" style="padding-right: 3px; margin-bottom: -14px">
+                    <div class="x_panel" style='background-color: #009efa; border-style: outset; border-width: 4px; padding-bottom: 10px'>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <h1 align="center" style="font-size: 20px; color: black; font-family: Arial; margin-top: -2px;"><strong>生產進度</strong></h1>
+                            <h1 align="center" style="font-size: 56px; color: black; margin-top: -10px; margin-bottom: -2px;"><b id="Parts_Rate"></b></h1>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/VIS icons-25.png' alt='...' style="width: 75%; height: 75%; display: block; margin: auto; line-height: 25%; max-height: 80px; max-width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12" style="padding-right: 3px; margin-bottom: -14px">
+                    <div class="x_panel" style='background-color: #04ba26; border-style: outset; border-width: 4px; padding-bottom: 10px'>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <h1 align="center" style="font-size: 20px; color: black; font-family: Arial; margin-top: -2px;"><strong>運 轉</strong></h1>
+                            <h1 align="center" style="font-size: 56px; color: black; margin-top: -10px; margin-bottom: -2px;"><b id="OperCount"></b></h1>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/VIS icons-26.png' alt='...' style="width: 75%; height: 75%; display: block; margin: auto; line-height: 25%; max-height: 80px; max-width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12" style="padding-right: 3px; margin-bottom: -14px">
+                    <div class="x_panel" style='background-color: #ffae00; border-style: outset; border-width: 4px; padding-bottom: 10px'>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <h1 align="center" style="font-size: 20px; color: black; font-family: Arial; margin-top: -2px;"><strong>待 機</strong></h1>
+                            <h1 align="center" style="font-size: 56px; color: black; margin-top: -10px; margin-bottom: -2px;"><b id="StopCount"></b></h1>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/VIS icons-28.png' alt='...' style="width: 75%; height: 75%; display: block; margin: auto; line-height: 25%; max-height: 80px; max-width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12" style="padding-right: 3px; margin-bottom: -14px">
+                    <div class="x_panel" style='background-color: #FF0000; border-style: outset; border-width: 4px; padding-bottom: 10px'>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <h1 align="center" style="font-size: 20px; color: black; font-family: Arial; margin-top: -2px;"><strong>警 報</strong></h1>
+                            <h1 align="center" style="font-size: 56px; color: black; margin-top: -10px; margin-bottom: -2px;"><b id="AlarmCount"></b></h1>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/VIS icons-29.png' alt='...' style="width: 75%; height: 75%; display: block; margin: auto; line-height: 25%; max-height: 80px; max-width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12" style="padding-right: 3px; margin-bottom: -14px">
+                    <div class="x_panel" style='background-color: #9c9c9c; border-style: outset; border-width: 4px; padding-bottom: 10px'>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <h1 align="center" style="font-size: 20px; color: black; font-family: Arial; margin-top: -2px;"><strong>離 線</strong></h1>
+                            <h1 align="center" style="font-size: 56px; color: black; margin-top: -10px; margin-bottom: -2px;"><b id="DiscCount"></b></h1>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <img class='img-rounded' src='/pages/dp_CNC/Mach_Picture/VIS icons-30.png' alt='...' style="width: 75%; height: 75%; display: block; margin: auto; line-height: 25%; max-height: 80px; max-width: 80px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--以上狀態統計色塊-->
+        <ul id="myTab" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">列表模式</a>
+            </li>
+            <li role="presentation" class="" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">圖塊模式</a>
+            </li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="x_content">
+                        <table id="datatable_Info" class="table table-ts table-striped table-bordered" style="margin: 0px 0px -10px 0px;">
+                            <thead>
+                                <%= th %>
+                            </thead>
+                            <tbody>
+                                <%= tr %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <%--以上列表模式--%>
+            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                <div class="x_panel" id="Div_Shadow">
+                    <div class="x_content">
+                        <div class="row">
+                            <%=area %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%--以上圖塊模式--%>
+        </div>
+        <!--以上機台清單列表-->
+    </div>
+
+    <!-----以下檢索精靈相關--->
+    <!-- set Modal -->
+    <!-- <div class="backdrop"></div>
+    <div class="fab child" data-subitem="1" data-toggle="modal" data-target="#exampleModal">
+        <span><i class="fa fa-search"></i></span>
+    </div>
+    <div class="fab" id="masterfab">
+        <span><i class="fa fa-list-ul"></i></span>
+    </div>
+    <!--/set Modal-->
+    <!-- Modal -->
+    <div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel2"><i class="fa fa-file-text"></i><b>設備清單篩選</b></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="testmodal2" style="padding: 5px 20px;">
+                        <div class="form-group">
+                            <div class="row">
+                                <!--  <asp:PlaceHolder ID="PlaceHolder_Setshow" runat="server">
+                                   <h1>選擇顯示項目</h1>
+                                </asp:PlaceHolder>
+                                <br>-->
+                                <div class="btn-group btn-group-justified">
+                                    <!--局部更新-->
+                                    <asp:ScriptManager ID="ScriptManager1" runat="server">
+                                    </asp:ScriptManager>
+                                    <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
+                                        <ContentTemplate>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-1 col-sm-1 col-xs-1" style="font-family: Arial">
+                                                    <label>類型:</label>
+                                                </div>
+                                                <div class="col-md-5 col-sm-5 col-xs-5">
+                                                    <asp:DropDownList ID="DropDownList_MachType" runat="server" OnSelectedIndexChanged="DropDownList_MachType_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                </div>
+                                                <div class="col-md-1 col-sm-1 col-xs-1" style="font-family: Arial">
+                                                    <label>群組:</label>
+                                                </div>
+                                                <div class="col-md-5 col-sm-5 col-xs-5">
+                                                    <asp:DropDownList ID="DropDownList_MachGroup" runat="server"></asp:DropDownList>
+                                                </div>
+                                                <asp:CheckBoxList ID="CheckBoxList_dev" runat="server"></asp:CheckBoxList>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                    <div class="col-md-12 col-sm-12 col-xs-12" style="font-family: Arial">
+                                        <asp:LinkButton ID="LinkButton_ok" runat="server" Style="position: absolute; right: 0;" OnClick="Select_MachGroupClick" class="btn btn-primary antosubmit2">選擇</asp:LinkButton>
+                                    </div>
+                                    <br></br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    <script src="../../assets/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../../assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../../assets/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../../assets/vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../../assets/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../../assets/vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../../assets/vendors/moment/min/moment.min.js"></script>
+    <script src="../../assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../../assets/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../../assets/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../../assets/vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../../assets/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../../assets/vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../assets/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="../../assets/vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="../../assets/vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../../assets/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../../assets/vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../assets/build/js/custom.min.js"></script>
+    <!-- FloatingActionButton -->
+    <script src="../../assets/vendors/FloatingActionButton/js/index.js"></script>
+    <!-- canvasjs -->
+    <script src="../../assets/vendors/canvas_js/canvasjs.min.js"></script>
+    <!-- Datatables -->
+    <script src="../../assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../../assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <script>  
+        //===========================================表格===========================================
+        $('#datatable_Info').dataTable(
+            {
+                destroy: true,
+                language: {
+                    "processing": "處理中...",
+                    "loadingRecords": "載入中...",
+                    "lengthMenu": "顯示 _MENU_ 項結果",
+                    "zeroRecords": "沒有符合的結果",
+                    "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                    "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+                    "infoFiltered": "(從 _MAX_ 項結果中過濾)",
+                    "infoPostFix": "",
+                    "search": "搜尋:",
+                    "paginate": {
+                        "first": "第一頁",
+                        "previous": "上一頁",
+                        "next": "下一頁",
+                        "last": "最後一頁"
+                    }
+                },
+                "aLengthMenu": [[-1], ["All"]],
+                "order": [[0, "asc"]]
+            });
+        //============================================================================================          
+
+
+        //初始設定為false
+        var action_ok = '0';
+        //去偵測cookie是否存在
+        var test = "action_status" + '=';
+        var x = document.cookie.split(';');
+        var y = '';
+        for (var i = 0; i < x.length; i++) {
+            var item = x[i].trim();
+            if (item.indexOf(test) == 0) {
+                y = item.substring(test.length, item.length);
+                break;
+            }
+        }
+        //如果不存在 加入cookie
+        if (y == '')
+            document.cookie = "action_status=" + action_ok + ";";
+        //如果存在 就讓他=cookie的值
+        else
+            action_ok = y;
+
+        var mTimer;
+        var Timer_Count = 0;//閃爍機制
+        var loadTime = 5000;
+        mTimer = setTimeout(function () { GetMachineData(); }, loadTime);
+
+        var Oper_Count = 0;
+        var Stop_Count = 0;
+        var Alarm_Count = 0;
+        var Disc_Count = 0;
+
+        var Dev_Count_Oper = 0;
+        var Dev_Count_Parts = 0;
+        var Oper_Rate = 0;
+        var Parts_Rate = 0;
+
+        function GetMachineData() {
+            clearTimeout(mTimer);
+            $.ajax({
+                type: 'POST',
+                dataType: 'xml',
+                url: "../../webservice/dpCNC_MachData.asmx/GetMachineData",
+                data: '',
+                success: function (xml) {
+                    $(xml).find("ROOT_MACH").each(function (i) {
+                        $(this).children("Group").each(function (j) {
+                            var Dev_Name = $(this).attr("Dev_Name").valueOf();
+                            var checkMachStaff = $(this).attr("checkMachStaff").valueOf();
+                            var prodCustomName = $(this).attr("prodCustomName").valueOf();
+                            var prodNo = $(this).attr("prodNo").valueOf();
+                            var curParts = $(this).attr("curParts").valueOf();
+                            var partsRate = $(this).attr("partsRate").valueOf();
+                            var prodCount = $(this).attr("prod_count").valueOf();
+                            var operRate = $(this).attr("operRate").valueOf();
+                            var status = $(this).attr("status").valueOf();
+                            var workStaff = $(this).attr("workStaff").valueOf();
+                            var prodName = $(this).attr("prodName").valueOf();
+                            var progRun = $(this).attr("progRun").valueOf();
+                            var tarParts = $(this).attr("tarParts").valueOf();
+                            var partsTime = $(this).attr("partsTime").valueOf();
+                            var alarmMesg = $(this).attr("alarmMesg").valueOf();
+
+                            if (checkMachStaff != "--")//校機人員 - 防止欄位被更新
+                            {
+                                document.getElementById(Dev_Name).getElementsByTagName("td")[1].innerText = checkMachStaff;
+                                document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[0].innerText = checkMachStaff;
+                            }
+                            else {
+                                document.getElementById(Dev_Name).getElementsByTagName("td")[1].innerText = checkMachStaff;
+                                document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[0].innerText = document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[0].innerText;
+                            }
+                            if (operRate != "--")//統計稼動率 PANEL 使用
+                            {
+                                Dev_Count_Oper++;
+                                Oper_Rate += parseFloat(operRate);
+                            }
+                            if (partsRate != "--")//統計生產進度 PANEL 使用
+                            {
+                                Dev_Count_Parts++;
+                                Parts_Rate += parseFloat(partsRate);
+                            }
+                            //status = cNC_Class.mach_status_EN2CH(status);//ok
+
+                            //if (status == "警報")//統計次數 PANEL 使用 
+                            //{
+                            //    document.getElementById(Dev_Name).style.backgroundColor = "#f73939";
+                            //    Alarm_Count++;
+                            //}
+                            //else if (status == "待機" || status == "閒置") {
+                            //    document.getElementById(Dev_Name).style.backgroundColor = "#ff9900";
+                            //    Stop_Count++;
+                            //}
+                            //else if (status == "離線") {
+
+                            //    document.getElementById(Dev_Name).style.backgroundColor = "#737373";
+                            //    Disc_Count++;
+                            //}
+                            //else if (status == "運轉" || status == "暫停" || status == "手動" || status == "暖機") {
+                            //    document.getElementById(Dev_Name).style.backgroundColor = "#04ba26";
+                            //    status = "運轉";
+                            //    Oper_Count++;
+                            //}
+
+                            if (status == "警報" || status == "ALARM" || status == "EMERGENCY")//統計次數 PANEL 使用 
+                            {
+                                status = "警報";
+                                document.getElementById(Dev_Name).style.backgroundColor = "#f73939";
+                                Alarm_Count++;
+                            }
+                            else if (status == "待機" || status == "閒置" || status == "STOP") {
+                                status = "待機";
+                                document.getElementById(Dev_Name).style.backgroundColor = "#ff9900";
+                                Stop_Count++;
+                            }
+                            else if (status == "離線" || status == "DISCONNECT") {
+                                status = "離線";
+                                document.getElementById(Dev_Name).style.backgroundColor = "#737373";
+                                Disc_Count++;
+                            }
+                            else if (status == "運轉" || status == "暫停" || status == "手動" || status == "暖機" || status == "OPERATE" || status == "SUSPEND" || status == "MANUAL" || status == "WARMUP") {
+                                status = "運轉";
+                                document.getElementById(Dev_Name).style.backgroundColor = "#04ba26";
+                                Oper_Count++;
+                            }
+                            //----                          
+                            progRun = progRun.split('/')[progRun.split('/').length - 1];
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[2].innerText = workStaff;//校機人員
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[3].innerText = status;//狀態
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[4].innerText = operRate;//稼動率
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[5].innerText = prodCustomName;//客戶名稱
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[6].innerText = prodName;//產品名稱
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[7].innerText = prodNo;//料件編號
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[8].innerText = progRun;//加工程式
+                            //document.getElementById(Dev_Name).getElementsByTagName("td")[9].innerText = prodCount;//今日生產件數
+                            // document.getElementById(Dev_Name).getElementsByTagName("td")[10].innerText = curParts;//生產件數
+                            // document.getElementById(Dev_Name).getElementsByTagName("td")[10].innerText = tarParts;//今日預期件數
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[9].innerText = partsRate + ' ' + ' (' + prodCount + '/' + tarParts + ')';//生產進度
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[10].innerText = partsTime.substring(0, 11);//預計完工時間
+                            document.getElementById(Dev_Name).getElementsByTagName("td")[11].innerText = alarmMesg;//異景資訊
+
+                            //以上列表
+
+                            //----
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[1].innerText = prodCustomName;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[2].innerText = prodNo;
+                            // document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[3].innerText = curParts;//
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[3].innerText = partsRate + ' %';
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[4].innerText = operRate + ' %';
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[5].innerText = alarmMesg;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[6].innerText = workStaff;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[7].innerText = prodName;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[8].innerText = progRun;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[9].innerText = prodCount;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[10].innerText = tarParts;
+                            document.getElementById("chart_" + Dev_Name).getElementsByTagName("span")[11].innerText = partsTime.substring(0, 11);
+                            //以上圖塊                                                     
+
+                            var statusString = document.getElementById("ma_canvas_status" + Dev_Name);
+                            statusString.style.fontWeight = "bold";
+                            switch (status) {
+                                case "運轉":
+                                case "OPERATE":
+                                case "暫停":
+                                case "SUSPEND":
+                                case "手動":
+                                case "MANUAL":
+                                case "暖機":
+                                case "WARMUP":
+                                    statusString.innerText = "運轉";
+                                    statusString.style.backgroundColor = "green";
+                                    statusString.style.color = "white";
+                                    break;
+                                case "緊急":
+                                case "警報":
+                                case "ALARM":
+                                case "EMERGENCY":
+                                    statusString.innerText = "警報";
+                                    statusString.style.backgroundColor = "red";
+                                    statusString.style.color = "white";
+                                    break;
+                                case "待機":
+                                case "STOP":
+                                    statusString.innerText = "待機";
+                                    statusString.style.backgroundColor = "yellow";
+                                    statusString.style.color = "black";
+                                    break;
+                                case "離線":
+                                case "DISCONNECT":
+                                    statusString.innerText = "離線";
+                                    statusString.style.backgroundColor = "gray";
+                                    statusString.style.color = "black";
+                                    break;
+                            }
+                        })
+                    });
+                    document.getElementById("OperCount").innerText = Oper_Count;
+                    document.getElementById("StopCount").innerText = Stop_Count;
+                    document.getElementById("AlarmCount").innerText = Alarm_Count;
+                    document.getElementById("DiscCount").innerText = Disc_Count;
+                    if (Oper_Rate == 0)
+                        document.getElementById("Oper_Rate").innerText = 0;
+                    else
+                        document.getElementById("Oper_Rate").innerText = (Oper_Rate / Dev_Count_Oper).toFixed(1);
+                    if (Parts_Rate == 0)
+                        document.getElementById("Parts_Rate").innerText = 0;
+                    else
+                        document.getElementById("Parts_Rate").innerText = (Parts_Rate / Dev_Count_Parts).toFixed(1);
+                    Oper_Count = 0;
+                    Stop_Count = 0;
+                    Alarm_Count = 0;
+                    Disc_Count = 0;
+
+                    Dev_Count_Oper = 0;
+                    Dev_Count_Parts = 0;
+                    Oper_Rate = 0;
+                    Parts_Rate = 0
+                }
+                //,
+                //error: function (data, errorThrown) {
+                //    alert("Fail");
+                //}
+            });
+            mTimer = setTimeout(function () { GetMachineData(); }, loadTime);
+            Timer_Count++;
+        }
+
+
+        //status_bar
+        var Color_OPERATE = "rgb(127, 255, 0)";
+        var Color_ALARM = "rgb(255, 0, 0)";
+        var Color_STOP = "rgb(255, 230, 0)";
+        var Color_DISCONNECT = "rgb(189, 189, 189)";
+        var Color_EMERGENCY = "rgb(255, 0, 0)";
+        var Color_SUSPEND = "rgb(128, 128, 0)";
+        var Color_MANUAL = "rgb(0, 239, 239)";
+        var Color_WARMUP = "rgb(137, 15, 39)";
+        var Color_Bg = "rgb(255, 255, 255)";
+        var Color_Font = "rgb(0,0,0)";
+        var Color_Scale = "rgb(127, 127, 127)";
+
+        var StrFirstDay = '<%=str_First_Day%>';
+        var StrLastDay = '<%=str_Last_Day%>';
+        var dev_list = '<%=str_Dev_Name%>';
+        var StrMachID;
+
+        for (var i = 0; i < dev_list.split(',').length; i++) {
+            StrMachID = '' + dev_list.split(',')[i] + '';
+            draw_Axial(StrMachID);
+        }
+
+        var Max_hh = 24;
+        var Time_rang = 1;//時間距離
+
+        var mTimer_status;
+        var Timer_Count_status = 0;//閃爍機制
+        var loadTime_status = 20000;//20000//60000
+        var Active = true;
+
+        Active = false;
+        mTimer_status = setTimeout(function () { draw_Axial(StrMachID); }, loadTime_status);//20190722++status bar即時更新
+
+
+        function draw_Axial(StrMachID) {
+            //var clientHeight = document.getElementById('ma_div_' + StrMachID).clientHeight;
+            var clientHeight = '60';//避免高度一直累加40
+            var clientWidth = document.getElementById('ma_div_' + StrMachID).clientWidth;
+            var canvas = document.getElementById('ma_canvas_' + StrMachID);
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                ctx.canvas.width = clientWidth;
+                ctx.canvas.height = clientHeight;
+                ctx.fillStyle = Color_Bg;
+                ctx.fillRect(0, 0, clientWidth, clientHeight);
+                draw_AxialData(StrMachID, StrFirstDay, StrLastDay);
+            }
+            mTimer_status = setTimeout(function () { draw_Axial(StrMachID); }, loadTime_status);
+            Timer_Count_status++;//20190722++status bar即時更新
+        }
+        function draw_AxialData(StrMachID, StrFirstDay, StrLastDay) {
+            $.ajax({
+                type: 'POST',
+                url: "../../webservice/dpCNC_MachData.asmx/GetMachStatus",
+                data: { Mach_ID: StrMachID, First_Day: StrFirstDay, Last_Day: StrLastDay },
+                dataType: 'xml',
+                success: function (docxml) {
+                    if ($(docxml).find("ROOT").length > 0) {
+                        var root = $(docxml);
+                        root.find('Group').each(function () {
+                            var element = $(this);
+                            var start_time = element.attr('Start_time');
+                            var cycle_time = element.attr('Cycle_time');
+                            var nc_status = element.attr('Nc_Status');
+                            var Start_time_line = element.attr('Start_time_line');
+                            var End_time_line = element.attr('End_time_line');
+
+                            draw_AxialWork(parseFloat(start_time), parseFloat(cycle_time), nc_status, StrMachID, Start_time_line, End_time_line);
+                        });
+                        draw_AxialTime(StrMachID);
+                    }
+                },
+                error: function (xhr) { var msg = xhr.responseText; }
+            });
+        }
+        function draw_AxialWork(X_Line_Start, X_Line_End, nc_status, StrMachID, Start_time_line, End_time_line) {
+            var clientHeight = document.getElementById('ma_div_' + StrMachID).clientHeight;
+            var clientWidth = document.getElementById('ma_div_' + StrMachID).clientWidth;
+            var canvas = document.getElementById('ma_canvas_' + StrMachID);
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                var Width_Size = clientWidth / (Max_hh * 60);
+                var X_Start = Width_Size * X_Line_Start;
+                var X_End = Width_Size * X_Line_End;
+                ctx.font = '10pt Calibri';
+                ctx.fillStyle = Color_Font;//寫字
+                switch (nc_status) {
+                    case "OPERATE":
+                    case "SUSPEND":
+                    case "MANUAL":
+                    case "WARMUP":
+                        ctx.fillStyle = Color_OPERATE;//Color_WARMUP
+                        break;
+                    case "ALARM":
+                    case "EMERGENCY":
+                        ctx.fillStyle = Color_ALARM;//Color_EMERGENCY
+                        break;
+                    case "STOP":
+                        ctx.fillStyle = Color_STOP;
+                        break;
+                    case "DISCONNECT":
+                        ctx.fillStyle = Color_DISCONNECT;
+                        break;
+                    default:
+                        ctx.fillStyle = Color_Scale;
+                }
+                ctx.fillRect(X_Start, 10, X_End, 40);//畫顏色
+                /*if (X_End >= 160)//計算持續區間
+                {
+                    ctx.fillStyle = Color_Font;//寫字
+                    ctx.fillText(Start_time_line, (X_Start + (X_End / 2) - 74), 32);
+                    ctx.fillText(End_time_line, (X_Start + (X_End / 2) - 74), 46);
+                }*/
+            }
+        }
+        function draw_AxialTime(StrMachID) {
+            var clientHeight = document.getElementById('ma_div_' + StrMachID).clientHeight;
+            var clientWidth = document.getElementById('ma_div_' + StrMachID).clientWidth;
+            var canvas = document.getElementById('ma_canvas_' + StrMachID);
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                var t = clientWidth / Max_hh;
+                ctx.font = '12pt Calibri';
+                ctx.fillStyle = Color_Font;
+                ctx.fillText("0h", 0, 14);
+                var j = 0;
+                for (i = 0; i < Max_hh; i++) {
+                    if (j <= Max_hh) {
+                        j += Time_rang; var offset = 10;
+                        if (j == Max_hh) offset = 20
+                        var x = parseInt(j * t, 10) - offset;
+                        ctx.fillText(j, x, 14);
+                    }
+                    var x = parseInt(i * t, 10);
+                    ctx.beginPath();
+                    ctx.moveTo(x, 22);//灰色線條"||"
+                    ctx.lineTo(x, 50);
+                    ctx.stroke();
+                }
+                ctx.beginPath();
+                ctx.moveTo(0, 50);//灰色線條"一一"
+                ctx.lineTo(clientWidth, 50);
+                ctx.stroke();
+            }
+        }
+
+
+
+        window.onload = show_value();
+        function show_value() {
+            document.getElementById("OperCount").innerText = <%=run %>;
+            document.getElementById("StopCount").innerText = <%=rest%>;
+            document.getElementById("AlarmCount").innerText = <%=alert%>;
+            document.getElementById("DiscCount").innerText = <%=noline%>;
+            document.getElementById("Oper_Rate").innerText = <%=percent%>;
+            document.getElementById("Parts_Rate").innerText = <%=progress%>;
+            //狀態BAR列印
+            <%=js_code%>
+        }
+    </script>
+</asp:Content>

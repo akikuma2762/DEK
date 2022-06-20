@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Floating Action Button</title> 
+<link rel='stylesheet' href='css/animate.min.css'>
+<link rel='stylesheet' href='css/family.css'>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div class="backdrop"></div>
+<div class="fab child" data-subitem="1"><span>C</span></div>
+<div class="fab child" data-subitem="2"><span>B</span></div>
+<div class="fab child" data-subitem="3"><span>A</span></div>
+<div class="fab" id="masterfab"><span>+</span></div>
+<h1>Floating Action Button</h1>
+<p>(Hint: Button interacts with you)</p>
+<script src='js/jquery/2.1.3/jquery.min.js'></script>
+<script  src="js/index.js"></script>
+</body>
+
+</html>

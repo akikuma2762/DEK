@@ -1,0 +1,305 @@
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\bin\Debug\Support.dll
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\bin\Debug\Support.pdb
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\bin\Debug\MyUtils.dll
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\bin\Debug\Support.dll
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\bin\Debug\Support.pdb
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\bin\Debug\EPPlus.dll
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\bin\Debug\MyUtils.dll
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.FormVisObj.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\新增資料夾\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\bin\Debug\Support.dll
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\bin\Debug\Support.pdb
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\bin\Debug\AGauge.dll
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\bin\Debug\EPPlus.dll
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\bin\Debug\MyUtils.dll
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\PJ backup\0612\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\bin\Debug\Support.dll
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\bin\Debug\Support.pdb
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\bin\Debug\AGauge.dll
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\bin\Debug\EPPlus.dll
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\bin\Debug\MyUtils.dll
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\PJ backup\0613\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\Windows Form1\Support\bin\Debug\Support.dll
+C:\Users\zhuan\Desktop\Windows Form1\Support\bin\Debug\Support.pdb
+C:\Users\zhuan\Desktop\Windows Form1\Support\bin\Debug\AGauge.dll
+C:\Users\zhuan\Desktop\Windows Form1\Support\bin\Debug\EPPlus.dll
+C:\Users\zhuan\Desktop\Windows Form1\Support\bin\Debug\MyUtils.dll
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.userControl.ucLEDs.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.ucPointerMeter.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\bin\Debug\AGauge.dll
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\bin\Debug\EPPlus.dll
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.userControl.ucLEDs.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.ucPointerMeter.resources
+C:\Users\zhuan\Desktop\新增資料夾 (2)\Windows Form1\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\bin\Debug\Support.dll
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\bin\Debug\Support.pdb
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\bin\Debug\AGauge.dll
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\bin\Debug\EPPlus.dll
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\bin\Debug\MyUtils.dll
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.userControl.ucLEDs.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.ucPointerMeter.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.Forms.FormDatePicker.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.userControl.ucDatePicker.resources
+C:\Users\zhuan\Desktop\CTF\Windows Form1\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucAudioWave.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucPercent.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVideo.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormAudioWaveIO.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormDatePicker.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.ucLEDs.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.ucPointerMeter.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.ucDatePicker.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.csproj.GenerateResource.Cache
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.dll
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.pdb
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\bin\Support.dll
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\bin\Support.pdb
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.DashBoard.ucWaveFFT.resources
+C:\Users\zhuan\Desktop\Windows Form1_\Windows Form1\Support\obj\Debug\Support.userControl.ucPanel3D.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\bin\Support.dll
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\bin\Support.pdb
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.csprojAssemblyReference.cache
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucAudioWave.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucPercent.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucVideo.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucWaveFFT.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormAudioWaveIO.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormDatePicker.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormMessage.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.FormPropertyEdit.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.Forms.FormYesNo.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucChart.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.ucLEDs.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.ucPanel3D.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.ucPointerMeter.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.userControl.ucDatePicker.resources
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.csproj.GenerateResource.cache
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.dll
+D:\Others\dek_John\project\dekerpvisn_nf461\Support\obj\Debug\Support.pdb
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\bin\Support.dll
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\bin\Support.pdb
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucAudioWave.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucPercent.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucVideo.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucWaveFFT.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormAudioWaveIO.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormDatePicker.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormMessage.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.FormPropertyEdit.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.Forms.FormYesNo.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucChart.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.ucLEDs.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.ucPanel3D.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.ucPointerMeter.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.userControl.ucDatePicker.resources
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.csproj.GenerateResource.cache
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.dll
+C:\Users\deta\Desktop\dek_erpvis_new_web\Support\obj\Debug\Support.pdb
+D:\vis_zhuang\deta_sowon_vis\Support\bin\Support.dll
+D:\vis_zhuang\deta_sowon_vis\Support\bin\Support.pdb
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucAnalogMeter.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucAudioWave.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucPercent.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucLedStatus.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucLedMatrix.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucVideo.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucWaveFFT.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormAudioWaveIO.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormDataFilter.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormDataRowSelect.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormDatePicker.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormMessage.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormMessage_YesNo_Input.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.FormPropertyEdit.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.Forms.FormYesNo.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.FormVisProgressBar.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucChart.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucDataView.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.ucDataGridView.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.ucDataRowFilter.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucDialGauge.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucMachStates.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucVisObj.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.DashBoard.ucMachChart.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.ucLEDs.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.ucPanel3D.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.ucPointerMeter.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.ucTextLabel.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.userControl.ucDatePicker.resources
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.csproj.GenerateResource.cache
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.csproj.CoreCompileInputs.cache
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.dll
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.pdb
+D:\vis_zhuang\deta_sowon_vis\Support\obj\Debug\Support.csprojAssemblyReference.cache

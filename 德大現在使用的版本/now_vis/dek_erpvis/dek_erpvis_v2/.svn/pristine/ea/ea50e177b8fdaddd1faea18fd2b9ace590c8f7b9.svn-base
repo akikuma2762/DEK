@@ -1,0 +1,178 @@
+﻿using dek_erpvis_v2.cls;
+using Support;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace dek_erpvis_v2.pages.dp_APS
+{
+    public partial class WorkHourDetailEdit : System.Web.UI.Page
+    {
+        public string pagename = "";
+        public string Super_Link = "";
+        public string color = "";
+        string acc = "";
+        public string G_Order = "";
+        public string O_Order = "";
+        public string T_Order = "";
+        myclass myclass = new myclass();
+        //-------------------------------------------------事件------------------------------------
+        //網頁載入事件
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (userInfo != null)
+            {
+                string URL_NAME = "OrderList";
+                acc = DataTableUtils.toString(userInfo["user_ACC"]);
+                color = HtmlUtil.change_color(acc);
+                if (myclass.user_view_check(URL_NAME, acc) == true)
+                {
+                    if (!IsPostBack)
+                    {
+                        Read_Data();
+
+                    }
+                }
+                else { Response.Write("<script>alert('您無法瀏覽此頁面 請向該單位主管申請權限!');location.href='../index.aspx';</script>"); }
+            }
+            else Response.Redirect(myclass.logout_url);
+        }
+        //儲存與修改事件
+        protected void Button_Save_Click(object sender, EventArgs e)
+        {
+            if (Request.QueryString["detailID"] != null)
+                Save_Data(Request.QueryString["detailID"], DropDownList_Status.Text, TextBox_Date.Text, TextBox_Time.Text, TextBox_Count.Text, TextBox_Man.Text);
+            else
+                Add_Data(DropDownList_Status.Text, TextBox_Date.Text, TextBox_Time.Text, TextBox_Count.Text, TextBox_Man.Text);
+        }
+        //------------------------------------------------方法-------------------------------------
+        //讀取?後面文字
+        private void Read_Data()
+        {
+            string jump = "";
+            ini_cbx();
+            if (Request.QueryString["detailID"] != null)
+            {
+                Show_Data(Request.QueryString["detailID"]);
+                pagename = "修改報工明細";
+            }
+            else if (Request.QueryString["WorkHourID"] != null)
+            {
+                string[] str = Request.QueryString["WorkHourID"].Split(',');
+                G_Order = str[0];
+                O_Order = str[1].Split('=')[1];
+                T_Order = str[2].Split('=')[1];
+                Button_Save.Text = "新增";
+                pagename = "新增報工明細";
+            }
+            else
+                Response.Redirect("OrderList.aspx");
+
+            Super_Link = "<ol class=\"breadcrumb_\">" +
+                            "<li><u><a href=\"../index.aspx\">首頁 </a></u></li> " +
+                            "<li><u><a href=\"../dp_APS/OrderList.aspx\"> 報工清單 </a></u></li> " +
+                            "<li><u><a href=\"../dp_APS/WorkHourList.aspx?OrderNum=" + O_Order + "\"> 報工列表 </a></u></li> " +
+                            "<li><u><a href=\"../dp_APS/WorkHourDetail.aspx?WorkHourID=" + G_Order + ",Project=" + O_Order + ",TaskName=" + T_Order + "\"> 報工明細 </a></u></li>" +
+                            "<li>"+pagename+"</li>"+
+                        "</ol>";
+        }
+        //把ID相關資料放入TEXTBOX內，以供使用者修改
+        private void Show_Data(string ID)
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            string sqlcmd = "SELECT * FROM dek_aps.workhour_detail where ID = '" + ID + "'";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                G_Order = DataTableUtils.toString(row["WorkHourID"]);
+                O_Order = DataTableUtils.toString(row["Project"]);
+                T_Order = DataTableUtils.toString(row["TaskName"]);
+                TextBox_Man.Text = DataTableUtils.toString(row["staffname"]);
+                TextBox_Date.Text = DataTableUtils.toString(row["workDate"]);
+                TextBox_Count.Text = DataTableUtils.toString(row["Piece"]);
+                TextBox_Time.Text = DataTableUtils.toString(row["WorkTime"]);
+            }
+
+        }
+        //把資料匯入DROPDOWNLIST
+        private void ini_cbx()
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            string sqlcmd = "SELECT * FROM dek_aps.workhour_status";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+
+            DropDownList_Status.Items.Clear();
+            ListItem list = null;
+            foreach (DataRow row in dt.Rows)
+            {
+                list = new ListItem(DataTableUtils.toString(row["status"]), DataTableUtils.toString(row["status"]));
+                DropDownList_Status.Items.Add(list);
+            }
+        }
+        //修改後存入資料庫
+        private void Save_Data(string ID, string Status, string Date, string Time, string Count, string Man = "")
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            string sqlcmd = "SELECT * FROM dek_aps.workhour_detail where ID = '" + ID + "'";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+            //避免刷新後資料消失，導致跳頁後沒有資訊
+            foreach (DataRow row in dt.Rows)
+            {
+                G_Order = DataTableUtils.toString(row["WorkHourID"]);
+                O_Order = DataTableUtils.toString(row["Project"]);
+                T_Order = DataTableUtils.toString(row["TaskName"]);
+            }
+
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.NewRow();
+                row["Status"] = Status;
+                row["WorkDate"] = Date;
+                row["WorkTime"] = Time;
+                row["StaffName"] = Man;
+                row["piece"] = Count;
+                if (DataTableUtils.Update_DataRow("dek_aps.workhour_detail", "ID = '" + ID + "'", row))
+                {
+                    Response.Write("<script>alert('資料已更新!');location.href='WorkHourDetail.aspx?WorkHourID=" + G_Order + ",Project=" + O_Order + ",TaskName=" + T_Order + "'; </script>");
+                }
+            }
+        }
+        //新增進入資料庫
+        private void Add_Data(string Status, string Date, string Time, string Count, string Man = "")
+        {
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekAPS);
+            string sqlcmd = "SELECT * FROM dek_aps.workhour_detail order by ID desc";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+            //確定按鈕按下之後還會存在
+            string[] str = Request.QueryString["WorkHourID"].Split(',');
+            G_Order = str[0];
+            O_Order = str[1].Split('=')[1];
+            T_Order = str[2].Split('=')[1];
+
+            if (dt.Rows.Count > 0)
+            {
+                int ID = DataTableUtils.toInt(DataTableUtils.toString(dt.Rows[0]["id"])) + 1;
+                DataRow row = dt.NewRow();
+                row["ID"] = ID;
+                row["piece"] = Count;
+                row["Status"] = Status;
+                row["Project"] = O_Order;
+                row["TaskName"] = T_Order;
+                row["WorkHourID"] = G_Order;
+                row["WorkDate"] = Date;
+                row["WorkTime"] = Time;
+                row["StaffName"] = Man;
+                if (DataTableUtils.Insert_DataRow("dek_aps.workhour_detail", row))
+                {
+                    Response.Write("<script>alert('新增成功!');location.href='WorkHourDetail.aspx?WorkHourID=" + G_Order + ",Project=" + O_Order + ",TaskName=" + T_Order + "'; </script>");
+                }
+            }
+        }
+    }
+}

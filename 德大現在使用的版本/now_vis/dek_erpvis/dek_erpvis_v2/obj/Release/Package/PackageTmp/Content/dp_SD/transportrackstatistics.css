@@ -1,0 +1,61 @@
+﻿#tab_content2 ._mdTitle {
+    display: block;
+}
+
+#tab_content2 ._xdTitle {
+    display: none;
+}
+
+.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+#chartContainer {
+    height: 520px;
+    max-width: 100%;
+    margin: 0px auto;
+}
+
+
+@media screen and (max-width:768px) {
+    #tab_content2 ._mdTitle {
+        display: none;
+    }
+
+    #tab_content2 ._xdTitle {
+        display: block;
+    }
+
+    .x_panel {
+        padding: 0;
+    }
+
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    #_Title {
+        padding: 0 10px 10px 10px;
+    }
+    
+    #btncheck {
+        width: 100%;
+    }
+
+    #chartContainer {
+        width: 100%;
+        height: 300px;
+        padding-top:30px;
+    }
+    /*button_safe*/
+    .x_content {
+        position: relative;
+    }
+
+    .card-content button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+    }
+}
