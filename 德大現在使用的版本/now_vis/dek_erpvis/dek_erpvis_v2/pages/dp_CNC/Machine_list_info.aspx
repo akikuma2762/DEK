@@ -361,6 +361,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12 col-sm-12 col-xs-12">
+                                                            
                                                             <div class="row">
                                                                 <div class="col-md-12 col-sm-12 col-xs-12 ">
                                                                     <asp:CheckBoxList ID="CheckBoxList_cloumn" RepeatColumns="2" runat="server"></asp:CheckBoxList>
@@ -662,7 +663,6 @@
     <script src="../../gantt/js/prettify.min.js"></script>
     <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
     <script>  
-
         function testtop() {
             var RD = document.getElementsByClassName("bar ganttRedDark");
             for (i = 0; i < RD.length; i++)
