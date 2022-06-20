@@ -127,6 +127,31 @@
             background: rgba(0, 0, 0, 0.6);
             z-index: 99;
         }
+        .GP_Tr,.GP_Td {width:100%
+        }
+        .GP_Content {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            height:40px;
+        }
+        #ContentPlaceHolder1_CheckBoxList_cloumn {
+            width:100%;
+        }
+        .GP_Btn {
+            width:90%;
+            border:0px;
+        }
+            .GP_Btn:hover {
+                background-color:darkgray;
+                transition:1s;
+            }
+            .GP_Btn:active {
+                transition:0s;
+                background-color: rgb(197, 197, 197);
+               border-left: 2px solid black;border-top: 2px solid black;
+               border-right: 1px solid rgb(202, 198, 198);border-bottom: 1px solid rgb(202, 198, 198);
+            }
     </style>
     <link rel="stylesheet" href="../../gantt/css/style.css" />
     <link rel="stylesheet" href="../../gantt/css/prettify.min.css" />
@@ -908,7 +933,7 @@
                 url: "../../webservice/dpCNC_MachData.asmx/GetMachineData",
                 data: { acc: '<%=acc%>', machine:'<%=machine_list%>' },
                 success: function (xml) {
-                    $(xml).find("ROOT_MACH").each(function (i) {
+                    $(xml).find("ROOT_MACH").each(function (i) { //待增加新選項資料,否則下方程式會錯誤 20220615
                         $(this).children("Group").each(function (j) {
                             var Dev_Name = $(this).attr("Dev_Name").valueOf();
                             var check_staff = $(this).attr("checkMachStaff").valueOf();
@@ -1091,8 +1116,12 @@
                             }
                             var switch_cnc = '<%=WebUtils.GetAppSettings("switch_cnc")%>';
 
-                            if (switch_cnc != '0')
-                                document.getElementById(Dev_Name).getElementsByTagName("td")[0].style.backgroundColor = "#ffffff";
+                            if (switch_cnc != '0') {
+                                
+                                if ($("#datatable_mach thead th")[0].innerText == "工單報工") {//第一筆TD不是工單報工,背景會強制轉白 20220614
+                                    document.getElementById(Dev_Name).getElementsByTagName("td")[0].style.backgroundColor = "#ffffff";
+                                };
+                            }   
 
                             //取得目前欄位排序順序
                             var tharray = [];
@@ -1771,6 +1800,85 @@
             if (text == '+' || text == '-')
                 setTimeout(function () { testtop(); }, 1250);
         });
+        //要做在load執行
+        console.log("123");
+        var gp1_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP1>群組一</button></div></td></tr>";
+        var gp2_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP2>群組二</button></div></td></tr>";
+        var checkbox_Id = ($('#ContentPlaceHolder1_CheckBoxList_cloumn input[type="checkbox"]').length) - 1;
+        var arryList = ["next_button", "acts", "check_staff"];
+        var gp1_td = "";
+        var gp2_td = "";
+        var count_gp1 = 0;
+        var count_gp1_loop = 0;
+        var count_gp1_last = 0;
+        var count_gp2 = 0;
+        var count_gp2_loop = 0;
+        var count_gp2_last = 0;
+        console.log(typeof checkbox_Id, checkbox_Id);
 
+        for (var i = 0; i <= checkbox_Id; i++) {
+            if (arryList.indexOf($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).val()) != -1) {
+                count_gp1++;
+            } else {
+                count_gp2++;
+            }
+        }
+
+        for (var i = 0; i <= checkbox_Id; i++) {
+            if (arryList.indexOf($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).val()) != -1) {
+                count_gp1_loop++;
+                count_gp1_last++;
+                console.log($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML);
+
+                if (count_gp1_loop < 2) {
+                    gp1_td = "<tr class=gp1>";
+                    gp1_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    if (count_gp1_last == count_gp1) {
+                        gp1_td += "</tr>";
+                        gp1_tr += gp1_td;
+                    }
+                } else {
+                    count_gp1_loop = 0;
+                    gp1_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    gp1_td += "</tr>";
+                    gp1_tr += gp1_td;
+                }
+            } else {
+                count_gp2_loop++;
+                count_gp2_last++;
+                console.log($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML);
+
+                if (count_gp2_loop < 2) {
+                    gp2_td = "<tr class=gp2>";
+                    gp2_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    if (count_gp2_last == count_gp2) {
+                        gp2_td += "</tr>";
+                        gp2_tr += gp2_td;
+                    }
+                } else {
+                    count_gp2_loop = 0;
+                    gp2_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    gp2_td += "</tr>";
+                    gp2_tr += gp2_td;
+                }
+
+
+            }
+        }
+        
+        
+
+        document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML = "";
+        document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML += gp1_tr;
+        document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML += gp2_tr;
+        $("#GP1").click(function () {
+            $(".gp1").toggle();
+        });
+        $("#GP2").click(function () {
+            $(".gp2").toggle();
+        });
+
+        
+        
     </script>
 </asp:Content>

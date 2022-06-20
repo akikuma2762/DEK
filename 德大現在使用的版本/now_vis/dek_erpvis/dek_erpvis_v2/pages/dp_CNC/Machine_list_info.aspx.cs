@@ -198,7 +198,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                     dev_name = ls_data[iIndex];
                     if (dt_data != null)
                     {
-                        string CheckStaff, WorkStaff, MachName, CustomName, ManuId, ProductName, ProductNumber, CraftName, CountTotal, CountToday, ExpCountToday, CountTodayRate, FinishTime, StatusBar, OperRate, MachStatus, AlarmMesg, ProgramRun, ProgramMain;
+                        string CheckStaff, WorkStaff, MachName, CustomName, ManuId, ProductName, ProductNumber, CraftName, CountTotal, CountToday, ExpCountToday, CountTodayRate, FinishTime, StatusBar, OperRate, MachStatus, AlarmMesg, ProgramRun, ProgramMain,spindle_shock;
                         CheckStaff = Web_Data.Get_CheckStaff(dt_data);//Y校機人員2
                         WorkStaff = Web_Data.Get_WorkStaff(dt_data);//Y加工人員3
                         MachName = Web_Data.Get_MachName(dt_data, ls_data[iIndex]);//設備名稱
@@ -217,7 +217,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                         MachStatus = Web_Data.Get_MachStatus(dt_data, ls_data[iIndex]);
                         AlarmMesg = Web_Data.Get_AlarmMesg(dt_data);//Y異警資訊16               //註解
                         ProgramRun = Web_Data.Get_ProgramRun(dt_data, ls_data[iIndex]);//主程式                 //註解     
-
+                        spindle_shock = Web_Data.Get_Spindle_shock(dt_data);
                         //20201201新增
                         string acts = Web_Data.Get_Information(dt_data, "acts");//主軸轉速
                         string spindleload = Web_Data.Get_Information(dt_data, "spindleload");//主軸負載
@@ -260,7 +260,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
 
 
                         設定圖塊(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time);
-                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, order_num, count, can_next, now_detailstatus);
+                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, spindle_shock, order_num, count, can_next, now_detailstatus);
 
 
 
@@ -273,7 +273,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             else if ((ls_data == null || ls_data.Count == 0) && th == null && tr == null)
                 HtmlUtil.NoData(out th, out tr);
         }
-        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
+        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間,string 主軸轉動, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
         {
             string 設備狀態_色彩 = cNC_Class.mach_status_Color(設備狀態);
             設備狀態 = cNC_Class.mach_status_EN2CH(設備狀態);
@@ -384,6 +384,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             tr.Append(show_table(old_name, "cut_time", 切削時間));
             tr.Append(show_table(old_name, "poweron_time", 通電時間));
             tr.Append(show_table(old_name, "alarm_mesg", 異警資訊));
+            tr.Append(show_table(old_name, "spindle_shock", 主軸轉動));
             tr.Append("</tr>");
         }
         //設定表格欄位
