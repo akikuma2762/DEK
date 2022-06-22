@@ -198,7 +198,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                     dev_name = ls_data[iIndex];
                     if (dt_data != null)
                     {
-                        string CheckStaff, WorkStaff, MachName, CustomName, ManuId, ProductName, ProductNumber, CraftName, CountTotal, CountToday, ExpCountToday, CountTodayRate, FinishTime, StatusBar, OperRate, MachStatus, AlarmMesg, ProgramRun, ProgramMain,spindle_shock;
+                        string CheckStaff, WorkStaff, MachName, CustomName, ManuId, ProductName, ProductNumber, CraftName, CountTotal, CountToday, ExpCountToday, CountTodayRate, FinishTime, StatusBar, OperRate, MachStatus, AlarmMesg, ProgramRun, ProgramMain;
                         CheckStaff = Web_Data.Get_CheckStaff(dt_data);//Y校機人員2
                         WorkStaff = Web_Data.Get_WorkStaff(dt_data);//Y加工人員3
                         MachName = Web_Data.Get_MachName(dt_data, ls_data[iIndex]);//設備名稱
@@ -217,7 +217,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                         MachStatus = Web_Data.Get_MachStatus(dt_data, ls_data[iIndex]);
                         AlarmMesg = Web_Data.Get_AlarmMesg(dt_data);//Y異警資訊16               //註解
                         ProgramRun = Web_Data.Get_ProgramRun(dt_data, ls_data[iIndex]);//主程式                 //註解     
-                        spindle_shock = Web_Data.Get_Spindle_shock(dt_data);
+                        
                         //20201201新增
                         string acts = Web_Data.Get_Information(dt_data, "acts");//主軸轉速
                         string spindleload = Web_Data.Get_Information(dt_data, "spindleload");//主軸負載
@@ -227,6 +227,21 @@ namespace dek_erpvis_v2.pages.dp_CNC
                         string prog_main_cmd = Web_Data.Get_Information(dt_data, "prog_main_cmd");//主程式註解
                         string prog_run_cmd = Web_Data.Get_Information(dt_data, "prog_run_cmd");//運行程式註解
                         string overrides = Web_Data.Get_Information(dt_data, "override");//進給率
+
+                        //20220622新增
+                        string spindle_shock = Web_Data.Get_Information(dt_data, "spindle_shock");//主軸震動
+                        string spindle_side_temp = Web_Data.Get_Information(dt_data, "spindle_side_temp");// 主軸側溫度
+                        string daoku_motor_electric = Web_Data.Get_Information(dt_data, "daoku_motor_electric");// 刀庫馬達電流_損壞預警
+                        string spindle_koudao_shock = Web_Data.Get_Information(dt_data, "spindle_koudao_shock");//主軸扣刀_震動監視
+                        string spindle_position = Web_Data.Get_Information(dt_data, "spindle_position");//主軸定位_在位確認
+                        string spindle_ladao_position = Web_Data.Get_Information(dt_data, "spindle_ladao_position");//主軸拉刀_在位確認
+                        string oil_level = Web_Data.Get_Information(dt_data, "oil_level");//潤滑油_油位檢知
+                        string ball_screw_hightemp = Web_Data.Get_Information(dt_data, "ball_screw_hightemp");//ball_screw_高溫監視
+                        string tool_oil_temp = Web_Data.Get_Information(dt_data, "tool_oil_temp");//治具油壓_溫度監視
+                        string tool_oil_pressure = Web_Data.Get_Information(dt_data, "tool_oil_pressure");//治具油壓_壓力監視
+                        string qiexieye_concentration = Web_Data.Get_Information(dt_data, "qiexieye_concentration");//切屑液_濃度檢知
+                        string qiexieye_temp = Web_Data.Get_Information(dt_data, "qiexieye_temp");//切屑液_溫度檢知
+                        string air_pressure = Web_Data.Get_Information(dt_data, "air_pressure");//氣壓源_壓力檢知
 
                         string run_time = Web_Data.Get_Information(dt_data, "run_time");//運轉時間
                         string cut_time = Web_Data.Get_Information(dt_data, "cut_time");//切削時間
@@ -260,7 +275,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
 
 
                         設定圖塊(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time);
-                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, spindle_shock, order_num, count, can_next, now_detailstatus);
+                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, spindle_shock, spindle_side_temp, daoku_motor_electric, spindle_koudao_shock, spindle_position, spindle_ladao_position, oil_level, ball_screw_hightemp, tool_oil_temp, tool_oil_pressure, qiexieye_concentration, qiexieye_temp, air_pressure, order_num, count, can_next, now_detailstatus);
 
 
 
@@ -273,7 +288,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             else if ((ls_data == null || ls_data.Count == 0) && th == null && tr == null)
                 HtmlUtil.NoData(out th, out tr);
         }
-        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間,string 主軸轉動, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
+        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間,string 主軸轉動,string 主軸側溫度 , string 刀庫馬達電流_損壞預警, string 主軸扣刀_震動監視, string 主軸定位_在位確認, string 主軸拉刀_在位確認, string 潤滑油_油位檢知, string ball_screw_高溫監視, string 治具油壓_溫度監視, string 治具油壓_壓力監視, string 切屑液_濃度檢知, string 切屑液_溫度檢知, string 氣壓源_壓力檢知, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
         {
             string 設備狀態_色彩 = cNC_Class.mach_status_Color(設備狀態);
             設備狀態 = cNC_Class.mach_status_EN2CH(設備狀態);
@@ -385,6 +400,18 @@ namespace dek_erpvis_v2.pages.dp_CNC
             tr.Append(show_table(old_name, "poweron_time", 通電時間));
             tr.Append(show_table(old_name, "alarm_mesg", 異警資訊));
             tr.Append(show_table(old_name, "spindle_shock", 主軸轉動));
+            tr.Append(show_table(old_name, "spindle_side_temp", 主軸側溫度));
+            tr.Append(show_table(old_name, "daoku_motor_electric", 刀庫馬達電流_損壞預警));
+            tr.Append(show_table(old_name, "spindle_koudao_shock", 主軸扣刀_震動監視));
+            tr.Append(show_table(old_name, "spindle_position", 主軸定位_在位確認));
+            tr.Append(show_table(old_name, "spindle_ladao_position", 主軸拉刀_在位確認));
+            tr.Append(show_table(old_name, "oil_level", 潤滑油_油位檢知));
+            tr.Append(show_table(old_name, "ball_screw_hightemp", ball_screw_高溫監視));
+            tr.Append(show_table(old_name, "tool_oil_temp", 治具油壓_溫度監視));
+            tr.Append(show_table(old_name, "tool_oil_pressure", 治具油壓_壓力監視));
+            tr.Append(show_table(old_name, "qiexieye_concentration", 切屑液_濃度檢知));
+            tr.Append(show_table(old_name, "qiexieye_temp", 切屑液_溫度檢知));
+            tr.Append(show_table(old_name, "air_pressure", 氣壓源_壓力檢知));
             tr.Append("</tr>");
         }
         //設定表格欄位

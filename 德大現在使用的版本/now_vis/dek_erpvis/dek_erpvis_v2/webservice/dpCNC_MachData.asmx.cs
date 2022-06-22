@@ -101,7 +101,7 @@ namespace dek_erpvis_v2.webservice
                                 MachStatus = Web_Data.Get_MachStatus(dt_data, ls_data[iIndex]);
                                 AlarmMesg = Web_Data.Get_AlarmMesg(dt_data);
                                 ProgramRun = Web_Data.Get_ProgramRun(dt_data, ls_data[iIndex]);
-
+                                
                                 //20201201新增
                                 string acts = Web_Data.Get_Information(dt_data, "acts");//主軸轉速
                                 string spindleload = Web_Data.Get_Information(dt_data, "spindleload");//主軸負載
@@ -114,6 +114,20 @@ namespace dek_erpvis_v2.webservice
                                 string run_time = Web_Data.Get_Information(dt_data, "run_time");//運轉時間
                                 string cut_time = Web_Data.Get_Information(dt_data, "cut_time");//切削時間
                                 string poweron_time = Web_Data.Get_Information(dt_data, "poweron_time");//通電時間
+                                //20220622新增
+                                string spindle_shock = Web_Data.Get_Information(dt_data, "spindle_shock");//主軸震動
+                                string spindle_side_temp = Web_Data.Get_Information(dt_data, "spindle_side_temp");//主軸震動
+                                string daoku_motor_electric = Web_Data.Get_Information(dt_data, "daoku_motor_electric");//刀庫馬達電流_損壞預警
+                                string spindle_koudao_shock = Web_Data.Get_Information(dt_data, "spindle_koudao_shock");//主軸扣刀_震動監視
+                                string spindle_position = Web_Data.Get_Information(dt_data, "spindle_position");//主軸定位_在位確認
+                                string spindle_ladao_position = Web_Data.Get_Information(dt_data, "spindle_ladao_position");//主軸拉刀_在位確認
+                                string oil_level = Web_Data.Get_Information(dt_data, "oil_level");//潤滑油_油位檢知
+                                string ball_screw_hightemp = Web_Data.Get_Information(dt_data, "ball_screw_hightemp");//ball_screw_高溫監視
+                                string tool_oil_temp = Web_Data.Get_Information(dt_data, "tool_oil_temp");//治具油壓_溫度監視
+                                string tool_oil_pressure = Web_Data.Get_Information(dt_data, "tool_oil_pressure");//治具油壓_壓力監視
+                                string qiexieye_concentration = Web_Data.Get_Information(dt_data, "qiexieye_concentration");//切屑液_濃度檢知
+                                string qiexieye_temp = Web_Data.Get_Information(dt_data, "qiexieye_temp");//切屑液_溫度檢知
+                                string air_pressure = Web_Data.Get_Information(dt_data, "air_pressure");//氣壓源_壓力檢知
 
                                 //20210105新增
                                 string complete_time = Web_Data.Get_Information(dt_data, "complete_time");//通電時間
@@ -183,6 +197,21 @@ namespace dek_erpvis_v2.webservice
                                 xmlElemA.SetAttribute("count", count);
                                 xmlElemA.SetAttribute("can_next", can_next);
                                 xmlElemA.SetAttribute("now_detailstatus", now_detailstatus);
+                                //2022新增選項
+                                xmlElemA.SetAttribute("spindle_shock", spindle_shock);
+                                xmlElemA.SetAttribute("spindle_side_temp", spindle_side_temp);
+                                xmlElemA.SetAttribute("daoku_motor_electric", daoku_motor_electric);
+                                xmlElemA.SetAttribute("spindle_koudao_shock", spindle_koudao_shock);
+                                xmlElemA.SetAttribute("spindle_position", spindle_position);
+                                xmlElemA.SetAttribute("spindle_ladao_position", spindle_ladao_position);
+                                xmlElemA.SetAttribute("oil_level", oil_level);
+                                xmlElemA.SetAttribute("ball_screw_hightemp", ball_screw_hightemp);
+                                xmlElemA.SetAttribute("tool_oil_temp", tool_oil_temp);
+                                xmlElemA.SetAttribute("tool_oil_pressure", tool_oil_pressure);
+                                xmlElemA.SetAttribute("qiexieye_concentration", qiexieye_concentration);
+                                xmlElemA.SetAttribute("qiexieye_temp", qiexieye_temp);
+                                xmlElemA.SetAttribute("air_pressure", air_pressure);
+               
                                 string now_list = $"{CNCUtils.MachName_translation(MachName)}^{WorkStaff}^{ManuId}^{CustomName}^{ProductName}^{ProductNumber}^{CraftName}^{DataTableUtils.toInt(CountToday)}^{DataTableUtils.toInt(ExpCountToday)}^";
                                 xmlElemA.SetAttribute("now_list", now_list.Replace(' ', '*'));
 

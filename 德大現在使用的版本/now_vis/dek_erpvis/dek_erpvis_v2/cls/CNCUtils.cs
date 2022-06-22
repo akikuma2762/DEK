@@ -304,6 +304,10 @@ namespace dek_erpvis_v2.cls
         {
             return Aviod_NoValue(dt_Mach_Info, "custom_name");//客戶名稱         
         }
+        public string Get_Spindle_shock(DataTable dt_Mach_Info)
+        {
+            return Aviod_NoValue(dt_Mach_Info, "spindle_shock");//主軸震動         
+        }
         public string Get_ManuID(DataTable dt_Mach_Info)
         {
             return Aviod_NoValue(dt_Mach_Info, "manu_id");//製令單號         
