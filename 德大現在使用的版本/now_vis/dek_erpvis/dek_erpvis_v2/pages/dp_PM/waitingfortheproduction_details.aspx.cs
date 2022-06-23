@@ -102,7 +102,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekERPDataTable);
             string sqlcmd = "SELECT   " +
                             "cust.custnm2 AS 客戶簡稱, " +
-                            "ws.user_field06 AS 產線代號, " +
+                            "ws.PLINE_NO AS 產線代號, " +
                             "ws.lot_no AS 排程編號, " +
                             "ws.cord_no AS 訂單號碼, " +
                             "cord.cord_no AS 客戶訂單, " +
