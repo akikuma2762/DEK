@@ -139,19 +139,33 @@
             width:100%;
         }
         .GP_Btn {
-            width:90%;
+            width:100%;
             border:0px;
+            background-color:rgb(51, 122, 183);
         }
             .GP_Btn:hover {
-                background-color:darkgray;
+                background-color:rgb(127, 177, 219);
                 transition:1s;
             }
             .GP_Btn:active {
                 transition:0s;
-                background-color: rgb(197, 197, 197);
+                background-color:rgb(40, 96, 144);
                border-left: 2px solid black;border-top: 2px solid black;
                border-right: 1px solid rgb(202, 198, 198);border-bottom: 1px solid rgb(202, 198, 198);
             }
+        #GP1,#GP2 {
+            margin:0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color:white;
+        }
+        #GP_Title {
+            width:90%;
+        }
+        .gp1>td,.gp2>td {
+            width:50%;
+        }
     </style>
     <link rel="stylesheet" href="../../gantt/css/style.css" />
     <link rel="stylesheet" href="../../gantt/css/prettify.min.css" />
@@ -1829,8 +1843,8 @@
         });
         //要做在load執行
         console.log("123");
-        var gp1_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP1>工單資訊</button></div></td></tr>";
-        var gp2_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP2>設備資訊</button></div></td></tr>";
+        var gp1_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP1><div id=GP_Title>工單資訊</div><div id=GP1_Arrow class='fa fa-chevron-up'></div></button></div></td></tr>";
+        var gp2_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP2><div id=GP_Title>設備資訊</div><div id=GP2_Arrow class='fa fa-chevron-up'></div></button></div></td></tr>";
         var checkbox_Id = ($('#ContentPlaceHolder1_CheckBoxList_cloumn input[type="checkbox"]').length) - 1;
         var arryList = ["check_staff", "work_staff", "manu_id", "custom_name", "product_name", "product_number", "craft_name", "count_today_rate", "complete_time", "finish_time","next_button"];
         var gp1_td = "";
@@ -1900,9 +1914,25 @@
         document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML += gp2_tr;
         $("#GP1").click(function () {
             $(".gp1").toggle();
+            $("GP1_Arrow").removeClass();
+            if ($("#GP1_Arrow").attr("class") == "fa fa-chevron-up") {
+                $("#GP1_Arrow").removeClass();
+                $("#GP1_Arrow").addClass("fa fa-chevron-down");
+            } else {
+                $("#GP1_Arrow").removeClass();
+                $("#GP1_Arrow").addClass("fa fa-chevron-up");
+            }
         });
         $("#GP2").click(function () {
             $(".gp2").toggle();
+            $("GP2_Arrow").removeClass();
+            if ($("#GP2_Arrow").attr("class") == "fa fa-chevron-up") {
+                $("#GP2_Arrow").removeClass();
+                $("#GP2_Arrow").addClass("fa fa-chevron-down");
+            } else {
+                $("#GP2_Arrow").removeClass();
+                $("#GP2_Arrow").addClass("fa fa-chevron-up");
+            }
         });
 
         

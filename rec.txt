@@ -64,3 +64,15 @@
 二.BUG紀錄:
 三.BUG原因:
 四.修正歷程:修改table標題音用參數
+
+版號 00.22.01.00.05
+第6版 0622-bear
+1.
+一.位置:pages\dp_CNC\Machine_list_info.aspx.cs,
+	pages\dp_CNC\Machine_list_info.aspx.axpx,
+	webservice\dpCNC_MachData.asmx.cs,
+        cls\CNCUtils.cs
+二.BUG紀錄:
+三.BUG原因:
+四.修正歷程:新增checkbox選項&表格資料
+

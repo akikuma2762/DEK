@@ -127,6 +127,31 @@
             background: rgba(0, 0, 0, 0.6);
             z-index: 99;
         }
+        .GP_Tr,.GP_Td {width:100%
+        }
+        .GP_Content {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            height:40px;
+        }
+        #ContentPlaceHolder1_CheckBoxList_cloumn {
+            width:100%;
+        }
+        .GP_Btn {
+            width:90%;
+            border:0px;
+        }
+            .GP_Btn:hover {
+                background-color:darkgray;
+                transition:1s;
+            }
+            .GP_Btn:active {
+                transition:0s;
+                background-color: rgb(197, 197, 197);
+               border-left: 2px solid black;border-top: 2px solid black;
+               border-right: 1px solid rgb(202, 198, 198);border-bottom: 1px solid rgb(202, 198, 198);
+            }
     </style>
     <link rel="stylesheet" href="../../gantt/css/style.css" />
     <link rel="stylesheet" href="../../gantt/css/prettify.min.css" />
@@ -336,6 +361,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12 col-sm-12 col-xs-12">
+                                                            
                                                             <div class="row">
                                                                 <div class="col-md-12 col-sm-12 col-xs-12 ">
                                                                     <asp:CheckBoxList ID="CheckBoxList_cloumn" RepeatColumns="2" runat="server"></asp:CheckBoxList>
@@ -637,7 +663,6 @@
     <script src="../../gantt/js/prettify.min.js"></script>
     <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
     <script>  
-
         function testtop() {
             var RD = document.getElementsByClassName("bar ganttRedDark");
             for (i = 0; i < RD.length; i++)
@@ -908,7 +933,7 @@
                 url: "../../webservice/dpCNC_MachData.asmx/GetMachineData",
                 data: { acc: '<%=acc%>', machine:'<%=machine_list%>' },
                 success: function (xml) {
-                    $(xml).find("ROOT_MACH").each(function (i) {
+                    $(xml).find("ROOT_MACH").each(function (i) { //待增加新選項資料,否則下方程式會錯誤 20220615
                         $(this).children("Group").each(function (j) {
                             var Dev_Name = $(this).attr("Dev_Name").valueOf();
                             var check_staff = $(this).attr("checkMachStaff").valueOf();
@@ -947,6 +972,20 @@
                             var now_list = $(this).attr("now_list").valueOf();
                             var next_list = $(this).attr("next_list").valueOf();
                             var staff = $(this).attr("staff").valueOf();
+                            //20220622新增
+                            var spindle_shock = $(this).attr("spindle_shock").valueOf();
+                            var spindle_side_temp = $(this).attr("spindle_side_temp").valueOf();
+                            var daoku_motor_electric = $(this).attr("daoku_motor_electric").valueOf();
+                            var spindle_koudao_shock = $(this).attr("spindle_koudao_shock").valueOf();
+                            var spindle_position = $(this).attr("spindle_position").valueOf();
+                            var spindle_ladao_position = $(this).attr("spindle_ladao_position").valueOf();
+                            var oil_level = $(this).attr("oil_level").valueOf();
+                            var ball_screw_hightemp = $(this).attr("ball_screw_hightemp").valueOf();
+                            var tool_oil_temp = $(this).attr("tool_oil_temp").valueOf();
+                            var tool_oil_pressure = $(this).attr("tool_oil_pressure").valueOf();
+                            var qiexieye_concentration = $(this).attr("qiexieye_concentration").valueOf();
+                            var qiexieye_temp = $(this).attr("qiexieye_temp").valueOf();
+                            var air_pressure = $(this).attr("air_pressure").valueOf();
 
                             //紀錄表格元素的陣列
                             var tablearray = ['設備名稱', 'mach_name', Dev_Name,
@@ -975,7 +1014,20 @@
                                 '切削時間', 'cut_time', cut_time,
                                 '通電時間', 'poweron_time', poweron_time,
                                 '異警資訊', 'alarm_mesg', alarm_mesg,
-                                '工單報工', 'next_button', '']
+                                '工單報工', 'next_button', '',
+                                '主軸震動', 'spindle_shock', spindle_shock,
+                                '主軸側溫度', 'spindle_side_temp', spindle_side_temp,
+                                '刀庫馬達電流_損壞預警', 'daoku_motor_electric', daoku_motor_electric,
+                                '主軸扣刀_震動監視', 'spindle_koudao_shock', spindle_koudao_shock,
+                                '主軸定位_在位確認', 'spindle_position', spindle_position,
+                                '主軸拉刀_在位確認', 'spindle_ladao_position', spindle_ladao_position,
+                                '潤滑油_油位檢知', 'oil_level', oil_level,
+                                'ball_screw_高溫監視', 'ball_screw_hightemp', ball_screw_hightemp,
+                                '治具油壓_溫度監視', 'tool_oil_temp', tool_oil_temp,
+                                '治具油壓_壓力監視', 'tool_oil_pressure', tool_oil_pressure,
+                                '切屑液_濃度檢知', 'qiexieye_concentration', qiexieye_concentration,
+                                '切屑液_溫度檢知', 'qiexieye_temp', qiexieye_temp,
+                                '氣壓源_壓力檢知', 'air_pressure', air_pressure]
 
 
 
@@ -1091,8 +1143,12 @@
                             }
                             var switch_cnc = '<%=WebUtils.GetAppSettings("switch_cnc")%>';
 
-                            if (switch_cnc != '0')
-                                document.getElementById(Dev_Name).getElementsByTagName("td")[0].style.backgroundColor = "#ffffff";
+                            if (switch_cnc != '0') {
+                                
+                                if ($("#datatable_mach thead th")[0].innerText == "工單報工") {//第一筆TD不是工單報工,背景會強制轉白 20220614
+                                    document.getElementById(Dev_Name).getElementsByTagName("td")[0].style.backgroundColor = "#ffffff";
+                                };
+                            }   
 
                             //取得目前欄位排序順序
                             var tharray = [];
@@ -1771,6 +1827,85 @@
             if (text == '+' || text == '-')
                 setTimeout(function () { testtop(); }, 1250);
         });
+        //要做在load執行
+        console.log("123");
+        var gp1_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP1>工單資訊</button></div></td></tr>";
+        var gp2_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP2>設備資訊</button></div></td></tr>";
+        var checkbox_Id = ($('#ContentPlaceHolder1_CheckBoxList_cloumn input[type="checkbox"]').length) - 1;
+        var arryList = ["check_staff", "work_staff", "manu_id", "custom_name", "product_name", "product_number", "craft_name", "count_today_rate", "complete_time", "finish_time","next_button"];
+        var gp1_td = "";
+        var gp2_td = "";
+        var count_gp1 = 0;
+        var count_gp1_loop = 0;
+        var count_gp1_last = 0;
+        var count_gp2 = 0;
+        var count_gp2_loop = 0;
+        var count_gp2_last = 0;
+        console.log(typeof checkbox_Id, checkbox_Id);
 
+        for (var i = 0; i <= checkbox_Id; i++) {
+            if (arryList.indexOf($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).val()) != -1) {
+                count_gp1++;
+            } else {
+                count_gp2++;
+            }
+        }
+
+        for (var i = 0; i <= checkbox_Id; i++) {
+            if (arryList.indexOf($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).val()) != -1) {
+                count_gp1_loop++;
+                count_gp1_last++;
+                //console.log($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML);
+
+                if (count_gp1_loop < 2) {
+                    gp1_td = "<tr class=gp1>";
+                    gp1_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    if (count_gp1_last == count_gp1) {
+                        gp1_td += "</tr>";
+                        gp1_tr += gp1_td;
+                    }
+                } else {
+                    count_gp1_loop = 0;
+                    gp1_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    gp1_td += "</tr>";
+                    gp1_tr += gp1_td;
+                }
+            } else {
+                count_gp2_loop++;
+                count_gp2_last++;
+                //console.log($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML);
+
+                if (count_gp2_loop < 2) {
+                    gp2_td = "<tr class=gp2>";
+                    gp2_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    if (count_gp2_last == count_gp2) {
+                        gp2_td += "</tr>";
+                        gp2_tr += gp2_td;
+                    }
+                } else {
+                    count_gp2_loop = 0;
+                    gp2_td += $(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML;
+                    gp2_td += "</tr>";
+                    gp2_tr += gp2_td;
+                }
+
+
+            }
+        }
+        
+        
+
+        document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML = "";
+        document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML += gp1_tr;
+        document.getElementById("ContentPlaceHolder1_CheckBoxList_cloumn").innerHTML += gp2_tr;
+        $("#GP1").click(function () {
+            $(".gp1").toggle();
+        });
+        $("#GP2").click(function () {
+            $(".gp2").toggle();
+        });
+
+        
+        
     </script>
 </asp:Content>

@@ -291,6 +291,7 @@
         function set_nowmonth() {
             document.getElementById('<%=txt_str.ClientID%>').value = '<%=date_str%>';
             document.getElementById('<%=txt_end.ClientID%>').value = '<%=date_end%>';
+
         }
 
     </script>
