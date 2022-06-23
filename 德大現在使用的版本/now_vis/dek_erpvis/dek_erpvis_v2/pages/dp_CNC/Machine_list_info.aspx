@@ -163,8 +163,25 @@
         #GP_Title {
             width:90%;
         }
+       /*20220623新增 調整td浮動,選單&按鈕對齊問題 */ 
         .gp1>td,.gp2>td {
             width:50%;
+        }
+        #ContentPlaceHolder1_CheckBoxList_cloumn {
+            width:97%;
+        }
+        .Machine_list_info_css_fixed_1 {
+        display:flex;
+        justify-content:end;
+        width:97%;
+        }
+        .Machine_list_info_css_fixed_2 {
+        text-align:end;
+        }
+        .Machine_list_info_css_fixed_3 {
+            padding:0px;
+            height:30px;
+            width:70px;
         }
     </style>
     <link rel="stylesheet" href="../../gantt/css/style.css" />
@@ -385,12 +402,11 @@
                                                     </ContentTemplate>
                                                 </asp:UpdatePanel>
                                             </div>
-                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <div class="col-md-9 col-xs-8">
-                                                </div>
-                                                <div class="col-md-3 col-xs-12">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 Machine_list_info_css_fixed_1" style="display:flex;justify-content:end;">
+                                                
+                                                <div class="col-md-3 col-xs-12 Machine_list_info_css_fixed_2">
                                                     <asp:LinkButton ID="LinkButton_ok" runat="server" Style="position: absolute; right: 0; display: none" OnClick="Select_MachGroupClick" class="btn btn-primary antosubmit2">選擇</asp:LinkButton>
-                                                    <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
+                                                    <button id="btncheck" type="button" class="btn btn-primary antosubmit2 Machine_list_info_css_fixed_3">執行搜索</button>
                                                 </div>
                                             </div>
 
