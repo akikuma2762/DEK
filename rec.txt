@@ -76,3 +76,11 @@
 三.BUG原因:
 四.修正歷程:新增checkbox選項&表格資料
 
+版號 00.22.01.00.06
+第7版 0623-bear
+1.
+一.位置:pages\dp_CNC\Machine_list_info.aspx.axpx
+二.BUG紀錄:
+三.BUG原因:
+四. 調整td浮動,調整選單&按鈕對齊
+
