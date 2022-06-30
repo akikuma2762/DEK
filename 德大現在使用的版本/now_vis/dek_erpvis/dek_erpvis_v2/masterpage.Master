@@ -142,7 +142,7 @@
                                         <img src="../../assets/images/icon white-25.png" width="26px" height="26px">
                                         <label id="SomeLabel2">&nbsp; 系統管理</label>
                                         <span class="fa fa-chevron-down" style="font-size: 10px"></span><span id="notice_parents"></span></a>
-                                        <ul class="nav child_menu">
+                                        <ul class="nav child_menu" style="left:70px">
                                             <li style="background-color: <%=color %>"><a onclick="show_loading()" href="/pages/SYS_CONTROL/rights_mag.aspx">01權限管理</a></li>
                                             <li style="background-color: <%=color %>"><a onclick="show_loading()" href="/pages/SYS_CONTROL/rights_application.aspx">02待審權限<span id="notice_child"></span></a></li>
                                             <%=changevalue %>

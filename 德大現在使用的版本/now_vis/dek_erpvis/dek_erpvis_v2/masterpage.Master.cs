@@ -187,7 +187,7 @@ namespace dek_erpvis_v2
                             dt = clsDB_sw.DataTable_GetTable(sql_cmd);
                             if (HtmlUtil.Check_DataTable(dt))
                             {
-                                PlaceHolder_AllPart.Controls.Add(new LiteralControl("<ul class=\"nav child_menu\">"));
+                                PlaceHolder_AllPart.Controls.Add(new LiteralControl("<ul class=\"nav child_menu\" style=\"left:70px\">"));
                                 if (user_css == "custom_old")
                                 {
                                     color = "";
