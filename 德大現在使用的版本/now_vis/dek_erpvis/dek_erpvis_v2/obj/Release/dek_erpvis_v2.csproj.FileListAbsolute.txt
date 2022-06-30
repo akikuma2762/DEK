@@ -1573,7 +1573,6 @@ D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\Docu
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\ExcelNumberFormat.dll
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\ICSharpCode.SharpZipLib.dll
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\MongoUtils.dll
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\Newtonsoft.Json.dll
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\NPOI.dll
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\NPOI.OOXML.dll

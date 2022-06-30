@@ -13,6 +13,8 @@ namespace dek_erpvis_v2
 {
     public partial class masterpage : System.Web.UI.MasterPage
     {
+        public string model = "nav-md footer_fixed";
+        public string cookieValue = "";
         public string ELine = "";
         public string test = "";
         public string changevalue = "";
@@ -90,10 +92,27 @@ namespace dek_erpvis_v2
         }
         private void load_data()
         {
-
+            left_List();
             show_all();
             show_IMG();
             show_CompanyName();
+        }
+        private void left_List() {
+            if (HttpContext.Current.Request.Cookies["clickhistory"] != null)
+            {
+                cookieValue = HttpContext.Current.Request.Cookies["clickhistory"].Value;
+                if (cookieValue == "fa fa-chevron-right")
+                {
+                    model = "nav-sm footer_fixed";
+                }
+                else
+                {
+                    model = "nav-md footer_fixed";
+                }
+            }
+            else {
+                return;
+            }
         }
         //顯示圖片
         private void show_IMG()
@@ -160,7 +179,6 @@ namespace dek_erpvis_v2
                                 foreach (DataRow row in dt.Rows)
                                 {
                                     PlaceHolder_AllPart.Controls.Add(new LiteralControl($"<li id=\"{"id" + i}\"><a id=\"{  "Receive" + i}\"><img src=\"../../assets/images/{ DataTableUtils.toString(row["DPM_NAME"])}.png\" width=\"26px\" height=\"26px\"><label> &ensp; {DataTableUtils.toString(row["DPM_NAME2"])} </label><span class={"\"fa fa-chevron-down\""} style=\"font-size:10px\"></span></a>"));
-                                    html_js += js_code(i);
                                     i++;
                                 }
                             }
@@ -203,7 +221,6 @@ namespace dek_erpvis_v2
                                 foreach (DataRow row in dt.Rows)
                                 {                     
                                     PlaceHolder_AllPart.Controls.Add(new LiteralControl($"<li id=\"{"id" + i}\"><a id=\"{ "Receive" + i}\"><img src=\"../../assets/images/{ DataTableUtils.toString(row["DPM_NAME"])}.png\" width=\"26px\" height=\"26px\"><label> &ensp; {DataTableUtils.toString(row["DPM_NAME2"])} </label><span class={"\"fa fa-chevron-down\""} style=\"font-size:10px\"></span></a>"));
-                                    html_js += js_code(i);
                                     i++;
                                 }
                             }
@@ -236,7 +253,7 @@ namespace dek_erpvis_v2
                 }
             }
         }
-        //前端JS顯示
+        //前端JS顯示 20220630沒用到,停用
         private string js_code(int i)
         {
             return "if (id" + i + ".className == 'active') {document.getElementById(\"Receive" + i + "\").click();}\n";

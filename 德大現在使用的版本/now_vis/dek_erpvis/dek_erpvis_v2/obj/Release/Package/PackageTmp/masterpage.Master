@@ -70,7 +70,7 @@
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
-<body id="main_body" class="nav-md footer_fixed">
+<body id="main_body" class="<%=model%>">
     <%--    <div id="loading">
         <img src="../../images/loading.gif" alt="loading.." />
     </div>--%>
@@ -261,7 +261,8 @@
                 $.blockUI({ message: '<img src="../../images/loading.gif" />' });
             }
         }
-
+        
+       
         function close_nav() {
             if ($(window).width() < 991) {
                 document.getElementById("main_body").classList.remove("nav-sm");
@@ -364,6 +365,7 @@
         else {/*兩個側欄之間的交換*/
             $("#menu_toggle").click(function () {
                 if (changeicon.classList == "fa fa-chevron-left") {
+                    revice();//20220630新增 交換時隱藏部門選項
                     changeicon.className = "fa fa-chevron-right";
                     $('#changeicon').attr('data-original-title', '展開側邊面板');
                     document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
@@ -497,11 +499,19 @@
         }
 
         /*------------------------------------------------------------------*/
-        //判斷側欄是否打開，如果打開的話，就將它收回
+        //判斷側欄是否打開，如果打開的話，就將它收回 20220630
         function revice() {
-            <%=html_js%> 
-            if (id5.className == 'active') {
-                document.getElementById("Receive5").click();
+            //console.log($('#main_body').attr('class'));
+            var act = "";
+            if ($('#main_body').attr('class') == 'footer_fixed nav-sm') {
+                console.log($('#sidebar-menu [class="active"]'));
+                if ($('#sidebar-menu [class="active"]').length != 0) {
+                    act = "active";
+                } else {
+                    act = "active-sm";
+                }
+                $("#sidebar-menu "+ `[class=${act}]`+ " ul").attr('style', 'display: none;');
+                $("#sidebar-menu " + `[class=${act}]`).removeClass();     
             }
         }
         /*-----------------------------------------------------------------*/
