@@ -501,16 +501,16 @@
         /*------------------------------------------------------------------*/
         //判斷側欄是否打開，如果打開的話，就將它收回 20220630
         function revice() {
-            //console.log($('#main_body').attr('class'));
             var act = "";
             if ($('#main_body').attr('class') == 'footer_fixed nav-sm') {
-                console.log($('#sidebar-menu [class="active"]'));
+                //console.log($('#sidebar-menu [class="active"]'));
                 if ($('#sidebar-menu [class="active"]').length != 0) {
                     act = "active";
                 } else {
                     act = "active-sm";
                 }
-                $("#sidebar-menu "+ `[class=${act}]`+ " ul").attr('style', 'display: none;');
+                //20220701調整部門選項選單遮蓋到部門
+                $("#sidebar-menu " + `[class=${act}]` + " ul").attr('style', 'left: 70px;display: none;');
                 $("#sidebar-menu " + `[class=${act}]`).removeClass();     
             }
         }
