@@ -30,8 +30,8 @@
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
                                         <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>廠區</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">

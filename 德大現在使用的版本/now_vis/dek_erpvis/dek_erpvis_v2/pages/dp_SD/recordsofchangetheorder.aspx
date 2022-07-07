@@ -98,43 +98,43 @@
                                                     </div>
                                                 </div>
                                             </asp:PlaceHolder>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-12 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-12 col-xs-5">
                                                     <span>顯示筆數</span>
                                                 </div>
-                                                <div class="col-md-5 col-sm-12 col-xs-4" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-5 col-sm-12 col-xs-4">
 
                                                     <asp:TextBox ID="txt_showCount" runat="server" Text="10" CssClass="form-control text-center" TextMode="Number"></asp:TextBox>
                                                 </div>
-                                                <div class="col-md-3 col-sm-12 col-xs-3" style="margin: 5px 0px 5px 0px">
-                                                    <span>
+                                                <div class="col-md-3 col-sm-12 col-xs-3">
+                                                    <span class="flex-align">
                                                         <asp:CheckBox ID="CheckBox_All" runat="server" Text="全部" onclick="checkstatus('ContentPlaceHolder1_CheckBox_All','ContentPlaceHolder1_txt_showCount')" />
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-5">
                                                     <span>日期快選</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-8 col-sm-9 col-xs-7">
                                                     <div class="btn-group btn-group-justified">
                                                         <a id="ContentPlaceHolder1_LinkButton_month" class="btn btn-default " onclick=" set_nowmonth()" style="text-align: center">當月</a>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-5">
                                                     <span>變更日期</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-8 col-sm-9 col-xs-7">
                                                     <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-5">
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-8 col-sm-9 col-xs-7">
                                                     <asp:TextBox ID="txt_end" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                                 </div>
                                             </div>

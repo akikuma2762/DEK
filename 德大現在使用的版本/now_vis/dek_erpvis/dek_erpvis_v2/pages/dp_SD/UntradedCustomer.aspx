@@ -29,7 +29,7 @@
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
                                         <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-5 col-sm-3 col-xs-4">
                                                     <span>廠區</span>
                                                 </div>
@@ -47,7 +47,7 @@
                                                 </div>
                                             </div>
                                         </asp:PlaceHolder>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                             <div class="col-md-5 col-sm-3 col-xs-4">
                                                 <span>未交易天數</span>
                                             </div>
@@ -68,7 +68,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                         <div class="col-md-5 col-sm-3 col-xs-4">
                                             <span>起始日期</span>
                                         </div>
@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                         <div class="col-md-5 col-sm-3 col-xs-4">
                                             <span>結束日期</span>
                                         </div>
@@ -110,7 +110,7 @@
 
 
 
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                         <div class="col-md-9 col-xs-8">
                                         </div>
                                         <div class="col-md-3 col-xs-12">

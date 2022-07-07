@@ -89,8 +89,8 @@
                                     <div class="dashboard_graph x_panel">
                                         <div class="x_content">
                                             <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                                <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>廠區</span>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-8">
@@ -102,8 +102,8 @@
                                                     </div>
                                                 </div>
                                             </asp:PlaceHolder>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>X座標(值)</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
@@ -113,8 +113,8 @@
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>Y座標(值)</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
@@ -123,34 +123,34 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>日期快選</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <div class="btn-group btn-group-justified" style="margin: 0px 0px 5px 0px">
+                                                    <div class="btn-group btn-group-justified">
                                                         <a id="ContentPlaceHolder1_LinkButton_month" class="btn btn-default " onclick=" set_nowmonth()" style="text-align: center">當月</a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>起始時間</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-8 col-sm-9 col-xs-8">
                                                     <asp:TextBox ID="txt_str" runat="server" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>結束時間</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-8 col-sm-9 col-xs-8">
                                                     <asp:TextBox ID="txt_end" runat="server" CssClass="form-control  text-right" TextMode="Date"></asp:TextBox>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>訂單狀態</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
@@ -165,8 +165,8 @@
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-12 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-12 col-xs-4">
                                                     <span>顯示筆數</span>
                                                 </div>
                                                 <div class="col-md-5 col-sm-12 col-xs-5" style="margin: 0px 0px 5px 0px">

@@ -10,8 +10,27 @@
 .dataTables_scroll {
     overflow: auto;
 }
-
-
+label {
+    margin-bottom: 0px !important;
+}
+input[type=checkbox]{
+    margin: 0px;
+}
+input[type=date] {
+    margin: 0px;
+    text-align: center;
+    border-radius: 3px;
+}
+input[type=number] {
+    border-radius: 3px;
+}
+.flex-align {
+    display: flex;
+    align-items: center;
+}
+.col-style {
+    margin-bottom: 5px;
+}
 
 @media screen and (max-width:768px) {
     ._mdTitle {
