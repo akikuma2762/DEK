@@ -18,6 +18,9 @@
 .Div_Shadow {
     box-shadow: 3px 3px 9px gray;
 }
+.dashboard_graph div.control-group > div.controls > div {
+    padding: 0;
+}
 
 @media screen and (max-width:768px) {
     .Div_Shadow {

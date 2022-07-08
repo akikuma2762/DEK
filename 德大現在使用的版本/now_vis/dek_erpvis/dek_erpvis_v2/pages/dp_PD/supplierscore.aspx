@@ -23,13 +23,13 @@
                             <div class="dashboard_graph x_panel">
                                 <div class="x_content">
                                     <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
-                                                <span style="margin-left: 5px">廠區</span>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-10 col-xs-12">
+                                                <span>廠區</span>
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle" Width="93%" Style="margin: 0px 0px 5px 5px">
+                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn-default dropdown-toggle form-control  text-center">
                                                         <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                         <asp:ListItem Value="dek">大圓盤</asp:ListItem>
                                                     </asp:DropDownList>
@@ -37,30 +37,30 @@
                                             </div>
                                         </div>
                                     </asp:PlaceHolder>
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                   
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-10 col-xs-12">
                                                 <span>日期快選</span>
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-7">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                                    <div class="btn-group btn-group-justified" style="margin: 0px 0px 5px 4px; width: 95%">
+                                                    <div class="btn-group btn-group-justified">
                                                         <a id="ContentPlaceHolder1_LinkButton_month" class="btn btn-default " onclick=" set_nowmonth()" style="text-align: center">當月</a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-10 col-xs-12">
                                                 交貨日期
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-7">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
                                                     <fieldset>
                                                         <div class="control-group">
                                                             <div class="controls">
                                                                 <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                    <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" Width="98%" CssClass="form-control   text-center"></asp:TextBox>
+                                                                    <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -69,7 +69,7 @@
                                                         <div class="control-group">
                                                             <div class="controls">
                                                                 <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                    <asp:TextBox ID="txt_end" runat="server" Style="" TextMode="Date" Width="98%" CssClass="form-control   text-center"></asp:TextBox>
+                                                                    <asp:TextBox ID="txt_end" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -77,7 +77,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="col-md-9 col-xs-8">
                                         </div>

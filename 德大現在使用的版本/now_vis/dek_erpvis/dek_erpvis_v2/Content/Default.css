@@ -24,6 +24,9 @@ input[type=date] {
 input[type=number] {
     border-radius: 3px;
 }
+input {
+    border-radius: 3px;
+}
 .flex-align {
     display: flex;
     align-items: center;

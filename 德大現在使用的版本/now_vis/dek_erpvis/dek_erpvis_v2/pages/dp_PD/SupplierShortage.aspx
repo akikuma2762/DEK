@@ -38,13 +38,13 @@
                                         <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
                                             <ContentTemplate>
                                                 <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                                    <div class="col-md-12 col-sm-12 col-xs-12">
-                                                        <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
-                                                            <span style="margin-left: -3px">廠區</span>
+                                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                        <div class="col-md-5 col-sm-10 col-xs-12">
+                                                            <span>廠區</span>
                                                         </div>
-                                                        <div class="col-md-8 col-sm-9 col-xs-8">
+                                                        <div class="col-md-7 col-sm-9 col-xs-12">
                                                             <div class="row">
-                                                                <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="form-control  text-center" Style="width: 90.2%; margin-left: 28px" OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
+                                                                <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="form-control  text-center"  OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
                                                                     <asp:ListItem Value="sowon,Eip" Selected="True">立式廠</asp:ListItem>
                                                                     <asp:ListItem Value="dek,dek">大圓盤</asp:ListItem>
                                                                 </asp:DropDownList>
@@ -52,8 +52,8 @@
                                                         </div>
                                                     </div>
                                                 </asp:PlaceHolder>
-                                                <div class="col-12">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-5 col-sm-10 col-xs-12">
                                                         <span>供應商代碼</span>
                                                     </div>
                                                     <div class="col-md-7 col-sm-9 col-xs-12">
@@ -61,7 +61,7 @@
                                                             <fieldset>
                                                                 <div class="control-group">
                                                                     <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
+                                                                        <div class="col-md-12 col-xs-12">
                                                                             <asp:TextBox ID="textbox_dt1" CssClass="form-control  text-center" Text="" Width="100%" runat="server" placeholder="請輸入供應商代碼"></asp:TextBox>
                                                                         </div>
                                                                     </div>
@@ -70,8 +70,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-5 col-sm-10 col-xs-12">
                                                         <span>供應商簡稱</span>
                                                     </div>
                                                     <div class="col-md-7 col-sm-9 col-xs-12">
@@ -79,7 +79,7 @@
                                                             <fieldset>
                                                                 <div class="control-group">
                                                                     <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
+                                                                        <div class="col-md-12 col-xs-12">
                                                                             <asp:TextBox ID="textbox_dt2" CssClass="form-control  text-center" Text="" Width="100%" runat="server" placeholder="請輸入供應商簡稱"></asp:TextBox>
                                                                         </div>
                                                                     </div>
@@ -88,8 +88,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-5 col-sm-10 col-xs-12">
                                                         <span>品號</span>
                                                     </div>
                                                     <div class="col-md-7 col-sm-9 col-xs-12">
@@ -106,8 +106,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-5 col-sm-10 col-xs-12">
                                                         <span>催料單號</span>
                                                     </div>
                                                     <div class="col-md-7 col-sm-9 col-xs-12">
@@ -125,8 +125,8 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-12">
-                                                    <div class="col-md-5 col-sm-3 col-xs-12" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-5 col-sm-3 col-xs-12">
                                                         <span>催料預交日</span>
                                                     </div>
                                                     <div class="col-md-7 col-sm-9 col-xs-12">
