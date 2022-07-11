@@ -817,8 +817,8 @@ D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\ICSh
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\ICSharpCode.SharpZipLib.xml
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\Newtonsoft.Json.xml
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\obj\Debug\dek_erpvis_v2.csproj.AssemblyReference.cache
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\obj\Debug\dek_erpvis_v2.csproj.CoreCompileInputs.cache
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\obj\Debug\dek_erpvis_v2.csproj.CopyComplete
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\obj\Debug\dek_erpvis_v2.dll
 D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\obj\Debug\dek_erpvis_v2.pdb
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\obj\Debug\dek_erpvis_v2.csproj.AssemblyReference.cache

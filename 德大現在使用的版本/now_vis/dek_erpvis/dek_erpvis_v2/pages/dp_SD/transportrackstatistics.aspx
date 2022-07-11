@@ -35,7 +35,7 @@
                                                     <span>廠區</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
                                                         <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                         <asp:ListItem Value="dek">大圓盤</asp:ListItem>
                                                          <asp:ListItem Value="iTec">臥式廠</asp:ListItem>

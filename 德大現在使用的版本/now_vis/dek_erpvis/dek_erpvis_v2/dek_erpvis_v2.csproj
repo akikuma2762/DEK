@@ -71,7 +71,7 @@
     </Reference>
     <Reference Include="dekERP_dll, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dekERP_dll\bin\Release\dekERP_dll.dll</HintPath>
+      <HintPath>Support\dekERP_dll.dll</HintPath>
     </Reference>
     <Reference Include="dekSecure">
       <HintPath>..\..\..\Support\DLLs\dekSecure.dll</HintPath>

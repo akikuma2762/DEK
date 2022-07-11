@@ -44,7 +44,7 @@
                                                         </div>
                                                         <div class="col-md-7 col-sm-9 col-xs-12">
                                                             <div class="row">
-                                                                <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="form-control  text-center"  OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
+                                                                <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control  text-center"  OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
                                                                     <asp:ListItem Value="sowon,Eip" Selected="True">立式廠</asp:ListItem>
                                                                     <asp:ListItem Value="dek,dek">大圓盤</asp:ListItem>
                                                                 </asp:DropDownList>
@@ -62,7 +62,7 @@
                                                                 <div class="control-group">
                                                                     <div class="controls">
                                                                         <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="textbox_dt1" CssClass="form-control  text-center" Text="" Width="100%" runat="server" placeholder="請輸入供應商代碼"></asp:TextBox>
+                                                                            <asp:TextBox ID="textbox_dt1" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入供應商代碼"></asp:TextBox>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -80,7 +80,7 @@
                                                                 <div class="control-group">
                                                                     <div class="controls">
                                                                         <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="textbox_dt2" CssClass="form-control  text-center" Text="" Width="100%" runat="server" placeholder="請輸入供應商簡稱"></asp:TextBox>
+                                                                            <asp:TextBox ID="textbox_dt2" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入供應商簡稱"></asp:TextBox>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -97,8 +97,8 @@
                                                             <fieldset>
                                                                 <div class="control-group">
                                                                     <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                            <asp:TextBox ID="textbox_item" CssClass="form-control  text-center" Text="" Width="100%" runat="server" placeholder="請輸入品號關鍵字"></asp:TextBox>
+                                                                        <div class="col-md-12 col-xs-12">
+                                                                            <asp:TextBox ID="textbox_item" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入品號關鍵字"></asp:TextBox>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -115,8 +115,8 @@
                                                             <fieldset>
                                                                 <div class="control-group">
                                                                     <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                            <asp:TextBox ID="textbox_BillNo" CssClass="form-control  text-center" Text="" Width="100%" runat="server" placeholder="請輸入催料單號"></asp:TextBox>
+                                                                        <div class="col-md-12 col-xs-12">
+                                                                            <asp:TextBox ID="textbox_BillNo" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入催料單號"></asp:TextBox>
                                                                         </div>
                                                                     </div>
                                                                 </div>

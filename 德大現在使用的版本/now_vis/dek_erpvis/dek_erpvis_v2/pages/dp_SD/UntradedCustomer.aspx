@@ -36,10 +36,10 @@
                                                 <div class="col-md-7 col-sm-9 col-xs-8">
                                                     <div class="row">
                                                         <div class="col-md-12 col-sm-7 col-xs-6">
-                                                            <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle" Width="98%">
+                                                            <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
                                                                 <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                                 <asp:ListItem Value="dek">大圓盤</asp:ListItem>
-                                                           <%--      <asp:ListItem Value="iTec">臥式廠</asp:ListItem>--%>
+                                                                <%--      <asp:ListItem Value="iTec">臥式廠</asp:ListItem>--%>
                                                             </asp:DropDownList>
                                                         </div>
 
@@ -54,7 +54,7 @@
                                             <div class="col-md-7 col-sm-9 col-xs-8">
                                                 <div class="row">
                                                     <div class="col-md-7 col-sm-7 col-xs-6">
-                                                        <asp:DropDownList ID="DropDownList_selectedcondi" runat="server" class="form-control text-center">
+                                                        <asp:DropDownList ID="DropDownList_selectedcondi" runat="server" class="btn btn-default form-control">
                                                             <asp:ListItem Value="">---請選擇---</asp:ListItem>
                                                             <asp:ListItem Value=">" Selected="True">大於</asp:ListItem>
                                                             <asp:ListItem Value="<">小於</asp:ListItem>
@@ -62,51 +62,52 @@
                                                         </asp:DropDownList>
                                                     </div>
                                                     <div class="col-md-5 col-sm-5 col-xs-6">
-                                                        <asp:TextBox ID="TextBox_dayval" runat="server" TextMode="Number" class="form-control text-center" Text="365" Width="95%" placeholder="365"></asp:TextBox>
+                                                        <asp:TextBox ID="TextBox_dayval" runat="server" TextMode="Number" class="form-control text-center" Text="365" placeholder="365"></asp:TextBox>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                        <div class="col-md-5 col-sm-3 col-xs-4">
-                                            <span>起始日期</span>
-                                        </div>
-                                        <div class="col-md-7 col-sm-9 col-xs-8">
-                                            <div class="row">
-                                                <fieldset>
-                                                    <div class="control-group">
-                                                        <div class="controls">
-                                                            <div class="col-md-12  col-xs-12">
-                                                                <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" Width="96%" CssClass="form-control  text-center"></asp:TextBox>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-4">
+                                                <span>起始日期</span>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-8">
+                                                <div class="row">
+                                                    <fieldset>
+                                                        <div class="control-group">
+                                                            <div class="controls">
+                                                                <div class="col-md-12  col-xs-12">
+                                                                    <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control  text-center"></asp:TextBox>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </fieldset>
+                                                    </fieldset>
 
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-4">
+                                                <span>結束日期</span>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-8">
+                                                <div class="row">
+
+                                                    <fieldset>
+                                                        <div class="control-group">
+                                                            <div class="controls">
+                                                                <div class="col-md-12  col-xs-12">
+                                                                    <asp:TextBox ID="txt_end" runat="server" TextMode="Date" CssClass="form-control  text-center"></asp:TextBox>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                        <div class="col-md-5 col-sm-3 col-xs-4">
-                                            <span>結束日期</span>
-                                        </div>
-                                        <div class="col-md-7 col-sm-9 col-xs-8">
-                                            <div class="row">
-
-                                                <fieldset>
-                                                    <div class="control-group">
-                                                        <div class="controls">
-                                                            <div class="col-md-12  col-xs-12" style="margin: 5px 0;">
-                                                                <asp:TextBox ID="txt_end" runat="server" Style="" Width="96%" TextMode="Date" CssClass="form-control  text-center"></asp:TextBox>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </fieldset>
-                                            </div>
-                                        </div>
-                                    </div>
 
 
 

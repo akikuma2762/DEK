@@ -68,3 +68,12 @@ D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis
 D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
 D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.dll
 D:\Project\Program\VIS\德大2022\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.pdb
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\ERPVIS.pdb
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\bin\Release\MongoDB.Bson.xml
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.AssemblyReference.cache
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CoreCompileInputs.cache
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.csproj.CopyComplete
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\ERPVIS\obj\Release\ERPVIS.pdb

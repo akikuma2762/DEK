@@ -94,7 +94,7 @@
                                                         <span>廠區</span>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-8">
-                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
                                                             <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                             <asp:ListItem Value="dek">大圓盤</asp:ListItem>
                                                             <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
@@ -107,7 +107,7 @@
                                                     <span>X座標(值)</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                    <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default form-control">
                                                         <asp:ListItem Value="PLINE_NO" Selected="True">產線</asp:ListItem>
                                                         <asp:ListItem Value="CUST_NO">客戶</asp:ListItem>
                                                     </asp:DropDownList>
@@ -117,8 +117,8 @@
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>Y座標(值)</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:DropDownList ID="dropdownlist_y" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                <div class="col-md-8 col-sm-9 col-xs-8 btn-group">
+                                                    <asp:DropDownList ID="dropdownlist_y" runat="server" CssClass="btn btn-default form-control  text-center">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
@@ -138,7 +138,7 @@
                                                     <span>起始時間</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:TextBox ID="txt_str" runat="server" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
+                                                    <asp:TextBox ID="txt_str" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                                 </div>
                                             </div>
                                             <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
@@ -146,7 +146,7 @@
                                                     <span>結束時間</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:TextBox ID="txt_end" runat="server" CssClass="form-control  text-right" TextMode="Date"></asp:TextBox>
+                                                    <asp:TextBox ID="txt_end" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                                 </div>
                                             </div>
                                             <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
@@ -154,7 +154,7 @@
                                                     <span>訂單狀態</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:DropDownList ID="DropDownList_orderStatus" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                    <asp:DropDownList ID="DropDownList_orderStatus" runat="server" CssClass="btn btn-default form-control">
                                                         <asp:ListItem Value="0" Selected="True">訂單總數</asp:ListItem>
                                                         <asp:ListItem Value="1">已結案訂單</asp:ListItem>
                                                         <asp:ListItem Value="2">未結案訂單</asp:ListItem>
@@ -169,10 +169,10 @@
                                                 <div class="col-md-4 col-sm-12 col-xs-4">
                                                     <span>顯示筆數</span>
                                                 </div>
-                                                <div class="col-md-5 col-sm-12 col-xs-5" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-5 col-sm-12 col-xs-5">
                                                     <asp:TextBox ID="txt_showCount" runat="server" Text="10" CssClass="form-control text-center" TextMode="Number"></asp:TextBox>
                                                 </div>
-                                                <div class="col-md-3 col-sm-12 col-xs-3 text-right" style="margin: 5px 0px 5px 0px;">
+                                                <div class="col-md-3 col-sm-12 col-xs-3">
                                                     <span>
                                                         <asp:CheckBox ID="CheckBox_All" runat="server" Text="全部" onclick="checkstatus('ContentPlaceHolder1_CheckBox_All','ContentPlaceHolder1_txt_showCount')" />
                                                     </span>

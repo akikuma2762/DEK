@@ -66,6 +66,12 @@ namespace dekERP_dll.dekErp
             string sqlcmd = Getmaterialrequirementplanning_Detail(start, end, rbx, item);
             return iTech.Get_DataTable(sqlcmd, source);
         }
+        public DataTable materialrequirementplanning_Detail_DropDownList(string start, string end, DropDownList rbx, string item, string source)
+        {
+            iniManager = new IniManager($"{ConfigurationManager.AppSettings["ini_local"]}{source}Erp.ini");
+            string sqlcmd = Getmaterialrequirementplanning_Detail_DropDownList(start, end, rbx, item);
+            return iTech.Get_DataTable(sqlcmd, source);
+        }
 
         public DataTable materialrequirementplanning_Detail(DateTime start, DateTime end, RadioButtonList rbx, string item, string source)
         {
@@ -159,6 +165,20 @@ namespace dekERP_dll.dekErp
 
         //物料領用統計表
         string Getmaterialrequirementplanning_Detail(string start, string end, RadioButtonList rbx, string item)
+        {
+            StringBuilder sqlcmd = new StringBuilder();
+            StringBuilder Condition = new StringBuilder();
+            string sql = rbx.SelectedItem.Value == "1" ? "item" : rbx.SelectedItem.Value == "4" ? "dtl" : "Name";
+            //看要查詢的是品號還是品名
+            if (item != "" && iniManager.ReadIniFile("Parameter", $"materialrequirementplanning_{sql}", "") != "")
+                Condition.AppendFormat(iniManager.ReadIniFile("Parameter", $"materialrequirementplanning_{sql}", ""), item);
+
+            if (iniManager.ReadIniFile("dekERPVIS", "materialrequirementplanning_Detail", "") != "")
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "materialrequirementplanning_Detail", ""), start, end, Condition);
+
+            return sqlcmd.ToString();
+        }
+        string Getmaterialrequirementplanning_Detail_DropDownList(string start, string end, DropDownList rbx, string item)
         {
             StringBuilder sqlcmd = new StringBuilder();
             StringBuilder Condition = new StringBuilder();

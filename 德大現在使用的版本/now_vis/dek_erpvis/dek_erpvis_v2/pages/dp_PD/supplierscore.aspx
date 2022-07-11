@@ -29,7 +29,7 @@
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn-default dropdown-toggle form-control  text-center">
+                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control  text-center">
                                                         <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                         <asp:ListItem Value="dek">大圓盤</asp:ListItem>
                                                     </asp:DropDownList>
@@ -68,7 +68,7 @@
                                                     <fieldset>
                                                         <div class="control-group">
                                                             <div class="controls">
-                                                                <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
+                                                                <div class="col-md-12 col-xs-12">
                                                                     <asp:TextBox ID="txt_end" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                                                 </div>
                                                             </div>

@@ -42,12 +42,12 @@
                                     <div class="x_content">
                                         <i id="cbx_remind"></i>
                                         <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align" style="margin: 0px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>廠區</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle form-control">
                                                         <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                         <asp:ListItem Value="dek">大圓盤</asp:ListItem>
                                                          <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
@@ -55,18 +55,18 @@
                                                 </div>
                                             </div>
                                         </asp:PlaceHolder>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-3 col-xs-4" >
                                                 <span>X座標(值)</span>
                                             </div>
                                             <div class="col-md-8 col-sm-9 col-xs-8">
-                                                <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default dropdown-toggle form-control">
                                                     <asp:ListItem Value="PLINE_NO" Selected="True">產線</asp:ListItem>
                                                     <asp:ListItem Value="CUST_NO">客戶</asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-12 col-xs-4">
                                                 <span>顯示筆數</span>
                                             </div>
@@ -79,30 +79,30 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>日期快選</span>
                                             </div>
                                             <div class="col-md-8 col-sm-9 col-xs-8">
-                                                <div class="btn-group btn-group-justified" style="margin: 0px 0px 5px 0px">
-                                                    <a id="ContentPlaceHolder1_LinkButton_month" class="btn btn-default " onclick=" set_nowmonth()" style="text-align: center">當月</a>
+                                                <div class="btn-group btn-group-justified">
+                                                    <a id="ContentPlaceHolder1_LinkButton_month" class="btn btn-default " onclick=" set_nowmonth()">當月</a>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>起始日期</span>
                                             </div>
                                             <div class="col-md-8 col-sm-9 col-xs-8">
-                                                <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
+                                                <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control text-right"></asp:TextBox>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align">
+                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>結束日期</span>
                                             </div>
                                             <div class="col-md-8 col-sm-9 col-xs-8">
-                                                <asp:TextBox ID="txt_end" runat="server" CssClass="form-control  text-right" TextMode="Date"></asp:TextBox>
+                                                <asp:TextBox ID="txt_end" runat="server" CssClass="form-control text-right" TextMode="Date"></asp:TextBox>
                                             </div>
                                         </div>
 

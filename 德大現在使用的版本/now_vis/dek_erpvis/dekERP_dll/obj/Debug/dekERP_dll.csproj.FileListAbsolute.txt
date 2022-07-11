@@ -28,3 +28,12 @@ D:\Project\Program\VIS\德大20220429\德大現在使用的版本\now_vis\dek_er
 D:\Project\Program\VIS\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.csproj.CopyComplete
 D:\Project\Program\VIS\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.dll
 D:\Project\Program\VIS\德大20220429\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.pdb
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.csproj.CoreCompileInputs.cache
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.pdb
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\bin\Debug\dekERP_dll.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\bin\Debug\dekERP_dll.pdb
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.csproj.CopyComplete
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\bin\Debug\Support.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\Support\dekERP_dll.dll
+D:\dek_git\德大現在使用的版本\now_vis\dek_erpvis\dek_erpvis_v2\Support\dekERP_dll.pdb

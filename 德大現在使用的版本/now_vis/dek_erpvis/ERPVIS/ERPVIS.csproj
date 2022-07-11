@@ -37,11 +37,10 @@
       <HintPath>..\packages\MongoDB.Bson.2.10.3\lib\net452\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="MongoUtils">
-      <HintPath>..\..\..\Support\DLLs\07_mongoUtils\MongoUtils.dll</HintPath>
+      <HintPath>..\dek_erpvis_v2\Support\MongoUtils.dll</HintPath>
     </Reference>
-    <Reference Include="Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\Support.dll</HintPath>
+    <Reference Include="Support">
+      <HintPath>..\dek_erpvis_v2\Support\Support.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

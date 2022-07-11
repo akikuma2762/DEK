@@ -17,37 +17,43 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\dek_erpvis_v2\Support\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\dek_erpvis_v2\Support\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DBUtils">
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\DBUtils.dll</HintPath>
+    <Reference Include="DBUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dek_erpvis_v2\Support\DBUtils.dll</HintPath>
     </Reference>
     <Reference Include="dekBase">
       <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\dekBase.dll</HintPath>
     </Reference>
-    <Reference Include="dekSecure">
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\dekSecure.dll</HintPath>
+    <Reference Include="dekSecure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dek_erpvis_v2\Support\dekSecure.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\MongoDB.Bson.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dek_erpvis_v2\Support\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\MongoDB.Driver.dll</HintPath>
+    <Reference Include="MongoDB.Driver, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dek_erpvis_v2\Support\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core">
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\MongoDB.Driver.Core.dll</HintPath>
+    <Reference Include="MongoDB.Driver.Core, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dek_erpvis_v2\Support\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
     <Reference Include="MongoUtils">
       <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\MongoUtils.dll</HintPath>
@@ -58,8 +64,9 @@
     <Reference Include="Oracle.ManagedDataAccess">
       <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="Support">
-      <HintPath>..\..\..\..\給代理商前測試\now_vis\dek_erpvis\dekERP_dll\bin\Release\Support.dll</HintPath>
+    <Reference Include="Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dek_erpvis_v2\Support\Support.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

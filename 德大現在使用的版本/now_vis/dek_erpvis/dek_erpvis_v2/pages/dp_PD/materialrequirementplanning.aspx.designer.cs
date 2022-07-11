@@ -33,13 +33,13 @@ namespace dek_erpvis_v2.pages.dp_PD
         protected global::System.Web.UI.WebControls.DropDownList dropdownlist_Factory;
 
         /// <summary>
-        /// RadioButtonList_select_type 控制項。
+        /// DropDownList_select_type 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonList_select_type;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_select_type;
 
         /// <summary>
         /// DropDownList_selectedcondi 控制項。

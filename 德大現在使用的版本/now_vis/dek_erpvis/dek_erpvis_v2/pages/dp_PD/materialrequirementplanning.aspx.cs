@@ -98,7 +98,7 @@ namespace dek_erpvis_v2.pages.dp_PD
         private void Get_MonthTotal()
         {
             string item_name = "";
-            switch (RadioButtonList_select_type.SelectedItem.Value)
+            switch (DropDownList_select_type.SelectedItem.Value)
             {
                 case "0":
                     item_name = DropDownList_materialstype.SelectedItem.Value;
@@ -110,7 +110,8 @@ namespace dek_erpvis_v2.pages.dp_PD
                     item_name = TextBox_keyword.Text;
                     break;
             }
-            dt_monthtotal = PCD.materialrequirementplanning_Detail(dt_str, dt_end, RadioButtonList_select_type, item_name, dropdownlist_Factory.SelectedItem.Value);
+            //dt_monthtotal = PCD.materialrequirementplanning_Detail(dt_str, dt_end, RadioButtonList_select_type, item_name, dropdownlist_Factory.SelectedItem.Value);
+            dt_monthtotal = PCD.materialrequirementplanning_Detail_DropDownList(dt_str, dt_end, DropDownList_select_type, item_name, dropdownlist_Factory.SelectedItem.Value);
             if (HtmlUtil.Check_DataTable(dt_monthtotal))
             {
                 dt_monthtotal.Columns["領料單明細品號"].ColumnName = "品號";
