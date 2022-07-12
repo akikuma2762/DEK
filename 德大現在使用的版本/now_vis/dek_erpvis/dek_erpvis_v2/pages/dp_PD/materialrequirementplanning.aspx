@@ -28,13 +28,13 @@
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
                                         <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
-                                                <div class="col-md-5 col-sm-3 col-xs-4">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                <div class="col-md-5 col-sm-3 col-xs-12">
                                                     <span>廠區</span>
                                                 </div>
-                                                <div class="col-md-7 col-sm-9 col-xs-8">
+                                                <div class="col-md-7 col-sm-9 col-xs-12">
                                                     <div class="row">
-                                                        <div class="col-md-12 col-sm-7 col-xs-6">
+                                                        <div class="">
                                                             <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
                                                                 <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                                 <asp:ListItem Value="dek">大圓盤</asp:ListItem>
@@ -44,13 +44,13 @@
                                                 </div>
                                             </div>
                                         </asp:PlaceHolder>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
-                                            <div class="col-md-5 col-sm-3 col-xs-12 _SelectType">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12">
                                                 <span>搜尋方式</span>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                                    <div class="col-md-12 col-sm-7 col-xs-6">
+                                                    <div class="">
                                                         <asp:DropDownList ID="DropDownList_select_type" Font-Names="NotoSans" runat="server" CssClass="btn btn-default form-control">
                                                             <asp:ListItem Value="0" Selected="True">依 分類 檢索</asp:ListItem>
                                                             <asp:ListItem Value="1">依 品號 檢索</asp:ListItem>
@@ -65,14 +65,14 @@
                                             <p></p>
                                             <i id="selected_note"></i>
                                         </div>
-                                        <div class="col-md-12 col-xs-12 col-sm-12 flex-align col-style">
-                                            <div class="col-md-5 col-sm-3 col-xs-4">
+                                        <div class="col-md-12 col-xs-12 col-sm-12 flex col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12" style="margin:5px 0px 5px 0px;">
                                                 <span>內容</span>
                                             </div>
 
-                                            <div class="col-md-7 col-sm-9 col-xs-8">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-12 col-sm-6 col-xs-6">
+                                                    <div class="" style="margin-bottom:5px;">
 
                                                         <asp:DropDownList ID="DropDownList_selectedcondi" Font-Names="NotoSans" runat="server" CssClass="btn btn-default form-control">
                                                             <asp:ListItem Value="內含">內含</asp:ListItem>
@@ -80,7 +80,7 @@
                                                         </asp:DropDownList>
                                                     </div>
 
-                                                    <div class="col-md-7 col-xs-12 col-sm-6 col-xs-6">
+                                                    <div class="">
                                                         <div id="input_keyword">
                                                             <asp:TextBox ID="TextBox_keyword" data-validate-length-range="6" data-validate-words="2" runat="server" placeholder="請輸入字串"></asp:TextBox>
                                                         </div>
@@ -103,22 +103,21 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-12 col-xs-12 col-sm-6 col-xs-12 flex-align col-style">
-                                            <div class="col-md-5 col-sm-3 col-xs-4">
+                                        <div class="col-md-12 col-xs-12 col-sm-12 col-xs-12 flex col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12" style="margin:5px 0px 5px 0px;">
                                                 <span>位數</span>
                                             </div>
-                                             <div class="col-md-7 col-sm-9 col-xs-8">
+                                             <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                            <div class="col-md-5 col-xs-12 col-sm-6 col-xs-6">
+                                            <div class="" style="margin-bottom:5px;">
                                                 <asp:DropDownList ID="DropDownList_substring" Font-Names="NotoSans" runat="server" CssClass="btn btn-default form-control" onchange="getval(this);">
                                                     <asp:ListItem Value="N" Selected="True">不擷取</asp:ListItem>
                                                     <asp:ListItem Value="Y">擷取</asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-md-7 col-xs-12 col-sm-6 col-xs-6">
+                                            <div class="">
 
                                                 <div id="input_subs">
-                                                    <p></p>
                                                     <asp:TextBox ID="TextBox_substring" Font-Names="NotoSans" CssClass="form-control text-center" runat="server" placeholder="只能輸入數字" TextMode="Number" Enabled="false" min="12" max="99" Text="12"></asp:TextBox>
                                                 </div>
 
@@ -127,52 +126,55 @@
                                                  </div>
 
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
-                                            <div class="col-md-5 col-sm-3 col-xs-5">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12">
                                                 <span>安全庫存量</span>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-8">
-                                                <div class="row" style="padding-left:4px;">
-                                                <input id="demo_vertical3" runat="server" type="text" value="1" name="demo_vertical3" data-bts-button-down-class="btn btn-secondary" data-bts-button-up-class="btn btn-secondary">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
+                                                <div class="row">
+                                                <input id="demo_vertical3" runat="server" type="text" value="1" name="demo_vertical3" data-bts-button-down-class="btn btn-secondary" data-bts-button-up-class="btn btn-secondary nomargin">
                                                     </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
-                                            <div class="col-md-5 col-sm-3 col-xs-5" >
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12" >
                                                 <span>最小採購量</span>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-7">
-                                                <div class="row" style="padding-left:4px;">
-                                                <input id="demo_vertical2" runat="server" type="text" value="2" name="demo_vertical2" data-bts-button-down-class="btn btn-secondary" data-bts-button-up-class="btn btn-secondary">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
+                                                <div class="row">
+                                                <input id="demo_vertical2" runat="server" type="text" value="2" name="demo_vertical2" data-bts-button-down-class="btn btn-secondary" data-bts-button-up-class="btn btn-secondary nomargin">
                                                     </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-5 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12">
                                                 <span>日期快選</span>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-7">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
-                                                    <div class="btn-group btn-group-justified" style="margin: 0px 0px 5px 5px; width: 93%">
+                                                    <div class="">
+                                                    <div class="btn-group btn-group-justified">
                                                         <a id="ContentPlaceHolder1_LinkButton_month" class="btn btn-default " onclick=" set_nowmonth()" style="text-align: center">當月</a>
                                                     </div>
+                                                        </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <i id="cbx_remind"></i>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-5 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12  flex col-style">
+                                            <div class="col-md-5 col-sm-3 col-xs-12" style="margin:5px 0px 5px 0px;">
                                                 領料日期
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-7">
+                                            <div class="col-md-7 col-sm-9 col-xs-12">
                                                 <div class="row">
+                                                    <div class="">
                                                     <fieldset>
                                                         <div class="control-group">
                                                             <div class="controls">
                                                                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                    <asp:TextBox ID="txt_str" runat="server" Style="" Width="97%" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
+                                                                    <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -180,12 +182,13 @@
                                                     <fieldset>
                                                         <div class="control-group">
                                                             <div class="controls">
-                                                                <div class="col-md-12 col-sm-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                    <asp:TextBox ID="txt_end" runat="server" Style="" Width="97%" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
+                                                                <div class="" style="margin: 0px 0px 5px 0px">
+                                                                    <asp:TextBox ID="txt_end" runat="server" Style="" TextMode="Date" CssClass="form-control   text-right"></asp:TextBox>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </fieldset>
+                                                        </div>
                                                 </div>
                                             </div>
                                         </div>

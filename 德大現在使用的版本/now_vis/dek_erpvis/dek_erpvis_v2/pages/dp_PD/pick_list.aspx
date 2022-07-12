@@ -45,12 +45,12 @@
                                             <!--後端運算用-->
                                             <asp:TextBox ID="TextBox_Record" runat="server" Style="display: none"></asp:TextBox>
                                             <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                                <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>廠區</span>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-8">
-                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
                                                             <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                             <asp:ListItem Value="dek">大圓盤</asp:ListItem>
                                                         </asp:DropDownList>
@@ -138,14 +138,12 @@
             var divname = document.getElementById(div);
             //新增控制項到該DIV內
             divname.innerHTML = divname.innerHTML +
-                '<div class="col-md-12 col-sm-12 col-xs-12">' +
-                '<div class="col-md-4 col-sm-12 col-xs-5" style="margin: 5px 0px 5px 0px">' +
-                ' <span>刀庫編號 /' +
-                ' <br />' +
-                '製令單號</span>' +
+                '<div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">' +
+                '<div class="col-md-4 col-sm-3 col-xs-4">' +
+                ' <span>刀庫編號 /製令單號</span>' +
                 ' </div>' +
-                ' <div class="col-md-8 col-sm-12 col-xs-7" style="margin: 15px 0px 5px 0px">' +
-                `<input type="text" id="textbox_${document.getElementById('Record_Number').innerHTML}" name="textbox_${document.getElementById('Record_Number').innerHTML}" class="form-control text-left"  >` +
+                ' <div class="col-md-8 col-sm-9 col-xs-8">' +
+                `<input type="text" id="textbox_${document.getElementById('Record_Number').innerHTML}" name="textbox_${document.getElementById('Record_Number').innerHTML}" class="form-control text-left border-radius-3"  >` +
                 '  </div>'
             '</div>';
 

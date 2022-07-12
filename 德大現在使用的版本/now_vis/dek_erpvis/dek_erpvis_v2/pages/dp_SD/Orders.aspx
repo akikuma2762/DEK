@@ -9,7 +9,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-   
+
     <!-----------------title------------------>
     <style>
         #indexlabel {
@@ -89,7 +89,7 @@
                                     <div class="dashboard_graph x_panel">
                                         <div class="x_content">
                                             <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                                <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                     <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>廠區</span>
                                                     </div>
@@ -102,7 +102,7 @@
                                                     </div>
                                                 </div>
                                             </asp:PlaceHolder>
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>X座標(值)</span>
                                                 </div>
@@ -113,7 +113,7 @@
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>Y座標(值)</span>
                                                 </div>
@@ -123,7 +123,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>日期快選</span>
                                                 </div>
@@ -133,7 +133,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>起始時間</span>
                                                 </div>
@@ -141,7 +141,7 @@
                                                     <asp:TextBox ID="txt_str" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>結束時間</span>
                                                 </div>
@@ -149,7 +149,7 @@
                                                     <asp:TextBox ID="txt_end" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>訂單狀態</span>
                                                 </div>
@@ -165,29 +165,27 @@
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
-                                                <div class="col-md-4 col-sm-12 col-xs-4">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>顯示筆數</span>
                                                 </div>
-                                                <div class="col-md-5 col-sm-12 col-xs-5">
-                                                    <asp:TextBox ID="txt_showCount" runat="server" Text="10" CssClass="form-control text-center" TextMode="Number"></asp:TextBox>
-                                                </div>
-                                                <div class="col-md-3 col-sm-12 col-xs-3">
-                                                    <span>
-                                                        <asp:CheckBox ID="CheckBox_All" runat="server" Text="全部" onclick="checkstatus('ContentPlaceHolder1_CheckBox_All','ContentPlaceHolder1_txt_showCount')" />
-                                                    </span>
+                                                <div class="col-md-8 col-sm-9 col-xs-8 flex-align">
+                                                    <div class="col-md-5 col-sm-6 col-xs-5 padding-left-0">
+                                                        <asp:TextBox ID="txt_showCount" runat="server" Text="10" CssClass="form-control text-center" TextMode="Number"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-4">
+                                                        <span>
+                                                            <asp:CheckBox ID="CheckBox_All" runat="server" Text="全部" onclick="checkstatus('ContentPlaceHolder1_CheckBox_All','ContentPlaceHolder1_txt_showCount')" />
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-
-                                        </div>
-                                        <br />
-                                        <div>
-                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <div class="col-md-9 col-xs-8">
-                                                </div>
-                                                <div class="col-md-3 col-xs-12">
-                                                    <button id="btncheck" type="button" class="btn btn-primary antosubmit2 ">執行搜索</button>
-                                                    <asp:Button runat="server" Text="提交" ID="Button_select" CssClass="btn btn-primary" Style="display: none" OnClick="Button_submit_Click" />
+                                            <div>
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-md-12 col-xs-12 text-align-end">
+                                                        <button id="btncheck" type="button" class="btn btn-primary antosubmit2 ">執行搜索</button>
+                                                        <asp:Button runat="server" Text="提交" ID="Button_select" CssClass="btn btn-primary" Style="display: none" OnClick="Button_submit_Click" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

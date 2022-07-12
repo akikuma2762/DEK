@@ -3,9 +3,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>運輸架未歸還統計 | <%= WebUtils.GetAppSettings("Company_Name") %></title>
     <%=color %>
+    <link href="../../Content/Default_input.css" rel="stylesheet" />
     <link href="../../Content/Default.css" rel="stylesheet" />
     <link href="../../Content/table.css" rel="stylesheet" media="screen and (max-width:768px)" />
     <link href="../../Content/dp_SD/transportrackstatistics.css" rel="stylesheet" />
+    
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_col" role="main">
@@ -21,49 +23,48 @@
         <div id="myTabContent" class="tab-content">
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                 <div class="x_panel Div_Shadow">
-                    <div class="row">
-                        <div class="col-md-9 col-sm-12 col-xs-12 _setborder">
-                            <div id="transportrackstatistics_img"></div>
-                        </div>
-                        <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="dashboard_graph x_panel">
-                                    <div class="x_content">
-                                        <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                            <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
-                                                <div class="col-md-4 col-sm-3 col-xs-4">
-                                                    <span>廠區</span>
+                    <div class="">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-9 col-sm-12 col-xs-12 _setborder">
+                                <div id="transportrackstatistics_img"></div>
+                            </div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="dashboard_graph x_panel">
+                                        <div class="x_content">
+                                            <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
+                                                        <span>廠區</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
+                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
+                                                            <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
+                                                            <asp:ListItem Value="dek">大圓盤</asp:ListItem>
+                                                            <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-8">
-                                                    <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control">
-                                                        <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
-                                                        <asp:ListItem Value="dek">大圓盤</asp:ListItem>
-                                                         <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
-                                                    </asp:DropDownList>
+                                            </asp:PlaceHolder>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-12 col-xs-12 text-align-end">
+                                                    <button id="btncheck" type="button" class="btn btn-primary antosubmit2 ">執行搜索</button>
+                                                    <asp:Button runat="server" Text="提交" ID="Button_select" CssClass="btn btn-primary" Style="display: none" OnClick="button_select_Click" />
                                                 </div>
-                                            </div>
-                                        </asp:PlaceHolder>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-9 col-xs-8">
-                                            </div>
-                                            <div class="col-md-3 col-xs-12">
-                                                <button id="btncheck" type="button" class="btn btn-primary antosubmit2 ">執行搜索</button>
-                                                <asp:Button runat="server" Text="提交" ID="Button_select" CssClass="btn btn-primary" Style="display: none" OnClick="button_select_Click" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                    </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                <div id="transportrackstatistics"></div>
-            </div>
         </div>
-        <!-----------------/content------------------>
+        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+            <div id="transportrackstatistics"></div>
+        </div>
+    </div>
+    <!-----------------/content------------------>
     </div>
     <%=Use_Javascript.Quote_Javascript() %>
     <script>

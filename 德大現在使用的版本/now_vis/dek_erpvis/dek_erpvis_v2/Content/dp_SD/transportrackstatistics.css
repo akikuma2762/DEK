@@ -15,6 +15,16 @@
     max-width: 100%;
     margin: 0px auto;
 }
+._select {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+    ._select .dashboard_graph,
+    ._select .dashboard_graph .x_content {
+        padding: 0;
+        margin-bottom: 0;
+    }
 
 
 @media screen and (max-width:768px) {
