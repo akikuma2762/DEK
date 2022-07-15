@@ -23,9 +23,9 @@ function set_Table(DataTableName) {
  
         colReorder: true,
         scrollCollapse: true,
-        dom: "<'row'<'pull-left'f>'row'<'col-sm-3'>'row'<'col-sm-3'B>'row'<'pull-right'l>>" +
+        dom: "<'top-list'<'pull-left'f>'row'<'col-sm-3 pull-middle'B>'row'<'pull-right'l>>" +
             "<rt>" +
-            "<'row'<'pull-left'i>'row'<'col-sm-4'>row'<'col-sm-3'>'row'<'pull-right'p>>",
+            "<'bottom-list'<'pull-left'i>row'<'pull-right'p>>",
 
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
@@ -416,10 +416,10 @@ function checkstatus(checkid, textboxid) {
 function create_tablecode(div_table, tabletitle, datatableid, th, tr) {
     var divname = document.getElementById(div_table);
     divname.innerHTML =
-        '<div class="row">' +
-        '<div class="col-md-12 col-sm-12 col-xs-12">' +
         '<div class="x_panel Div_Shadow">' +
-        '<div class="x_content">' +
+        '<div class="x_content _setborder">' +
+        '<div class="col-md-12 col-sm-12 col-xs-12">' +
+        '<div class="">' +
         '<div class="x_panel">' +
         '<div id="_FormTitle" class="x_title" style="text-align: center">' +
         '<h1 class="text-center _mdTitle" style="width: 100%">' +

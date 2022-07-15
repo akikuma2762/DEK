@@ -76,7 +76,6 @@
                                                 </fieldset>
                                             </div>
                                         </div>
-
                                         <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>結束日期</span>
@@ -93,15 +92,11 @@
                                                 </fieldset>
                                             </div>
                                         </div>
-                                    </div>
-
-
-
-
-                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                        <div class="col-md-12 col-xs-12 text-align-end">
-                                            <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_select_Click" Style="display: none" />
-                                            <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-xs-12 text-align-end">
+                                                <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_select_Click" Style="display: none" />
+                                                <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

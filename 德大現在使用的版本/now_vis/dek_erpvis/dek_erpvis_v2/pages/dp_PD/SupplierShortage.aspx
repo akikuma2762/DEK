@@ -33,136 +33,77 @@
                             <div class="col-md-12 col-sm-12 col-xs-12 _select _setborder">
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
-                                        <asp:ScriptManager ID="ScriptManager1" runat="server">
-                                        </asp:ScriptManager>
-                                        <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
-                                            <ContentTemplate>
-                                                <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
-                                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                                        <div class="col-md-5 col-sm-10 col-xs-12">
-                                                            <span>廠區</span>
-                                                        </div>
-                                                        <div class="col-md-7 col-sm-9 col-xs-12">
-                                                            <div class="row">
-                                                                <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control  text-center"  OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
-                                                                    <asp:ListItem Value="sowon,Eip" Selected="True">立式廠</asp:ListItem>
-                                                                    <asp:ListItem Value="dek,dek">大圓盤</asp:ListItem>
-                                                                </asp:DropDownList>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </asp:PlaceHolder>
-                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12">
-                                                        <span>供應商代碼</span>
-                                                    </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-12">
-                                                        <div class="row">
-                                                            <fieldset>
-                                                                <div class="control-group">
-                                                                    <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="textbox_dt1" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入供應商代碼"></asp:TextBox>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12">
-                                                        <span>供應商簡稱</span>
-                                                    </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-12">
-                                                        <div class="row">
-                                                            <fieldset>
-                                                                <div class="control-group">
-                                                                    <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="textbox_dt2" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入供應商簡稱"></asp:TextBox>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12">
-                                                        <span>品號</span>
-                                                    </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-12">
-                                                        <div class="row">
-                                                            <fieldset>
-                                                                <div class="control-group">
-                                                                    <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="textbox_item" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入品號關鍵字"></asp:TextBox>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                                    <div class="col-md-5 col-sm-10 col-xs-12">
-                                                        <span>催料單號</span>
-                                                    </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-12">
-                                                        <div class="row">
-                                                            <fieldset>
-                                                                <div class="control-group">
-                                                                    <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="textbox_BillNo" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入催料單號"></asp:TextBox>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
-                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
-                                                    <div class="col-md-5 col-sm-3 col-xs-12">
-                                                        <span>催料預交日</span>
-                                                    </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-12">
-                                                        <div class="row">
-                                                            <fieldset>
-                                                                <div class="control-group">
-                                                                    <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12" style="margin: 0px 0px 5px 0px">
-                                                                            <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" Width="100%" CssClass="form-control   text-center"></asp:TextBox>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                            <fieldset>
-                                                                <div class="control-group">
-                                                                    <div class="controls">
-                                                                        <div class="col-md-12 col-xs-12">
-                                                                            <asp:TextBox ID="txt_end" runat="server" Style="" Width="100%" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                        </div>
-                                                    </div>
+                                        <asp:PlaceHolder ID="PlaceHolder_hide" runat="server">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
+                                                    <span>廠區</span>
                                                 </div>
-                                            </ContentTemplate>
-                                        </asp:UpdatePanel>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div></div>
-                                            <div class="col-md-9 col-xs-8">
+                                                <div class="col-md-8 col-sm-9 col-xs-8">                                                   
+                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control  text-center" OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
+                                                            <asp:ListItem Value="sowon,Eip" Selected="True">立式廠</asp:ListItem>
+                                                            <asp:ListItem Value="dek,dek">大圓盤</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-12" style="margin: 10px 0px 0px 0px">
+                                        </asp:PlaceHolder>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                                <span>供應商代碼</span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="textbox_dt1" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入供應商代碼"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                                <span>供應商簡稱</span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="textbox_dt2" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入供應商簡稱"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                                <span>品號</span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="textbox_item" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入品號關鍵字"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                                <span>催料單號</span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="textbox_BillNo" CssClass="form-control  text-center border-radius-3" Text="" runat="server" placeholder="請輸入催料單號"></asp:TextBox>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                                <span>催料預交日</span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+
+                                                <asp:TextBox ID="txt_str" runat="server" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="txt_end" runat="server" CssClass="form-control text-right" TextMode="Date"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-xs-12 text-align-end">
                                                 <asp:Button ID="button_select" runat="server" Text="搜尋" class="btn btn-primary" OnClick="button_select_Click" Style="display: none" />
                                                 <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +126,7 @@
             $("#btncheck").click(function () {
                 $.blockUI({ message: '<img src="../../images/loading.gif" />' });
                 document.getElementById('<%=button_select.ClientID %>').click();
-            });
+        });
         </script>
     </div>
 </asp:Content>

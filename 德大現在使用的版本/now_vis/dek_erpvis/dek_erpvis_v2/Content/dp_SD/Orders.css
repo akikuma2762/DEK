@@ -70,9 +70,9 @@
         z-index: 999;
     }
 
-    .dashboard_graph {
+/*    .dashboard_graph {
         padding-top: 10px;
-    }
+    }*/
 
     #btncheck {
         width: 100%;
@@ -93,17 +93,7 @@
 
     
 
-    .table th:last-child, .table td:last-child {
-        max-width: 45px;
-        min-width: 40px;
-        padding-right: 10px !important;
-    }
 
-    .table th:nth-child(2), .table td:nth-child(2) {
-        max-width: 55px;
-        min-width: 50px;
-        padding-right: 10px !important;
-    }
 
     /*設定當月padding*/
     a#ContentPlaceHolder1_LinkButton_month {

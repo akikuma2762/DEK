@@ -3,6 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>訂單統計 | <%= WebUtils.GetAppSettings("Company_Name") %></title>
     <%=color %>
+    <link href="../../Content/Default_input.css" rel="stylesheet" />
     <link href="../../Content/table.css" rel="stylesheet" />
     <link href="../../Content/dp_SD/Orders.css" rel="stylesheet" />
     <link href="../../Content/Default.css" rel="stylesheet" />
@@ -25,11 +26,11 @@
         <!-----------------content------------------>
         <!--以上狀態統計色塊-->
         <ul id="myTab" class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">圖片模式</a>
+            <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">圖片模式</a>
             </li>
-            <li role="presentation" class="" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content2" id="profile-tab" role="tab" data-toggle="tab" aria-expanded="false">表格模式</a>
+            <li role="presentation" class=""><a href="#tab_content2" id="profile-tab" role="tab" data-toggle="tab" aria-expanded="false">表格模式</a>
             </li>
-            <li role="presentation" class="" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content3" id="profile-tab2" role="tab" data-toggle="tab" aria-expanded="false">每月訂單數量</a>
+            <li role="presentation" class=""><a href="#tab_content3" id="profile-tab2" role="tab" data-toggle="tab" aria-expanded="false">每月訂單數量</a>
             </li>
         </ul>
         <div id="myTabContent" class="tab-content">
@@ -37,39 +38,38 @@
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                 <div class="x_panel Div_Shadow">
                     <div class="x_content">
-                        <div class="row">
                             <div class="col-md-9 col-sm-12 col-xs-12">
                                 <div id="order_image"></div>
                             </div>
                             <div class="col-md-3 col-sm-12 col-xs-12">
                                 <%-- 2019.08.05，訂單總計資訊(右上角) --%>
-                                <div class="col-md-12 col-sm-12 col-xs-12 _OrderInformation _setborder">
+                                <div class="col-md-12 col-sm-12 col-xs-12 _setborder">
                                     <div class="x_panel">
                                         <div class="x_content clearfix">
 
                                             <h3 style="color: black">訂單<%=yText %>總計：</h3>
-                                            <span style="display: none; width: 18%; text-align: right;" id="total_title" runat="server">
+                                            <div style="display: none; width: 18%; text-align: right;" id="total_title" runat="server">
                                                 <div class="h2 text-success count" style="color: darkred"><b>NTD</b></div>
-                                            </span>
-                                            <span style="display: inline-block; width: 55%; text-align: right;" id="total_content" runat="server">
+                                            </div>
+                                            <div style="display: inline-block; width: 55%; text-align: right;" id="total_content" runat="server">
                                                 <div class="h2 text-success count" style="color: darkred"><b><%=add_total %></b></div>
-                                            </span>
+                                            </div>
 
                                             <h3 style="color: black">本月訂單總計：</h3>
-                                            <span style="display: none; width: 18%; text-align: right;" id="month_title" runat="server">
+                                            <div style="display: none; width: 18%; text-align: right;" id="month_title" runat="server">
                                                 <div class="h2 text-success count" style="color: darkred"><b>NTD</b></div>
-                                            </span>
-                                            <span style="display: inline-block; width: 55%; text-align: right;" id="month_content" runat="server">
+                                            </div>
+                                            <div style="display: inline-block; width: 55%; text-align: right;" id="month_content" runat="server">
                                                 <div class="h2 text-success count" style="color: darkred"><b><%=Total_All %></b></div>
-                                            </span>
+                                            </div>
 
                                             <h3 style="color: black">逾期訂單總計：</h3>
-                                            <span style="display: none; width: 18%; text-align: right;" id="over_title" runat="server">
+                                            <div style="display: none; width: 18%; text-align: right;" id="over_title" runat="server">
                                                 <div class="h2 text-success count" style="color: darkred"><b>NTD</b></div>
-                                            </span>
-                                            <span style="display: inline-block; width: 55%; text-align: right;" id="over_content" runat="server">
+                                            </div>
+                                            <div style="display: inline-block; width: 55%; text-align: right;" id="over_content" runat="server">
                                                 <div class="h2 text-success count" style="color: darkred"><b><%=Overdue_Total %></b></div>
-                                            </span>
+                                            </div>
                                             <div runat="server" id="divBlock">
                                                 <h2 style="color: black"><%=right_title %>： <strong style="color: darkred">
                                                     <br>
@@ -117,7 +117,7 @@
                                                 <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>Y座標(值)</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-8 btn-group">
+                                                <div class="col-md-8 col-sm-9 col-xs-8">
                                                     <asp:DropDownList ID="dropdownlist_y" runat="server" CssClass="btn btn-default form-control  text-center">
                                                     </asp:DropDownList>
                                                 </div>
@@ -192,7 +192,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -215,57 +214,58 @@
         set_stackedColumn('chartContainer', '<%=title%>', '<%=subtitle%>', '<%=xText %>', '<%=yText %>', '逾期訂單<%=chart_unit %>', [<%=chart_Overdue %>], '本月訂單<%=chart_unit %>', [<%=chartData %>], '<%=dropdownlist_X.ClientID%>', '<%=dropdownlist_y.ClientID%>');
 
         //產生表格的HTML碼
-        create_tablecode('order', '訂單<%=yText %>統計', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString() %>');
+        create_tablecode('order', '訂單<%=yText %>統計', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString() %>');
         //產生相對應的JScode
-        set_Table('#datatable-buttons');
+        set_Table('#table-form');
         //防止頁籤跑版
-        loadpage('Order=Order_cust', '#datatable-buttons');
+        loadpage('Order=Order_cust', '#table-form');
 
         //產生表格的HTML碼
-        create_tablecode('order_month', '各月訂單統計', 'order_months', '<%=th_month.ToString() %>', '<%=tr_month.ToString() %>');
+        create_tablecode('order_month', '各月訂單統計', 'total-form', '<%=th_month.ToString() %>', '<%=tr_month.ToString() %>');
         //產生相對應的JScode
-        $('#order_months').dataTable(
-            {
-                destroy: true,
-                language: {
-                    "processing": "處理中...",
-                    "loadingRecords": "載入中...",
-                    "lengthMenu": "顯示 _MENU_ 項結果",
-                    "zeroRecords": "沒有符合的結果",
-                    "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
-                    "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
-                    "infoFiltered": "(從 _MAX_ 項結果中過濾)",
-                    "infoPostFix": "",
-                    "search": "搜尋:",
-                    "paginate": {
-                        "first": "第一頁",
-                        "previous": "上一頁",
-                        "next": "下一頁",
-                        "last": "最後一頁"
-                    }
-                },
-                "aLengthMenu": [10, 25, 50, 100],
-                "order": [[1, "asc"]],
-                scrollCollapse: true,
-                dom: "<'row'<'pull-left'f>'row'<'col-sm-3'>'row'<'col-sm-3'B>'row'<'pull-right'l>>" +
-                    "<rt>" +
-                    "<'row'<'pull-left'i>'row'<'col-sm-4'>row'<'col-sm-3'>'row'<'pull-right'p>>",
+        set_Table('#total-form');
+        //$('#order_months').dataTable(
+        //    {
+        //        destroy: true,
+        //        language: {
+        //            "processing": "處理中...",
+        //            "loadingRecords": "載入中...",
+        //            "lengthMenu": "顯示 _MENU_ 項結果",
+        //            "zeroRecords": "沒有符合的結果",
+        //            "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+        //            "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+        //            "infoFiltered": "(從 _MAX_ 項結果中過濾)",
+        //            "infoPostFix": "",
+        //            "search": "搜尋:",
+        //            "paginate": {
+        //                "first": "第一頁",
+        //                "previous": "上一頁",
+        //                "next": "下一頁",
+        //                "last": "最後一頁"
+        //            }
+        //        },
+        //        "aLengthMenu": [10, 25, 50, 100],
+        //        "order": [[1, "asc"]],
+        //        scrollCollapse: true,
+        //        dom: "<'row'<'pull-left'f>'row'<'col-sm-3'>'row'<'col-sm-3'B>'row'<'pull-right'l>>" +
+        //            "<rt>" +
+        //            "<'row'<'pull-left'i>'row'<'col-sm-4'>row'<'col-sm-3'>'row'<'pull-right'p>>",
 
-                buttons: [
-                    {
-                        extend: 'copy', //className: 'copyButton',
-                        text: 'copy',
-                    },
-                    {
-                        extend: 'csv', //className: 'copyButton',
-                        text: 'csv',
-                    }
-                    , {
-                        extend: 'print', //className: 'copyButton',
-                        text: 'print',
-                    }
-                ],
-            });
+        //        buttons: [
+        //            {
+        //                extend: 'copy', //className: 'copyButton',
+        //                text: 'copy',
+        //            },
+        //            {
+        //                extend: 'csv', //className: 'copyButton',
+        //                text: 'csv',
+        //            }
+        //            , {
+        //                extend: 'print', //className: 'copyButton',
+        //                text: 'print',
+        //            }
+        //        ],
+        //    });
         //防止頁籤跑版
         loadpage('', '');
 

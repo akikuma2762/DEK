@@ -32,12 +32,12 @@
         <div id="myTabContent" class="tab-content">
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                 <div class="x_panel Div_Shadow">
-                    <div class="row">
-                        <div class="col-md-9 col-sm-12 col-xs-12 _setborder">
+                    <div class="x_content">
+                        <div class="col-md-9 col-sm-12 col-xs-12">
                             <div id="shipment_image"></div>
                         </div>
-                        <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                            <div class="col-md-12 col-sm-12 col-xs-12 _setborder">
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
                                         <i id="cbx_remind"></i>
@@ -134,11 +134,11 @@
         set_column('chartContainer', '<%=title%>', '<%=subtitle%>', '<%=xText %>', '數量', '已出貨', [<%=col_data_Points%>]);
 
         //產生表格的HTML碼
-        create_tablecode('shipment', '出貨統計列表', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString() %>');
+        create_tablecode('shipment', '出貨統計列表', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString() %>');
         //產生相對應的JScode
-        set_Table('#datatable-buttons');
+        set_Table('#table-form');
         //防止頁籤跑版
-        loadpage('shipment=shipment_cust', '#datatable-buttons');
+        loadpage('shipment=shipment_cust', '#table-form');
 
         $("#btncheck").click(function () {
             $.blockUI({ message: '<img src="../../images/loading.gif" />' });

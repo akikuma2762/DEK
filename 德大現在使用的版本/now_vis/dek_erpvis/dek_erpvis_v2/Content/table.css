@@ -6,6 +6,89 @@
 #_FormTitle ._mdTitle {
     display: none;
 }*/
+
+/*/20220715修正table生成樣式跑版 --------------------------------------------start----------------------------/*/
+.top-list {
+    display: flex;
+    justify-content: center;
+}
+
+    .top-list .pull-left, .top-list .pull-middle {
+        width: 100%;
+    }
+
+.dataTables_wrapper div.dataTables_filter {
+    text-align: left !important;
+}
+
+td {
+    text-align: left;
+}
+
+@media screen and (max-width:540px) {
+
+    .top-list .col-sm-3 {
+        display: none;
+    }
+
+    .top-list .pull-left {
+        width: 100%;
+    }
+
+    .bottom-list {
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: center;
+    }
+
+        .bottom-list .pull-right {
+            width: 100%;
+        }
+
+            .bottom-list .pull-right div {
+                width: 100%;
+                text-align: center;
+            }
+}
+
+
+
+@media screen and (max-width:414px) {
+    .top-list {
+        flex-wrap: wrap;
+    }
+
+        .top-list .pull-left {
+            margin-bottom: 5px;
+        }
+
+    .pull-right {
+        width: 100%;
+    }
+
+    #myTab {
+        display: flex;
+    }
+
+        #myTab li a {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-size: 16px;
+        }
+}
+
+@media screen and (max-width:414px) {
+    .bottom-list .pull-right ul {
+        font-size: 12px;
+    }
+
+    .bottom-list .pull-left ul {
+        font-size: 15px;
+    }
+}
+/*/20220715修正table生成樣式跑版 -------------------------------End--------------------------------/*/
+
+
 @media screen and (max-width:768px) {
 
     #datatable-buttons_wrapper {
@@ -38,19 +121,18 @@
             height: 55px;
             display: inline-block;
         }
-    /*搜尋input*/
-    div.dataTables_wrapper div.dataTables_filter input {
+        /*搜尋input*/
+        /*    div.dataTables_wrapper div.dataTables_filter input {
         width: 80%;
-    }
-
-    /*顯示筆數*/
-    #datatable-buttons_wrapper > div.row:first-child .pull-right {
-        width: 45%;
-        display: inline-block;
-        height: 55px;
-        line-height: 55px;
-        margin-right: 10px;
-    }
+    }*/
+        /*顯示筆數*/
+        #datatable-buttons_wrapper > div.row:first-child .pull-right {
+            width: 45%;
+            display: inline-block;
+            height: 55px;
+            line-height: 55px;
+            margin-right: 10px;
+        }
 
     #datatable-buttons_length {
         width: 100%;
