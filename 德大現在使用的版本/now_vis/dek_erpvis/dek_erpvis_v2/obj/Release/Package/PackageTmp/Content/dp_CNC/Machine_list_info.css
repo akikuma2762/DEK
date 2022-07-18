@@ -1,0 +1,348 @@
+﻿.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+._select {
+    display: none;
+}
+
+#_Chart > div.x_panel {
+    padding-bottom: 0;
+}
+
+    #_Chart > div.x_panel > div.col-xs-12 > div.x_panel > div.col-xs-12:first-child {
+        padding: 0;
+    }
+
+#_Chart .x_panel > div.col-xs-12 h1 {
+    text-align: center;
+    font-size: 20px;
+    color: black;
+    font-family: Arial;
+    margin-top: -2px;
+}
+
+#_Chart .x_panel > div.col-xs-12 .x_panel {
+    background-color: #009efa;
+    border-style: outset;
+    border-width: 4px;
+    padding: 15px 0 0 0;
+}
+
+#_Chart .x_panel > div.col-xs-12 h3 {
+    font-size: 45px;
+    color: black;
+    margin-top: -10px;
+    margin-bottom: -2px;
+    margin-left: 10%;
+    text-align: center;
+}
+
+    #_Chart .x_panel > div.col-xs-12 h3 span {
+        font-size: 20px;
+    }
+
+#_Chart .x_panel > div.col-xs-12 img {
+    width: 6em;
+    height: 6em;
+    display: block;
+    margin: auto;
+    line-height: 50%;
+    max-height: 80px;
+    max-width: 80px;
+}
+
+._hr {
+    border-top: 2px solid #D0D0D0 !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+
+._hr2 {
+    border-top: 2px solid #D0D0D0 !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+.button_use {
+    z-index: 999;
+    margin: 0;
+    top: 55%;
+    right: 0%;
+    -ms-transform: translateY(-30%);
+    transform: translateY(-30%);
+    width: 33px;
+    height: 240px;
+    line-height: 235px;
+    font-family: verdana;
+    text-align: center;
+    background: #009efa;
+    color: #fff;
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+@media screen and (max-width:768px) {
+
+    .button_use {
+        display: none;
+    }
+
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    #_Chart {
+        margin-bottom: -10px
+    }
+
+        #_Chart .x_panel {
+            margin: 0px 0px 17px 0px;
+        }
+        /*調整上方看板*/
+        #_Chart > .x_panel > div.col-xs-12 {
+            width: 33%;
+            display: inline-block;
+            padding: 5px;
+            font-size: 0.7em;
+            padding-right: 3px;
+            margin-bottom: -14px
+        }
+
+        #_Chart .x_panel > div.col-xs-12 > div.x_panel {
+            width: 100%;
+            height: 70px;
+        }
+
+        #_Chart .x_panel > div.col-xs-12 img {
+            display: none;
+        }
+
+        #_Chart > div.x_panel {
+            padding: 0;
+        }
+
+        #_Chart .x_panel > div.col-xs-12 h1 {
+            font-size: 0.7em;
+            width: 100%;
+        }
+
+        #_Chart .x_panel > div.col-xs-12 h3 {
+            font-size: 1.2em;
+            width: 100%;
+            margin-left: 0;
+        }
+
+            #_Chart .x_panel > div.col-xs-12 h3 b:first-child {
+                font-size: 2em;
+            }
+
+    /*表格模式*/
+    #datatable-buttons_wrapper {
+        padding: 0 10px;
+        font-size: 0.6em;
+    }
+
+    #tab_content1 > div.row > .col-xs-12 .x_panel {
+        padding: 0;
+    }
+
+    #tab_content1 div.x_panel div.x_content {
+        padding: 0;
+    }
+
+        #tab_content1 div.x_panel div.x_content .col-xs-12 {
+            padding: 0;
+        }
+
+    #btncheck {
+        width: 100%;
+    }
+
+    #_select .dashboard_graph {
+        padding: 10px;
+    }
+
+    ._select {
+        padding: 10px !important;
+        display: block;
+    }
+
+    #tab_content1 #_select .dashboard_graph {
+        padding: 10px;
+        margin-bottom: 0;
+    }
+
+    #ContentPlaceHolder1_DropDownList_MachGroup {
+        margin-top: 5px
+    }
+
+    #ContentPlaceHolder1_CheckBoxList_cloumn label {
+        margin-left: 10px;
+    }
+    /*圖片模式*/
+    #tab_content2 div.x_content > div.row > div {
+        margin-bottom: 20px;
+    }
+
+        #tab_content2 div.x_content > div.row > div.dashboard_graph {
+            margin-bottom: 0;
+            padding: 10px;
+        }
+
+        #tab_content2 div.x_content > div.row > div:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+    /*#chart_D14MiA1, #chart_D14MiA2,#chart_D14MiA3,#chart_NXA560A1,#chart_NXA560A2,#chart_Fanuc*/
+    #tab_content2 {
+        position: relative;
+        padding: 0;
+        font-size: 0.7em;
+    }
+
+        #tab_content2 div {
+            padding: 0;
+        }
+
+        #tab_content2 > div.x_panel > div.x_content > div.row {
+            margin: 0;
+        }
+
+            #tab_content2 > div.x_panel > div.x_content > div.row > div > div {
+                padding: 10px;
+            }
+
+    #chart_D14MiA1 {
+        padding: 10px;
+    }
+
+    #ma_canvas_statusD14MiA1 {
+        font-size: 25px;
+    }
+    /*內文*/
+    #tab_content2 .x_panel {
+        border-top-width: 0;
+    }
+
+    #tab_content2 .x_content {
+        margin-top: 0;
+    }
+
+    #tab_content2 .left > div:nth-child(1) {
+        text-align: center;
+        margin: 15px 0 10px 0;
+    }
+
+    #tab_content2 .left div:nth-child(2) div, #tab_content2 .left div:nth-child(3) div {
+        width: 100%;
+        text-align: left;
+        display: inline-block;
+    }
+
+    #tab_content2 .left div:nth-child(4) div {
+        width: 100%;
+        text-align: left;
+        display: inline-block;
+    }
+
+    #tab_content2 .left div:nth-child(2) div:nth-child(2),
+    #tab_content2 .left div:nth-child(2) div:nth-child(3),
+    #tab_content2 .left div:nth-child(2) div:last-child,
+    #tab_content2 .left div:nth-child(3) div:last-child,
+    #tab_content2 .left div:nth-child(3) div:nth-child(2) {
+        width: 100%;
+    }
+
+    #tab_content2 .left > div {
+        font-size: 14px !important;
+    }
+
+        #tab_content2 .left > div:first-child ._mdTitle {
+            font-size: 40px !important;
+            height: 50px !important;
+            line-height: 50px !important;
+        }
+
+    /* 圖片刻度 */
+    #ma_canvas_D14MiA1 {
+        font-size: 0.5em;
+    }
+
+    #tab_content2 > div.x_panel > div.x_content > div.row > div {
+        border: 0.3px solid #bababa;
+    }
+}
+
+
+
+
+@media screen and (max-width:768px) {
+
+    #datatable_mach_wrapper {
+        padding-right: 3px;
+        font-size: 0.85em;
+    }
+        /*隱藏搜尋部分功能 copy/csv/print 和一個空的div*/
+        #datatable_mach_wrapper > div.row:first-child > div:nth-child(2),
+        #datatable_mach_wrapper > div.row:first-child > div:nth-child(3) {
+            display: none;
+            background-color: red;
+        }
+
+        /*表格內容*/
+        #datatable_mach_wrapper .dataTables_scroll {
+            font-size: 0.85em;
+        }
+
+        /*搜尋*/
+        #datatable_mach_wrapper > div.row:first-child .pull-left {
+            width: 45%;
+            display: inline-block;
+            height: 55px;
+            line-height: 55px;
+            margin-left: 10px;
+        }
+        /*搜尋input*/
+        #datatable_mach_wrapper #datatable-buttons_filter {
+            width: 100%;
+            height: 55px;
+            display: inline-block;
+        }
+    /*搜尋input*/
+    div.dataTables_wrapper div.dataTables_filter input {
+        width: 80%;
+    }
+
+    /*顯示筆數*/
+    #datatable_mach_wrapper > div.row:first-child .pull-right {
+        width: 45%;
+        display: inline-block;
+        height: 55px;
+        line-height: 55px;
+        margin-right: 10px;
+    }
+
+    #datatable_mach_length {
+        width: 100%;
+    }
+    /*調整表格內距*/
+    #datatable_mach_wrapper > div:last-child {
+        margin-left: 1%;
+    }
+    /*表格內距*/
+    #tab_content2 > .x_panel {
+        padding: 0;
+    }
+    /*頁數*/
+    #datatable_mach_wrapper > div.row:last-child .pull-right {
+        margin: 5px 10px 0 0;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+}

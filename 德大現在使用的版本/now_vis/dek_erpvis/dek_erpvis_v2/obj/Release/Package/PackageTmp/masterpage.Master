@@ -1,0 +1,548 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="masterpage.master.cs" Inherits="dek_erpvis_v2.masterpage" %>
+
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head runat="server">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link href="assets/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="assets/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="assets/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="assets/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- Select2 -->
+    <link href="assets/vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="assets/vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <!-- starrr -->
+    <link href="assets/vendors/starrr/dist/starrr.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <!--<link href="assets/build/css/custom.min.css" rel="stylesheet">-->
+    <!-- Datatables -->
+    <link href="assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+    <!-- FloatingActionButton -->
+    <link rel='stylesheet' href='assets/vendors/FloatingActionButton/css/animate.min.css'>
+    <link rel='stylesheet' href='assets/vendors/FloatingActionButton/css/family.css'>
+    <link rel='stylesheet' href="assets/vendors/FloatingActionButton/css/style.css">
+    <style>
+        #loading {
+            position: fixed;
+            z-index: 400;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #595758;
+            background-color: #ffffff;
+        }
+
+        #Btncolor1 {
+            background: var(--Color_Sidebar);
+        }
+
+        #Btncolor2 {
+            background: var(--Color_Sidebar);
+        }
+
+        #Btncolor3 {
+            background: var(--Color_Sidebar);
+        }
+
+        #Btncolor4 {
+            background: var(--Color_Sidebar);
+        }
+    </style>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body id="main_body" class="<%=model%>">
+    <%--    <div id="loading">
+        <img src="../../images/loading.gif" alt="loading.." />
+    </div>--%>
+    <form id="form1" runat="server" autocomplete="off">
+
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+
+                        <div class="clearfix"></div>
+
+                        <div id="testwidth" class="navbar nav_title" style="border: 0; background-color: #f3f2f3">
+                            <div id="BorderBox" class="profile clearfix" style="text-align: left; background-color: #f3f2f3;">
+                                <a href="/pages/index.aspx">
+                                    <img src="../../assets/images/VISdek.png" alt="..." width="69%" height="90%"></a>
+                                <a id="menu_toggle"><i id="changeicon" style="text-align: left; font-size: 30px; margin-top: 15px; margin-left: 40px; color: #4655cc" class="fa fa-chevron-left" data-toggle="tooltip" data-placement="right" title=""></i>
+                                    <span aria-hidden="true" style="font-size: 30px"></span>
+                                </a>
+                            </div>
+                            <!--電腦版使用-->
+                            <div id="BorderBox1" style="text-align: left; margin-top: 15px; margin-left: 30px; background-color: #f3f2f3; display: none">
+                                <a id="menu_toggle1"><i style="text-align: left; font-size: 30px; color: #4655cc" class="fa fa-chevron-right" data-toggle="tooltip" data-placement="right" title="展開側邊面板"></i>
+                                    <span aria-hidden="true" style="font-size: 30px"></span>
+                                </a>
+                            </div>
+                            <!--手機板使用-->
+                            <div id="BorderBox3" style="text-align: left; background-color: #f3f2f3; display: none">
+                                <a id="menu_toggle3"><i style="text-align: left; font-size: 30px; margin-top: 15px; margin-left: 20px; color: #4655cc" class="fa fa-chevron-left" data-toggle="tooltip" data-placement="right" title=""></i>
+                                    <span aria-hidden="true" style="font-size: 30px"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <!-- menu profile quick info -->
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <asp:Image ID="Image_company" runat="server" Width="56.34" Height="56.34" class="img-circle profile_img" />
+                            </div>
+
+                            <div class="profile_info">
+                                <asp:PlaceHolder ID="PlaceHolder_companyname" runat="server"></asp:PlaceHolder>
+                            </div>
+                        </div>
+                        <!-- /menu profile quick info -->
+
+                        <!-- sidebar menu -->
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                            <div class="menu_section">
+                                <h3 id="showbox" class="text-center" style="display: none"></h3>
+                                <ul class="nav side-menu">
+                                    <asp:PlaceHolder ID="PlaceHolder_AllPart" runat="server"></asp:PlaceHolder>
+                                    <%=ELine %>
+                                    <li>
+                                        <a onclick="show_loading()" href="/pages/SYS_CONTROL/QA.aspx">
+                                            <img src="../../assets/images/white-23.png" width="26px" height="26px">
+                                            <label id="SomeLabel">&nbsp; 操作手冊</label>
+                                            <span id=""></span></a>
+                                    </li>
+                                    <li>
+                                        <a onclick="show_loading()" href="/pages/SYS_CONTROL/set_parameter.aspx">
+                                            <img src="../../assets/images/icon white-24.png" width="26px" height="26px">
+                                            <label id="SomeLabel1" style="font-size: 100%">&nbsp; 參數設定</label>
+                                            <span id=""></span></a>
+                                    </li>
+                                    <%=pagename %>
+                                    <li id="id5"><a id="Receive5">
+                                        <img src="../../assets/images/icon white-25.png" width="26px" height="26px">
+                                        <label id="SomeLabel2">&nbsp; 系統管理</label>
+                                        <span class="fa fa-chevron-down" style="font-size: 10px"></span><span id="notice_parents"></span></a>
+                                        <ul class="nav child_menu" style="left:70px">
+                                            <li style="background-color: <%=color %>"><a onclick="show_loading()" href="/pages/SYS_CONTROL/rights_mag.aspx">01權限管理</a></li>
+                                            <li style="background-color: <%=color %>"><a onclick="show_loading()" href="/pages/SYS_CONTROL/rights_application.aspx">02待審權限<span id="notice_child"></span></a></li>
+                                            <%=changevalue %>
+                                        </ul>
+                                    </li>
+                                    <%=test %>
+                                   <%-- <li id="id10000"><a id="Receive10000">
+                                        <asp:Label ID="Label_online" runat="server" Text="Label"></asp:Label>
+                                        </a>
+                                    </li>--%>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <!-- /sidebar menu -->
+                        <!-- /menu footer buttons -->
+                        <%=btn%>
+                        <!--/menu footer buttons -->
+                    </div>
+                </div>
+
+
+                <!-- top navigation -->
+                <div class="top_nav">
+                    <div class="nav_menu" id="nav_menu">
+                        <nav>
+                            <div class="nav toggle">
+                                <div id="BorderBox2" style="text-align: left; background-color: #f3f2f3; display: none">
+                                    <a id="menu_toggle2"><i style="text-align: left; font-size: 30px; color: #4655cc; margin-top: 5px" class="fa fa-chevron-right" data-toggle="tooltip" data-placement="right" title=""></i>
+                                        <span aria-hidden="true" style="font-size: 30px"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <div style="position: absolute; width: 37%"></div>
+                                <li class="">
+                                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <asp:Image ID="Image_user" runat="server" Width="29" Height="29" /><%=user_name %>
+                                        <span class=" fa fa-angle-down"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                        <li>
+                                            <a href="/pages/SYS_CONTROL/profile.aspx">個人檔案設定</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="modal" data-target="#logoutModal" onclick="close_nav()">
+                                                <i class="fa fa-sign-out pull-right" onclick="close_nav()"></i>Log Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+                <!-- /top navigation -->
+                <!-- page content -->
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+
+                <!-- /page content -->
+                <!-- footer content -->
+                <footer style="background-color: #faf9fa;">
+                    <div class="pull-right" style="font-size: 0px;">
+                        德科智能科技 - 德大ERP可視化 by <a href="http://www.dek.tw/">dek Vis</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+            </div>
+        </div>
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel2">確定要登出 ?</h4>
+                    </div>
+                    <div class="modal-body"><%=user_name %>，如果您準備好結束瀏覽系統，請選擇下方 '登出系統'。</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">取消操作</button>
+                        <asp:Button ID="Button_logout" runat="server" Text="登出系統" class="btn btn-primary" OnClick="Button_logout_Click" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Logout Modal-->
+    </form>
+    <script src="../../assets/vendors/time/loading.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var WhatSystem = navigator.userAgent;
+            if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            } else {
+                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+            }
+
+
+            $(window).load(function () {  //load函数
+                $.unblockUI();
+                $(".blockUI").fadeOut("slow");
+                ShowTime();
+                open_notice();
+            });
+        });
+
+        function show_loading() {
+
+            var WhatSystem = navigator.userAgent;
+            if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            } else {
+                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+            }
+        }
+        
+       
+        function close_nav() {
+            if ($(window).width() < 991) {
+                document.getElementById("main_body").classList.remove("nav-sm");
+                document.getElementById("main_body").classList.add("nav-md");
+            }
+        }
+        function open_notice() {
+            $.ajax({
+                type: 'POST',
+                dataType: 'xml',
+                url: "../../webservice/permission.asmx/set_notice_for_adm",
+                data: 'key=<%=keys%>',
+                success: function (xml) {
+                    $(xml).find("ROOT").each(function (i) {
+                        //alert();
+                        var _class = "label label-danger pull-right";
+                        var _count = $(this).attr("system_msg").valueOf();
+                        if (_count > 0) {
+                            document.getElementById("notice_parents").className = _class;
+                            document.getElementById("notice_parents").innerText = _count;
+                            document.getElementById("notice_child").className = _class;
+                            document.getElementById("notice_child").innerText = _count;
+                        }
+                    });
+                },
+                error: function (data, errorThrown) {
+                    //alert("Fail");
+                }
+            });
+        }
+        function footerbuttons(code) {
+            switch (code) {
+                case "Settings":
+                    window.location = '/pages/sys_control/rights_mag.aspx';
+                    break;
+            }
+        }
+        //調整側欄長度
+        var element = document.getElementById('nav_menu');
+        if (element.offsetHeight == "62") {
+            document.getElementById('BorderBox').style.height = element.offsetHeight + 'px';
+        }
+        else {
+            document.getElementById('BorderBox').style.height = element.offsetHeight + 'px';
+        }
+        /*------------------------------------------------------------------*/
+        function get_now() {
+            var NowDate = new Date();
+            var yyyy = NowDate.getFullYear();
+            var mm = NowDate.getMonth() + 1;
+            var dd = NowDate.getDate();
+            var hh = NowDate.getHours();
+            var mmn = NowDate.getMinutes();
+            var ss = NowDate.getSeconds();
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (hh < 10) {
+                hh = '0' + hh;
+            }
+            if (mmn < 10) {
+                mmn = '0' + mmn;
+            }
+            if (ss < 10) {
+                ss = '0' + ss;
+            }
+
+            now = yyyy + "/" + mm + "/" + dd + " " + hh + ":" + mmn + ":" + ss;
+            return now;
+        }
+        function ShowTime() {
+            document.getElementById('showbox').innerHTML = get_now();
+            setTimeout('ShowTime()', 1000);
+        }
+        $("#btn_check").click(function () {
+            document.getElementById('<%=Button_logout.ClientID %>').click();
+        });
+        //用手機呈現時，當按下資料檢索精靈，要把側欄回復，以免擋到使用者
+        $("#ContentPlaceHolder1_LinkButton1").click(function () {
+            var WhatSystem2 = navigator.userAgent;
+            if (WhatSystem2.match(/android/i) || WhatSystem2.match(/(iphone|ipad|ipod);?/i)) {
+                myclick();
+            }
+        });
+        function myclick() {
+            document.getElementById("menu_toggle").click();
+            document.getElementById("BorderBox3").style.display = "none";
+            document.getElementById("BorderBox2").style.display = "initial";
+        }
+
+        /*------------------------------------------------------------------*/
+        //判斷手機或是電腦
+        var WhatSystem = navigator.userAgent;
+        if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            seticon();
+        }
+        else {/*兩個側欄之間的交換*/
+            $("#menu_toggle").click(function () {
+                if (changeicon.classList == "fa fa-chevron-left") {
+                    revice();//20220630新增 交換時隱藏部門選項
+                    changeicon.className = "fa fa-chevron-right";
+                    $('#changeicon').attr('data-original-title', '展開側邊面板');
+                    document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.getElementById("BorderBox1").style.display = "initial";
+                }
+                else {
+                    changeicon.className = "fa fa-chevron-left";
+                    $('#changeicon').attr('data-original-title', '收合側邊面板');
+                    document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+                document.cookie = "clickhistory=" + changeicon.className + ";path=/";
+            });
+
+        }
+        /*------------------------------------------------------------------*/
+        /*電腦版的側欄轉換*/
+        $("#menu_toggle1").click(function () {
+            document.getElementById('menu_toggle').click();
+            document.getElementById("BorderBox1").style.display = "none";
+        });
+        /*手機板專用--收合*/
+        $("#menu_toggle2").click(function () {
+            document.getElementById('menu_toggle').click();
+            document.getElementById("BorderBox3").style.display = "initial";
+            document.getElementById("BorderBox2").style.display = "none";
+        });
+        /*手機板專用--展開*/
+        $("#menu_toggle3").click(function () {
+            document.getElementById('menu_toggle').click();
+            document.getElementById("BorderBox3").style.display = "none";
+            document.getElementById("BorderBox2").style.display = "initial";
+        });
+        /*------------------------------------------------------------------*/
+
+
+        //畫面一進來的動作
+        if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            if (document.title == '導覽 | 德大機械' || document.title == '顏色設定 | 德大機械') {
+                document.getElementById("btncheck").style.display = "none";
+                document.getElementById("BorderBox3").style.display = "initial";
+            } else {
+                window.onload = clearclass();//手機板
+            }
+        }
+        else {
+            window.onload = showcookie();//電腦版
+        }
+        /*------------------------------------------------------------------*/
+        function clearclass() {
+            var WhatSystem = navigator.userAgent;
+            if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+                $('#changeicon').attr('data-original-title', '');
+                document.getElementById("BorderBox2").style.display = "initial";
+                document.getElementById("BorderBox").style.display = "none";
+            }
+            else {
+                $('#changeicon').attr('data-original-title', '收合側邊面板');
+            }
+        }
+        //印出目前所有的cookies
+        function showcookie() {
+            var test = "clickhistory" + '=';
+            var x = document.cookie.split(';');
+            var y = '';
+            for (var i = 0; i < x.length; i++) {
+                var item = x[i].trim();
+                if (item.indexOf(test) == 0) {
+                    y = item.substring(test.length, item.length);
+                }
+            }
+            //如果是展開的情況或是剛進來的話，則保持原樣
+            if (y == "fa fa-chevron-left" || y == "") {
+                document.cookie = "clickhistory=" + changeicon.className + ";path=/";
+            }
+            //收合的情況
+            else {
+                changeicon.className = "fa fa-chevron-right";
+                $('#changeicon').attr('data-original-title', '展開側邊面板');
+                document.getElementById("BorderBox1").style.display = "initial";
+                document.cookie = "clickhistory=" + changeicon.className + ";path=/";
+                //直接改變他的class
+                main_body.className = "footer_fixed nav-sm";
+                //當側欄縮起跳至下一頁時，要將側欄的部分收起
+                $(function () {
+                    revice();
+                });
+            }
+        }
+        /*------------------------------------------------------------------*/
+        //點擊空白處收回選單
+        $(document).on('click', function (e) {
+            //選取側欄以外地方
+            var contentEle = $('#sidebar-menu');
+            if (contentEle != e.target && contentEle.has(e.target).length == 0) {
+                //展開面板情況不執行動作
+                if (changeicon.classList == "fa fa-chevron-left") {
+                    if (WhatSystem.match(/android/i)) {
+                        revice();
+                    }
+                    else if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+                        revice();
+                    }
+                } else {
+                    revice();
+                }
+            }
+            else {
+
+            }
+        })
+        /*------------------------------------------------------------------*/
+        /*手機板使用，清除側欄用*/
+        function seticon() {
+            document.getElementById("BorderBox").style.display = "none";
+            changeicon.className = "fa fa-chevron-right";
+            changeicon.classList == "fa fa-chevron-right"
+            $('#changeicon').attr('data-original-title', '');
+            $("#menu_toggle").click(function () {
+                if (changeicon.classList == "fa fa-chevron-left") {
+                    changeicon.className = "fa fa-chevron-right";
+                    $('#changeicon').attr('data-original-title', '');
+                    document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+                else {
+                    changeicon.className = "fa fa-chevron-left";
+                    $('#changeicon').attr('data-original-title', '');
+                    document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+                document.cookie = "clickhistory=" + changeicon.className + ";path=/";
+            });
+        }
+
+        /*------------------------------------------------------------------*/
+        //判斷側欄是否打開，如果打開的話，就將它收回 20220630
+        function revice() {
+            var act = "";
+            if ($('#main_body').attr('class') == 'footer_fixed nav-sm') {
+                //console.log($('#sidebar-menu [class="active"]'));
+                if ($('#sidebar-menu [class="active"]').length != 0) {
+                    act = "active";
+                } else {
+                    act = "active-sm";
+                }
+                //20220701調整部門選項選單遮蓋到部門
+                $("#sidebar-menu " + `[class=${act}]` + " ul").attr('style', 'left: 70px;display: none;');
+                $("#sidebar-menu " + `[class=${act}]`).removeClass();     
+            }
+        }
+        /*-----------------------------------------------------------------*/
+        //顏色變更的部分
+        //讀取cooke改變顏色
+        /*var x = document.cookie.split(';');
+        var colorname = ["RedB_Color=", "GreenB_Color=", "BlueB_Color=", "RedS_Color=", "GreenS_Color=", "BlueS_Color=", "RedL_Color=", "GreenL_Color=", "BlueL_Color=", "RedT_Color=", "GreenT_Color=", "BlueT_Color=", "RedZ_Color=", "GreenZ_Color=", "BlueZ_Color="]
+        var colorvalue = [];
+        for (var i = 0; i < x.length; i++) {
+            var item = x[i].trim();
+            for (var j = 0; j < colorname.length; j++) {
+                if (item.indexOf(colorname[j]) == 0) {
+                    colorvalue[j] = item.substring(colorname[j].length, item.length);
+                    break;
+                }
+            }
+        }*/
+        //資料庫的方式
+
+        <%=give_js%>
+        var colors = ["Color_Sidebar", "Color_SidebarText",
+            "Color_Label", "Color_Background",
+            "Color_Column", "Color_ColumnText",
+            "Color_DataTable", "Color_DataTableText"];
+
+        for (var i = 0; i < colors.length; i++) {
+            document.documentElement.style.setProperty(`--${colors[i]}`, colorvalue[i]);
+        }
+
+        /*------------------------------------------------------------------*/
+
+        /*------------------------------------------------------------------*/
+    </script>
+</body>

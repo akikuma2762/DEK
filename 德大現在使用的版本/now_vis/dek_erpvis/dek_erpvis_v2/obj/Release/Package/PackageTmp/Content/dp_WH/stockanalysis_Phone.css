@@ -1,0 +1,44 @@
+﻿#myTabContent .x_panel {
+    padding:0;
+}
+/*safe*/
+#myTabContent {
+    position:relative;
+    padding-top:20px;
+}
+#exportChart {
+    position:absolute;
+    top: 0;
+    right:0;
+    z-index:2;
+}
+/*-------------*/
+._StockanalysisLeft {
+    position:relative;
+    padding:10px 0 0 0 ;
+}
+._StockanalysisRight {
+    padding: 10px 0 0 0;
+    border-top: 0.1px solid black;
+    position: relative;
+}
+._StockanalysisRight #exportimage {
+    position:absolute;
+    top:0;
+    right:0;
+    z-index:2;
+}
+._StockanalysisRight .x_content {
+    padding: 0;
+}
+#myTabContent ._select {
+    padding-top:10px;
+    box-shadow: 0 0 3px gray;
+}
+#ContentPlaceHolder1_CheckBox_All {
+    margin-right:10px;
+}
+/*button*/
+#btncheck {
+    width: 100%;
+}

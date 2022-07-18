@@ -1,0 +1,151 @@
+﻿input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: auto;
+    -webkit-appearance: default-button;
+}
+
+#date_str {
+    width: 25%;
+}
+
+.Div_Shadow {
+    box-shadow: 3px 3px 9px gray;
+}
+
+hr {
+    display: block;
+}
+
+#textbox_companyname {
+    width: 30%;
+}
+
+@media screen and (max-width:768px) {
+    .Div_Shadow {
+        box-shadow: none;
+    }
+
+    #_Title {
+        font-size: 0.8em;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .form-group .col-xs-5 {
+        line-height: 30px;
+    }
+
+    .form-group input {
+        height: 30px;
+    }
+
+    #ContentPlaceHolder1_RadioButtonList1 {
+        width: 100%;
+    }
+
+    #ContentPlaceHolder1_RadioButtonList1 tbody tr {
+        width: 30%;
+        display: inline-block;
+    }
+
+    #ContentPlaceHolder1_RadioButtonList1 tbody tr td {
+        height: 32px;
+        line-height: 30px;
+    }
+
+    #ContentPlaceHolder1_RadioButtonList1 tbody tr td input {
+        margin-right: 5px;
+    }
+
+    #ContentPlaceHolder1_RadioButtonList1 tbody tr td label {
+        line-height: 30px;
+    }
+
+    #ContentPlaceHolder1_Panel_people div.col-xs-12 {
+        padding-left: 20px;
+    }
+
+    #ContentPlaceHolder1_Panel_people div.col-xs-12 > label, #ContentPlaceHolder1_Panel_people div.col-xs-12 label table {
+        width: 100%;
+    }
+
+    #ContentPlaceHolder1_Panel_people div.col-xs-12 label table tbody tr {
+        width: 50%;
+        height: 40px !important;
+        display: inline-block;
+    }
+
+    #ContentPlaceHolder1_Panel_people div.col-xs-12 label table tbody tr td input {
+        margin-right: 5px;
+        line-height: 40px !important;
+    }
+
+    #ContentPlaceHolder1_Panel_people div.col-xs-12 label table tbody tr td label {
+        line-height: 40px !important;
+    }
+
+    /*ContentPlaceHolder1_Panel_people*/
+    #ContentPlaceHolder1_Panel_people div.col-xs-12 {
+        padding-left: 10px;
+    }
+
+    #ContentPlaceHolder1_Panel_people .control-label {
+        background-color: #337ab7;
+        color: white;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+
+    hr {
+        display: none;
+    }
+
+    #ContentPlaceHolder1_Panel_people .col-xs-12 label span {
+        width: 40%;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    #ContentPlaceHolder1_timeset {
+        width: 60%;
+        display: inline-block;
+    }
+
+    #textbox_companyname {
+        width: 100% !important;
+    }
+    /*_SelectPage*/
+    #ContentPlaceHolder1_SLS,
+    #ContentPlaceHolder1_PCD,
+    #ContentPlaceHolder1_WHE,
+    #ContentPlaceHolder1_PMD,
+    #ContentPlaceHolder1_CNC {
+        width: 100%;
+        margin: 10px 0 5px 0;
+    }
+
+    #ContentPlaceHolder1_checkBoxListSLSvisrd tbody tr,
+    #ContentPlaceHolder1_checkBoxListPCDvisrd tbody tr,
+    #ContentPlaceHolder1_checkBoxListWHEvisrd tbody tr,
+    #ContentPlaceHolder1_checkBoxListPMDvisrd tbody tr,
+    #ContentPlaceHolder1_checkBoxListCNCvisrd tbody tr {
+        width: 50%;
+        display: inline-block;
+    }
+
+    #ContentPlaceHolder1_checkBoxListSLSvisrd tbody tr td input,
+    #ContentPlaceHolder1_checkBoxListPCDvisrd tbody tr td input,
+    #ContentPlaceHolder1_checkBoxListWHEvisrd tbody tr td input,
+    #ContentPlaceHolder1_checkBoxListPMDvisrd tbody tr td input,
+    #ContentPlaceHolder1_checkBoxListCNCvisrd tbody tr td input {
+        margin-right: 5px;
+    }
+    /*safe*/
+    #btncheck {
+        width: 100%;
+    }
+    /*-----*/
+
+}
