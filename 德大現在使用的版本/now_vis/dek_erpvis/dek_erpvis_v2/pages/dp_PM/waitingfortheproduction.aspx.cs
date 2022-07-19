@@ -539,7 +539,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                     //產生連結
                     string url = $"cust_name={row["客戶簡稱"]},date_str={date_str},date_end={date_end},line={Line}";
                     url = WebUtils.UrlStringEncode(url);
-                    value = dropdownlist_Factory.SelectedItem.Value == "sowon" ? $"<u><a href='waitingfortheproduction_details.aspx?key={url}' >{total} </a></u>" : $"<u><a href='waitingfortheproduction_details_ITEC.aspx?key={url}' >{total} </a></u>";
+                    value = dropdownlist_Factory.SelectedItem.Value == "sowon" ? $"<u><a href=waitingfortheproduction_details.aspx?key={url} >{total} </a></u>" : $"<u><a href=waitingfortheproduction_details_ITEC.aspx?key={url} >{total} </a></u>";
                     //把到目前為止的統計規零
                     total = 0;
                     avoid_again.Add(DataTableUtils.toString(row["客戶簡稱"]).Trim());

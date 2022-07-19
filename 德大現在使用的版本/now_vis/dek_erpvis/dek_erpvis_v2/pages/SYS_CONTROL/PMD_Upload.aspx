@@ -28,26 +28,9 @@
             <div id="_Title" class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel Div_Shadow">
                     <div class="x_content">
-                        <div class="col-md-9 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h1 class="text-center _mdTitle" style="width: 100%"><b>變更資料</b></h1>
-                                    <h3 class="text-center _xsTitle" style="width: 100%"><b>變更資料</b></h3>
-                                    <div class="clearfix"></div>
-                                </div>
 
-                                <table id="Change_DataTable" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr id="tr_row">
-                                            <%=th%>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <%= tr %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <div id="Change_DataTable"></div>
+
                         <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
                             <div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="dashboard_graph x_panel">
@@ -57,34 +40,30 @@
                                         <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
                                             <ContentTemplate>
 
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="col-md-5 col-sm-3 col-xs-4">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>廠區選擇</span>
                                                     </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-8">
-                                                        <div class="row">
-                                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                                <asp:DropDownList ID="DropDownList_Type" AutoPostBack="true" CssClass="btn btn-default dropdown-toggle" Width="96%" runat="server" OnSelectedIndexChanged="DropDownList_Type_SelectedIndexChanged">
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
+                                                      
+                                                                <asp:DropDownList ID="DropDownList_Type" AutoPostBack="true" CssClass="btn btn-default form-control" runat="server" OnSelectedIndexChanged="DropDownList_Type_SelectedIndexChanged">
                                                                     <asp:ListItem Value="Ver" Selected="True">立式廠</asp:ListItem>
                                                                     <asp:ListItem Value="Hor">臥式廠</asp:ListItem>
                                                                 </asp:DropDownList>
 
-                                                            </div>
-                                                        </div>
+                                                          
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="col-md-5 col-sm-3 col-xs-4">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>產線選擇</span>
                                                     </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-8">
-                                                        <div class="row">
-                                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                                <asp:DropDownList ID="DropDownList_Product" CssClass="btn btn-default dropdown-toggle" Width="96%" runat="server">
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
+                                                      
+                                                                <asp:DropDownList ID="DropDownList_Product" CssClass="btn btn-default form-control"  runat="server">
                                                                 </asp:DropDownList>
-                                                            </div>
-                                                        </div>
+                                                          
                                                     </div>
                                                 </div>
                                             </ContentTemplate>
@@ -92,62 +71,46 @@
 
 
 
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-5 col-sm-3 col-xs-4">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span style="margin-top: 3px; margin-bottom: 5px">排程關鍵字</span>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-8">
-                                                <div class="row">
-                                                    <div class="col-md-12 col-sm-12 col-xs-12">
-                                                        <asp:TextBox ID="TextBox_keyWord" Style="margin-top: 3px; margin-bottom: 5px" CssClass="form-control text-center" Width="96%" runat="server"></asp:TextBox>
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                               
+                                                        <asp:TextBox ID="TextBox_keyWord" CssClass="form-control text-center"  runat="server"></asp:TextBox>
+                                                    
                                             </div>
                                         </div>
 
 
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-5 col-sm-3 col-xs-4">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>組裝日期</span>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-8">
-                                                <div class="row">
-                                                    <fieldset>
-                                                        <div class="control-group">
-                                                            <div class="controls">
-                                                                <div class="col-md-12  col-xs-12">
-                                                                    <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" Width="96%" CssClass="form-control  text-center"></asp:TextBox>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                    <fieldset>
-                                                        <div class="control-group">
-                                                            <div class="controls">
-                                                                <div class="col-md-12  col-xs-12" style="margin: 5px 0;">
-                                                                    <asp:TextBox ID="txt_end" runat="server" Style="" Width="96%" TextMode="Date" CssClass="form-control  text-center"></asp:TextBox>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control  text-center"></asp:TextBox>
                                             </div>
                                         </div>
+                                         <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
+                                                <span></span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:TextBox ID="txt_end" runat="server" Style=""  TextMode="Date" CssClass="form-control  text-center"></asp:TextBox>
+                                            </div>
                                     </div>
-
-
-
-
-
-
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
-                                        <div class="col-md-9 col-xs-8">
-                                        </div>
-                                        <div class="col-md-3 col-xs-12">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                            <div class="col-md-12 col-xs-12 text-align-end">
                                             <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_select_Click" Style="display: none" />
                                             <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
-                                        </div>
+                                         </div>
                                     </div>
+
+
+
+
+
+                                   
                                 </div>
 
 
@@ -316,6 +279,7 @@
     <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
     <script src="../../assets/vendors/time/loading.js"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
     <script>
         function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
             $('#ContentPlaceHolder1_TextBox_Order').val('' + Order + '');
@@ -369,12 +333,12 @@
 
         //防止切換頁籤時跑版
         $(document).ready(function () {
-            $('#example').DataTable({
-                responsive: true
-            });
-            $('#exampleInTab').DataTable({
-                responsive: true
-            });
+            //$('#example').DataTable({
+            //    responsive: true
+            //});
+            //$('#exampleInTab').DataTable({
+            //    responsive: true
+            //});
 
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 $($.fn.dataTable.tables(true)).DataTable()
@@ -382,41 +346,45 @@
             });
         });
 
-        $('#Change_DataTable').dataTable(
-            {
-                destroy: true,
-                language: {
-                    "processing": "處理中...",
-                    "loadingRecords": "載入中...",
-                    "lengthMenu": "顯示 _MENU_ 項結果",
-                    "zeroRecords": "沒有符合的結果",
-                    "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
-                    "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
-                    "infoFiltered": "(從 _MAX_ 項結果中過濾)",
-                    "infoPostFix": "",
-                    "search": "搜尋:",
-                    "paginate": {
-                        "first": "第一頁",
-                        "previous": "上一頁",
-                        "next": "下一頁",
-                        "last": "最後一頁"
+        //$('#Change_DataTable').dataTable(
+        //    {
+        //        destroy: true,
+        //        language: {
+        //            "processing": "處理中...",
+        //            "loadingRecords": "載入中...",
+        //            "lengthMenu": "顯示 _MENU_ 項結果",
+        //            "zeroRecords": "沒有符合的結果",
+        //            "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+        //            "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+        //            "infoFiltered": "(從 _MAX_ 項結果中過濾)",
+        //            "infoPostFix": "",
+        //            "search": "搜尋:",
+        //            "paginate": {
+        //                "first": "第一頁",
+        //                "previous": "上一頁",
+        //                "next": "下一頁",
+        //                "last": "最後一頁"
 
-                    }
-                },
+        //            }
+        //        },
 
 
-                scrollCollapse: true,
-                "order": [[2, "asc"], [3, "asc"], [4, "asc"], [5, "asc"]],
-                dom: "<'row'<'pull-left'f>'row'<'col-sm-3'>'row'<'col-sm-3'B>'row'<'pull-right'l>>" +
-                    "<rt>" +
-                    "<'row'<'pull-left'i>'row'<'col-sm-4'>row'<'col-sm-3'>'row'<'pull-right'p>>",
+        //        scrollCollapse: true,
+        //        "order": [[2, "asc"], [3, "asc"], [4, "asc"], [5, "asc"]],
+        //        dom: "<'row'<'pull-left'f>'row'<'col-sm-3'>'row'<'col-sm-3'B>'row'<'pull-right'l>>" +
+        //            "<rt>" +
+        //            "<'row'<'pull-left'i>'row'<'col-sm-4'>row'<'col-sm-3'>'row'<'pull-right'p>>",
 
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+        //        buttons: [
+        //            'copy', 'csv', 'excel', 'pdf', 'print'
+        //        ],
 
-            });
-        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
-
+        //    });
+        //jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', '<%=th.ToString() %>',"<%=tr.ToString()%>");
+        //產生相對應的JScode
+        set_Table('#table-form');
+        //防止頁籤跑版
+        loadpage('', '');
     </script>
 </asp:Content>

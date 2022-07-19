@@ -103,7 +103,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 userOpRec["user_StartTime"] = timeSet[0];
                 userOpRec["user_EndTime"] = timeSet[1];
                 Response.Cookies.Add(userOpRec);
-                //SetDropDownList();//pageload已載入,不重複設定checkbox 20220614
+                SetDropDownList();//pageload已載入,不重複設定checkbox 20220614
                 if (SelectLine == "0" || string.IsNullOrEmpty(SelectLine))
                     GetDataInf(timeTypeSource, timeSet);
                 else
@@ -217,14 +217,22 @@ namespace dek_erpvis_v2.pages.dp_PM
             //add all
             CheckBoxList_Line.Items.Insert(0, new ListItem("全部", ""));
             //送出後加回已選擇選項 20220614
-            if (First_load)
+            if (!First_load)
             {
+                for (var i = 0; i < CheckBoxList_Line.Items.Count; i++)
+                {
+                    if (CheckBoxList_Line.Items[i].Selected == true)
+                    {
+                        CheckBoxList_Line.Items[i].Selected = true;
+                    }
+                }
+            }
+            else if(First_load) {
                 for (var i = 0; i < CheckBoxList_Line.Items.Count; i++)
                 {
                     CheckBoxList_Line.Items[i].Selected = true;
                 }
                 First_load = false;
-
             }
         }
         public string GetPieceForSeries(int NumTh, string Type)
@@ -305,7 +313,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                         userOpRec.Expires = DateTime.Now.AddDays(1);
                         Response.Cookies.Add(userOpRec);
                         TimeUnit = timeUnitForshow(ShareMemory.TimeUnit);
-                        SetDropDownList();
+                        //SetDropDownList();
                         if (dropdownlist_X.SelectedValue == "0")
                             SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
                         else
@@ -382,7 +390,7 @@ namespace dek_erpvis_v2.pages.dp_PM
 
             Session["list"] = list;
             Session["line"] = Choose_Line;
-
+            First_load = false;
             GotoCenn();
         }
 

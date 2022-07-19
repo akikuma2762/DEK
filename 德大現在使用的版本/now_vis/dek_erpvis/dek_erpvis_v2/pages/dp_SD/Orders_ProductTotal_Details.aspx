@@ -25,9 +25,9 @@
     <script>
 
         //產生表格的HTML碼
-        create_tablecode('order_detail', '<%=workday %> <%=LineName%> 生產明細', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString() %>');
+        create_tablecode('order_detail', '<%=workday %> <%=LineName%> 生產明細', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString() %>');
         //產生相對應的JScode
-        set_Table('#datatable-buttons');
+        set_Table('#table-form');
         //防止頁籤跑版
         loadpage('', '');
 

@@ -35,7 +35,7 @@
                 <div class="x_panel Div_Shadow">
                     <div class="row">
 
-                        <div class="col-md-9 col-sm-12 col-xs-12">
+                        <div class="col-md-9 col-sm-12 col-xs-12 padding-left-right-4">
                             <div class="col-md-12 col-sm-12 col-xs-12" id="hidepercent">
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
@@ -78,7 +78,7 @@
 
 
                         </div>
-                        <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
+                        <div class="col-md-3 col-sm-12 col-xs-12 padding-left-right-4">
                             <div class="x_panel">
                                 <table id="TB" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
                                     <thead style='display: none'>
@@ -166,15 +166,15 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
+
+
                             <div class="x_panel">
                                 <asp:ScriptManager ID="ScriptManager1" runat="server">
                                 </asp:ScriptManager>
                                 <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
                                     <ContentTemplate>
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>廠區</span>
                                             </div>
                                             <div class="col-md-8 col-sm-9 col-xs-8">
@@ -185,8 +185,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>圖片選擇</span>
                                             </div>
                                             <div class="col-md-8 col-sm-9 col-xs-8">
@@ -200,11 +200,11 @@
 
 
 
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
-                                            <div class="col-md-4 col-sm-12 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12  col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>選擇產線</span>
                                             </div>
-                                            <div class="col-md-8 col-sm-12 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
                                                 <asp:CheckBoxList ID="checkBoxList_LINE" runat="server" RepeatColumns="2" onclick="select_all()"></asp:CheckBoxList>
                                             </div>
                                         </div>
@@ -212,77 +212,48 @@
 
 
 
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4" >
                                                 <span>日期快選</span>
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
                                                 <div class="btn-group btn-group-justified">
                                                     <asp:LinkButton ID="LinkButton_month" runat="server" CssClass="btn btn-default " OnClick="button_select_Click" Style="text-align: center">當月</asp:LinkButton>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>日期選擇</span>
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
                                                 <asp:TextBox ID="txt_str" runat="server" Style="" TextMode="Date" CssClass="form-control   text-left"></asp:TextBox>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
                                             <div class="col-md-4 col-sm-3 col-xs-4">
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
                                                 <asp:TextBox ID="txt_end" runat="server" CssClass="form-control  text-left" TextMode="Date"></asp:TextBox>
                                             </div>
                                         </div>
 
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="col-md-9 col-xs-8">
-                                    </div>
-                                    <div class="col-md-3 col-xs-12">
+                               <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-12 col-xs-12 text-align-end">
                                         <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_select_Click" Style="display: none" />
                                         <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
+                        </div>    
                     </div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                <div class="x_panel Div_Shadow">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h1 class="text-center _mdTitle" style="width: 100%"><b>未結案列表</b></h1>
-                                    <h3 class="text-center _xsTitle" style="width: 100%"><b>未結案列表</b></h3>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-                                    <p class="text-muted font-13 m-b-30">
-                                    </p>
-                                    <table id="datatable-buttons" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr id="tr_row">
-                                                <%=th%>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <%=tr %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div id="waitfor"></div>
             </div>
         </div>
 
@@ -333,7 +304,7 @@
     <script src="../../assets/vendors/time/loading.js"></script>
     <!--返回上一個畫面時，要回到上一動-->
     <script src="../../assets/vendors/cookies/cookie_action.js"></script>
-
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
     <script>
         //$("form input:checkbox").addClass('flat');//flat樣式使checkbox失效 2022/6/1
         function select_all() {
@@ -650,20 +621,20 @@
         $(document).ready(function () {
             
             //若於表格模式點選第N頁之客戶，則上一頁後返回該客戶(EX：第3頁的A客戶，按下上一頁會在第3頁)
-            return_preaction('waitingfortheproduction=waitingfortheproduction_cust', '#datatable-buttons');
+            //return_preaction('waitingfortheproduction=waitingfortheproduction_cust', '#datatable-buttons');
 
-            $('#example').DataTable({
-                responsive: true
-            });
-            $('#exampleInTab').DataTable({
-                responsive: true
-            });
+            //$('#example').DataTable({
+            //    responsive: true
+            //});
+            //$('#exampleInTab').DataTable({
+            //    responsive: true
+            //});
 
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                $($.fn.dataTable.tables(true)).DataTable()
-                    .columns.adjust()
-                    .responsive.recalc();
-            });
+            //$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            //    $($.fn.dataTable.tables(true)).DataTable()
+            //        .columns.adjust()
+            //        .responsive.recalc();
+            //});
         });
 
         //隱藏推移圖 OR 領料圖
@@ -682,7 +653,11 @@
             });
         });
 
-
+        create_tablecode('waitfor', '未結案列表', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString() %>');
+        //產生相對應的JScode
+        set_Table('#table-form');
+        //防止頁籤跑版
+        loadpage('', '');
 
 
     </script>

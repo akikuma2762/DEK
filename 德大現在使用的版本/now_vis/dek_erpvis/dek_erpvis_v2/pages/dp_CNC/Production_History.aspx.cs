@@ -556,7 +556,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             if (value == "")
                 return value;
             else
-                return "<td>" + value + "</td>\n";
+                return "<td>" + value + "</td>";
         }
         private string TransThousand(object yValue)//金額，千分位轉換
         {

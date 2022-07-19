@@ -802,22 +802,22 @@ namespace dek_erpvis_v2.cls
                 {
                     for (int i = 0; i < dt_select.Rows.Count; i++)
                     {
-                        td += "<tr class='gradeX'> \n";
+                        td += "<tr class='gradeX'>";
                         for (int j = 0; j < dt_select.Columns.Count; j++)
                         {
                             if (dt_select.Columns[j].ColumnName == "排程編號")//維護人員姓名                              
-                                td += $"<td style='text-align:center;'>{DataTableUtils.toString(dt_select.Rows[i]["排程編號"])}</td> \n";
+                                td += $"<td style='text-align:center;'>{DataTableUtils.toString(dt_select.Rows[i]["排程編號"])}</td>";
                             else if (dt_select.Columns[j].ColumnName == "工作站名稱")//維護人員姓名   
-                                td += $"<td style='text-align:center;'>{DataTableUtils.toString(dt_select.Rows[i]["工作站名稱"])}</td> \n";
+                                td += $"<td style='text-align:center;'>{DataTableUtils.toString(dt_select.Rows[i]["工作站名稱"])}</td>";
                             else if (dt_select.Columns[j].ColumnName == "實際啟動時間")//維護人員姓名 
                             {
                                 time = StrToDateTime(DataTableUtils.toString(dt_select.Rows[i]["實際啟動時間"]), "yyyyMMddHHmmss");
-                                td += $"<td style='text-align:center;'>{time.ToString("yyyy/MM/dd HH:mm:ss")}</td> \n";
+                                td += $"<td style='text-align:center;'>{time.ToString("yyyy/MM/dd HH:mm:ss")}</td>";
                             }
                             else if (dt_select.Columns[j].ColumnName == "實際完成時間")//維護人員姓名  
                             {
                                 time = StrToDateTime(DataTableUtils.toString(dt_select.Rows[i]["實際完成時間"]), "yyyyMMddHHmmss");
-                                td += $"<td style='text-align:center;'>{time.ToString("yyyy/MM/dd HH:mm:ss")}</td> \n";
+                                td += $"<td style='text-align:center;'>{time.ToString("yyyy/MM/dd HH:mm:ss")}</td>";
                             }
                             else if (dt_select.Columns[j].ColumnName == "異常歷程")
                             {
@@ -866,9 +866,9 @@ namespace dek_erpvis_v2.cls
 
                             }
                             else//組裝累積時間
-                                td += "<td style='text-align:center;'>" + (DataTableUtils.toInt(dt_select.Rows[i][j].ToString()) / 60) + "</td> \n";
+                                td += "<td style='text-align:center;'>" + (DataTableUtils.toInt(dt_select.Rows[i][j].ToString()) / 60) + "</td>";
                         }
-                        td += "</tr> \n";
+                        td += "</tr>";
                     }
                     str[1] = td;
                     return str;
@@ -2806,7 +2806,7 @@ namespace dek_erpvis_v2.cls
             //    muilt = new string[5] { "產線編號", "產線名稱", "排程產能", "實際產量", "達成率(%)" };
             //    Colweight = new string[5] { "10", "30", "20", "20", "20" };
             //ColumnName = "<tr class= 'column' style='text-align:center;background-color:dimgray;color: beige;' >\n";
-            ColumnName = " <tr id=\"tr_row\">\n";
+            ColumnName = "<tr id='tr_row'>";
             // ColumnName+= "<th>\n";
             //if (PageName == "Asm_ErrorDetail")
             //{
@@ -2816,7 +2816,7 @@ namespace dek_erpvis_v2.cls
             //}
             // ColumnName += "</th>\n";
             for (int i = 0; i < muilt.Length; i++)
-                ColumnName += "<th style='text-align:center;'>" + muilt[i] + "</th>\n";
+                ColumnName += "<th style='text-align:center;'>" + muilt[i] + "</th>";
             ColumnName += "</tr>";
             return ColumnName;
         }
@@ -2900,9 +2900,9 @@ namespace dek_erpvis_v2.cls
 
             if (SelectLine == "0")
             {
-                ColumnName += "<th >" + FirstTitle + "</th>\n";
+                ColumnName += "<th>" + FirstTitle + "</th>";
                 foreach (ListItem Name in ColumnNameList.Items)
-                    ColumnName += "<th >" + Name.Text + "</th>\n";
+                    ColumnName += "<th>" + Name.Text + "</th>";
             }
 
             return ColumnName;
@@ -3317,8 +3317,8 @@ namespace dek_erpvis_v2.cls
                     //Init
                     ErrorTimeSum = 0;
                     //Table
-                    td += "<tr class='gradeX'style='text-align:center;'> \n";
-                    td += "<td style='text-align:center;'>" + kvp.Key + "</td> \n";//Error Type
+                    td += "<tr class='gradeX'style='text-align:center;'>";
+                    td += "<td style='text-align:center;'>" + kvp.Key + "</td>";//Error Type
                     foreach (ListItem item in LineList.Items) //Station
                     {
                         if (item.Value == "0"|| item.Value=="") continue; //20220614 全部給空,多判斷空值
@@ -3356,15 +3356,15 @@ namespace dek_erpvis_v2.cls
                             }
                             else
                             {
-                                td += "<td style='text-align:center;'>" + ErrorCount + "</td> \n";
+                                td += "<td style='text-align:center;'>" + ErrorCount + "</td>";
                             }
                         }
                         else
                         {
-                            td += "<td style='text-align:center;'>" + dV_error.Count.ToString() + "</td> \n";
+                            td += "<td style='text-align:center;'>" + dV_error.Count.ToString() + "</td>";
                         }
                     }
-                    td += "</tr> \n";
+                    td += "</tr>";
                     //Chart
                     //chart format {  y: Num, indexLabel: Name },
                     dV_error_Count = dT_errorSon.DefaultView;
@@ -3372,7 +3372,7 @@ namespace dek_erpvis_v2.cls
                     dV_error_Count.RowFilter = CountCondition;
                     if (BreakCount <= TimeCount)
                     {
-                        ChartDataStr_Count += "{y:" + (dV_error_Count.Count).ToString() + "," + "indexLabel:" + "'" + kvp.Key + "'" + "}" + "," + "\n";
+                        ChartDataStr_Count += "{y:" + (dV_error_Count.Count).ToString() + "," + "indexLabel:" + "'" + kvp.Key + "'" + "}" + ",";
                         change += kvp.Key + ",";
                         infStr[4] += kvp.Value + ",";
                     }

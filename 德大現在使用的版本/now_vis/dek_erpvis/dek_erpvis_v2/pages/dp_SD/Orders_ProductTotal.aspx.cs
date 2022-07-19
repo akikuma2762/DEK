@@ -266,12 +266,12 @@ namespace dek_erpvis_v2.pages.dp_SD
 
             if (HtmlUtil.Check_DataTable(dt))
             {
-                result.Append($"<div class=\"col-md-3 col-sm-12 col-xs-12 _select _setborder\"><div class=\"x_panel\"><table id=\"TB\" class=\"table table-ts table-bordered nowrap\" cellspacing=\"0\" width=\"100%\"><thead ><tr id=\"tr_row\"><th style=\"font-size: 20px; text-align:center\">產線</th><th style=\"font-size: 20px; text-align:center\">日產能</th></tr></thead><tbody>");
+                result.Append($"<div class=\"x_panel\"><table id=\"TB\" class=\"table table-ts table-bordered nowrap\" cellspacing=\"0\" width=\"100%\"><thead ><tr id=\"tr_row\"><th style=\"font-size: 20px; text-align:center\">產線</th><th style=\"font-size: 20px; text-align:center\">日產能</th></tr></thead><tbody>");
 
                 foreach (DataRow row in dt.Rows)
                     result.Append($"<tr> <td align=\"center\" style='font-size: 20px; color: black'> <b> {row["產線名稱"]} </b> </td> <td align=\"center\" style='font-size: 20px; color: black'> <b> {row["量能"]} </b> </td> </tr>");
 
-                result.Append($"</tbody> </table> </div> </div>");
+                result.Append($"</tbody> </table> </div>");
             }
             else
                 result.Append("");
@@ -301,9 +301,9 @@ namespace dek_erpvis_v2.pages.dp_SD
             DataTable dt = clsdb.GetDataTable(sqlcmd);
             max = HtmlUtil.Check_DataTable(dt) ? (DataTableUtils.toDouble(dt.Rows[0]["量能"].ToString()) * time).ToString() : "0";
 
-            result.Append($"<div class=\"col-md-3 col-sm-12 col-xs-12 _select _setborder\"><div class=\"x_panel\"><table id=\"TB\" class=\"table table-ts table-bordered nowrap\" cellspacing=\"0\" width=\"100%\"><thead ><tr id=\"tr_row\"><th style=\"font-size: 20px; text-align:center\">廠區</th><th style=\"font-size: 20px; text-align:center\">月產能({end:MM}月)</th></tr></thead><tbody>");
+            result.Append($"<div class=\"x_panel\"><table id=\"TB\" class=\"table table-ts table-bordered nowrap\" cellspacing=\"0\" width=\"100%\"><thead ><tr id=\"tr_row\"><th style=\"font-size: 20px; text-align:center\">廠區</th><th style=\"font-size: 20px; text-align:center\">月產能({end:MM}月)</th></tr></thead><tbody>");
             result.Append($"<tr> <td align=\"center\" style='font-size: 20px; color: black'> <b> {dropdownlist_Factory.SelectedItem.Text} </b> </td> <td align=\"center\" style='font-size: 20px; color: black'> <b> {max} </b> </td> </tr>");
-            result.Append($"</tbody> </table> </div> </div>");
+            result.Append($"</tbody> </table> </div>");
             return result;
 
         }
