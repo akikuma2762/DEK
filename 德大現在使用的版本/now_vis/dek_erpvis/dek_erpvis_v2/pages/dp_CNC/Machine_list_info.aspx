@@ -692,7 +692,8 @@
     <script src="../../gantt/js/jquery.fn.gantt.js"></script>
     <script src="../../gantt/js/prettify.min.js"></script>
     <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
-    <script>          function testtop() {
+    <script>          
+        function testtop() {
             var RD = document.getElementsByClassName("bar ganttRedDark");
             for (i = 0; i < RD.length; i++)
                 RD[i].style.top = (parseInt(RD[i].style.top.replaceAll('px', '')) + 23) + 'px';

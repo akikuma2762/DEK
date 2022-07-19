@@ -5,8 +5,10 @@
     <%=color %>
     <!--<link href="../../assets/build/css/custom.css" rel="stylesheet" />
     <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
-    <link href="../../Content/Default.css" rel="stylesheet" />
     <link href="../../Content/dp_PM/Asm_LineTotalView.css" rel="stylesheet" />
+    <link href="../../Content/Default_input.css" rel="stylesheet" />
+    <link href="../../Content/Default.css" rel="stylesheet" />
+    
     
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -41,7 +43,7 @@
                     <div class="x_panel Div_Shadow">
 
                         <div class="x_content">
-                            <div class="col-md-9 col-sm-12 col-xs-12">
+                            <div class="col-md-9 col-sm-12 col-xs-12 padding-left-right-4">
                                 <div class="x_panel">
                                     <div class="row tile_count" style="margin-top: 0px; margin-bottom: -20px;padding:0 10px">
                                         <div class="col-md-offset-2 col-md-2 col-sm-3 col-xs-6 tile_stats_count">
@@ -75,25 +77,23 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
+                            <div class="col-md-3 col-sm-12 col-xs-12 padding-left-right-4">
                                 <div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
                                     <div class="dashboard_graph x_panel" <%--style="height: 1000%"--%>>
 
-                                        <div class="col-md-12 col-sm-6 col-xs-12">
-                                            <div class="col-md-4 col-sm-3 col-xs-5 text-left" style="margin: 5px 0px 5px 0px">
+                                        <div class="col-md-12 col-sm-6 col-xs-12 flex-align col-style">
+                                            <div class="col-md-4 col-sm-3 col-xs-4">
                                                 <span>選擇廠區</span>
                                             </div>
-                                            <div class="col-md-8 col-sm-9 col-xs-7">
-                                                <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
+                                            <div class="col-md-8 col-sm-9 col-xs-8">
+                                                <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default form-control" >
                                                     <asp:ListItem Value="0" Selected="True">立式</asp:ListItem>
                                                     <asp:ListItem Value="1">臥式</asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-9 col-xs-8">
-                                            </div>
-                                            <div class="col-md-3 col-xs-12">
+                                       <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-12 col-xs-12 text-align-end">
                                                 <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
                                                 <%--<input name="ctl00$ContentPlaceHolder1$bt_Ver" type="submit" id="ContentPlaceHolder1_bt_Ver" class="btn btn-primary" value="確定">--%>
                                             </div>

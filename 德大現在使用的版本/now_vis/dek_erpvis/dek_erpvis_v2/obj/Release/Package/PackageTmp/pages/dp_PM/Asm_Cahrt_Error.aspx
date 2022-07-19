@@ -7,6 +7,7 @@
     <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
     <link href="../../Content/Default_input.css" rel="stylesheet" />
     <link href="../../Content/Default.css" rel="stylesheet" />
+    <link href="../../Content/table.css" rel="stylesheet" />
     <link href="../../Content/dp_PM/Asm_Cahrt_Error.css" rel="stylesheet" />
 
 
@@ -37,19 +38,19 @@
         <div id="myTabContent" class="tab-content">
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                 <div class="x_panel Div_Shadow">
-                    <div class="row">
+                    <div class="">
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="col-md-9 col-sm-12 col-xs-12">
+                            <div class="col-md-9 col-sm-12 col-xs-12 padding-left-right-4">
                                 <div class="dashboard_graph x_panel">
                                     <div class="x_content">
                                         <div class="row">
-                                            <div class="col-md-12 col-sm-8 col-xs-12">
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
                                                 <div style="text-align: right; width: 100%; padding: 0;">
-                                                    <button style="display:none" type="button" id="exportChart" title="另存成圖片">
+                                                    <button style="display: none" type="button" id="exportChart" title="另存成圖片">
                                                         <img src="../../assets/images/download.jpg" style="width: 36.39px; height: 36.39px;">
                                                     </button>
                                                 </div>
-                                                <div class="col-md-12 col-sm-12 col-xs-12  _setborder">
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
                                                     <div id="chartpie_Count" style=""></div>
                                                 </div>
                                             </div>
@@ -57,7 +58,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12 _select">
+                            <div class="col-md-3 col-sm-12 col-xs-12 padding-left-right-4">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="dashboard_graph x_panel">
                                         <div class="x_content">
@@ -65,11 +66,11 @@
                                             </asp:ScriptManager>
                                             <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
                                                 <ContentTemplate>
-                                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                                        <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                        <div class="col-md-4 col-sm-3 col-xs-4">
                                                             <span>選擇廠區</span>
                                                         </div>
-                                                        <div class="col-md-8 col-sm-9 col-xs-7">
+                                                        <div class="col-md-8 col-sm-9 col-xs-8">
                                                             <asp:DropDownList ID="dropdownlist_X" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%" OnSelectedIndexChanged="dropdownlist_X_SelectedIndexChanged" AutoPostBack="true">
                                                                 <asp:ListItem Value="0" Selected="True">立式</asp:ListItem>
                                                                 <asp:ListItem Value="1">臥式</asp:ListItem>
@@ -88,58 +89,60 @@
                                                 </ContentTemplate>
                                             </asp:UpdatePanel>
 
-                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>Y座標(值)</span>
                                                 </div>
-                                                <div class="col-md-8 col-sm-9 col-xs-7">
+                                                <div class="col-md-8 col-sm-9 col-xs-8">
                                                     <asp:DropDownList ID="dropdownlist_y" runat="server" CssClass="btn btn-default dropdown-toggle" Width="100%">
                                                         <asp:ListItem Value="0" Selected="True">次數</asp:ListItem>
-<%--                                                        <asp:ListItem Value="1">分鐘</asp:ListItem>--%>
+                                                        <%--<asp:ListItem Value="1">分鐘</asp:ListItem>--%>
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="col-md-4 col-sm-12 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                <div class="col-md-4 col-sm-3 col-xs-4">
                                                     <span>顯示筆數</span>
                                                 </div>
-                                                <div class="col-md-5 col-sm-12 col-xs-4" style="margin: 0px 0px 5px 0px">
+                                                <div class="col-md-8 col-sm-9 col-xs-8 flex-align">
+                                                    <div class="col-md-5 col-sm-6 col-xs-5 padding-right-4">
 
-                                                    <asp:TextBox ID="txt_showCount" runat="server" Text="10" CssClass="form-control text-center" TextMode="Number"></asp:TextBox>
-                                                </div>
-                                                <div class="col-md-3 col-sm-12 col-xs-3" style="margin: 5px 0px 5px 0px;">
-                                                    <span>
-                                                                <asp:CheckBox ID="CheckBox_All" runat="server" Text="全部" onclick="checkstatus()" />
-                                                    </span>
+                                                        <asp:TextBox ID="txt_showCount" runat="server" Text="10" CssClass="form-control text-center" TextMode="Number"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-4">
+                                                        <div class="flex-align">
+                                                            <asp:CheckBox ID="CheckBox_All" runat="server" Text="全部" onclick="checkstatus()" />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <asp:UpdatePanel ID="UpdatePanel2" runat="server" ChildrenAsTriggers="True">
                                                 <ContentTemplate>
-                                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                                        <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                        <div class="col-md-4 col-sm-3 col-xs-4">
                                                             <span>日期快選</span>
                                                         </div>
-                                                        <div class="col-md-8 col-sm-9 col-xs-7">
-                                                            <div class="btn-group btn-group-justified" style="margin: 0px 0px 5px 0px">
+                                                        <div class="col-md-8 col-sm-9 col-xs-8">
+                                                            <div class="btn-group btn-group-justified">
                                                                 <asp:LinkButton ID="date_month" runat="server" CssClass="btn btn-default " OnClick="LinkButton_day_Click" Style="text-align: center">當月</asp:LinkButton>
 
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                                        <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                        <div class="col-md-4 col-sm-3 col-xs-4">
                                                             <span>異常日期</span>
                                                         </div>
-                                                        <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                                        <div class="col-md-8 col-sm-9 col-xs-8">
                                                             <asp:TextBox ID="textbox_dt1" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
 
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                                        <div class="col-md-4 col-sm-3 col-xs-5">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                        <div class="col-md-4 col-sm-3 col-xs-4">
                                                         </div>
-                                                        <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                                        <div class="col-md-8 col-sm-9 col-xs-8">
                                                             <asp:TextBox ID="textbox_dt2" runat="server" CssClass="form-control  text-center" TextMode="Date"></asp:TextBox>
 
                                                         </div>
@@ -147,9 +150,7 @@
                                                 </ContentTemplate>
                                             </asp:UpdatePanel>
                                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <div class="col-md-9 col-xs-8">
-                                                </div>
-                                                <div class="col-md-3 col-xs-12">
+                                                <div class="col-md-12 col-xs-12 text-align-end">
                                                     <button id="btncheck" type="button" class="btn btn-primary antosubmit2 ">執行搜索</button>
                                                     <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" Style="display: none" OnClick="button_select_Click" />
                                                 </div>
@@ -163,30 +164,8 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                <div id="Chart_Error"></div>
 
-                <div class="x_panel Div_Shadow">
-
-                    <div class="x_content">
-                        <div class="x_panel">
-                            <div class="x_title" style="text-align: center">
-                                <h1 class="text-center _mdTitle" style="width: 100%"><b>異常統計列表</b></h1>
-                                <h3 class="text-center _xsTitle" style="width: 100%"><b>異常統計列表</b></h3>
-                                <div class="clearfix"></div>
-                            </div>
-                            <table id="datatable-buttons" class="table  table-ts table-bordered nowrap" cellspacing="0" width="100%">
-                                <thead>
-                                    <tr id="tr_row">
-                                        <%=ColumnsData%>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <%=RowsData %>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -253,6 +232,8 @@
     <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
     <script src="../../assets/vendors/time/loading.js"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
+
     <!-----------------------Chart-------------------------------------->
     <script>
         function checkstatus() {
@@ -306,11 +287,11 @@
                 x.checked = true;
             }
         }
-       
+
         $("#btncheck").click(function () {
             $.blockUI({ message: '<img src="../../images/loading.gif" />' });
             document.getElementById('<%=button_select.ClientID %>').click();
-         });
+        });
 
 
 
@@ -425,11 +406,12 @@
                     ]
                 }]
             });
-        chartpieT.render();
-        document.getElementById("exportimage").addEventListener("click", function () {
-            chartpieT.exportChart({ format: "png" });
-            parent.location.reload();
-        });
+        //20220719 圓餅圖? 沒用到會錯誤先移除
+        //chartpieT.render();
+        //document.getElementById("exportimage").addEventListener("click", function () {
+        //    chartpieT.exportChart({ format: "png" });
+        //    parent.location.reload();
+        //});
 
         function toolTipContent(e) {
             var str = "";
@@ -446,19 +428,24 @@
         }
 
         $(document).ready(function () {
-            $('#example').DataTable({
-                responsive: true
-            });
-            $('#exampleInTab').DataTable({
-                responsive: true
-            });
+            //$('#example').DataTable({
+            //    responsive: true
+            //});
+            //$('#exampleInTab').DataTable({
+            //    responsive: true
+            //});
 
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                $($.fn.dataTable.tables(true)).DataTable()
-                    .columns.adjust()
-                    .responsive.recalc();
-            });
+            //$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            //    $($.fn.dataTable.tables(true)).DataTable()
+            //        .columns.adjust()
+            //        .responsive.recalc();
+            //});
         });
+        //產生表格的HTML碼
+        console.log("<%=ColumnsData.ToString() %>");
+        create_tablecode('Chart_Error', '異常統計列表計', 'table-form', "<%=ColumnsData.ToString() %>" ,"<%=RowsData.ToString() %>");
+        //產生相對應的JScode
+        set_Table('#table-form');
 
     </script>
 </asp:Content>

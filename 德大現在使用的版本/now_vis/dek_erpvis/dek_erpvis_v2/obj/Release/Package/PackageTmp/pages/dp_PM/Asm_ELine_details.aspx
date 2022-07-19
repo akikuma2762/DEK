@@ -46,7 +46,7 @@
         <div id="myTabContent" class="tab-content">
             <div role="tabpanel" class="tab-pane fade <%=html_code[2] %>" id="tab_content1" aria-labelledby="home-tab">
                 <div class="x_panel Div_Shadow">
-                    <div class="row">
+                    <div class="">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_content">
                                 <div class="x_panel">
@@ -76,72 +76,46 @@
             </div>
             <div role="tabpanel" class="tab-pane fade <%=html_code[5] %>" id="tab_content2" aria-labelledby="profile-tab">
                 <div class="x_panel Div_Shadow">
-                    <div class="row">
-
-                        <div class="col-md-9 col-sm-12 col-xs-12">
                             <div class="x_content">
-                                <div class="x_panel">
-                                    <div class="x_title">
-                                        <h1 class="text-center _mdTitle" style="width: 100%"><b>績效列表</b></h1>
-                                        <h3 class="text-center _xsTitle" style="width: 100%"><b>績效列表</b></h3>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <p class="text-muted font-13 m-b-30">
-                                    </p>
-                                    <table id="datatable-buttons" class="table  table-ts table-bordered nowrap" cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr id="tr_row">
-                                                <%=th%>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <%= tr %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                                <div id="Asm_history"></div>
 
-                        <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
+                                 <div class="col-md-3 col-sm-12 col-xs-12 padding-left-right-4">
                             <div class="x_panel">
                                 <div class="x_content">
-                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                        <div class="col-md-4 col-sm-3 col-xs-5" style="margin: 5px 0px 5px 0px">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                        <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
                                             <span>日期選擇</span>
                                         </div>
-                                        <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
                                             <asp:TextBox ID="textbox_dt1" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                        <div class="col-md-4 col-sm-3 col-xs-5">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                        <div class="col-md-4 col-sm-3 col-xs-4">
                                         </div>
-                                        <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
                                             <asp:TextBox ID="textbox_dt2" runat="server" CssClass="form-control  text-center" TextMode="Date"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                        <div class="col-md-4 col-sm-3 col-xs-5">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-4 col-sm-3 col-xs-4 col-style">
                                             <span>選擇人員</span>
                                         </div>
-                                        <div class="col-md-8 col-sm-9 col-xs-7" style="margin: 0px 0px 5px 0px">
+                                        <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
                                             <asp:RadioButtonList ID="RadioButtonList_Finish" runat="server"></asp:RadioButtonList>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
-                                        <div class="col-md-9 col-xs-8">
-                                        </div>
-                                        <div class="col-md-3 col-xs-12">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                            <div class="col-md-12 col-xs-12 text-align-end" style="margin:0px;">
                                             <asp:Button ID="button_search" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_search_Click" Style="display: none" />
                                             <button id="btnsearch" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>                        
                             </div>
                         </div>
-
-                    </div>
                 </div>
             </div>
 
@@ -242,12 +216,12 @@
 
         $(document).ready(function () {
 
-            $('#example').DataTable({
-                responsive: true
-            });
-            $('#exampleInTab').DataTable({
-                responsive: true
-            });
+            //$('#example').DataTable({
+            //    responsive: true
+            //});
+            //$('#exampleInTab').DataTable({
+            //    responsive: true
+            //});
 
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 $($.fn.dataTable.tables(true)).DataTable()
@@ -269,7 +243,9 @@
             document.getElementById('<%=button_btncalculation.ClientID %>').click();
         });
 
-
+        create_tablehtmlcode('Asm_history', '組裝歷史查詢', 'table-form', "<%=th.ToString() %>", "<%=tr.ToString() %>");
+        //產生相對應的JScode
+        set_Table('#table-form');
 
 
 

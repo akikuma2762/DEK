@@ -180,14 +180,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div>
                                             <div class="col-md-12 col-sm-12 col-xs-12">
                                                 <div class="col-md-12 col-xs-12 text-align-end">
                                                     <button id="btncheck" type="button" class="btn btn-primary antosubmit2 ">執行搜索</button>
                                                     <asp:Button runat="server" Text="提交" ID="Button_select" CssClass="btn btn-primary" Style="display: none" OnClick="Button_submit_Click" />
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
