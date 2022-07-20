@@ -20,7 +20,7 @@ function set_Table(DataTableName) {
                 "last": "最後一頁"
             }
         },
- 
+        "order": [[1, "asc"]],
         colReorder: true,
         scrollCollapse: true,
         dom: "<'top-list'<'pull-left'f>'row'<'pull-middle'B>'row'<'pull-right'l>>" +

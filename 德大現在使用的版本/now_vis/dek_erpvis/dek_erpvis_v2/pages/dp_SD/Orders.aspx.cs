@@ -433,6 +433,12 @@ namespace dek_erpvis_v2.pages.dp_SD
                     row["計算月份"] = DataTableUtils.toString(row["計算月份"]).Insert(4, "/");
 
                 DataTable month = dt_Copy.DefaultView.ToTable(true, new string[] { "計算月份" });
+
+                //取的月份後再進行一次排序
+                DataView dv = month.DefaultView;
+                dv.Sort = "計算月份 ";
+                month = dv.ToTable();
+
                 DataTable target = dt_Copy.DefaultView.ToTable(true, new string[] { dropdownlist_X.SelectedItem.Text });
 
                 //新增總計
