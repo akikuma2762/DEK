@@ -162,9 +162,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
             else if (Link == "hor")
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-
-            string sql_cmd = $"Select 工作站名稱,組裝日,組裝編號,排程編號,進度,狀態,實際組裝時間 From 工作站狀態資料表  left join 工作站型態資料表 on 工作站型態資料表.工作站編號 = 工作站狀態資料表.工作站編號 where 組裝日>={start} and 組裝日<={end} {sqlcmd}";
-            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+            //20220722 新增order by排序
+            string sql_cmd = $"Select 工作站名稱,組裝日,組裝編號,排程編號,進度,狀態,實際組裝時間 From 工作站狀態資料表  left join 工作站型態資料表 on 工作站型態資料表.工作站編號 = 工作站狀態資料表.工作站編號 where 組裝日>={start} and 組裝日<={end} {sqlcmd} order by 工作站名稱,組裝日,組裝編號";
+           DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
 
             if (HtmlUtil.Check_DataTable(dt))
             {
