@@ -77,6 +77,24 @@ namespace dek_erpvis_v2.cls
             else
                 return "";
         }
+        //20220727新增 轉換臥式標準工時
+        public DataTable Format_NowMonthTotal(DataTable dt)
+        {
+            dt.Columns.Add("預計完工日");
+            work.工作時段_新增(8, 0, 12, 0);
+            work.工作時段_新增(13, 0, 17, 0);
+
+            int standard_work = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                standard_work = DataTableUtils.toInt(DataTableUtils.toString(row["標準工時"]));
+                standard_work = standard_work == 0 ? 1 : standard_work;
+
+                DateTime stand_endtime = work.目標日期(StrToDate(row["上線日"].ToString()), new TimeSpan(0, 0, standard_work));
+                row["預計完工日"] = stand_endtime.ToString("yyyyMMdd");
+            }
+            return dt;
+        }
         public DataTable Return_NowMonthTotal(DataTable dt, string start_date, string end_date, out DataTable Finished, out DataTable NoFinish)
         {
             try

@@ -181,7 +181,16 @@ namespace dek_erpvis_v2.pages.dp_PM
                         {
                             sqlcmd = $"機種編號='{DataTableUtils.toString(row["排程編號"]).Split('-')[0]}'";
                             rows = dek_time.Select(sqlcmd);
-                            row["預計完工日"] = sfun.Test_calculation_finish(row["預計開工日"].ToString(), rows[0]["組裝時間"].ToString() == "" ? "1" : rows[0]["組裝時間"].ToString(), true);
+                            //20220727 增加判斷 機種是否存在於立式工藝中 ex:WDB不存在
+                                if (rows.Length == 0)
+                                {
+                                    row["預計完工日"] = "";
+                                }
+                                else
+                                {
+                                    row["預計完工日"] = sfun.Test_calculation_finish(row["預計開工日"].ToString(), rows[0]["組裝時間"].ToString() == "" ? "1" : rows[0]["組裝時間"].ToString(), true);
+
+                                }                           
                         }
 
                     }

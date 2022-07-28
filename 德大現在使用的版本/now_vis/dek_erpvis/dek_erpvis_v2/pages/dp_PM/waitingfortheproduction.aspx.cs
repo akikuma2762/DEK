@@ -178,15 +178,16 @@ namespace dek_erpvis_v2.pages.dp_PM
 
 
             //立式廠 && 大圓盤資訊
-            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
-            {
+           
                 //找出本月需做之數量
                 //--------------------------------------------------------德科部分-----------------------------------------------
                 //從dek ERP撈取本月排程資料
+                //20220728 大圓盤部分暫時全搜索,待從立式移除後,歸類於臥室
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekERPDataTable);
                 string sqlcmd = "SELECT   " +
                                 "cust.custnm2 AS 客戶簡稱, " +
                                 "ws.PLINE_NO AS 產線代號, " +
+                                "ws.pline_no AS 工作站編號,"+
                                 "ws.lot_no AS 排程編號, " +
                                 "ws.cord_no AS 訂單號碼, " +
                                 "cord.cord_no AS 客戶訂單, " +
@@ -204,7 +205,8 @@ namespace dek_erpvis_v2.pages.dp_PM
                                 "LEFT JOIN cust ON (cust.cust_no = mkord.cust_no) " +
                                 "WHERE 1 = 1 AND ws.lot_no IS NOT NULL AND " +
                                 "LENGTH(ws.lot_no) > 0 AND mkordsub.fclose IS NULL AND " +
-                               $"DATE_FORMAT(mkordsub.str_date, '%Y%m%d') <= {date_end} AND DATE_FORMAT(mkordsub.str_date, '%Y%m%d') >= {HtmlUtil.StrToDate(date_str).AddMonths(-1):yyyyMMdd} ";
+                               $"DATE_FORMAT(mkordsub.str_date, '%Y%m%d') <= {date_end} AND DATE_FORMAT(mkordsub.str_date, '%Y%m%d') >= {HtmlUtil.StrToDate(date_str).AddMonths(-1):yyyyMMdd} AND "+
+                               "ws.PLINE_NO <>''";
 
                 DataTable dek_dt = DataTableUtils.GetDataTable(sqlcmd);
                 //從組裝資料表撈取相對應資料
@@ -304,7 +306,8 @@ namespace dek_erpvis_v2.pages.dp_PM
                     }
 
                 }
-
+            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
+            {
                 //--------------------------------------------------------首旺部分-----------------------------------------------
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
                 sqlcmd = "select " +
@@ -318,6 +321,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                          "      SELECT " +
                          "      CUSTNM2 客戶簡稱," +
                          "      FAB_USER 產線代號," +
+                         "      FAB_USER 工作站編號," +
                          "      sw_MKORDSUB.LOT_NO 排程編號," +
                          "      A22_FAB.CORD_NO 訂單號碼," +
                          "      sw_CORD.CORD_NO  as 客戶訂單," +
@@ -352,8 +356,16 @@ namespace dek_erpvis_v2.pages.dp_PM
             {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 string condition_copy = condition.Replace("工作站編號", " a.工作站編號 ");
-                string sqlcmd = $"SELECT a.*,SUBSTRING(工作站狀態資料表.實際完成時間,1,8) 實際完成時間,工作站狀態資料表.狀態,(CASE a.產線代號 WHEN 1 THEN 組裝工時*60*60 WHEN 2 THEN 組裝工時*60*60 WHEN 4 THEN ((CAST(刀臂點數 AS float)+CAST(刀套點數 AS float))*60*60) WHEN 5 THEN (CAST(刀鍊點數 AS float)*60*60) WHEN 6 THEN (CAST(全油壓點數 AS float)*60*60) END) 標準工時 FROM (SELECT (case FAB_USER when '100' then '1' when '110' then '2' end)   產線代號, sw_MKORDSUB.LOT_NO 排程編號, A22_FAB.STR_DATE+'080000'  上線日,CUSTNM2 客戶簡稱, (case FAB_USER when '100' then '1' when '110' then '2' end) 工作站編號,sw_MKORDSUB.SCLOSE 製令狀態 FROM SW.FJWSQL.dbo.A22_FAB LEFT JOIN SW.FJWSQL.dbo.CORD AS sw_CORD ON sw_CORD.trn_no = A22_FAB.cord_no LEFT JOIN SW.FJWSQL.dbo.CORDSUB AS sw_CORDSUB ON sw_CORDSUB.TRN_NO = A22_FAB.CORD_no AND sw_CORDSUB.SN = A22_FAB.CORD_SN LEFT JOIN SW.FJWSQL.dbo.CUST AS sw_CUST ON sw_CUST.CUST_NO = sw_CORD.CUST_NO LEFT JOIN SW.FJWSQL.dbo.MKORDSUB AS sw_MKORDSUB ON sw_MKORDSUB.CORD_NO = sw_CORDSUB.trn_no AND sw_MKORDSUB.CORD_SN = sw_CORDSUB.sn LEFT JOIN SW.FJWSQL.dbo.citem AS sw_citem ON sw_CORDSUB.item_no = sw_citem.item_no LEFT JOIN SW.FJWSQL.dbo.item_22 AS sw_item_22 ON sw_CORDSUB.item_no = sw_item_22.item_no LEFT JOIN SW.FJWSQL.dbo.ITEM AS sw_item ON sw_item.ITEM_NO = sw_item_22.item_no WHERE sw_MKORDSUB.FCLOSE <> 1 AND A22_FAB.STR_DATE > 20210101 AND A22_FAB.STR_DATE <= {date_end} AND 100<=FAB_USER AND FAB_USER<=199 ) a LEFT JOIN 工作站狀態資料表 ON 工作站狀態資料表.排程編號 = a.排程編號 AND 工作站狀態資料表.工作站編號 = a.產線代號 LEFT JOIN 臥式工藝 ON 臥式工藝.機種編號 = SUBSTRING(a.排程編號, 1, CHARINDEX('-', a.排程編號) - 1) WHERE  ((組裝日>={HtmlUtil.StrToDate(date_str).AddMonths(-1):yyyyMMdd} AND 組裝日 <={date_end}) OR (實際完成時間 IS NULL OR LEN(實際完成時間) =0)) and LEN(客戶簡稱)>0 {condition_copy}  and   (SUBSTRING(實際完成時間,1, 8) >={date_str} OR 實際完成時間 IS NULL OR 實際完成時間 = '') AND ((a.製令狀態 = '結案' AND 狀態 IS NOT NULL) OR (a.製令狀態 = '未結')) ORDER BY 上線日";
-                dt_month = DataTableUtils.GetDataTable(sqlcmd);
+                sqlcmd = $"SELECT a.*,SUBSTRING(工作站狀態資料表.實際完成時間,1,8) 實際完成時間,工作站狀態資料表.狀態,(CASE a.產線代號 WHEN 1 THEN 組裝工時*60*60 WHEN 2 THEN 組裝工時*60*60 WHEN 4 THEN ((CAST(刀臂點數 AS float)+CAST(刀套點數 AS float))*60*60) WHEN 5 THEN (CAST(刀鍊點數 AS float)*60*60) WHEN 6 THEN (CAST(全油壓點數 AS float)*60*60) END) 標準工時 FROM (SELECT (case FAB_USER when '100' then '1' when '110' then '2' end)   產線代號, sw_MKORDSUB.LOT_NO 排程編號, A22_FAB.STR_DATE+'080000'  上線日,CUSTNM2 客戶簡稱, (case FAB_USER when '100' then '1' when '110' then '2' end) 工作站編號,sw_MKORDSUB.SCLOSE 製令狀態 FROM SW.FJWSQL.dbo.A22_FAB LEFT JOIN SW.FJWSQL.dbo.CORD AS sw_CORD ON sw_CORD.trn_no = A22_FAB.cord_no LEFT JOIN SW.FJWSQL.dbo.CORDSUB AS sw_CORDSUB ON sw_CORDSUB.TRN_NO = A22_FAB.CORD_no AND sw_CORDSUB.SN = A22_FAB.CORD_SN LEFT JOIN SW.FJWSQL.dbo.CUST AS sw_CUST ON sw_CUST.CUST_NO = sw_CORD.CUST_NO LEFT JOIN SW.FJWSQL.dbo.MKORDSUB AS sw_MKORDSUB ON sw_MKORDSUB.CORD_NO = sw_CORDSUB.trn_no AND sw_MKORDSUB.CORD_SN = sw_CORDSUB.sn LEFT JOIN SW.FJWSQL.dbo.citem AS sw_citem ON sw_CORDSUB.item_no = sw_citem.item_no LEFT JOIN SW.FJWSQL.dbo.item_22 AS sw_item_22 ON sw_CORDSUB.item_no = sw_item_22.item_no LEFT JOIN SW.FJWSQL.dbo.ITEM AS sw_item ON sw_item.ITEM_NO = sw_item_22.item_no WHERE sw_MKORDSUB.FCLOSE <> 1 AND A22_FAB.STR_DATE > 20210101 AND A22_FAB.STR_DATE <= {date_end} AND 100<=FAB_USER AND FAB_USER<=199 ) a LEFT JOIN 工作站狀態資料表 ON 工作站狀態資料表.排程編號 = a.排程編號 AND 工作站狀態資料表.工作站編號 = a.產線代號 LEFT JOIN 臥式工藝 ON 臥式工藝.機種編號 = SUBSTRING(a.排程編號, 1, CHARINDEX('-', a.排程編號) - 1) WHERE  ((組裝日>={HtmlUtil.StrToDate(date_str).AddMonths(-1):yyyyMMdd} AND 組裝日 <={date_end}) OR (實際完成時間 IS NULL OR LEN(實際完成時間) =0)) and LEN(客戶簡稱)>0 {condition_copy}  and   (SUBSTRING(實際完成時間,1, 8) >={date_str} OR 實際完成時間 IS NULL OR 實際完成時間 = '') AND ((a.製令狀態 = '結案' AND 狀態 IS NOT NULL) OR (a.製令狀態 = '未結')) ORDER BY 上線日";
+                DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
+                //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤
+                dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
+                if (HtmlUtil.Check_DataTable(dt_sowon))
+                {
+                    foreach (DataRow row in dt_sowon.Rows)
+                        dt_month.ImportRow(row);
+                }
+                //dt_month = DataTableUtils.GetDataTable(sqlcmd);
             }
             //---------------------------------------------------------------------------------合併------------------------------------------------------------
             //產生 本月應做 之前未做完但在本月做完 到目前為止皆未完成之資料表
