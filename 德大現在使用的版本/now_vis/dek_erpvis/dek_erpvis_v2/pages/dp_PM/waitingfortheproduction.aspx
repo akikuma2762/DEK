@@ -6,7 +6,7 @@
 
     <link href="../../Content/Default_input.css" rel="stylesheet" />
     <link href="../../Content/Default.css" rel="stylesheet" />
-    <link href="../../Content/table.css" rel="stylesheet" media="screen and (max-width:768px)" />
+    <link href="../../Content/table.css" rel="stylesheet"/>
     <link href="../../Content/dp_PM/waitingfortheproduction.css" rel="stylesheet" />
 
 </asp:Content>

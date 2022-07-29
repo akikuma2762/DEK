@@ -39,6 +39,8 @@ namespace dek_erpvis_v2.pages.dp_SD
         public StringBuilder tr = new StringBuilder();
         public StringBuilder th_month = new StringBuilder();
         public StringBuilder tr_month = new StringBuilder();
+        public StringBuilder th_month_capacity = new StringBuilder();
+        public StringBuilder tr_month_capacity = new StringBuilder();
         public string date_str = "";
         public string date_end = "";
         string acc = "";
@@ -98,7 +100,7 @@ namespace dek_erpvis_v2.pages.dp_SD
             date_str = HtmlUtil.changetimeformat(date[0], "-");
             date_end = HtmlUtil.changetimeformat(date[1], "-");
             dt_str = txt_str.Text.Replace("-", "");
-            dt_end = txt_end.Text.Replace("-", "");
+            dt_end = txt_end.Text.Replace("-", "");         
             MainProcess();
         }
 
@@ -112,6 +114,8 @@ namespace dek_erpvis_v2.pages.dp_SD
             Set_Chart();
             Set_Table();
             Set_Month();
+            Set_Month_Capacity();
+
         }
 
         //設定下拉選單的選項
@@ -156,7 +160,7 @@ namespace dek_erpvis_v2.pages.dp_SD
 
             dt_monthtotal = SLS.Orders_Detail(dt_str, dt_end, status, dropdownlist_Factory.SelectedItem.Value);
             dt_Overdue = SLS.Orders_Over_Detail(dt_str, dropdownlist_Factory.SelectedItem.Value);
-            dt_months = SLS.Orders_Detail(dt_str, dt_end, dekERP_dll.OrderStatus.All, dropdownlist_Factory.SelectedItem.Value);
+            dt_months = SLS.Orders_Detail(dt_str, dt_end, dekERP_dll.OrderStatus.All, dropdownlist_Factory.SelectedItem.Value,true);
             if (HtmlUtil.Check_DataTable(dt_monthtotal))
             {
                 dt_monthtotal = myclass.Add_LINE_GROUP(dt_monthtotal).ToTable();
@@ -459,10 +463,64 @@ namespace dek_erpvis_v2.pages.dp_SD
                 tr_month.Append(HtmlUtil.Set_Table_Content(target, columns, order_month_callback));
             }
             else
-                HtmlUtil.NoData(out th_month, out tr_month);
+                HtmlUtil.NoData(out th_month, out tr_month); 
         }
 
-        //例外處理
+        //20220729計算各月產能用
+        private void Set_Month_Capacity()
+        {
+            if (HtmlUtil.Check_DataTable(dt_months))
+            {
+                DataTable dt_Copy = dt_months.Clone();
+
+                //清空陣列
+                Line_Name.Clear();
+                avoid_again.Clear();
+
+                dt_Copy.Columns["計算月份"].ReadOnly = false;
+                dt_Copy.Columns["計算月份"].DataType = typeof(string);
+                dt_Copy.Columns["計算月份"].MaxLength = 15;
+                //先匯入過
+                foreach (DataRow row in dt_months.Rows)
+                    dt_Copy.ImportRow(row);
+
+                //改格式
+                foreach (DataRow row in dt_Copy.Rows)
+                    row["計算月份"] = DataTableUtils.toString(row["計算月份"]).Insert(4, "/");
+
+                DataTable month = dt_Copy.DefaultView.ToTable(true, new string[] { "計算月份" });
+
+                //取的月份後再進行一次排序
+                DataView dv = month.DefaultView;
+                dv.Sort = "計算月份 ";
+                month = dv.ToTable();
+
+                DataTable target = dt_Copy.DefaultView.ToTable(true, new string[] { dropdownlist_X.SelectedItem.Text });
+
+                //新增總計
+                target.Rows.Add("總計");
+
+                //新增產線
+                foreach (DataRow row in month.Rows)
+                {
+                    target.Columns.Add(DataTableUtils.toString(row["計算月份"]));
+                    Line_Name.Add(DataTableUtils.toString(row["計算月份"]));
+                }
+                //新增小計
+                target.Columns.Add("小計");
+                //新增逾期 20220615
+                target.Columns.Add($"逾期{dropdownlist_y.SelectedItem.Text}");
+                string columns = "";
+                //20220729 新稱月產能
+                th_month_capacity.Append(HtmlUtil.Set_Table_Title(target, out columns));
+                tr_month_capacity.Append(HtmlUtil.Set_Table_Content(target, columns, order_month_capacity_callback));
+            }
+            else
+                            HtmlUtil.NoData(out th_month_capacity, out tr_month_capacity);
+        }
+
+
+        //月總計
         private string order_month_callback(DataRow row, string field_name)
         {
             string url = "";
@@ -475,6 +533,10 @@ namespace dek_erpvis_v2.pages.dp_SD
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={field_name.Replace("/", "")}" : $"計算月份={field_name.Replace("/", "")}";
                     DataRow[] rows = dt_months.Select(sqlcmd);
                     value = rows.Length > 0 ? rows.Length.ToString() : "";
+                    //if(DataTableUtils.toString(row[SelectedItem]) != "總計"){
+                    //    month_order = DataTableUtils.toInt(value);
+                    //    value = "<div>"+"月訂單:"+value+"</div>" + "" + "<div>"+"月產能:"+ capacity+"</div>" + "" + "<div>"+"剩餘產能:"+ (capacity - month_order) + "</div>";
+                    //}                  
                 }
                 else if (field_name == "小計")
                 {
@@ -559,6 +621,175 @@ namespace dek_erpvis_v2.pages.dp_SD
                 return "1";
         }
 
+        //月產能&總計
+        private string order_month_capacity_callback(DataRow row, string field_name)
+        {
+            string url = "";
+            string value = "";
+            string SelectedItem = dropdownlist_X.SelectedItem.Text;
+            int capacity = 100;
+            int month_order;
+            DataTable month_capacity=new DataTable();
+            if (avoid_again.IndexOf(DataTableUtils.toString(row[SelectedItem]).Trim()) == -1)
+            {
+                if (Line_Name.IndexOf(field_name) != -1)
+                {
+                    string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={field_name.Replace("/", "")}" : $"計算月份={field_name.Replace("/", "")} ";
+
+                    sqlcmd = $"({sqlcmd}and 入庫日>20220726 and 入庫日 <20220825 )"+"OR"+$"({sqlcmd} and 入庫日 is null)";
+                    
+                    DataRow[] rows = dt_months.Select(sqlcmd);
+                    
+                    capacity = int.Parse(line_capacity(DataTableUtils.toString(row[SelectedItem]), field_name));
+                    value = rows.Length > 0 ? rows.Length.ToString() : "";
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        month_order = int.Parse(value);
+                    }
+                    else {
+                        month_order = 0;
+                    }
+
+                   
+                        month_order = DataTableUtils.toInt(value);
+                        value = "<div>" + "月訂單:" + value + "</div>" + "" + "<div>" + "月產能:" + capacity + "</div>" + "" + "<div>" + "剩餘產能:" + (capacity - month_order) + "</div>";
+                    
+                }
+                else if (field_name == "小計")
+                {
+                    string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}'" : "";
+                    DataRow[] rows = dt_months.Select(sqlcmd);
+                    value = rows.Length.ToString();
+                    //新增小計超連結20220615
+                    int total = int.Parse(value);
+                    if (total != 0)
+                    {
+                        url = mk_url(row, SelectedItem, "month");
+                        value = HtmlUtil.Trans_Thousand(total.ToString("0"));
+                        value = $"<u><a href=\"{url}\"> {value} </a></u> ";
+                    }
+                    if (row[0].ToString().Trim() == "總計")
+                    {
+                        url = mk_url(row, SelectedItem, "month_total");
+                        value = HtmlUtil.Trans_Thousand(total.ToString("0"));
+                        value = $"<u><a href=\"{url}\"> {value} </a></u> ";
+                    }
+                }
+                //新增逾期數量處裡20220615
+                else if (field_name == $"逾期{dropdownlist_y.SelectedItem.Text}")
+                {
+                    avoid_again.Add(DataTableUtils.toString(row[SelectedItem]).Trim());
+
+                    if (HtmlUtil.Check_DataTable(dt_Overdue))
+                    {
+                        DataRow[] rows = new DataRow[] { };
+                        if (SelectedItem == "產線")
+                        {
+                            rows = dt_Overdue.Select($"產線='{row["產線"]}'");
+                        }
+                        else if (SelectedItem == "客戶")
+                        {
+                            rows = dt_Overdue.Select($"客戶='{row["客戶"]}'");
+                        }
+                        if (rows != null && rows.Length > 0)
+                        {
+                            total = 0;
+                            for (int i = 0; i < rows.Length; i++)
+                                total += DataTableUtils.toDouble(DataTableUtils.toString(rows[i][dropdownlist_y.SelectedItem.Text]));
+                            if (total == 0)
+                                value = "0";
+                            else
+                            {
+                                url = mk_url(row, SelectedItem, "month_Overdue");
+                                value = HtmlUtil.Trans_Thousand(total.ToString("0"));
+                                value = $"<u><a href=\"{url}\"> {value} </a></u> ";
+                            }
+                        }
+                        else
+                        {
+                            value = "0";
+                        }
+
+                        //計算逾期總計20220617
+                        if (row[0].ToString().Trim() == "總計")
+                        {
+                            DataRow[] dt_rows = dt_Overdue.Select($"產線<>'T1'");
+                            total = 0;
+                            for (int i = 0; i < dt_rows.Length; i++)
+                                total += DataTableUtils.toDouble(DataTableUtils.toString(dt_rows[i][dropdownlist_y.SelectedItem.Text]));
+                            if (total == 0)
+                                value = "0";
+                            else
+                            {
+                                url = mk_url(row, SelectedItem, "month_Overdue_Total");
+                                value = HtmlUtil.Trans_Thousand(total.ToString("0"));
+                                value = $"<u><a href=\"{url}\"> {value} </a></u> ";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        value = "0";
+                    }
+                }
+                return value == "" ? "" : $"<td align=\"right\"> {value} </td>";
+            }
+            else
+                return "1";
+        }
+
+        private string line_capacity(string line_name ,string field_name) {
+            DataTable serch_dt = new DataTable();
+            DataTable user_Acc = new DataTable();
+            DataTable Holiday = new DataTable();
+            DateTime d_End;
+            DateTime d_Start;
+            int total_Holiday=0;
+            int work_Day = 0;
+            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+            user_Acc = DataTableUtils.DataTable_GetTable($"SELECT * FROM SYSTEM_PARAMETER WHERE USER_ACC='{acc}'");
+            DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssm;
+            string value_capacity = "";
+            switch (line_name) 
+            {
+                case "40盤":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=1 OR 工作站編號=2 OR 工作站編號=9 AND 工作站是否使用中=1");
+                    break;
+                case "50盤":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=5 AND 工作站是否使用中=1");
+                    break;
+                case "MA":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=3 AND 工作站是否使用中=1");
+                    break;
+                case "MAZAK":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=4 AND 工作站是否使用中=1");
+                    break;
+                case "T1":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=7 AND 工作站是否使用中=1");
+                    break;
+                case "鍊式":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=6 OR 工作站編號=10 AND 工作站是否使用中=1");
+                    break;
+                case "總計":
+                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 BETWEEN 1 AND 10 AND 工作站是否使用中=1");
+                    break;
+            }
+            if (Line_Name.IndexOf(field_name) != -1) {
+                field_name=field_name.Replace("/", "");
+                 d_End = DateTime.ParseExact(field_name, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+                 d_Start = d_End.AddMonths(-1);
+                DateTime date_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
+                DateTime date_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
+                int day = (date_End - date_Start).Days;
+                string start_Day = date_Start.ToString("yyyyMMdd");
+                string end_Day = date_End.ToString("yyyyMMdd");
+                Holiday = DataTableUtils.DataTable_GetTable($"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {start_Day} and {end_Day}");
+                total_Holiday=int.Parse(DataTableUtils.toString(Holiday.Rows[0]["月假日"]));
+                work_Day = day - total_Holiday;
+            }
+            value_capacity = ((DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString()))* work_Day).ToString();
+            return value_capacity;
+        }
         //傳遞orderDetails參數0617
         private string mk_url(DataRow row,string SelectedItem,string mode) {
             string url = "";
