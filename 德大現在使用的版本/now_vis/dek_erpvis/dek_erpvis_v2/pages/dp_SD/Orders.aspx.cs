@@ -634,23 +634,18 @@ namespace dek_erpvis_v2.pages.dp_SD
             {
                 if (Line_Name.IndexOf(field_name) != -1)
                 {
-                    string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={field_name.Replace("/", "")}" : $"計算月份={field_name.Replace("/", "")} ";
+                    string month = field_name.Replace("/", "");
+                    string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={month}" : $"計算月份={month} ";
+                    DateTime month_str = DateTime.ParseExact(dt_str, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+                    DateTime month_end = DateTime.ParseExact(month, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
-                    sqlcmd = $"({sqlcmd}and 入庫日>20220726 and 入庫日 <20220825 )"+"OR"+$"({sqlcmd} and 入庫日 is null)";
+                   
+                    sqlcmd = $"({sqlcmd} and 入庫日>{dt_str} and 入庫日 <{dt_end} )"+"OR"+$"({sqlcmd} and 入庫日 is null)";
                     
                     DataRow[] rows = dt_months.Select(sqlcmd);
                     
                     capacity = int.Parse(line_capacity(DataTableUtils.toString(row[SelectedItem]), field_name));
-                    value = rows.Length > 0 ? rows.Length.ToString() : "";
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        month_order = int.Parse(value);
-                    }
-                    else {
-                        month_order = 0;
-                    }
-
-                   
+                    value = rows.Length > 0 ? rows.Length.ToString() : "0";
                         month_order = DataTableUtils.toInt(value);
                         value = "<div>" + "月訂單:" + value + "</div>" + "" + "<div>" + "月產能:" + capacity + "</div>" + "" + "<div>" + "剩餘產能:" + (capacity - month_order) + "</div>";
                     
@@ -658,19 +653,20 @@ namespace dek_erpvis_v2.pages.dp_SD
                 else if (field_name == "小計")
                 {
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}'" : "";
+                    sqlcmd = sqlcmd ==""? $"入庫日>{dt_str} and 入庫日 <{dt_end} or 入庫日 is null ": $"({sqlcmd} and 入庫日>{dt_str} and 入庫日 <{dt_end} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
                     DataRow[] rows = dt_months.Select(sqlcmd);
                     value = rows.Length.ToString();
                     //新增小計超連結20220615
                     int total = int.Parse(value);
                     if (total != 0)
                     {
-                        url = mk_url(row, SelectedItem, "month");
+                        url = mk_url(row, SelectedItem, "month_capacity");
                         value = HtmlUtil.Trans_Thousand(total.ToString("0"));
                         value = $"<u><a href=\"{url}\"> {value} </a></u> ";
                     }
                     if (row[0].ToString().Trim() == "總計")
                     {
-                        url = mk_url(row, SelectedItem, "month_total");
+                        url = mk_url(row, SelectedItem, "month_capacity_total");
                         value = HtmlUtil.Trans_Thousand(total.ToString("0"));
                         value = $"<u><a href=\"{url}\"> {value} </a></u> ";
                     }
@@ -787,9 +783,13 @@ namespace dek_erpvis_v2.pages.dp_SD
                 total_Holiday=int.Parse(DataTableUtils.toString(Holiday.Rows[0]["月假日"]));
                 work_Day = day - total_Holiday;
             }
-            value_capacity = ((DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString()))* work_Day).ToString();
+            value_capacity = (DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString())* work_Day).ToString();
             return value_capacity;
         }
+        private DateTime trans_date(DateTime date) {
+            return date;
+        }
+
         //傳遞orderDetails參數0617
         private string mk_url(DataRow row,string SelectedItem,string mode) {
             string url = "";

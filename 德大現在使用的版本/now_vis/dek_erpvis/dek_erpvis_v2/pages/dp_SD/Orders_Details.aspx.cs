@@ -180,6 +180,16 @@ namespace dek_erpvis_v2.pages.dp_SD
                     dt_clone.AcceptChanges();
                     dt = dt_clone;
                 }
+                else if (mode == "order_month_capacity")
+                {
+                    if (selectItem_X == "客戶") dt = HtmlUtil.Get_MonthCapacity_InformationDataTable(dt, DataTableUtils.toString(dt.Columns[0]), dt_Row, dt_st,dt_ed, "month_capacity");
+                    else dt = HtmlUtil.Get_MonthCapacity_InformationDataTable(dt, DataTableUtils.toString(dt.Columns[10]), dt_Row, dt_st, dt_ed, "month_capacity");
+                }
+                else if (mode == "order_month_capacity_total")
+                {
+                    if (selectItem_X == "客戶") dt = HtmlUtil.Get_MonthCapacity_InformationDataTable(dt, DataTableUtils.toString(dt.Columns[0]), dt_Row, dt_st, dt_ed, "month_capacity_total");
+                    else dt = HtmlUtil.Get_MonthCapacity_InformationDataTable(dt, DataTableUtils.toString(dt.Columns[10]), dt_Row, dt_st, dt_ed, "month_capacity_total");
+                }
                 //----------------------//
 
                 dt.Columns["產線群組"].SetOrdinal(1);

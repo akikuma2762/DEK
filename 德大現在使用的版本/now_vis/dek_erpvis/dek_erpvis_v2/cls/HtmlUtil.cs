@@ -1084,6 +1084,21 @@ namespace dek_erpvis_v2.cls
             dt_clone.AcceptChanges();
             return dt_clone;
         }
+        public static DataTable Get_MonthCapacity_InformationDataTable(DataTable dt, string columns, string columns_value,string date_str,string date_end,string type)
+        {
+            DataTable dt_clone = dt.Clone();
+            string sqlcmd = columns_value != "" && type!= "month_capacity_total" ? $"{columns}='{columns_value}'" : "";
+            sqlcmd = sqlcmd==""? $"入庫日>{date_str} and 入庫日 <{date_end} or 入庫日 is null " : $"({sqlcmd} and 入庫日>{date_str} and 入庫日 <{date_end} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+            DataRow[] rows = dt.Select(sqlcmd);
+            if (rows != null && rows.Length > 0)
+            {
+                for (int i = 0; i < rows.Length; i++)
+                    dt_clone.ImportRow(rows[i]);
+            }
+            dt_clone.AcceptChanges();
+            return dt_clone;
+        }
+
         /// <summary>
         /// 設定核取方塊
         /// </summary>
