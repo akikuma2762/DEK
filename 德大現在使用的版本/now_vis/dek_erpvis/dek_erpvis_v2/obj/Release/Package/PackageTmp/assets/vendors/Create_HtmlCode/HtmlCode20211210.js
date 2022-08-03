@@ -3,6 +3,7 @@
 function set_Table(DataTableName) {
     $(DataTableName).DataTable({
         destroy: true,
+        order: true,
         language: {
             "processing": "處理中...",
             "loadingRecords": "載入中...",

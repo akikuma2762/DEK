@@ -375,8 +375,9 @@ namespace dek_erpvis_v2.pages.dp_PM
             if (dt_now != null)
             {
                 dt_本月應生產 = dt_now.Clone();
-                dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
-                dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
+                //20220803 PrimaryKey 會錯誤,無發現用途,暫時拔除
+                //dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
+                //dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
                 dt_本月應生產.Merge(dt_now);
             }
             if (HtmlUtil.Check_DataTable(dt_Finish) && DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))

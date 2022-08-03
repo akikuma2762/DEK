@@ -216,8 +216,9 @@ namespace dek_erpvis_v2.pages.dp_PM
                 if (dt_now != null)
                 {
                     dt_本月應生產 = dt_now.Clone();
-                    dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
-                    dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
+                    //20220803 PrimaryKey 會錯誤,無發現用途,暫時拔除
+                    //dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
+                    //dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
                     dt_本月應生產.Merge(dt_now);
                 }
                 if (HtmlUtil.Check_DataTable(dt_NoFinish))
@@ -226,13 +227,15 @@ namespace dek_erpvis_v2.pages.dp_PM
                     dt_本月應生產.Merge(dt_NoFinish, true, MissingSchemaAction.Ignore);
                 }
 
-                //移除本月已完成
-                sqlcmd = $"狀態='完成' OR 客戶簡稱<>'{cust_sname}'";
-                rows = dt_本月應生產.Select(sqlcmd);            
+                //20220803 修改反邏輯查詢語法
+                string sql = $"客戶簡稱='{cust_sname}' {Line} and (狀態 <> '完成' OR 狀態 IS null)";
+                rows = dt_本月應生產.Select(sql);
+                DataTable dt_print = dt_本月應生產.Clone();
                 for (int i = 0; i < rows.Length; i++)
-                    rows[i].Delete();
-                dt_本月應生產.AcceptChanges();
-
+                {
+                    dt_print.ImportRow(rows[i]);
+                }
+                dt_本月應生產 = dt_print;
                 if (HtmlUtil.Check_DataTable(dt_本月應生產))
                 {
                     //加入產線

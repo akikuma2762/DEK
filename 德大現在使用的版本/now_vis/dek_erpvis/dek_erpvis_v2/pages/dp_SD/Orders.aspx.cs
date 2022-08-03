@@ -51,6 +51,7 @@ namespace dek_erpvis_v2.pages.dp_SD
         DataTable dt_monthtotal = new DataTable();
         DataTable dt_months = new DataTable();
         DataTable dt_Overdue = new DataTable();
+        DataTable user_Acc = new DataTable();
         myclass myclass = new myclass();
         List<string> Line_Name = new List<string>();
         List<string> avoid_again = new List<string>();
@@ -66,7 +67,8 @@ namespace dek_erpvis_v2.pages.dp_SD
 
                 path = 德大機械.get_title_web_path("SLS");
                 color = HtmlUtil.change_color(acc);
-
+                DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+                user_Acc = DataTableUtils.DataTable_GetTable($"SELECT * FROM SYSTEM_PARAMETER WHERE USER_ACC='{acc}'");
                 if (myclass.user_view_check("Orders", acc))
                 {
                     if (!IsPostBack)
@@ -532,11 +534,7 @@ namespace dek_erpvis_v2.pages.dp_SD
                 {
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={field_name.Replace("/", "")}" : $"計算月份={field_name.Replace("/", "")}";
                     DataRow[] rows = dt_months.Select(sqlcmd);
-                    value = rows.Length > 0 ? rows.Length.ToString() : "";
-                    //if(DataTableUtils.toString(row[SelectedItem]) != "總計"){
-                    //    month_order = DataTableUtils.toInt(value);
-                    //    value = "<div>"+"月訂單:"+value+"</div>" + "" + "<div>"+"月產能:"+ capacity+"</div>" + "" + "<div>"+"剩餘產能:"+ (capacity - month_order) + "</div>";
-                    //}                  
+                    value = rows.Length > 0 ? rows.Length.ToString() : "";               
                 }
                 else if (field_name == "小計")
                 {
@@ -636,24 +634,27 @@ namespace dek_erpvis_v2.pages.dp_SD
                 {
                     string month = field_name.Replace("/", "");
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={month}" : $"計算月份={month} ";
-                    DateTime month_str = DateTime.ParseExact(dt_str, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-                    DateTime month_end = DateTime.ParseExact(month, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-
-                   
-                    sqlcmd = $"({sqlcmd} and 入庫日>{dt_str} and 入庫日 <{dt_end} )"+"OR"+$"({sqlcmd} and 入庫日 is null)";
-                    
+                    sqlcmd = month_Capacity(month, sqlcmd, DataTableUtils.toString(row[SelectedItem]));
                     DataRow[] rows = dt_months.Select(sqlcmd);
-                    
-                    capacity = int.Parse(line_capacity(DataTableUtils.toString(row[SelectedItem]), field_name));
-                    value = rows.Length > 0 ? rows.Length.ToString() : "0";
+
+                    //X座標為產線時輸出月產能,X座標為客戶時輸出普通月訂單
+                    if (SelectedItem == "產線")
+                    {
+                        capacity = int.Parse(line_capacity(DataTableUtils.toString(row[SelectedItem]), field_name));
+                        value = rows.Length > 0 ? rows.Length.ToString() : "0";
                         month_order = DataTableUtils.toInt(value);
-                        value = "<div>" + "月訂單:" + value + "</div>" + "" + "<div>" + "月產能:" + capacity + "</div>" + "" + "<div>" + "剩餘產能:" + (capacity - month_order) + "</div>";
-                    
+                        value = "<div>" + "月訂單:" + month_order + "</div>" + "" + "<div>" + "月產能:" + capacity + "</div>" + "" + "<div>" + "剩餘產能:" + (capacity - month_order) + "</div>";
+                    }
+                    else {
+                        value = rows.Length > 0 ? rows.Length.ToString() : "0";
+
+                    }
+
                 }
                 else if (field_name == "小計")
                 {
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}'" : "";
-                    sqlcmd = sqlcmd ==""? $"入庫日>{dt_str} and 入庫日 <{dt_end} or 入庫日 is null ": $"({sqlcmd} and 入庫日>{dt_str} and 入庫日 <{dt_end} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+                    sqlcmd = sqlcmd ==""? $"入庫日>={dt_str} and 入庫日 <={dt_end} or 入庫日 is null ": $"({sqlcmd} and 入庫日 >= {dt_str} and 入庫日 <= {dt_end} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
                     DataRow[] rows = dt_months.Select(sqlcmd);
                     value = rows.Length.ToString();
                     //新增小計超連結20220615
@@ -733,61 +734,200 @@ namespace dek_erpvis_v2.pages.dp_SD
             else
                 return "1";
         }
+        private bool month_Compare(string date_1,string date_2,string type)
+        {
+            DateTime date1 = DateTime.ParseExact(date_1, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime date2 = DateTime.ParseExact(date_2, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            //date1 =type=="start"?date1.AddMonths(-1): date1;
+            bool value = date1.Month == date2.Month ? true : false;
+            return value;
+        }
 
-        private string line_capacity(string line_name ,string field_name) {
+        private string line_capacity(string line_name ,string month) {
             DataTable serch_dt = new DataTable();
-            DataTable user_Acc = new DataTable();
-            DataTable Holiday = new DataTable();
-            DateTime d_End;
-            DateTime d_Start;
-            int total_Holiday=0;
             int work_Day = 0;
-            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
-            user_Acc = DataTableUtils.DataTable_GetTable($"SELECT * FROM SYSTEM_PARAMETER WHERE USER_ACC='{acc}'");
-            DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssm;
-            string value_capacity = "";
-            switch (line_name) 
+            string sqlcmd = "";
+            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
             {
-                case "40盤":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=1 OR 工作站編號=2 OR 工作站編號=9 AND 工作站是否使用中=1");
-                    break;
-                case "50盤":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=5 AND 工作站是否使用中=1");
-                    break;
-                case "MA":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=3 AND 工作站是否使用中=1");
-                    break;
-                case "MAZAK":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=4 AND 工作站是否使用中=1");
-                    break;
-                case "T1":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=7 AND 工作站是否使用中=1");
-                    break;
-                case "鍊式":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=6 OR 工作站編號=10 AND 工作站是否使用中=1");
-                    break;
-                case "總計":
-                    serch_dt = DataTableUtils.DataTable_GetTable("SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 BETWEEN 1 AND 10 AND 工作站是否使用中=1");
-                    break;
+                switch (line_name)
+                {
+                    case "40盤":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=1 OR 工作站編號=2 OR 工作站編號=9 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "50盤":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=5 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "MA":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=3 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "MAZAK":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=4 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "T1":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=7 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "鍊式":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=6 OR 工作站編號=10 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "總計":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 BETWEEN 1 AND 10 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "大圓盤":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 = 11 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+                        break;
+                }
             }
-            if (Line_Name.IndexOf(field_name) != -1) {
-                field_name=field_name.Replace("/", "");
-                 d_End = DateTime.ParseExact(field_name, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-                 d_Start = d_End.AddMonths(-1);
-                DateTime date_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
-                DateTime date_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
-                int day = (date_End - date_Start).Days;
-                string start_Day = date_Start.ToString("yyyyMMdd");
-                string end_Day = date_End.ToString("yyyyMMdd");
-                Holiday = DataTableUtils.DataTable_GetTable($"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {start_Day} and {end_Day}");
-                total_Holiday=int.Parse(DataTableUtils.toString(Holiday.Rows[0]["月假日"]));
-                work_Day = day - total_Holiday;
+            else if (dropdownlist_Factory.SelectedItem.Value == "iTec")
+            {
+                switch (line_name)
+                {
+                    case "臥式":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=1 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "NEW INTE":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=2 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                    case "總計":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 BETWEEN 1 AND 2 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        break;
+                }
             }
-            value_capacity = (DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString())* work_Day).ToString();
+            else if (dropdownlist_Factory.SelectedItem.Value == "dek")
+            {
+                switch (line_name)
+                {
+                    case "總計":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 = 11 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+                        break;
+                    case "大圓盤":
+                        sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 = 11 AND 工作站是否使用中=1";
+                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+                        break;
+                }
+            }
+            
+            if (Line_Name.IndexOf(month) != -1) {
+                 month = month.Replace("/", "");
+                work_Day = int.Parse(month_Interval(month));
+            }
+            string value_capacity = (DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString())* work_Day).ToString();
             return value_capacity;
         }
-        private DateTime trans_date(DateTime date) {
-            return date;
+        private string month_Interval_And_Capacity(string date,string sqlcmd,string type,string line) {
+            DateTime d_End;
+            DateTime d_Start;
+            string SelectedItem = dropdownlist_X.SelectedItem.Text;
+            string work_Day = "";
+            string value = "";
+            d_End = DateTime.ParseExact(date, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            d_Start = d_End.AddMonths(-1);
+            d_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
+            d_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
+            string start_Day = d_Start.ToString("yyyyMMdd");
+            string end_Day = d_End.ToString("yyyyMMdd");
+            if (type == "interval")
+            {
+                bool x1 = month_Compare(date, dt_str, "start");
+                bool x2 = month_Compare(date, dt_end, "end");
+                if (x1) {
+                    start_Day = dt_str;
+                }
+                if (x2) {
+                    end_Day = dt_end;
+                }
+                sqlcmd = $"({sqlcmd} and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" +"OR"+ $"({SelectedItem}='{line}' and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+                value = sqlcmd;
+            }
+            else if (type == "capacity") {
+                int day = ((d_End - d_Start).Days) + 1;
+                sqlcmd = $"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {start_Day} and {end_Day}";
+                DataTable dt_Holiday = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value,"capacity");
+                int Holiday= int.Parse(DataTableUtils.toString(dt_Holiday.Rows[0]["月假日"]));
+                work_Day = (day - Holiday).ToString();
+                value = work_Day;
+            }
+            return value;
+        }
+        private string month_Interval(string date)
+        {
+            string SelectedItem = dropdownlist_X.SelectedItem.Text;
+            //轉換日期型態
+            DateTime d_End = DateTime.ParseExact(date, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime d_Start = d_End.AddMonths(-1);
+
+            //結合帳號月區間重新組合日期
+            d_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
+            d_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
+            string start_Day = d_Start.ToString("yyyyMMdd");
+            string end_Day = d_End.ToString("yyyyMMdd");
+
+            int day = ((d_End - d_Start).Days) + 1;
+            string sqlcmd = $"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {start_Day} and {end_Day}";
+            DataTable dt_Holiday = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+            int Holiday = int.Parse(DataTableUtils.toString(dt_Holiday.Rows[0]["月假日"]));
+            string work_Day = (day - Holiday).ToString();
+            string value = work_Day;
+
+            return value;
+        }
+
+
+        private string month_Capacity(string date, string sqlcmd, string line)
+        {
+            string SelectedItem = dropdownlist_X.SelectedItem.Text;
+            //轉換日期型態
+            DateTime d_End = DateTime.ParseExact(date, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime d_Start = d_End.AddMonths(-1);
+
+            //結合帳號月區間重新組合日期
+            d_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
+            d_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
+            string start_Day = d_Start.ToString("yyyyMMdd");
+            string end_Day = d_End.ToString("yyyyMMdd");
+
+            //比對使否為起始與結束月份
+            bool b_Start_Day = month_Compare(date, dt_str, "start");
+            bool b_End_Day = month_Compare(date, dt_end, "end");
+            start_Day = b_Start_Day == true ? dt_str : start_Day;
+            end_Day = b_End_Day == true ? dt_end : end_Day;
+
+            sqlcmd = $"({sqlcmd} and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" + "OR" + $"({SelectedItem}='{line}' and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+            string value = sqlcmd;
+
+            return value;
+        }
+
+
+
+        private DataTable Orders_Detail_Link(string sqlcmd, string source,string type) 
+        {
+            DataTable link = new DataTable();
+            if (source == "sowon")
+            {
+                DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssm;
+            }
+            else if (source == "iTec")
+            {
+                DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssmHor;
+            }
+            else if(source=="dek") {
+                DataTableUtils.Conn_String = type == "capacity" ? myclass.GetConnByDekdekVisAssm: myclass.GetConnByDekVisErp;                
+            }
+            link = DataTableUtils.GetDataTable(sqlcmd);
+
+            return link;
         }
 
         //傳遞orderDetails參數0617

@@ -32,6 +32,8 @@
             </li>
             <li role="presentation" class=""><a href="#tab_content3" id="profile-tab2" role="tab" data-toggle="tab" aria-expanded="false">每月訂單數量</a>
             </li>
+            <li role="presentation" class=""><a href="#tab_content4" id="profile-tab3" role="tab" data-toggle="tab" aria-expanded="false">每月訂單產能</a>
+            </li>
         </ul>
         <div id="myTabContent" class="tab-content">
             <!--圖片及控制項-->
@@ -201,6 +203,9 @@
             <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab2">
                 <div id="order_month"></div>
             </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="profile-tab3">
+                <div id="order_month_mk"></div>
+            </div>
             <!--整理後表格-->
 
         </div>
@@ -222,6 +227,12 @@
         create_tablecode('order_month', '各月訂單統計', 'total-form', '<%=th_month.ToString() %>', '<%=tr_month.ToString() %>');
         //產生相對應的JScode
         set_Table('#total-form');
+
+        //產生表格的HTML碼
+        create_tablecode('order_month_mk', '各月訂單產能', 'MK-form', '<%=th_month_capacity.ToString() %>', '<%=tr_month_capacity.ToString() %>');
+        //產生相對應的JScode
+        set_Table('#MK-form');
+
         //$('#order_months').dataTable(
         //    {
         //        destroy: true,
