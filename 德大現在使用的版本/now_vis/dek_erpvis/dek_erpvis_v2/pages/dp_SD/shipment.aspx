@@ -129,6 +129,7 @@
     <%=Use_Javascript.Quote_Javascript()%>
     <script>
 
+        console.log('<%=th.ToString() %>');
         create_imgcode('shipment_image', 'export_image', 'chartContainer');
         //產生圖片
         set_column('chartContainer', '<%=title%>', '<%=subtitle%>', '<%=xText %>', '數量', '已出貨', [<%=col_data_Points%>]);

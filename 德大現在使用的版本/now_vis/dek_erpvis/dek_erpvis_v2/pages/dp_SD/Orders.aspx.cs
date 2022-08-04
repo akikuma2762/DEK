@@ -734,13 +734,31 @@ namespace dek_erpvis_v2.pages.dp_SD
             else
                 return "1";
         }
-        private bool month_Compare(string date_1,string date_2,string type)
+        //20220804 比較年月是否相等
+        private bool month_Compare(string date_1,string date_2)
         {
-            DateTime date1 = DateTime.ParseExact(date_1, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime date1 = DateTime.ParseExact(date_1, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
             DateTime date2 = DateTime.ParseExact(date_2, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-            //date1 =type=="start"?date1.AddMonths(-1): date1;
-            bool value = date1.Month == date2.Month ? true : false;
-            return value;
+
+            if (date1.Year == date2.Year && date1.Month == date2.Month)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //20220804檢查字串轉日期時使否包含日
+        private string day_Check(string date) {
+            date = date.Replace("/", "");
+            try {
+                String day = date.Substring(6,2);
+            } catch (Exception e) {
+                date = date + "01";
+            }
+            return date;
         }
 
         private string line_capacity(string line_name ,string month) {
@@ -820,61 +838,36 @@ namespace dek_erpvis_v2.pages.dp_SD
             
             if (Line_Name.IndexOf(month) != -1) {
                  month = month.Replace("/", "");
-                work_Day = int.Parse(month_Interval(month));
+                work_Day = int.Parse(month_WorkDay(month));
             }
             string value_capacity = (DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString())* work_Day).ToString();
             return value_capacity;
         }
-        private string month_Interval_And_Capacity(string date,string sqlcmd,string type,string line) {
-            DateTime d_End;
-            DateTime d_Start;
-            string SelectedItem = dropdownlist_X.SelectedItem.Text;
-            string work_Day = "";
-            string value = "";
-            d_End = DateTime.ParseExact(date, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-            d_Start = d_End.AddMonths(-1);
-            d_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
-            d_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
-            string start_Day = d_Start.ToString("yyyyMMdd");
-            string end_Day = d_End.ToString("yyyyMMdd");
-            if (type == "interval")
-            {
-                bool x1 = month_Compare(date, dt_str, "start");
-                bool x2 = month_Compare(date, dt_end, "end");
-                if (x1) {
-                    start_Day = dt_str;
-                }
-                if (x2) {
-                    end_Day = dt_end;
-                }
-                sqlcmd = $"({sqlcmd} and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" +"OR"+ $"({SelectedItem}='{line}' and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
-                value = sqlcmd;
-            }
-            else if (type == "capacity") {
-                int day = ((d_End - d_Start).Days) + 1;
-                sqlcmd = $"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {start_Day} and {end_Day}";
-                DataTable dt_Holiday = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value,"capacity");
-                int Holiday= int.Parse(DataTableUtils.toString(dt_Holiday.Rows[0]["月假日"]));
-                work_Day = (day - Holiday).ToString();
-                value = work_Day;
-            }
-            return value;
-        }
-        private string month_Interval(string date)
-        {
-            string SelectedItem = dropdownlist_X.SelectedItem.Text;
+
+
+        private string[] monthInterval(string date) {
+            string[] arr = new string[3];
             //轉換日期型態
-            DateTime d_End = DateTime.ParseExact(date, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-            DateTime d_Start = d_End.AddMonths(-1);
+            DateTime endDay = DateTime.ParseExact(date, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime startDay = endDay.AddMonths(-1);
 
             //結合帳號月區間重新組合日期
-            d_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
-            d_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
-            string start_Day = d_Start.ToString("yyyyMMdd");
-            string end_Day = d_End.ToString("yyyyMMdd");
+            endDay = new DateTime(endDay.Year, endDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
+            startDay = new DateTime(startDay.Year, startDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
+            arr[0] = startDay.ToString("yyyyMMdd");
+            arr[1] = endDay.ToString("yyyyMMdd");
+            arr[2] = (((endDay - startDay).Days) + 1).ToString();
+            return arr;
+        }
 
-            int day = ((d_End - d_Start).Days) + 1;
-            string sqlcmd = $"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {start_Day} and {end_Day}";
+        private string month_WorkDay(string date)
+        {   //檢查日期
+            date = day_Check(date);
+            string[] arr = monthInterval(date);
+            string startDay_Interval = arr[0];
+            string endDay_Interval = arr[1];
+            int day = int.Parse(arr[2]);
+            string sqlcmd = $"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {startDay_Interval} and {endDay_Interval}";
             DataTable dt_Holiday = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
             int Holiday = int.Parse(DataTableUtils.toString(dt_Holiday.Rows[0]["月假日"]));
             string work_Day = (day - Holiday).ToString();
@@ -886,31 +879,27 @@ namespace dek_erpvis_v2.pages.dp_SD
 
         private string month_Capacity(string date, string sqlcmd, string line)
         {
+            //檢查日期
+            date = day_Check(date);
+            string[] arr = monthInterval(date);
+            string startDay_Interval = arr[0];
+            string endDay_Interval = arr[1];
             string SelectedItem = dropdownlist_X.SelectedItem.Text;
-            //轉換日期型態
-            DateTime d_End = DateTime.ParseExact(date, "yyyyMM", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-            DateTime d_Start = d_End.AddMonths(-1);
-
-            //結合帳號月區間重新組合日期
-            d_End = new DateTime(d_End.Year, d_End.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
-            d_Start = new DateTime(d_Start.Year, d_Start.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
-            string start_Day = d_Start.ToString("yyyyMMdd");
-            string end_Day = d_End.ToString("yyyyMMdd");
 
             //比對使否為起始與結束月份
-            bool b_Start_Day = month_Compare(date, dt_str, "start");
-            bool b_End_Day = month_Compare(date, dt_end, "end");
-            start_Day = b_Start_Day == true ? dt_str : start_Day;
-            end_Day = b_End_Day == true ? dt_end : end_Day;
+            bool startDay_Bool = month_Compare(date, dt_str);
+            bool endDay_Bool = month_Compare(date, dt_end);
+            startDay_Interval = startDay_Bool == true ? dt_str : startDay_Interval;
+            endDay_Interval = endDay_Bool == true ? dt_end : endDay_Interval;
 
-            sqlcmd = $"({sqlcmd} and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" + "OR" + $"({SelectedItem}='{line}' and 入庫日 >= {start_Day} and 入庫日 <= {end_Day} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+            sqlcmd = $"({sqlcmd} and 入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({SelectedItem}='{line}' and 入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
             string value = sqlcmd;
 
             return value;
         }
 
 
-
+        //2022080各產線資料庫連線
         private DataTable Orders_Detail_Link(string sqlcmd, string source,string type) 
         {
             DataTable link = new DataTable();

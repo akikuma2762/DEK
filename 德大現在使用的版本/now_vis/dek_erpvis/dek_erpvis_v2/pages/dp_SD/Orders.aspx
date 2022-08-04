@@ -226,12 +226,12 @@
         //產生表格的HTML碼
         create_tablecode('order_month', '各月訂單統計', 'total-form', '<%=th_month.ToString() %>', '<%=tr_month.ToString() %>');
         //產生相對應的JScode
-        set_Table('#total-form');
+        set_Table_defaulf_sort('#total-form');
 
         //產生表格的HTML碼
         create_tablecode('order_month_mk', '各月訂單產能', 'MK-form', '<%=th_month_capacity.ToString() %>', '<%=tr_month_capacity.ToString() %>');
         //產生相對應的JScode
-        set_Table('#MK-form');
+        set_Table_defaulf_sort('#MK-form');
 
         //$('#order_months').dataTable(
         //    {

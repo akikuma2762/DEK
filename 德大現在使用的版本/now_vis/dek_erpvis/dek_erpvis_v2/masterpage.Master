@@ -359,6 +359,7 @@
         /*------------------------------------------------------------------*/
         //判斷手機或是電腦
         var WhatSystem = navigator.userAgent;
+        console.log(WhatSystem);
         if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
             seticon();
         }
@@ -479,6 +480,7 @@
         /*------------------------------------------------------------------*/
         /*手機板使用，清除側欄用*/
         function seticon() {
+            console.log("inn");
             document.getElementById("BorderBox").style.display = "none";
             changeicon.className = "fa fa-chevron-right";
             changeicon.classList == "fa fa-chevron-right"
