@@ -3,7 +3,40 @@
 function set_Table(DataTableName) {
     $(DataTableName).DataTable({
         destroy: true,
-        order: true,
+        language: {
+            "processing": "處理中...",
+            "loadingRecords": "載入中...",
+            "lengthMenu": "顯示 _MENU_ 項結果",
+            "zeroRecords": "沒有符合的結果",
+            "info": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+            "infoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+            "infoFiltered": "(從 _MAX_ 項結果中過濾)",
+            "infoPostFix": "",
+            "search": "搜尋:",
+            "paginate": {
+                "first": "第一頁",
+                "previous": "上一頁",
+                "next": "下一頁",
+                "last": "最後一頁"
+            }
+        }, 
+        colReorder: true,
+        scrollCollapse: true,
+        dom: "<'top-list'<'pull-left'f>'row'<'pull-middle'B>'row'<'pull-right'l>>" +
+            "<rt>" +
+            "<'bottom-list'<'pull-left'i>row'<'pull-right'p>>",
+
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
+
+}
+//20220804 適用有總計之頁面,不排序,防止套件亂排序
+function set_Table_defaulf_sort(DataTableName) {
+    $(DataTableName).DataTable({
+        destroy: true,
+        order: false,
         language: {
             "processing": "處理中...",
             "loadingRecords": "載入中...",
@@ -21,7 +54,6 @@ function set_Table(DataTableName) {
                 "last": "最後一頁"
             }
         },
-        "order": [[1, "asc"]],
         colReorder: true,
         scrollCollapse: true,
         dom: "<'top-list'<'pull-left'f>'row'<'pull-middle'B>'row'<'pull-right'l>>" +
@@ -34,6 +66,7 @@ function set_Table(DataTableName) {
     });
 
 }
+
 //產生order total表格
 function set_TotalTable(DataTableName) {
     $(DataTableName).DataTable({

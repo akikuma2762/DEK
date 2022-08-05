@@ -3784,6 +3784,7 @@
     <Content Include="Content\SYS-CONTROL\rights_mag.css" />
     <Content Include="Content\SYS-CONTROL\rights_mag_details.css" />
     <Content Include="Content\SYS-CONTROL\set_parameter.css" />
+    <Content Include="Content\MasterPage.css" />
     <Content Include="Content\table.css" />
     <Content Include="create_acc.aspx" />
     <Content Include="forget_pwd.aspx" />
