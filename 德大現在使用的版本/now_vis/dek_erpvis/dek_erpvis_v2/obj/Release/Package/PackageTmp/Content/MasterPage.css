@@ -1,0 +1,12 @@
+﻿@media screen and (max-width:2018px) {
+    #BorderBox {
+    display:block;
+    }
+    #BorderBox1 {
+    display:none;
+    }
+    #menu_toggle1, #menu_toggle3 {
+        display: none;
+    }
+}
+
