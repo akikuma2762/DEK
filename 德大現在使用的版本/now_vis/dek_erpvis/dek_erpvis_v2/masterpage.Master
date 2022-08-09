@@ -300,14 +300,19 @@
                     break;
             }
         }
+        //20220809 重新包裝
+        length_Control();
         //調整側欄長度
-        var element = document.getElementById('nav_menu');
-        if (element.offsetHeight == "62") {
-            document.getElementById('BorderBox').style.height = element.offsetHeight + 'px';
+        function length_Control() {
+            var element = document.getElementById('nav_menu');
+            if (element.offsetHeight == "62") {
+                document.getElementById('BorderBox').style.height = element.offsetHeight + 'px';
+            }
+            else {
+                document.getElementById('BorderBox').style.height = element.offsetHeight + 'px';
+            }
         }
-        else {
-            document.getElementById('BorderBox').style.height = element.offsetHeight + 'px';
-        }
+        
         /*------------------------------------------------------------------*/
         function get_now() {
             var NowDate = new Date();
@@ -346,7 +351,7 @@
         //用手機呈現時，當按下資料檢索精靈，要把側欄回復，以免擋到使用者
         $("#ContentPlaceHolder1_LinkButton1").click(function () {
             var WhatSystem2 = navigator.userAgent;
-            if (WhatSystem2.match(/android/i) || WhatSystem2.match(/(iphone|ipad|ipod);?/i)) {
+            if ((WhatSystem2.match(/android/i) || WhatSystem2.match(/(iphone|ipad|ipod);?/i)) && $(window).width()<991) {
                 myclick();
             }
         });
@@ -357,30 +362,35 @@
         }
 
         /*------------------------------------------------------------------*/
+        //20220809 重新包裝
+        mobile_Check();
         //判斷手機或是電腦
-        var WhatSystem = navigator.userAgent;
-        console.log(WhatSystem);
-        if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
-            seticon();
-        }
-        else {/*兩個側欄之間的交換*/
-            $("#menu_toggle").click(function () {
-                if (changeicon.classList == "fa fa-chevron-left") {
-                    revice();//20220630新增 交換時隱藏部門選項
-                    changeicon.className = "fa fa-chevron-right";
-                    $('#changeicon').attr('data-original-title', '展開側邊面板');
-                    document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                    document.getElementById("BorderBox1").style.display = "initial";
-                }
-                else {
-                    changeicon.className = "fa fa-chevron-left";
-                    $('#changeicon').attr('data-original-title', '收合側邊面板');
-                    document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                }
-                document.cookie = "clickhistory=" + changeicon.className + ";path=/";
-            });
+        function mobile_Check() {
+            var WhatSystem = navigator.userAgent;
+            console.log(WhatSystem);
+            if ((WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) && $(window).width() < 991) {
+                seticon();
+            }
+            else {/*兩個側欄之間的交換*/
+                $("#menu_toggle").click(function () {
+                    if (changeicon.classList == "fa fa-chevron-left") {
+                        revice();//20220630新增 交換時隱藏部門選項
+                        changeicon.className = "fa fa-chevron-right";
+                        $('#changeicon').attr('data-original-title', '展開側邊面板');
+                        document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                        document.getElementById("BorderBox1").style.display = "initial";
+                    }
+                    else {
+                        changeicon.className = "fa fa-chevron-left";
+                        $('#changeicon').attr('data-original-title', '收合側邊面板');
+                        document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    }
+                    document.cookie = "clickhistory=" + changeicon.className + ";path=/";
+                });
 
+            }
         }
+        
         /*------------------------------------------------------------------*/
         /*電腦版的側欄轉換*/
         $("#menu_toggle1").click(function () {
@@ -400,24 +410,28 @@
             document.getElementById("BorderBox2").style.display = "initial";
         });
         /*------------------------------------------------------------------*/
-
-
+        //20220809 重新包裝
+        first_Act();
         //畫面一進來的動作
-        if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
-            if (document.title == '導覽 | 德大機械' || document.title == '顏色設定 | 德大機械') {
-                document.getElementById("btncheck").style.display = "none";
-                document.getElementById("BorderBox3").style.display = "initial";
-            } else {
-                window.onload = clearclass();//手機板
+        function first_Act() {
+            var WhatSystem = navigator.userAgent;
+            if ((WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) && $(window).width() < 991) {
+                if (document.title == '導覽 | 德大機械' || document.title == '顏色設定 | 德大機械') {
+                    document.getElementById("btncheck").style.display = "none";
+                    document.getElementById("BorderBox3").style.display = "initial";
+                } else {
+                    window.onload = clearclass();//手機板
+                }
+            }
+            else {
+                window.onload = showcookie();//電腦版
             }
         }
-        else {
-            window.onload = showcookie();//電腦版
-        }
+        
         /*------------------------------------------------------------------*/
         function clearclass() {
             var WhatSystem = navigator.userAgent;
-            if (WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            if ((WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) && $(window).width() < 991) {
                 $('#changeicon').attr('data-original-title', '');
                 document.getElementById("BorderBox2").style.display = "initial";
                 document.getElementById("BorderBox").style.display = "none";
@@ -531,8 +545,19 @@
                 }
             }
         }*/
-        //資料庫的方式
+        //20220809 視窗變動時箭頭顯示不正確
+        $(window).resize(function () {
+            if ($("#main_body").width() < 991 && $("#main_body").attr("class") == "footer_fixed nav-sm") {
+                $("#BorderBox3").show();
+                $("#BorderBox2").hide();
+                $('#changeicon').attr('data-original-title', '');
+            }
 
+        });
+
+
+
+        //資料庫的方式
         <%=give_js%>
         var colors = ["Color_Sidebar", "Color_SidebarText",
             "Color_Label", "Color_Background",
