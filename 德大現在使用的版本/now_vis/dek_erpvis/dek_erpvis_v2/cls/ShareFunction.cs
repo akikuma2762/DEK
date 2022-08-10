@@ -1377,7 +1377,7 @@ namespace dek_erpvis_v2.cls
             string standard = "";
             string finish = "";
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            string sqlcmd = "select * from 立式工藝";
+            string sqlcmd = "select * from 組裝工藝";
             DataTable dt_time = DataTableUtils.GetDataTable(sqlcmd);
 
             if (HtmlUtil.Check_DataTable(dt) && HtmlUtil.Check_DataTable(dt_time))
@@ -1433,7 +1433,7 @@ namespace dek_erpvis_v2.cls
             dr.Columns.Add("預定生產數量");
             dr.Columns.Add("排程編號");
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            sqlcmd = "select * from 立式工藝";
+            sqlcmd = "select * from 組裝工藝";
             DataTable dt_time = DataTableUtils.GetDataTable(sqlcmd);
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
             sqlcmd = "select SUBSTRING(實際完成時間, 1, 8) as 完成日,排程編號 from 工作站狀態資料表 where 工作站編號 = 11";
@@ -1617,7 +1617,7 @@ namespace dek_erpvis_v2.cls
             if (HtmlUtil.Check_DataTable(dt))
             {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                sqlcmd = $"select * from 立式工藝  ";
+                sqlcmd = $"select * from 組裝工藝  ";
                 DataTable dt_time = DataTableUtils.GetDataTable(sqlcmd);
 
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
@@ -1684,8 +1684,8 @@ namespace dek_erpvis_v2.cls
                 {
 
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    //   sqlcmd = $"select 組裝時間,狀態 from 工作站狀態資料表 left join 立式工藝 on 立式工藝.機種編號 = SUBSTRING(排程編號, 1, CHARINDEX('-', 排程編號) - 1) where 工作站編號 = '11' and 排程編號 = '{DataTableUtils.toString(row["製造批號"])}' and 機種編號 ='{DataTableUtils.toString(row["客戶機型"])}'";
-                    sqlcmd = $"select * from 立式工藝 where 機種編號 ='{DataTableUtils.toString(row["客戶機型"])}' ";
+                    //   sqlcmd = $"select 組裝時間,狀態 from 工作站狀態資料表 left join 組裝工藝 on 組裝工藝.機種編號 = SUBSTRING(排程編號, 1, CHARINDEX('-', 排程編號) - 1) where 工作站編號 = '11' and 排程編號 = '{DataTableUtils.toString(row["製造批號"])}' and 機種編號 ='{DataTableUtils.toString(row["客戶機型"])}'";
+                    sqlcmd = $"select * from 組裝工藝 where 機種編號 ='{DataTableUtils.toString(row["客戶機型"])}' ";
                     DataRow rew = DataTableUtils.DataTable_GetDataRow(sqlcmd);
                     if (rew != null)
                         standard = DataTableUtils.toString(rew["組裝時間"]);
@@ -1722,7 +1722,7 @@ namespace dek_erpvis_v2.cls
         {
             //先取得工時
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            string sqlcmd = "select 機種編號,組裝時間 from 立式工藝";
+            string sqlcmd = "select 機種編號,組裝時間 from 組裝工藝";
             DataTable dt_工時 = DataTableUtils.GetDataTable(sqlcmd);
             //取得進度 狀態 完成時間
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
@@ -2172,7 +2172,7 @@ namespace dek_erpvis_v2.cls
             GlobalVar.UseDB_setConnString(GetConnByDekVisTmp);
             //立式場用
             if (GetConnByDekVisTmp.ToLower().Contains("assm"))
-                sqlcmd = $" SELECT 組裝日, 實際啟動時間, (case  when 選用通用工時 = '0' Then 標準工時  when 選用通用工時 <> '0' Then isnull( 組裝時間 ,標準工時) end ) as 標準工時 FROM 工作站狀態資料表 LEFT JOIN 工藝名稱資料表 ON 工藝名稱資料表.工作站編號 = 工作站狀態資料表.工作站編號 LEFT JOIN 立式工藝 ON SUBSTRING(排程編號, 1, CHARINDEX('-', 排程編號) - 1) = 立式工藝.機種編號 LEFT JOIN 工作站型態資料表 ON 工作站型態資料表.工作站編號 = 工作站狀態資料表.工作站編號 WHERE 工作站狀態資料表.排程編號 = '{schedule_number}' and (組裝時間 is not null OR 標準工時 is not null) ";
+                sqlcmd = $" SELECT 組裝日, 實際啟動時間, (case  when 選用通用工時 = '0' Then 標準工時  when 選用通用工時 <> '0' Then isnull( 組裝時間 ,標準工時) end ) as 標準工時 FROM 工作站狀態資料表 LEFT JOIN 工藝名稱資料表 ON 工藝名稱資料表.工作站編號 = 工作站狀態資料表.工作站編號 LEFT JOIN 組裝工藝 ON SUBSTRING(排程編號, 1, CHARINDEX('-', 排程編號) - 1) = 組裝工藝.機種編號 LEFT JOIN 工作站型態資料表 ON 工作站型態資料表.工作站編號 = 工作站狀態資料表.工作站編號 WHERE 工作站狀態資料表.排程編號 = '{schedule_number}' and (組裝時間 is not null OR 標準工時 is not null) ";
             else if (GetConnByDekVisTmp.ToLower().Contains("hor"))
             {
                 if (LineNum == "1")

@@ -127,10 +127,10 @@ namespace dek_erpvis_v2.pages.dp_PM
                          $"組裝時間," +
                          $"SUBSTRING(實際完成時間,1,8) 實際完成時間  " +
                          $"from 工作站狀態資料表 " +
-                         $"left join 立式工藝 on 立式工藝.機種編號 = (select top(1) value from STRING_SPLIT(工作站狀態資料表.排程編號, '-')) " +
+                         $"left join 組裝工藝 on 組裝工藝.機種編號 = (select top(1) value from STRING_SPLIT(工作站狀態資料表.排程編號, '-')) " +
                          $"where 工作站編號 = 11 {condition} ";
                 DataTable dek_dtinformation = DataTableUtils.GetDataTable(sqlcmd);
-                DataTable dek_time = DataTableUtils.GetDataTable("select * from 立式工藝");
+                DataTable dek_time = DataTableUtils.GetDataTable("select * from 組裝工藝");
                 rows = null;
                 if (HtmlUtil.Check_DataTable(dek_dtinformation))
                 {
@@ -160,7 +160,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                         {
                             sqlcmd = $"機種編號='{DataTableUtils.toString(row["排程編號"]).Split('-')[0]}'";
                             rows = dek_time.Select(sqlcmd);
-                            //20220727 增加判斷 機種是否存在於立式工藝中 ex:WDB不存在
+                            //20220727 增加判斷 機種是否存在於組裝工藝中 ex:WDB不存在
                             if (rows.Length == 0)
                             {
                                 row["預計完工日"] = "";

@@ -237,10 +237,10 @@ namespace dek_erpvis_v2.pages.dp_PM
                              $"組裝時間," +
                              $"SUBSTRING(實際完成時間,1,8) 實際完成時間  " +
                              $"from 工作站狀態資料表 " +
-                             $"left join 立式工藝 on 立式工藝.機種編號 = (select top(1) value from STRING_SPLIT(工作站狀態資料表.排程編號, '-')) " +
+                             $"left join 組裝工藝 on 組裝工藝.機種編號 = (select top(1) value from STRING_SPLIT(工作站狀態資料表.排程編號, '-')) " +
                              $"where 工作站編號 = 11 {shcdulue} ";
                     DataTable dek_dtinformation = DataTableUtils.GetDataTable(sqlcmd);
-                    DataTable dek_time = DataTableUtils.GetDataTable("select * from 立式工藝");
+                    DataTable dek_time = DataTableUtils.GetDataTable("select * from 組裝工藝");
 
 
 

@@ -55,7 +55,7 @@ namespace dek_erpvis_v2
             //list.Add("工作站狀態資料表");
             //list.Add("工作站歷程資料表");
             //list.Add("組裝資料表");
-            //list.Add("立式工藝");
+            //list.Add("組裝工藝");
             //string db = "dekvisassm";
 
             ////臥式
