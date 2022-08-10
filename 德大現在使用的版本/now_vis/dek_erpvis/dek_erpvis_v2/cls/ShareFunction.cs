@@ -2187,6 +2187,8 @@ namespace dek_erpvis_v2.cls
                     sqlcmd = $"select 實際啟動時間,(CAST(刀鍊點數 as float)*60*60) as 標準工時 from 工作站狀態資料表 left join 臥式工藝 on SUBSTRING(排程編號, 1, CHARINDEX('-', 排程編號) - 1) = 臥式工藝.機種編號  where 排程編號 = '{schedule_number}' and 工作站編號 = '{LineNum}' ";
                 else if (LineNum == "6")
                     sqlcmd = $"select 實際啟動時間,(CAST( 全油壓點數  as float)*60*60) as 標準工時 from 工作站狀態資料表 left join 臥式工藝 on SUBSTRING(排程編號, 1, CHARINDEX('-', 排程編號) - 1) = 臥式工藝.機種編號  where 排程編號 = '{schedule_number}' and 工作站編號 = '{LineNum}' ";
+                else if (LineNum=="11")
+                    sqlcmd = $"SELECT 實際啟動時間,(組裝時間) AS 標準工時 FROM 工作站狀態資料表 LEFT JOIN 組裝工藝 ON Substring(排程編號, 1, Charindex('-', 排程編號) - 1) = 組裝工藝.機種編號 WHERE 排程編號 ='{schedule_number}' AND 工作站編號 = '{LineNum}'";
             }
             dr = DataTableUtils.GetDataTable(sqlcmd);
 
@@ -2199,10 +2201,11 @@ namespace dek_erpvis_v2.cls
                 DateTime start_time;
 
                 string timestart = "";
-                if (LineNum == "11" && !fix)
-                    timestart = DataTableUtils.toString(dr.Rows[0]["組裝日"]).Trim() + "080000";
+                //20220810 暫時移除
+                //if (LineNum == "11" && !fix)
+                //    timestart = DataTableUtils.toString(dr.Rows[0]["組裝日"]).Trim() + "080000";
 
-                else
+                //else
                     timestart = DataTableUtils.toString(dr.Rows[0]["實際啟動時間"]);
 
                 if (timestart != "")
