@@ -472,6 +472,7 @@
         /*------------------------------------------------------------------*/
         //點擊空白處收回選單
         $(document).on('click', function (e) {
+            var WhatSystem = navigator.userAgent;
             //選取側欄以外地方
             var contentEle = $('#sidebar-menu');
             if (contentEle != e.target && contentEle.has(e.target).length == 0) {
