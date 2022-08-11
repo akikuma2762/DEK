@@ -95,7 +95,7 @@
         //產生相對應的JScode
         set_Table('#table-form');
         //防止頁籤跑版
-        loadpage('supplierscore=supplierscore_cust', '#datatable-buttons');
+        loadpage('supplierscore=supplierscore_cust', '#table-form');
         $("#btncheck").click(function () {
             $.blockUI({ message: '<img src="../../images/loading.gif" />' });
             document.getElementById('<%=button_select.ClientID %>').click();

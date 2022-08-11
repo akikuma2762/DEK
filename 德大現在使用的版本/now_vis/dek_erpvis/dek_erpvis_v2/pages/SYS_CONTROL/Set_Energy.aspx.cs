@@ -69,7 +69,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 case "sowon":
                 case "dek":
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
                     sqlcmd = $"select * from 工作站型態資料表 where 工作站編號 ='{TextBox_Number.Text}'";
                     dt = DataTableUtils.GetDataTable(sqlcmd);
                     if (HtmlUtil.Check_DataTable(dt))
@@ -77,7 +77,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                         DataRow row = dt.NewRow();
                         row["工作站編號"] = dt.Rows[0]["工作站編號"];
                         row["目標件數"] = TextBox_Qty.Text;
-                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
                         ok = DataTableUtils.Update_DataRow("工作站型態資料表", $"工作站編號 ='{TextBox_Number.Text}'", row);
                     }
                     break;
@@ -123,7 +123,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "dek":
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
                     sqlcmd = "select 工作站編號 編輯,工作站名稱,目標件數 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 = '11'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;

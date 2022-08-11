@@ -290,6 +290,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
         }
         private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間,string 主軸轉動,string 主軸側溫度 , string 刀庫馬達電流_損壞預警, string 主軸扣刀_震動監視, string 主軸定位_在位確認, string 主軸拉刀_在位確認, string 潤滑油_油位檢知, string ball_screw_高溫監視, string 治具油壓_溫度監視, string 治具油壓_壓力監視, string 切屑液_濃度檢知, string 切屑液_溫度檢知, string 氣壓源_壓力檢知, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
         {
+            string total_Value = "";
             string 設備狀態_色彩 = cNC_Class.mach_status_Color(設備狀態);
             設備狀態 = cNC_Class.mach_status_EN2CH(設備狀態);
 
@@ -373,6 +374,16 @@ namespace dek_erpvis_v2.pages.dp_CNC
                 else
                     tr.Append(show_table(old_name, "next_button", $" <a href=\"javascript:void(0)\"><img src=\"../../assets/images/unclick.png\" width=\"50px\" height=\"50px\" onclick=\"alert('工單已完結，請由可視化主控台指派')\" /></a> ", "1"));
             }
+
+            //20220811 生產進度新增NAN判斷
+            if (DataTableUtils.toInt(今日生產件數) > 0 && DataTableUtils.toInt(預計生產件數) == 0)
+            {
+                 total_Value = $" NAN ( {DataTableUtils.toInt(今日生產件數)} / {DataTableUtils.toInt(預計生產件數)} )";
+            }
+            else {
+                total_Value = DataTableUtils.toInt(生產進度) + $" %  ( {DataTableUtils.toInt(今日生產件數)} / {DataTableUtils.toInt(預計生產件數)} )";
+            }
+
             tr.Append(show_table(old_name, "mach_name", $"<a href=\"javascript:void(0)\" onclick=jump('{WebUtils.UrlStringEncode($"machine={old_name}")}')><u style=\"color:blue\">{設備名稱}</u></a>"));
             tr.Append(show_table(old_name, "check_staff", 校機人員));
             tr.Append(show_table(old_name, "work_staff", 加工人員));
@@ -383,7 +394,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             tr.Append(show_table(old_name, "product_name", 產品名稱));
             tr.Append(show_table(old_name, "product_number", 料件編號));
             tr.Append(show_table(old_name, "craft_name", 工藝名稱));
-            tr.Append(show_table(old_name, "count_today_rate", DataTableUtils.toInt(生產進度) + $" %  ( {DataTableUtils.toInt(今日生產件數)} / {DataTableUtils.toInt(預計生產件數)} )"));
+            tr.Append(show_table(old_name, "count_today_rate", total_Value));
             tr.Append(show_table(old_name, "complete_time", CNCUtils.date_Substring(應完工時間)));
             tr.Append(show_table(old_name, "finish_time", CNCUtils.date_Substring(預計完工時間)));
             tr.Append(show_table(old_name, "acts", 主軸轉速));

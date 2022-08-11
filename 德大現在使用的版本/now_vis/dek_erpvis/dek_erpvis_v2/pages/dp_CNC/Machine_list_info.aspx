@@ -1188,12 +1188,21 @@
 
                             //所有資料的陣列
                             for (j = 0; j < tharray.length; j++) {
+                                var totla_Value = "";
                                 //欄位名稱
                                 var column = tablearray[tablearray.indexOf(tharray[j]) + 1];
                                 //label ID
                                 var td_column = Dev_Name + '_' + tablearray[tablearray.indexOf(tharray[j]) + 1];
                                 //欄位值
                                 var td_value = tablearray[tablearray.indexOf(tharray[j]) + 2];
+
+                                //20220811 生產進度新增NAN判斷
+                                if (parseInt(check_tdvalue(count_today)) > 0 && parseInt(check_tdvalue(exp_product_count_day)) == 0) {
+                                    totla_Value = 'NAN ' + ' ( ' + check_tdvalue(count_today) + ' / ' + check_tdvalue(exp_product_count_day) + ' )';
+
+                                } else {
+                                    totla_Value = check_tdvalue(td_value) + ' %  ' + ' ( ' + check_tdvalue(count_today) + ' / ' + check_tdvalue(exp_product_count_day) + ' )';
+                                }
 
                                 if (column == 'mach_name') {
 
@@ -1205,7 +1214,7 @@
                                     document.getElementById(td_column).innerHTML = check_tdvalue(td_value) + ' %';
                                 }
                                 else if (column == 'count_today_rate') {
-                                    document.getElementById(td_column).innerHTML = check_tdvalue(td_value) + ' %  ' + ' ( ' + check_tdvalue(count_today) + ' / ' + check_tdvalue(exp_product_count_day) + ' )';
+                                    document.getElementById(td_column).innerHTML = totla_Value;
                                 }
                                 else if (column == 'complete_time') {
                                     document.getElementById(td_column).innerHTML = check_value(td_value.substring(0, 11));
@@ -1858,7 +1867,6 @@
                 setTimeout(function () { testtop(); }, 1250);
         });
         //要做在load執行
-        console.log("123");
         var gp1_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP1><div id=GP_Title>工單資訊</div><div id=GP1_Arrow class='fa fa-chevron-up'></div></button></div></td></tr>";
         var gp2_tr = "<tr class=GP_Tr><td colspan=2 class=GP_Td> <div class=GP_Content><button type=button class=GP_Btn id=GP2><div id=GP_Title>設備資訊</div><div id=GP2_Arrow class='fa fa-chevron-up'></div></button></div></td></tr>";
         var checkbox_Id = ($('#ContentPlaceHolder1_CheckBoxList_cloumn input[type="checkbox"]').length) - 1;
@@ -1871,7 +1879,7 @@
         var count_gp2 = 0;
         var count_gp2_loop = 0;
         var count_gp2_last = 0;
-        console.log(typeof checkbox_Id, checkbox_Id);
+        //console.log(typeof checkbox_Id, checkbox_Id);
 
         for (var i = 0; i <= checkbox_Id; i++) {
             if (arryList.indexOf($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).val()) != -1) {

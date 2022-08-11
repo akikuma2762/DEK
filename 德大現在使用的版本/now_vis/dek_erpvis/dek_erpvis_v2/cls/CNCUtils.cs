@@ -47,13 +47,18 @@ namespace dek_erpvis_v2.cls
                         dr["product_name"] = "";
                         dr["product_number"] = "";
                         dr["craft_name"] = "";
-                        dr["exp_product_count_day"] = "";
-                        // dr["exp_product_count"] = "";
                         dr["product_count"] = "";
-                        dr["product_count_day"] = "";
                         dr["product_rate_day"] = "";
                         dr["finish_time"] = "";
                         dr["complete_time"] = "";
+                        //20220811 生產進度新增NAN判斷 不設空值
+                        //dr["exp_product_count_day"] = ""; 
+
+                        //20220811 生產進度新增NAN判斷 不設空值
+                        //dr["product_count_day"] = "";
+
+                        //20220811 前人殘存未知欄位,暫不刪除
+                        // dr["exp_product_count"] = ""; 
                     }
                     return dt_data_1;
                 }
