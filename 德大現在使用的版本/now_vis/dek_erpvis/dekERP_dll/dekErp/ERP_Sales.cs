@@ -29,6 +29,13 @@ namespace dekERP_dll.dekErp
             string sqlcmd = GetOrders_Over_Detail(start, detail);
             return iTech.Get_DataTable(sqlcmd, source);
         }
+        //20220812 大圓盤逾期語法優化,新增判斷客戶名稱
+        public DataTable Orders_Over_Detail_Customer(string start, string source, bool detail = false, string customer = "")
+        {
+            iniManager = new IniManager($"{ConfigurationManager.AppSettings["ini_local"]}{source}Erp.ini");
+            string sqlcmd = GetOrders_Over_Detail_Customer(start, detail, customer);
+            return iTech.Get_DataTable(sqlcmd, source);
+        }
 
         public DataTable Orders_Over_Detail(DateTime start, string source, bool detail = false, string custom = "")
         {
@@ -183,6 +190,21 @@ namespace dekERP_dll.dekErp
 
             if (iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail", "") != "")
                 sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail", ""), start, in_house);
+
+            return sqlcmd.ToString();
+        }
+        //20220812 大圓盤逾期語法優化,新增判斷客戶名稱
+        string GetOrders_Over_Detail_Customer(string start, bool detail,string customer)
+        {
+            StringBuilder sqlcmd = new StringBuilder();
+            StringBuilder customer_name = new StringBuilder();
+
+            if (detail)
+                if (iniManager.ReadIniFile("Parameter", "Over_Detail_Customer", "") != "")
+                    customer_name.AppendFormat(iniManager.ReadIniFile("Parameter", "Over_Detail_Customer", ""), customer);
+
+            if (iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail_Customer", "") != "")
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail_Customer", ""), start, customer_name);
 
             return sqlcmd.ToString();
         }

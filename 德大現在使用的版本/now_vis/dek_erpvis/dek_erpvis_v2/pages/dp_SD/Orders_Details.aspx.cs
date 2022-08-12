@@ -114,8 +114,12 @@ namespace dek_erpvis_v2.pages.dp_SD
             }
 
             dt_monthtotal = SLS.Orders_Detail(dt_st, dt_ed, status, Factory,true);
-            dt_Overdue = SLS.Orders_Over_Detail(dt_st, Factory, true);
 
+            //20220812 大圓盤語法優化,新增判斷客戶,立式臥式待調整
+            if(Factory=="dek")
+            dt_Overdue = selectItem_X!="產線"? SLS.Orders_Over_Detail_Customer(dt_st, Factory, true,dt_Row) : SLS.Orders_Over_Detail(dt_st, Factory, true);
+            else
+                dt_Overdue=SLS.Orders_Over_Detail(dt_st, Factory, true);
             if (HtmlUtil.Check_DataTable(dt_monthtotal))
                 dt_monthtotal = myclass.Add_LINE_GROUP(dt_monthtotal).ToTable();
 
