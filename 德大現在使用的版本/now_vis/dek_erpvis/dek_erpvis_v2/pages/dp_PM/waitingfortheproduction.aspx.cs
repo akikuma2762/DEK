@@ -315,8 +315,8 @@ namespace dek_erpvis_v2.pages.dp_PM
                     ok = false;
                 }
                 shcdulue = shcdulue != "" ? $" and ( {shcdulue} ) " : "";
-
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                //20220815 大圓盤立式移至臥式
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 sqlcmd = $" select " +
                          $"排程編號," +
                          $"進度," +

@@ -891,8 +891,16 @@ namespace dek_erpvis_v2.pages.dp_SD
             bool endDay_Bool = month_Compare(date, dt_end);
             startDay_Interval = startDay_Bool == true ? dt_str : startDay_Interval;
             endDay_Interval = endDay_Bool == true ? dt_end : endDay_Interval;
+            //20220815修正總計計算語法
+            if (line != "總計")
+            {
+                sqlcmd = $"({sqlcmd} and 入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({SelectedItem}='{line}' and 入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+            }
+            else
+            {
+                sqlcmd = $"(入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+            }
 
-            sqlcmd = $"({sqlcmd} and 入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({SelectedItem}='{line}' and 入庫日 >= {startDay_Interval} and 入庫日 <= {endDay_Interval} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
             string value = sqlcmd;
 
             return value;
@@ -912,7 +920,8 @@ namespace dek_erpvis_v2.pages.dp_SD
                 DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssmHor;
             }
             else if(source=="dek") {
-                DataTableUtils.Conn_String = type == "capacity" ? myclass.GetConnByDekdekVisAssm: myclass.GetConnByDekVisErp;                
+                //20220815 修正大圓盤連線 立式改為臥式
+                DataTableUtils.Conn_String = type == "capacity" ? myclass.GetConnByDekdekVisAssmHor: myclass.GetConnByDekVisErp;                
             }
             link = DataTableUtils.GetDataTable(sqlcmd);
 

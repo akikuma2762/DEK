@@ -79,6 +79,7 @@ namespace dek_erpvis_v2.pages.dp_SD
                 Factory = HtmlUtil.Search_Dictionary(keyValues, "type");
                 mode = HtmlUtil.Search_Dictionary(keyValues, "mode");
                 dt_Row = HtmlUtil.Search_Dictionary(keyValues, "dt_Row");
+                cust_name = dt_Row;
                 selectItem_X = HtmlUtil.Search_Dictionary(keyValues, "selectItem_X");
                 table_Title = dt_Row;
                 if (mode.Contains("order_month_Overdue")) table_Title += "逾期";
@@ -117,7 +118,7 @@ namespace dek_erpvis_v2.pages.dp_SD
 
             //20220812 大圓盤語法優化,新增判斷客戶,立式臥式待調整
             if(Factory=="dek")
-            dt_Overdue = selectItem_X!="產線"? SLS.Orders_Over_Detail_Customer(dt_st, Factory, true,dt_Row) : SLS.Orders_Over_Detail(dt_st, Factory, true);
+            dt_Overdue = selectItem_X=="產線"? SLS.Orders_Over_Detail(dt_st, Factory, true) : SLS.Orders_Over_Detail_Customer(dt_st, Factory, true, cust_name);
             else
                 dt_Overdue=SLS.Orders_Over_Detail(dt_st, Factory, true);
             if (HtmlUtil.Check_DataTable(dt_monthtotal))

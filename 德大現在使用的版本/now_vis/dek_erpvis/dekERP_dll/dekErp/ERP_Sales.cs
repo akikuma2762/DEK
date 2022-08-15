@@ -164,16 +164,21 @@ namespace dekERP_dll.dekErp
             StringBuilder sqlcmd = new StringBuilder();
             StringBuilder Condition = new StringBuilder();
             StringBuilder in_house = new StringBuilder();
+            StringBuilder in_house_column = new StringBuilder();
 
             if (detail)
+            {
                 if (iniManager.ReadIniFile("Parameter", "in_house", "") != "")
                     in_house.Append(iniManager.ReadIniFile("Parameter", "in_house", ""));
+                if (iniManager.ReadIniFile("Parameter", "in_house_column", "") != "")
+                    in_house_column.Append(iniManager.ReadIniFile("Parameter", "in_house_column", ""));
+            }
 
             if (status != OrderStatus.All && iniManager.ReadIniFile("Parameter", "Orders_" + status, "") != "")
                 Condition.Append(iniManager.ReadIniFile("Parameter", "Orders_" + status, ""));
 
             if (iniManager.ReadIniFile("dekERPVIS", "Orders_Details", "") != "")
-                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Orders_Details", ""), start, end, Condition, in_house);
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Orders_Details", ""), start, end, Condition, in_house, in_house_column);
 
             return sqlcmd.ToString();
         }
@@ -183,13 +188,18 @@ namespace dekERP_dll.dekErp
         {
             StringBuilder sqlcmd = new StringBuilder();
             StringBuilder in_house = new StringBuilder();
+            StringBuilder in_house_column = new StringBuilder();
 
             if (detail)
+            {
                 if (iniManager.ReadIniFile("Parameter", "in_house", "") != "")
                     in_house.Append(iniManager.ReadIniFile("Parameter", "in_house", ""));
+                if (iniManager.ReadIniFile("Parameter", "in_house_column", "") != "")
+                    in_house_column.Append(iniManager.ReadIniFile("Parameter", "in_house_column", ""));
+            }
 
             if (iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail", "") != "")
-                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail", ""), start, in_house);
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Orders_Over_Detail", ""), start, in_house, in_house_column);
 
             return sqlcmd.ToString();
         }
