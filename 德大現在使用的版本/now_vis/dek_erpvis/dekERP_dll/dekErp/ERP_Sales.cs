@@ -157,6 +157,26 @@ namespace dekERP_dll.dekErp
             return Change_Now_To_Now(start.ToString(DateFormat), end.ToString(DateFormat), source);
         }
 
+        //20220816生產推移圖立式資料
+        public string Waitingfortheproduction_Assm_Table(string start, string end, string source)
+        {
+            iniManager = new IniManager($"{ConfigurationManager.AppSettings["ini_local"]}{source}Erp.ini");
+            string sqlcmd = GET_Waitingfortheproduction_Assm_Table(start, end);
+            return sqlcmd;
+        }
+        //20220816生產推移圖臥式資料
+        public string Waitingfortheproduction_Hor_Table(string upper_month,string condition, string start, string end, string source)
+        {
+            iniManager = new IniManager($"{ConfigurationManager.AppSettings["ini_local"]}{source}Erp.ini");
+            string sqlcmd = GET_Waitingfortheproduction_Hor_Table(upper_month, condition, start, end);
+            return sqlcmd;
+        }
+        public string Waitingfortheproduction_BigDisc_Table(string upper_month, string start, string end, string source)
+        {
+            iniManager = new IniManager($"{ConfigurationManager.AppSettings["ini_local"]}{source}Erp.ini");
+            string sqlcmd = GET_Waitingfortheproduction_BigDisc_Table(upper_month,start, end);
+            return sqlcmd;
+        }
         //----------------------------------------------------語法產生處---------------------------------------------------------
         //訂單數量與金額統計
         string GetOrders_Detail(string start, string end, OrderStatus status, bool detail)
@@ -265,6 +285,34 @@ namespace dekERP_dll.dekErp
             StringBuilder sqlcmd = new StringBuilder();
             if (iniManager.ReadIniFile("dekERPVIS", "recordsofchangetheorder_details", "") != "")
                 sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "recordsofchangetheorder_details", ""), start, end);
+            return sqlcmd.ToString();
+        }
+
+
+        //20220816生產推移圖立式語法格式化
+        string GET_Waitingfortheproduction_Assm_Table(string start, string end)
+        {
+            StringBuilder sqlcmd = new StringBuilder();
+            if (iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction", "") != "")
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction", ""), start, end);
+            return sqlcmd.ToString();
+        }
+
+        //20220816生產推移圖臥式語法格式化
+        string GET_Waitingfortheproduction_Hor_Table(string upper_month,string condition, string start, string end)
+        {
+            StringBuilder sqlcmd = new StringBuilder();
+            if (iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction_Hor", "") != "")
+            sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction_Hor", ""), upper_month, condition, start, end);
+            return sqlcmd.ToString();
+        }
+
+        //20220816生產推移圖大圓盤語法格式化
+        string GET_Waitingfortheproduction_BigDisc_Table(string upper_month,string start, string end)
+        {
+            StringBuilder sqlcmd = new StringBuilder();
+            if (iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction_BigDisc", "") != "")
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction_BigDisc", ""), upper_month, end);
             return sqlcmd.ToString();
         }
 

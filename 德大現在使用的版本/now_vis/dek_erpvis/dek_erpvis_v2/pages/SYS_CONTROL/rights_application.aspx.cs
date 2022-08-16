@@ -135,7 +135,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     available++;
 
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
-                //新增至show_page
+                //新增至show_page //20220816 無法insert,新版帳號無須inser show_page暫不修正
                 string sqlcmd = "select * from show_page ";
                 DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
                 if (dt != null)
