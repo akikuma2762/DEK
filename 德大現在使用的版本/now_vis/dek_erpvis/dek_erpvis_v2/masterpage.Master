@@ -236,12 +236,13 @@
     </form>
     <script src="../../assets/vendors/time/loading.js"></script>
     <script>
+        var resize = false;
         $(document).ready(function () {
 
             var WhatSystem = navigator.userAgent;
             if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
             } else {
-                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                $.blockUI({ message: '<img src="../../images/loading.gif" />'});
             }
 
 
@@ -251,6 +252,8 @@
                 ShowTime();
                 open_notice();
             });
+            //20220817頁面載完執行,避免抓不到元素
+            revice();
         });
 
         function show_loading() {
@@ -258,7 +261,8 @@
             var WhatSystem = navigator.userAgent;
             if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
             } else {
-                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                //20220817預設寬度,防止跑版
+                $.blockUI({ message: '<img src="../../images/loading.gif" />', css: { width: '310px' } });
             }
         }
         
@@ -366,45 +370,58 @@
         mobile_Check();
         //判斷手機或是電腦
         function mobile_Check() {
+            console.log("checkkkk");
             var WhatSystem = navigator.userAgent;
             console.log(WhatSystem);
             if ((WhatSystem.match(/android/i) || WhatSystem.match(/(iphone|ipad|ipod);?/i)) && $(window).width() < 991) {
                 seticon();
             }
             else {/*兩個側欄之間的交換*/
-                $("#menu_toggle").click(function () {
+                pcMenuToggle();
+            }
+        }
+
+        function pcMenuToggle() {
+            $("#menu_toggle").bind('click',pctoggle= function () {
+                console.trace("ddd", $(window).width(), changeicon.className, $("#main_body").attr("class"), changeicon.classList);
+                if ($(window).width() > 991) {
                     if (changeicon.classList == "fa fa-chevron-left") {
+                        console.log("aaa");
                         revice();//20220630新增 交換時隱藏部門選項
                         changeicon.className = "fa fa-chevron-right";
                         $('#changeicon').attr('data-original-title', '展開側邊面板');
                         document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                         document.getElementById("BorderBox1").style.display = "initial";
+                        document.getElementById("BorderBox").style.display = "none";
                     }
                     else {
+                        console.log("cc");
                         changeicon.className = "fa fa-chevron-left";
                         $('#changeicon').attr('data-original-title', '收合側邊面板');
                         document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                     }
-                    document.cookie = "clickhistory=" + changeicon.className + ";path=/";
-                });
 
-            }
+                    document.cookie = "clickhistory=" + changeicon.className + ";path=/";
+                }
+            });
         }
-        
         /*------------------------------------------------------------------*/
         /*電腦版的側欄轉換*/
         $("#menu_toggle1").click(function () {
             document.getElementById('menu_toggle').click();
-            document.getElementById("BorderBox1").style.display = "none";
+            document.getElementById("BorderBox1").style.display = "none"; 
+            document.getElementById("BorderBox").style.display = "initial";
         });
         /*手機板專用--收合*/
         $("#menu_toggle2").click(function () {
+            console.log("menu_toggle2")
             document.getElementById('menu_toggle').click();
             document.getElementById("BorderBox3").style.display = "initial";
             document.getElementById("BorderBox2").style.display = "none";
         });
         /*手機板專用--展開*/
         $("#menu_toggle3").click(function () {
+            console.log("menu_toggle3")
             document.getElementById('menu_toggle').click();
             document.getElementById("BorderBox3").style.display = "none";
             document.getElementById("BorderBox2").style.display = "initial";
@@ -435,13 +452,13 @@
                 $('#changeicon').attr('data-original-title', '');
                 document.getElementById("BorderBox2").style.display = "initial";
                 document.getElementById("BorderBox").style.display = "none";
+                mobile_Mode();
             }
             else {
                 $('#changeicon').attr('data-original-title', '收合側邊面板');
             }
         }
-        //印出目前所有的cookies
-        function showcookie() {
+        function get_ClickHistory() {
             var test = "clickhistory" + '=';
             var x = document.cookie.split(';');
             var y = '';
@@ -451,12 +468,20 @@
                     y = item.substring(test.length, item.length);
                 }
             }
+            return y;
+        }
+        //印出目前所有的cookies
+        function showcookie() {
+           
+            var y = get_ClickHistory();
+            console.log(y);
             //如果是展開的情況或是剛進來的話，則保持原樣
             if (y == "fa fa-chevron-left" || y == "") {
                 document.cookie = "clickhistory=" + changeicon.className + ";path=/";
             }
             //收合的情況
             else {
+                console.log("cookie");
                 changeicon.className = "fa fa-chevron-right";
                 $('#changeicon').attr('data-original-title', '展開側邊面板');
                 document.getElementById("BorderBox1").style.display = "initial";
@@ -492,6 +517,46 @@
 
             }
         })
+
+        //20220817 以原功能為基礎,補強選轉螢幕後收縮箭頭顯示不正常
+        function mobile_Mode() {
+            if ($("#main_body").attr("class") == "footer_fixed nav-sm" || $("#main_body").attr("class") == "nav-sm footer_fixed") {
+                console.log("nav-sm <991");
+                document.cookie = "clickhistory=" + "fa fa-chevron-left" + ";path=/";//手機版變回電腦版,cookie須重設
+                $("#BorderBox3").show();
+                $("#BorderBox1").hide();
+                $("#BorderBox2").hide();
+                $('#changeicon').attr('data-original-title', '');
+
+            } else {
+                console.log("nav-md <991");
+                $("#BorderBox2").show();
+                $("#BorderBox3").hide();
+
+            }
+
+        }
+        //20220817 以原功能為基礎,補強選轉螢幕後收縮箭頭顯示不正常
+        function pc_Mode() {
+            if ($("#main_body").attr("class") == "footer_fixed nav-md" || $("#main_body").attr("class") == "nav-md footer_fixed") {
+                console.log("991>電腦nav-md");
+                $("#BorderBox3").hide();
+                $("#BorderBox2").hide();
+                $("#BorderBox").show();
+                changeicon.classList = "fa fa-chevron-left"
+                //$('#changeicon').attr('data-original-title', '');
+
+            } else {
+                console.log("991>電腦nav-sm");
+                $("#BorderBox3").hide();
+                $("#BorderBox2").hide();
+                $("#BorderBox1").show();
+                changeicon.classList = "fa fa-chevron-right"
+            }
+
+        }
+
+
         /*------------------------------------------------------------------*/
         /*手機板使用，清除側欄用*/
         function seticon() {
@@ -500,7 +565,7 @@
             changeicon.className = "fa fa-chevron-right";
             changeicon.classList == "fa fa-chevron-right"
             $('#changeicon').attr('data-original-title', '');
-            $("#menu_toggle").click(function () {
+            $("#menu_toggle").bind('click',mobile_menu_toggle =function () {
                 if (changeicon.classList == "fa fa-chevron-left") {
                     changeicon.className = "fa fa-chevron-right";
                     $('#changeicon').attr('data-original-title', '');
@@ -511,6 +576,7 @@
                     $('#changeicon').attr('data-original-title', '');
                     document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 }
+                console.log("手機");
                 document.cookie = "clickhistory=" + changeicon.className + ";path=/";
             });
         }
@@ -519,7 +585,7 @@
         //判斷側欄是否打開，如果打開的話，就將它收回 20220630
         function revice() {
             var act = "";
-            if ($('#main_body').attr('class') == 'footer_fixed nav-sm') {
+            if ($('#main_body').attr('class') == 'footer_fixed nav-sm' || $('#main_body').attr('class') == 'nav-sm footer_fixed' ) {
                 //console.log($('#sidebar-menu [class="active"]'));
                 if ($('#sidebar-menu [class="active"]').length != 0) {
                     act = "active";
@@ -547,13 +613,55 @@
             }
         }*/
         //20220809 視窗變動時箭頭顯示不正確
+        console.log("end");
+        var resizeTimer = null;
         $(window).resize(function () {
-            if ($("#main_body").width() < 991 && $("#main_body").attr("class") == "footer_fixed nav-sm") {
-                $("#BorderBox3").show();
-                $("#BorderBox2").hide();
-                $('#changeicon').attr('data-original-title', '');
-            }
+            resize = true;
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                console.log($(window).width());
+                //mobile_Check();
+                if ($("#main_body").width() < 991) {
+                    seticon();
+                    if ($("#main_body").attr("class") == "footer_fixed nav-sm" || $("#main_body").attr("class") == "nav-sm footer_fixed") {
+                        console.log("nav-sm <991");
+                        document.cookie = "clickhistory=" + "fa fa-chevron-left" + ";path=/";
+                        $("#BorderBox3").show();
+                        $("#BorderBox1").hide();
+                        $('#changeicon').attr('data-original-title', '');
+                    } else {
+                        console.log("nav-md <991");
+                        $("#BorderBox2").show();
 
+                    }
+
+
+                } else if ($("#main_body").width() > 991) {
+                    $("#menu_toggle").unbind("click", mobile_menu_toggle);
+                    try { $("#menu_toggle").unbind("click", pctoggle); } catch (e) { console.log(e) } //首次無pctoggle監聽,略過
+                    
+                    pcMenuToggle();
+                    if ($("#main_body").attr("class") == "footer_fixed nav-md" || $("#main_body").attr("class") == "nav-md footer_fixed") {
+                        console.log("991>電腦nav-md");
+                        $("#BorderBox3").hide();
+                        $("#BorderBox2").hide();
+                        $("#BorderBox").show();
+                        changeicon.classList = "fa fa-chevron-left"
+                        //$('#changeicon').attr('data-original-title', '');
+
+                    } else {
+                        console.log("991>電腦nav-sm");
+                        $("#BorderBox3").hide();
+                        $("#BorderBox2").hide();
+                        $("#BorderBox1").show();
+                        changeicon.classList = "fa fa-chevron-right"
+                        document.cookie = "clickhistory=" + "fa fa-chevron-right" + ";path=/";
+                        console.log(document.cookie);
+
+                    }
+
+                }
+            }, 100);
         });
 
 
