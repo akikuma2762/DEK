@@ -119,17 +119,17 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 case "sowon":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    sqlcmd = "select 工作站編號 編輯,工作站名稱,目標件數 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 <> '11'";
+                    sqlcmd = "select 工作站編號 AS 編輯,工作站名稱,目標件數 AS 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 <> '11'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "dek":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
-                    sqlcmd = "select 工作站編號 編輯,工作站名稱,目標件數 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 = '11'";
+                    sqlcmd = "select 工作站編號 AS 編輯,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 = '11'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "iTec":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                    sqlcmd = "select 工作站編號 編輯,工作站名稱,目標件數 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and ( 工作站編號 = '1' OR 工作站編號 = '2') ";
+                    sqlcmd = "select 工作站編號 AS 編輯,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and ( 工作站編號 = '1' OR 工作站編號 = '2') ";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
             }

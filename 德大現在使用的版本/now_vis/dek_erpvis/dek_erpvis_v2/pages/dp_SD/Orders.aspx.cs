@@ -765,82 +765,92 @@ namespace dek_erpvis_v2.pages.dp_SD
             DataTable serch_dt = new DataTable();
             int work_Day = 0;
             string sqlcmd = "";
-            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
+            string selectedItem_Value = dropdownlist_Factory.SelectedItem.Value;
+            string value_capacity = "";
+            if (selectedItem_Value == "sowon")
             {
                 switch (line_name)
                 {
                     case "40盤":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=1 OR 工作站編號=2 OR 工作站編號=9 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "50盤":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=5 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "MA":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=3 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "MAZAK":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=4 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "T1":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=7 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "鍊式":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=6 OR 工作站編號=10 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "總計":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 BETWEEN 1 AND 10 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "大圓盤":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 = 11 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "capacity");
                         break;
                 }
             }
-            else if (dropdownlist_Factory.SelectedItem.Value == "iTec")
+            else if (selectedItem_Value == "iTec")
             {
                 switch (line_name)
                 {
                     case "臥式":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=1 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "NEW INTE":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 WHERE 工作站編號=2 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                     case "總計":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 BETWEEN 1 AND 2 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "");
                         break;
                 }
             }
-            else if (dropdownlist_Factory.SelectedItem.Value == "dek")
+            else if (selectedItem_Value == "dek")
             {
                 switch (line_name)
                 {
                     case "總計":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 = 11 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "capacity");
                         break;
                     case "大圓盤":
                         sqlcmd = "SELECT SUM(目標件數)月產能　FROM 工作站型態資料表 where 工作站編號 = 11 AND 工作站是否使用中=1";
-                        serch_dt = Orders_Detail_Link(sqlcmd, dropdownlist_Factory.SelectedItem.Value, "capacity");
+                        serch_dt = Orders_Detail_Link(sqlcmd, selectedItem_Value, "capacity");
                         break;
                 }
             }
-            
-            if (Line_Name.IndexOf(month) != -1) {
-                 month = month.Replace("/", "");
-                work_Day = int.Parse(month_WorkDay(month));
+           
+            //2022018 僅立式式日產能,需轉換月產能
+            if (selectedItem_Value == "sowoon")
+            {
+                if (Line_Name.IndexOf(month) != -1)
+                {
+                    month = month.Replace("/", "");
+                    work_Day = int.Parse(month_WorkDay(month));
+                }
+                value_capacity = (DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString()) * work_Day).ToString();
             }
-            string value_capacity = (DataTableUtils.toInt(serch_dt.Rows[0]["月產能"].ToString())* work_Day).ToString();
+            else {
+                value_capacity = serch_dt.Rows[0]["月產能"].ToString();
+            }
             return value_capacity;
         }
 

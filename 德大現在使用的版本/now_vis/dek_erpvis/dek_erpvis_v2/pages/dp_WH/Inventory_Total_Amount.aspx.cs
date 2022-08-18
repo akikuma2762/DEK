@@ -91,7 +91,14 @@ namespace dek_erpvis_v2.pages.dp_WH
             {
                 DataTable dt_type = PCD.Item_DataTable("InactiveInventory_Class", dropdownlist_Factory.SelectedItem.Value);
                 if (HtmlUtil.Check_DataTable(dt_type))
+                {
+                    //20220818 獨立判斷大圓盤,資料庫設計欄位不同
+                    if(dropdownlist_Factory.SelectedItem.Value=="dek")
+                    HtmlUtil.Set_Element(dt_type, CheckBoxList_type, "CLASS_NAME", "CLASS_NO", true, "零件");
+                    else
                     HtmlUtil.Set_Element(dt_type, CheckBoxList_type, "C_NAME", "CLASS", true, "零件");
+
+                }
             }
         }
 
