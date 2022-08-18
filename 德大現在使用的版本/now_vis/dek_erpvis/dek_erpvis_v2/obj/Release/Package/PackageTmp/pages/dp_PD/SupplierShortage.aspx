@@ -40,7 +40,7 @@
                                                     <span>廠區</span>
                                                 </div>
                                                 <div class="col-md-8 col-sm-9 col-xs-8">                                                   
-                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control  text-center" OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" AutoPostBack="true">
+                                                        <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control  text-center" OnSelectedIndexChanged="dropdownlist_Factory_SelectedIndexChanged" >
                                                             <asp:ListItem Value="sowon,Eip" Selected="True">立式廠</asp:ListItem>
                                                             <asp:ListItem Value="dek,dek">大圓盤</asp:ListItem>
                                                         </asp:DropDownList>
