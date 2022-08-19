@@ -450,11 +450,21 @@ namespace dek_erpvis_v2.pages.dp_SD
                 //新增總計
                 target.Rows.Add("總計");
 
+
+               
                 //新增產線
                 foreach (DataRow row in month.Rows)
                 {
-                    target.Columns.Add(DataTableUtils.toString(row["計算月份"]));
-                    Line_Name.Add(DataTableUtils.toString(row["計算月份"]));
+                    //20220819 新增篩選結束月份
+                    string row_Month = (DataTableUtils.toString(row["計算月份"])).Replace("/", "");
+                    row_Month=day_Check(row_Month);
+                    if (int.Parse(dt_end) >= int.Parse(row_Month))
+                    {
+                        target.Columns.Add(DataTableUtils.toString(row["計算月份"]));
+                        Line_Name.Add(DataTableUtils.toString(row["計算月份"]));
+                    }
+                    
+                    
                 }
                 //新增小計
                 target.Columns.Add("小計");
@@ -505,8 +515,14 @@ namespace dek_erpvis_v2.pages.dp_SD
                 //新增產線
                 foreach (DataRow row in month.Rows)
                 {
-                    target.Columns.Add(DataTableUtils.toString(row["計算月份"]));
-                    Line_Name.Add(DataTableUtils.toString(row["計算月份"]));
+                    //20220819 新增篩選結束月份
+                    string row_Month = (DataTableUtils.toString(row["計算月份"])).Replace("/", "");
+                    row_Month = day_Check(row_Month);
+                    if (int.Parse(dt_end) >= int.Parse(row_Month))
+                    {
+                        target.Columns.Add(DataTableUtils.toString(row["計算月份"]));
+                        Line_Name.Add(DataTableUtils.toString(row["計算月份"]));
+                    }
                 }
                 //新增小計
                 target.Columns.Add("小計");
@@ -534,11 +550,11 @@ namespace dek_erpvis_v2.pages.dp_SD
                 {
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' and 計算月份={field_name.Replace("/", "")}" : $"計算月份={field_name.Replace("/", "")}";
                     DataRow[] rows = dt_months.Select(sqlcmd);
-                    value = rows.Length > 0 ? rows.Length.ToString() : "";               
+                    value = rows.Length > 0 ? rows.Length.ToString() : "0";               
                 }
                 else if (field_name == "小計")
                 {
-                    string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}'" : "";
+                    string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}' AND 計算月份<={get_EndMonth(dt_end)}" : $"計算月份<={get_EndMonth(dt_end)}";
                     DataRow[] rows = dt_months.Select(sqlcmd);
                     value = rows.Length.ToString();
                     //新增小計超連結20220615
@@ -654,7 +670,7 @@ namespace dek_erpvis_v2.pages.dp_SD
                 else if (field_name == "小計")
                 {
                     string sqlcmd = DataTableUtils.toString(row[SelectedItem]) != "總計" ? $"{SelectedItem}='{row[SelectedItem]}'" : "";
-                    sqlcmd = sqlcmd ==""? $"入庫日>={dt_str} and 入庫日 <={dt_end} or 入庫日 is null ": $"({sqlcmd} and 入庫日 >= {dt_str} and 入庫日 <= {dt_end} )" + "OR" + $"({sqlcmd} and 入庫日 is null)";
+                    sqlcmd = sqlcmd ==""? $"(入庫日>={dt_str} and 入庫日 <={dt_end}) or (入庫日 is null) AND 計算月份<={get_EndMonth(dt_end)}" : $"({sqlcmd} and 入庫日 >= {dt_str} and 入庫日 <= {dt_end}  )" + "OR" + $"({sqlcmd} and 入庫日 is null) AND 計算月份<={get_EndMonth(dt_end)}";
                     DataRow[] rows = dt_months.Select(sqlcmd);
                     value = rows.Length.ToString();
                     //新增小計超連結20220615
@@ -733,6 +749,15 @@ namespace dek_erpvis_v2.pages.dp_SD
             }
             else
                 return "1";
+        }
+
+        //取的結束月份
+        private string get_EndMonth(string date)
+        {
+            date = day_Check(date);
+            date = date.Substring(0, 6);
+            
+            return date;
         }
         //20220804 比較年月是否相等
         private bool month_Compare(string date_1,string date_2)
@@ -839,7 +864,7 @@ namespace dek_erpvis_v2.pages.dp_SD
             }
            
             //2022018 僅立式式日產能,需轉換月產能
-            if (selectedItem_Value == "sowoon")
+            if (selectedItem_Value == "sowon")
             {
                 if (Line_Name.IndexOf(month) != -1)
                 {

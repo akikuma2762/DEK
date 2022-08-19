@@ -1471,7 +1471,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                 $"          <b>產品名稱：{DataTableUtils.toString(row["product_name"]).Replace(@"""", "")}</b> <br> " +
                 $"          <b>料件編號：{DataTableUtils.toString(row["product_number"]).Replace(@"""", "")}</b> <br>" +
                 $"          <b>工藝名稱：{DataTableUtils.toString(row["craft_name"]).Replace(@"""", "")}</b> <br>" +
-                $"          <b>預計今日生產數量：{DataTableUtils.toString(row["exp_product_count_day"]).Replace(@"""", "")}</b> <br>" +
+                $"          <b>預計工單生產數量：{DataTableUtils.toString(row["exp_product_count_day"]).Replace(@"""", "")}</b> <br>" +
                 $"          <b>開始時間：{HtmlUtil.StrToDate(DataTableUtils.toString(row["start_time"]))}</b> <br>" +
                 $"          <b>結束時間：{HtmlUtil.StrToDate(DataTableUtils.toString(row["end_time"]))}</b> <br>\" " +
 
@@ -1500,7 +1500,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                $"          <b>產品名稱：{DataTableUtils.toString(row["product_name"]).Replace(@"""", "")}</b> <br> " +
                $"          <b>料件編號：{DataTableUtils.toString(row["product_number"]).Replace(@"""", "")}</b> <br>" +
                $"          <b>工藝名稱：{DataTableUtils.toString(row["craft_name"]).Replace(@"""", "")}</b> <br>" +
-               $"          <b>今日生產數量：{DataTableUtils.toString(row["product_count_day"]).Replace(@"""", "")}</b> <br>" +
+               $"          <b>工單生產數量：{DataTableUtils.toString(row["product_count_day"]).Replace(@"""", "")}</b> <br>" +
                $"          <b>開始時間：{HtmlUtil.StrToDate(DataTableUtils.toString(row["start_time"]))}</b> <br>" +
                $"          <b>結束時間：{HtmlUtil.StrToDate(DataTableUtils.toString(row["end_time"]))}</b> <br>\" " +
 

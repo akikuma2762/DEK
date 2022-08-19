@@ -540,6 +540,7 @@
                 //console.log("991>電腦nav-md");
                 $("#BorderBox3").hide();
                 $("#BorderBox2").hide();
+                $("#BorderBox1").hide();
                 $("#BorderBox").show();
                 changeicon.classList = "fa fa-chevron-left"
                 //$('#changeicon').attr('data-original-title', '');

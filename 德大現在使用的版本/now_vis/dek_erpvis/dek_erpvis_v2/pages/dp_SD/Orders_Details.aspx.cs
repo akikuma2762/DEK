@@ -133,9 +133,25 @@ namespace dek_erpvis_v2.pages.dp_SD
         {
             DataTable dt = new DataTable();
             if (dt_ed != "")
+            {
                 dt = dt_monthtotal;
-            else
+                //20220819篩選最終月份
+                string end_Date = dt_ed.Substring(0, 6);
+                DataTable dt_clone2 = dt.Clone();
+                DataRow[] rows2 = dt.Select($"計算月份<={end_Date}");
+                if (rows2 != null && rows2.Length > 0)
+                {
+                    for (int i = 0; i < rows2.Length; i++)
+                        dt_clone2.ImportRow(rows2[i]);
+                }
+                dt_clone2.AcceptChanges();
+                dt = dt_clone2;
+            }
+
+            else {
                 dt = dt_Overdue;
+
+            }
 
             List<string> columns_list = HtmlUtil.Get_ColumnsList(acc, "Orders_Details");
             if (HtmlUtil.Check_DataTable(dt))
