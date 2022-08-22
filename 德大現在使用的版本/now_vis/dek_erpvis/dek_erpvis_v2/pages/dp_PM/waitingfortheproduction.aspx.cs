@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -46,6 +47,8 @@ namespace dek_erpvis_v2.pages.dp_PM
         string Line = "";
         string condition = "";
         List<string> avoid_again = new List<string>();
+        public StringBuilder th_month_capacity = new StringBuilder();
+        public StringBuilder tr_month_capacity = new StringBuilder();
         //-----------------------------------------------------EVENT-----------------------------------------------------------------------------
         //載入事件
         protected void Page_Load(object sender, EventArgs e)
@@ -115,6 +118,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             Set_Chart();
             Set_Error();
             Set_Table();
+            Set_Month_Capacity();
             Set_ShowImage();
         }
         //顯示目前有的產線
@@ -539,5 +543,85 @@ namespace dek_erpvis_v2.pages.dp_PM
                 dt.Rows.Add(start_time.AddDays(i).ToString("yyyyMMdd"));
             return dt;
         }
+
+        //20220822 生產推移圖月產能表格 尚未完成
+        private void Set_Month_Capacity()
+        {
+            if (HtmlUtil.Check_DataTable(dt_本月應生產))
+            {
+                DataTable dt_Copy = dt_本月應生產.Clone();
+
+                //清空陣列
+                //Line_Name.Clear();
+                avoid_again.Clear();
+
+               
+                
+
+                DataTable target = dt_本月應生產.DefaultView.ToTable(true, new string[] {"產線群組"});
+
+                //新增總計
+                target.Columns.Add("本月預計生產量");
+                target.Columns.Add("目前應有進度");
+                target.Columns.Add("目前實際進度");
+                target.Columns.Add("目前差異");
+
+
+
+                string columns = "";
+                //20220729 新稱月產能
+                th_month_capacity.Append(HtmlUtil.Set_Table_Title(target, out columns));
+                tr_month_capacity.Append(HtmlUtil.Set_Table_Content(target, columns, capacity_CallBack));
+            }
+            else
+                HtmlUtil.NoData(out th_month_capacity, out tr_month_capacity);
+        }
+
+        private string capacity_CallBack(DataRow row, string field_name)
+        {
+            DataTable dt_day = Get_Monthday(date_str, date_end);
+            string sqlcmd = "";
+            int 預定生產 = 0;
+            int 預計生產量=0;
+            int 實際生產 = 0;
+            DataRow[] rows = null;
+            for (int i = 0; i < dt_day.Rows.Count; i++)
+            {
+                //預計生產
+                if (DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
+                    sqlcmd = (i == 0) ? $"(預計完工日 <= '{dt_day.Rows[i]["日期"]}' OR 預計完工日='開發機') and (substring(實際完成時間, 1, 8)>='{date_str}'  OR 實際完成時間 IS NULL  OR 實際完成時間 ='' ) " : $"預計完工日 = '{dt_day.Rows[i]["日期"]}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
+                else
+                    sqlcmd = $"預計完工日 = '{dt_day.Rows[i]["日期"]}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
+                sqlcmd = sqlcmd + $" AND 產線群組='{row["產線群組"]}'";
+                rows = dt_本月應生產.Select(sqlcmd);
+                預定生產 += rows.Length;
+
+                //到今天為止應生產多少
+                預計生產量 += DataTableUtils.toInt(dt_day.Rows[i]["日期"].ToString()) <= DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) ? rows.Length : 0;
+
+                //實際生產
+                sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成'";
+                sqlcmd = sqlcmd + $" AND 產線群組='{row["產線群組"]}'";
+                rows = dt_本月應生產.Select(sqlcmd);
+
+                實際生產 += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
+            }
+            預定生產 = 預定生產 == 0 ? 0 : 預定生產;
+            差值 = (實際生產 - 預計生產量).ToString();
+            string value = "";
+            if (field_name == "本月預計生產量")
+                value = 預定生產.ToString();
+            if (field_name == "目前應有進度")
+                value = 預計生產量.ToString();
+            if (field_name == "目前實際進度")
+                value = 實際生產.ToString();
+            if (field_name == "目前差異")
+                value = 差值;
+
+            return value == "" ? "" : $"<td align=\"right\"> {value} </td>";
+        }
+
+
+
     }
 }
