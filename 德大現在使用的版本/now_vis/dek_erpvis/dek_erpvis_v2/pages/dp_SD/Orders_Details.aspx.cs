@@ -134,18 +134,25 @@ namespace dek_erpvis_v2.pages.dp_SD
             DataTable dt = new DataTable();
             if (dt_ed != "")
             {
-                dt = dt_monthtotal;
-                //20220819篩選最終月份
-                string end_Date = dt_ed.Substring(0, 6);
-                DataTable dt_clone2 = dt.Clone();
-                DataRow[] rows2 = dt.Select($"計算月份<={end_Date}");
-                if (rows2 != null && rows2.Length > 0)
+                //20220822月產能包含下個月提早做完的訂單
+                if (mode.Contains("capacity"))
                 {
-                    for (int i = 0; i < rows2.Length; i++)
-                        dt_clone2.ImportRow(rows2[i]);
+                    dt = dt_monthtotal;
                 }
-                dt_clone2.AcceptChanges();
-                dt = dt_clone2;
+                else
+                {
+                    //20220819 月訂單篩選最終月份,不須顯示到下個月份的訂單
+                    string end_Date = dt_ed.Substring(0, 6);
+                    DataTable dt_clone = dt.Clone();
+                    DataRow[] rows = dt.Select($"計算月份<={end_Date}");
+                    if (rows != null && rows.Length > 0)
+                    {
+                        for (int i = 0; i < rows.Length; i++)
+                            dt_clone.ImportRow(rows[i]);
+                    }
+                    dt_clone.AcceptChanges();
+                    dt = dt_clone;
+                }
             }
 
             else {
