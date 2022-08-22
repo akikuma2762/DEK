@@ -43,6 +43,7 @@ namespace dek_erpvis_v2.pages.dp_PM
         public string tr = "";
         DataTable dt_本月應生產 = new DataTable();
         DataTable dt_未生產完成 = new DataTable();
+        DataTable month_Capacity = new DataTable();
         int total = 0;
         string Line = "";
         string condition = "";
@@ -193,6 +194,12 @@ namespace dek_erpvis_v2.pages.dp_PM
                 sqlcmd= SLS.Waitingfortheproduction_Assm_Table(date_end, date_str, dropdownlist_Factory.SelectedItem.Value);
                 DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
                 dt_month = dt_sowon;
+
+                //20220822 增加月產能表格
+                month_Capacity = DataTableUtils.GetDataTable("select 工作站編號 AS 產線代號,工作站名稱,目標件數 AS 日產能 FROM 工作站型態資料表 WHERE 工作站是否使用中='1'");
+                month_Capacity = myclass.Add_LINE_GROUP(month_Capacity).ToTable();
+               
+
             }
 
             //臥式廠部分
@@ -203,6 +210,9 @@ namespace dek_erpvis_v2.pages.dp_PM
                 string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyymmdd");
                 sqlcmd = SLS.Waitingfortheproduction_Hor_Table(upper_Month, condition_copy, date_str, date_end, dropdownlist_Factory.SelectedItem.Value);
                 DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
+
+                //20220822 增加月產能表格,大圓盤&臥式統一在此取得
+                month_Capacity = DataTableUtils.GetDataTable("select 工作站編號 AS 產線代號,工作站名稱,目標件數 AS 月產能 FROM 工作站型態資料表 WHERE 工作站是否使用中='1'");
 
                 //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤
                 dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
@@ -544,7 +554,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             return dt;
         }
 
-        //20220822 生產推移圖月產能表格 尚未完成
+        //20220822 生產推移圖月產能表格 測試中
         private void Set_Month_Capacity()
         {
             if (HtmlUtil.Check_DataTable(dt_本月應生產))
@@ -561,12 +571,27 @@ namespace dek_erpvis_v2.pages.dp_PM
                 DataTable target = dt_本月應生產.DefaultView.ToTable(true, new string[] {"產線群組"});
 
                 //新增總計
-                target.Columns.Add("本月預計生產量");
-                target.Columns.Add("目前應有進度");
-                target.Columns.Add("目前實際進度");
-                target.Columns.Add("目前差異");
-
-
+                target.Columns.Add("月產能");
+                target.Columns.Add("本期計畫生產");
+                target.Columns.Add("應有進度");
+                target.Columns.Add("實際進度");
+                target.Columns.Add("差異");
+                if (dropdownlist_Factory.SelectedItem.Value == "sowon") {
+                    foreach (DataRow row in target.Rows) {
+                        object dd = month_Capacity.Compute("sum(日產能)", $"產線群組='{row["產線群組"]}'");
+                        int workDay = int.Parse(month_WorkDay(date_str,date_end));
+                        row["月產能"] = (int.Parse(dd.ToString())*workDay).ToString();
+                    }
+                                     
+                } else {
+                    foreach (DataRow row in target.Rows)
+                    {
+                        string line_Group= row["產線群組"].ToString() == "NEW INTE"? line_Group = "NEW_INTE": line_Group= row["產線群組"].ToString();
+                        object dd = month_Capacity.Compute("sum(月產能)", $"工作站名稱='{line_Group}'");
+                        row["月產能"] = dd.ToString();
+                    }
+                }
+               
 
                 string columns = "";
                 //20220729 新稱月產能
@@ -577,6 +602,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 HtmlUtil.NoData(out th_month_capacity, out tr_month_capacity);
         }
 
+        //20220822計算各生產數值
         private string capacity_CallBack(DataRow row, string field_name)
         {
             DataTable dt_day = Get_Monthday(date_str, date_end);
@@ -609,19 +635,47 @@ namespace dek_erpvis_v2.pages.dp_PM
             預定生產 = 預定生產 == 0 ? 0 : 預定生產;
             差值 = (實際生產 - 預計生產量).ToString();
             string value = "";
-            if (field_name == "本月預計生產量")
+            if (field_name == "本期計畫生產")
                 value = 預定生產.ToString();
-            if (field_name == "目前應有進度")
+            if (field_name == "應有進度")
                 value = 預計生產量.ToString();
-            if (field_name == "目前實際進度")
+            if (field_name == "實際進度")
                 value = 實際生產.ToString();
-            if (field_name == "目前差異")
+            if (field_name == "差異")
                 value = 差值;
 
             return value == "" ? "" : $"<td align=\"right\"> {value} </td>";
         }
 
+        //20220822 計算工作天,生產推移圖專用
+        private string month_WorkDay(string date_str,string date_end)
+        {   
+            string[] arr = monthInterval(date_str,date_end);
+            string startDay_Interval = arr[0];
+            string endDay_Interval = arr[1];
+            int day = int.Parse(arr[2]);
+            string sqlcmd = $"SELECT count(IsDay)月假日 FROM WorkTime_Holiday where PK_Holiday between {startDay_Interval} and {endDay_Interval}";
+            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            DataTable dt_Holiday = DataTableUtils.GetDataTable(sqlcmd);
+            int Holiday = int.Parse(DataTableUtils.toString(dt_Holiday.Rows[0]["月假日"]));
+            string work_Day = (day - Holiday).ToString();
+            string value = work_Day;
 
+            return value;
+        }
+
+        //20220822 計算月區間,生產推移圖專用
+        private string[] monthInterval(string date_str,string date_end)
+        {
+            string[] arr = new string[3];
+            //轉換日期型態
+            DateTime endDay = DateTime.ParseExact(date_end, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime startDay = DateTime.ParseExact(date_str, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            arr[0] = startDay.ToString("yyyyMMdd");
+            arr[1] = endDay.ToString("yyyyMMdd");
+            arr[2] = (((endDay - startDay).Days) + 1).ToString();
+            return arr;
+        }
 
     }
 }
