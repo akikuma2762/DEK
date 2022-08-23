@@ -356,7 +356,7 @@
                                                             <div class="col-md-7 col-sm-9 col-xs-7" style="margin: 0px 0px 0px 5px">
                                                                 <div class="row">
                                                                     <div class="col-md-12 col-sm-12 col-xs-12 ">
-                                                                        <asp:DropDownList ID="DropDownList_MachType" CssClass="btn btn-default dropdown-toggle" runat="server" Width="100%" onchange="dropdownlist_change('ContentPlaceHolder1_DropDownList_MachType','ContentPlaceHolder1_DropDownList_MachGroup')"></asp:DropDownList>
+                                                                        <asp:DropDownList ID="DropDownList_MachType" CssClass="btn btn-default dropdown-toggle" runat="server" Width="100%" onchange="dropdownlist_change('ContentPlaceHolder1_DropDownList_MachType','ContentPlaceHolder1_DropDownList_MachGroup')" ></asp:DropDownList>
                                                                     </div>
 
                                                                 </div>
@@ -1727,6 +1727,9 @@
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust();
             });
+            dropdownlist_load('ContentPlaceHolder1_DropDownList_MachType', 'ContentPlaceHolder1_DropDownList_MachGroup');
+
+
         });
         //-----------------------------
 
@@ -1799,6 +1802,26 @@
 
         //依據X軸內容改變Y軸內容
         function dropdownlist_change(x, y) {
+            $('#' + y).empty();
+
+
+            var ddlist = document.getElementById(x);
+            //取得當前X的值
+            var now_value = ddlist.value;
+            var nowlist = now_value.split(',');
+            var ddl = document.getElementById(y);
+
+            for (i = 0; i < nowlist.length - 1; i++) {
+                var option = document.createElement("OPTION");
+                option.innerHTML = nowlist[i];
+                option.value = nowlist[i + 1];
+                ddl.options.add(option);
+                i++;
+            }
+            document.getElementById('div_machines').style.display = 'none';
+
+        }
+        function dropdownlist_load(x, y) {
             $('#' + y).empty();
 
 

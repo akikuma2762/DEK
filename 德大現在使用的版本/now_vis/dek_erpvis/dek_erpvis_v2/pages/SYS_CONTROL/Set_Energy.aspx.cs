@@ -67,7 +67,20 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             bool ok = false;
             switch (Label_Save.Text)
             {
+                //20220823 立式&大圓盤分離,獨立連線
                 case "sowon":
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    sqlcmd = $"select * from 工作站型態資料表 where 工作站編號 ='{TextBox_Number.Text}'";
+                    dt = DataTableUtils.GetDataTable(sqlcmd);
+                    if (HtmlUtil.Check_DataTable(dt))
+                    {
+                        DataRow row = dt.NewRow();
+                        row["工作站編號"] = dt.Rows[0]["工作站編號"];
+                        row["目標件數"] = TextBox_Qty.Text;
+                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                        ok = DataTableUtils.Update_DataRow("工作站型態資料表", $"工作站編號 ='{TextBox_Number.Text}'", row);
+                    }
+                    break;
                 case "dek":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
                     sqlcmd = $"select * from 工作站型態資料表 where 工作站編號 ='{TextBox_Number.Text}'";

@@ -657,7 +657,8 @@ namespace dek_erpvis_v2.pages.dp_CNC
             dt_data = DataTableUtils.GetDataTable("select distinct area_name from mach_group where area_name <> '全廠' and area_name <> '測試區'  ");
             if (HtmlUtil.Check_DataTable(dt_data))
             {
-                DropDownList_MachType.Items.Add("--Select--");
+                //20220823 select主選項不合理,暫時移除
+                //DropDownList_MachType.Items.Add("--Select--");
                 string itemname = "";
                 string acc_power = CNCUtils.Find_Group(HtmlUtil.Search_acc_Column(acc, "Belong_Factory"));
                 if (acc_power == "")
@@ -679,7 +680,8 @@ namespace dek_erpvis_v2.pages.dp_CNC
                             foreach (DataRow rw in dt_mach.Rows)
                                 all_mach += DataTableUtils.toString(rw["mach_show_name"]) + "^";
                         }
-                        itemname = $"--Select--,1^,";
+                        //20220823 select主選項不合理,雖然能搜索全場資料但不是正確搜尋參數,暫時拔除
+                        // itemname = $"--Select--,1^,";
                         foreach (DataRow row in dt_all.Rows)
                         {
                             if (DataTableUtils.toString(row["web_address"]) != "")
@@ -721,7 +723,8 @@ namespace dek_erpvis_v2.pages.dp_CNC
                                     itemname += $"{DataTableUtils.toString(rew["group_name"])},1^{all_mach}^,";
                                 }
                             }
-                            itemname = $"--Select--,1^," + itemname;
+                            //20220823 select副選項不合理,不是搜尋參數且導致甘特圖錯誤,暫時拔除
+                           // itemname = $"--Select--,1^," + itemname;
                             listItem = new ListItem(DataTableUtils.toString(row["area_name"]), itemname);
                             DropDownList_MachType.Items.Add(listItem);
                         }
@@ -864,6 +867,8 @@ namespace dek_erpvis_v2.pages.dp_CNC
                 set_page_content();
                 Response.Redirect(DropDownList_MachGroup.SelectedItem.Value.Split('^')[0], "_blank", "");
                 DropDownList_MachGroup.Items.Clear();
+                //20220823 德上頁面重新導向後,甘特圖資料異常,重新搜索正確資料
+                show_Gantt();
             }
 
             else if (DropDownList_MachType.SelectedItem.Text != "--Select--")//&& DropDownList_MachGroup.SelectedItem.Text != "--Select--")
@@ -1535,7 +1540,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                 DataRow[] row = dt_machurl.Select(sqlcmd);
                 if (row != null && row.Length > 0)
                     mach = DataTableUtils.toString(row[0][column]);
-            }
+                }
             return mach;
         }
         private string add_listid(DataRow row)
