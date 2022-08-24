@@ -213,7 +213,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                    <button id-"btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
                     <asp:Button ID="Button_Save" runat="server" Text="Button" OnClick="Button_Save_Click" Style="display: none" />
                     <button id="btnSave" type="button" class="btn btn-primary antosubmit2">儲存</button>
                 </div>
@@ -281,6 +281,7 @@
     <script src="../../assets/vendors/time/loading.js"></script>
     <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
     <script>
+
         function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
             $('#ContentPlaceHolder1_TextBox_Order').val('' + Order + '');
             $('#ContentPlaceHolder1_TextBox_Number').val('' + Number + '');
@@ -295,6 +296,7 @@
             $('#ContentPlaceHolder1_TextBox_Date').val('' + Date + '');
             $('#ContentPlaceHolder1_TextBox_Truedate').val('' + TrueDate + '');
         }
+        //刪除
         function Delete_Value(Order, Number, WorkNumber) {
             $('#ContentPlaceHolder1_TextBox_OrderNum').val('' + Order + '');
             $('#ContentPlaceHolder1_TextBox_Schedule').val('' + Number + '');
@@ -305,20 +307,28 @@
                 document.getElementById('<%=Button_Delete.ClientID %>').click();
             }
         }
-
+        //確認修改鈕
         $("#btnSave").click(function () {
 
             var WhatSystem = navigator.userAgent;
             if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
             } else {
                 $.blockUI({ message: '<img src="../../images/loading.gif" />' });
-                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 1000000;
+                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
                 document.getElementById('btnSave').disabled = true;
+                document.getElementById('btn_Cancel').disabled = true;
             }
-
-            document.getElementById('<%=Button_Save.ClientID %>').click();
+            //20220824 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
+            //document.getElementById('<%=Button_Save.ClientID %>').click();  
+            var data = get_Item_Data();
+            data["Act_Type"] = "Update";
+            data = JSON.stringify(data);
+            console.log(data)
+            PostData_Ajax(data);
+            
         });
 
+        //執行搜索
         $("#btncheck").click(function () {
 
             var WhatSystem = navigator.userAgent;
@@ -345,6 +355,75 @@
                     .columns.adjust();
             });
         });
+
+        function PostData_Ajax(data) {
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                url: "PMD_Upload.aspx/PostData",
+                data: "{_data:'" + data + "'}",
+                dataType: "json",
+                success: function (result) {
+                    console.log(result.d["status"]);
+                    if (result.d["status"] == "失敗") {
+                        alert("修改失敗");
+                    } else if(result.d["status"] == "成功") {
+                        console.log(result.d["th"]);
+                        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', result.d["th"], result.d["tr"]);
+
+                        stateSave_Table('#table-form');
+                        console.log("成功");
+                    }
+                    //關閉loading視窗及修改視窗
+                    $('#exampleModal').click();
+                    $.unblockUI();
+                    $(".blockUI").fadeOut("slow");
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $('#exampleModal').click();
+                    $.unblockUI();
+                    $(".blockUI").fadeOut("slow");
+                    alert("資料傳輸錯誤,請檢查資料傳遞格式!!");
+                    //alert(XMLHttpRequest.status);
+                    //alert(XMLHttpRequest.readyState);
+                    //alert(textStatus);
+                }
+                , complete: function (jqXHR) {
+                    document.getElementById('btnSave').disabled = false;
+                    document.getElementById('btn_Cancel').disabled = false;
+                }
+            })
+
+        }
+
+        function get_Item_Data() {
+            var TextBox_Order = $('#ContentPlaceHolder1_TextBox_Order').val();
+            var TextBox_Number = $('#ContentPlaceHolder1_TextBox_Number').val();
+            var DropDownList_Percent = $("#ContentPlaceHolder1_DropDownList_Percent").val();
+            var DropDownList_Status = $("#ContentPlaceHolder1_DropDownList_Status").val();
+            var DropDownList_Work = $("#ContentPlaceHolder1_DropDownList_Work").val();
+            var TextBox_OrderNum = $('#ContentPlaceHolder1_TextBox_OrderNum').val();
+            var TextBox_Schedule = $('#ContentPlaceHolder1_TextBox_Schedule').val();
+            var TextBox_WorkNumber = $('#ContentPlaceHolder1_TextBox_WorkNumber').val();
+            var TextBox_Date = $('#ContentPlaceHolder1_TextBox_Date').val();
+            var TextBox_Truedate = $('#ContentPlaceHolder1_TextBox_Truedate').val();
+            var Link = $('#ContentPlaceHolder1_DropDownList_Type').val();
+            var txt_str = $('#ContentPlaceHolder1_txt_str').val();
+            var txt_end = $('#ContentPlaceHolder1_txt_end').val();
+            var Act_Type = "Update";
+            var data = {
+                "TextBox_Order": `${TextBox_Order}`, "TextBox_Number": `${TextBox_Number}`,
+                "DropDownList_Percent": `${DropDownList_Percent}`, "DropDownList_Status": `${DropDownList_Status}`,
+                "DropDownList_Work": `${DropDownList_Work}`,
+                "TextBox_OrderNum": `${TextBox_OrderNum}`, "TextBox_Schedule": `${TextBox_Schedule}`,
+                "TextBox_WorkNumber": `${TextBox_WorkNumber}`, "TextBox_Date": `${TextBox_Date}`,
+                "TextBox_Truedate": `${TextBox_Truedate}`, "Link": `${Link}`,
+                "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "Act_Type": `${Act_Type}`
+            };
+            console.log("初始", data);
+            return data;
+        }
+
+
 
         //$('#Change_DataTable').dataTable(
         //    {
@@ -386,5 +465,9 @@
         set_Table('#table-form');
         //防止頁籤跑版
         loadpage('', '');
+
+        
+
+
     </script>
 </asp:Content>

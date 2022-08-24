@@ -1,12 +1,16 @@
 ﻿using dek_erpvis_v2.cls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Support;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Xml;
 
 namespace dek_erpvis_v2.pages.SYS_CONTROL
 {
@@ -15,6 +19,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         public string color = "";
         public string th = "";
         public string tr = "";
+        public string th2 = "";
+        public string tr2 = "";
         string acc = "";
         string Link = "";
         string condition = "";
@@ -79,6 +85,104 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             }
             load_data();
         }
+
+        [WebMethod]
+        public static object PostData(string _data)//這個方法需要是靜態的方法要用到關鍵字static       
+        {
+            //object stringArray = new object[1];
+            // Array odata = new Array[1];
+            DataTable Rp_data = JsonToDataTable.JsonStringToDataTable(_data);
+            object data = new { };
+            
+            string TextBox_Order = Rp_data.Rows[0]["TextBox_Order"].ToString();
+            string TextBox_Number = Rp_data.Rows[0]["TextBox_Number"].ToString();
+            string DropDownList_Percent = Rp_data.Rows[0]["DropDownList_Percent"].ToString();
+            string DropDownList_Status = Rp_data.Rows[0]["DropDownList_Status"].ToString();
+            string DropDownList_Work = Rp_data.Rows[0]["DropDownList_Work"].ToString();
+            string TextBox_OrderNum = Rp_data.Rows[0]["TextBox_OrderNum"].ToString();
+            string TextBox_Schedule = Rp_data.Rows[0]["TextBox_Schedule"].ToString();
+            string TextBox_WorkNumber = Rp_data.Rows[0]["TextBox_WorkNumber"].ToString();
+            string TextBox_Date = Rp_data.Rows[0]["TextBox_Date"].ToString();
+            string TextBox_Truedate = Rp_data.Rows[0]["TextBox_Truedate"].ToString();
+            string _Link = Rp_data.Rows[0]["Link"].ToString().ToLower();
+            string txt_str = Rp_data.Rows[0]["txt_str"].ToString();
+            string txt_end = Rp_data.Rows[0]["txt_end"].ToString();
+            string Act_Type = Rp_data.Rows[0]["Act_Type"].ToString();
+
+            switch (Act_Type) {
+                case "Update":
+                    
+                    break;
+                case "Delete":
+                    
+                    break;
+                case "Insert":
+                    
+                    
+                    break;
+            }
+            
+            if (_Link == "ver")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            else if (_Link == "hor")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+            string sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+            if (HtmlUtil.Check_DataTable(dt))
+            {
+                DataRow row = dt.NewRow();
+                row["組裝編號"] = TextBox_Order;
+                row["排程編號"] = TextBox_Number;
+                row["進度"] = DropDownList_Percent.Replace("%","");
+                row["狀態"] = DropDownList_Status;
+                row["工作站編號"] = DropDownList_Work;
+                row["組裝日"] = TextBox_Date.Replace("-", "");
+                row["實際組裝時間"] = TextBox_Truedate.Replace("-", "");
+                if (DropDownList_Status == "未動工")
+                {
+                    row["進度"] = "0";
+                    row["實際啟動時間"] = "";
+                    row["再次啟動時間"] = "";
+                    row["暫停時間"] = "";
+                    row["實際完成時間"] = "";
+                }
+
+                if (_Link == "ver")
+                {
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                }
+                   
+                else if (_Link == "hor") 
+                {
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                }
+                if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'", row))
+                {
+                    data = new { status = "失敗" };
+                }
+                else 
+                {
+                    data = new { status = "失敗" };
+                }
+                    
+                string dt_st = txt_str;
+                string dt_ed = txt_end;
+                PMD_Upload1 PMD = new PMD_Upload1();
+                data = PMD.Set_DataTable2(_Link, dt_st.Replace("-", ""), dt_ed.Replace("-", ""), "");
+                //_Data = JsonConvert.SerializeObject(odata);
+            }
+            else
+            {
+                data = new{status = "失敗"};
+                return data;
+            }
+
+            return data;
+        }
+
+
+
+
         //刪除
         protected void Button_Delete_Click(object sender, EventArgs e)
         {
@@ -183,19 +287,60 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 HtmlUtil.NoData(out th, out tr);
 
         }
+
+        private object Set_DataTable2(string Link, string start, string end, string sqlcmd)
+        {
+            object[] stringArray = new object[2];
+            object data = new { };
+            // 設定json物件
+
+            if (Link == "ver")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            else if (Link == "hor")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+            //20220722 新增order by排序
+            string sql_cmd = $"Select 工作站名稱,組裝日,組裝編號,排程編號,進度,狀態,實際組裝時間 From 工作站狀態資料表  left join 工作站型態資料表 on 工作站型態資料表.工作站編號 = 工作站狀態資料表.工作站編號 where 組裝日>={start} and 組裝日<={end} {sqlcmd} order by 工作站名稱,組裝日,組裝編號";
+            DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
+
+            if (HtmlUtil.Check_DataTable(dt))
+            {
+                //增加編輯與刪除之欄位
+                dt.Columns.Add("編輯");
+                dt.Columns.Add("刪除");
+                //把這兩個欄位移至最前面
+                dt.Columns["編輯"].SetOrdinal(0);
+                dt.Columns["刪除"].SetOrdinal(1);
+
+                string title = "";
+                th2 = HtmlUtil.Set_Table_Title(dt, out title);
+                tr2 = HtmlUtil.Set_Table_Content(dt, title, PMD_Uploadcallback);
+                data = new{th = th2,tr = tr2,status = "成功"};
+                //20220824多維物件用法,暫時不用
+                //stringArray[0] = th2;
+                //stringArray[1] = tr2;
+            }
+            else
+                HtmlUtil.NoData(out th2, out th2);
+            return data;
+
+        }
+
+
+
+
         //表格例外處理
         private string PMD_Uploadcallback(DataRow row, string field_name)
         {
             string value = "";
 
             if (field_name == "編輯")
-                value = $"<td style='width:7%'><b><u><a href='javascript: void()' onclick=Set_Value('{DataTableUtils.toString(row["組裝編號"])}'," +
+                value = $"<td style='width:7%'><b><u><div onclick=Set_Value('{DataTableUtils.toString(row["組裝編號"])}'," +
                                                                         $"'{DataTableUtils.toString(row["排程編號"])}'," +
                                                                         $"'{DataTableUtils.toString(row["進度"])}'," +
                                                                         $"'{DataTableUtils.toString(row["狀態"])}'," +
                                                                         $"'{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}'," +
                                                                         $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["組裝日"]), "-")}'," +
-                                                                        $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["實際組裝時間"]), "-")}') data-toggle = 'modal' data-target = '#exampleModal'>編輯</a></u></b></td>";
+                                                                        $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["實際組裝時間"]), "-")}') data-toggle = 'modal' data-target = '#exampleModal'>編輯</div></u></b></td>";
             else if (field_name == "刪除")
                 value = $"<td style='width:7%'><b><u><a href='javascript: void()' onclick=Delete_Value('{DataTableUtils.toString(row["組裝編號"])}','{DataTableUtils.toString(row["排程編號"])}','{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}')>刪除</a></u></b></td>";
             else if (field_name == "組裝日" || field_name == "實際組裝時間")
@@ -305,5 +450,6 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         {
             set_DropDownlist(true);
         }
+
     }
 }
