@@ -783,7 +783,7 @@ namespace dek_erpvis_v2.cls
 
                 string daterange = "";
                 if (start != "" && end != "")
-                    daterange = $" and 組裝日 >= {start.Replace("-", "")} and 組裝日 <= {end.Replace("-", "")} ";
+                    daterange = $" and 實際完成時間 >= {start.Replace("-", "")+"000000"} and 實際完成時間 <= {end.Replace("-", "")+"000000"} ";//20220825 組裝時間變更為實際完成時間
 
                 string Sql = $"select TOP(500) * from {ShareMemory.SQLAsm_WorkStation_State} INNER JOIN 工作站型態資料表 ON 工作站狀態資料表.工作站編號 = 工作站型態資料表.工作站編號  where {Condition} {daterange} order by 組裝日 desc";
                 dt = DataTableUtils.GetDataTable(Sql);
