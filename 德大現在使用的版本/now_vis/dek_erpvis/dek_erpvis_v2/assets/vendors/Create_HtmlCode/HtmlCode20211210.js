@@ -33,6 +33,7 @@ function set_Table(DataTableName) {
 
 }
 
+//DATATABLE儲存當下分頁資料
 function stateSave_Table(DataTableName) {
     $(DataTableName).DataTable({
         destroy: true,

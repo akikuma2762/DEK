@@ -213,7 +213,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                    <button id="btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
                     <asp:Button ID="Button_Save" runat="server" Text="Button" OnClick="Button_Save_Click" Style="display: none" />
                     <button id="btnSave" type="button" class="btn btn-primary antosubmit2">儲存</button>
                 </div>
@@ -281,8 +281,15 @@
     <script src="../../assets/vendors/time/loading.js"></script>
     <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
     <script>
+        //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
+        var top_Link = "";
+        var top_Product_Line = "";
+        var top_TextBox_KeyWord = "";
+        var top_Txt_Str = "";
+        var top_Txt_End = "";
+
         function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
-            $('#ContentPlaceHolder1_TextBox_Order').val('' + Order + '');
+            $('#ContentPlaceHolder1_TextBox_Order').val(''+ Order + '');
             $('#ContentPlaceHolder1_TextBox_Number').val('' + Number + '');
             document.getElementById('ContentPlaceHolder1_DropDownList_Percent').value = Percent + '%';
             document.getElementById('ContentPlaceHolder1_DropDownList_Status').value = Status;
@@ -295,30 +302,43 @@
             $('#ContentPlaceHolder1_TextBox_Date').val('' + Date + '');
             $('#ContentPlaceHolder1_TextBox_Truedate').val('' + TrueDate + '');
         }
+        //刪除
         function Delete_Value(Order, Number, WorkNumber) {
             $('#ContentPlaceHolder1_TextBox_OrderNum').val('' + Order + '');
             $('#ContentPlaceHolder1_TextBox_Schedule').val('' + Number + '');
             $('#ContentPlaceHolder1_TextBox_WorkNumber').val('' + WorkNumber + '');
-
-            answer = confirm("您確定要刪除嗎??");
+            console.log($('#ContentPlaceHolder1_TextBox_OrderNum').val(), $('#ContentPlaceHolder1_TextBox_Schedule').val(), $('#ContentPlaceHolder1_TextBox_WorkNumber').val());
+           var answer = confirm("您確定要刪除嗎??");
             if (answer) {
-                document.getElementById('<%=Button_Delete.ClientID %>').click();
-            }
+                //20220825 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
+                //document.getElementById('<%=Button_Delete.ClientID %>').click();
+                var data = get_Item_Data();
+                data["click_Type"] = "Delete";
+                data = JSON.stringify(data);
+                postData(data);
+            } 
         }
-
+        //確認修改鈕
         $("#btnSave").click(function () {
 
             var WhatSystem = navigator.userAgent;
             if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
             } else {
                 $.blockUI({ message: '<img src="../../images/loading.gif" />' });
-                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 1000000;
+                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
                 document.getElementById('btnSave').disabled = true;
+                document.getElementById('btn_Cancel').disabled = true;
             }
-
-            document.getElementById('<%=Button_Save.ClientID %>').click();
+            //20220824 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
+            //document.getElementById('<%=Button_Save.ClientID %>').click();  
+            var data = get_Item_Data();
+            data["click_Type"] = "Update";
+            data = JSON.stringify(data);
+            postData(data);
+            
         });
 
+        //執行搜索
         $("#btncheck").click(function () {
 
             var WhatSystem = navigator.userAgent;
@@ -339,12 +359,92 @@
             //$('#exampleInTab').DataTable({
             //    responsive: true
             //});
-
+            //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
+            top_Link = $('#ContentPlaceHolder1_DropDownList_Type').val();
+            top_Product_Line = $('#ContentPlaceHolder1_DropDownList_Product').val();
+            top_TextBox_KeyWord = $('#ContentPlaceHolder1_TextBox_keyWord').val();
+            top_Txt_Str = $('#ContentPlaceHolder1_txt_str').val();
+            top_Txt_End = $('#ContentPlaceHolder1_txt_end').val();
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust();
             });
         });
+
+        //20220825 資料傳輸更該為AJAX模式
+        function postData(data) {
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                url: "PMD_Upload.aspx/postData",
+                data: "{_data:'" + data + "'}",
+                dataType: "json",
+                success: function (result) {
+                    var results_Data = result.d;
+                    console.log(results_Data);
+                    if (results_Data["status"].indexOf("成功") != -1) {
+                        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', results_Data["th"], results_Data["tr"]);
+                        stateSave_Table('#table-form');
+                        alert(results_Data["status"]);
+                    }  else if (results_Data["status"].indexOf("失敗") != -1) {
+                        alert(results_Data["status"]);
+                    } else if (results_Data["status"].indexOf("沒有資料") != -1) {
+                        alert(results_Data["status"]);
+                    }
+                   
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("資料傳輸錯誤,請檢查資料傳遞格式!!");
+                    //alert(XMLHttpRequest.status);
+                    //alert(XMLHttpRequest.readyState);
+                    //alert(textStatus);
+                }
+                , complete: function (jqXHR) {
+                    //關閉loading視窗及修改視窗
+                    $('#exampleModal').click();
+                    $.unblockUI();
+                    $(".blockUI").fadeOut("slow");
+                    //打開儲存&取消按鈕
+                    document.getElementById('btnSave').disabled = false;
+                    document.getElementById('btn_Cancel').disabled = false;
+                }
+            })
+
+        }
+
+        //20220825 製作修該資料JSON檔
+        function get_Item_Data() {
+            var TextBox_Order = $('#ContentPlaceHolder1_TextBox_Order').val();
+            var TextBox_Number = $('#ContentPlaceHolder1_TextBox_Number').val();
+            var DropDownList_Percent = $("#ContentPlaceHolder1_DropDownList_Percent").val();
+            var DropDownList_Status = $("#ContentPlaceHolder1_DropDownList_Status").val();
+            var DropDownList_Work = $("#ContentPlaceHolder1_DropDownList_Work").val();
+            var TextBox_OrderNum = $('#ContentPlaceHolder1_TextBox_OrderNum').val();
+            var TextBox_Schedule = $('#ContentPlaceHolder1_TextBox_Schedule').val();
+            var TextBox_WorkNumber = $('#ContentPlaceHolder1_TextBox_WorkNumber').val();
+            var TextBox_Date = $('#ContentPlaceHolder1_TextBox_Date').val();
+            var TextBox_Truedate = $('#ContentPlaceHolder1_TextBox_Truedate').val();
+            //搜尋選項載入後取值,未搜尋保持載入時參數
+            var Link = top_Link;
+            var product_Line = top_Product_Line;
+            var TextBox_keyWord = top_TextBox_KeyWord;
+            var txt_str = top_Txt_Str;
+            var txt_end = top_Txt_End;
+            var click_Type = "";
+            var data = {
+                "TextBox_Order": `${TextBox_Order}`, "TextBox_Number": `${TextBox_Number}`,
+                "DropDownList_Percent": `${DropDownList_Percent}`, "DropDownList_Status": `${DropDownList_Status}`,
+                "DropDownList_Work": `${DropDownList_Work}`,
+                "TextBox_OrderNum": `${TextBox_OrderNum}`, "TextBox_Schedule": `${TextBox_Schedule}`,
+                "TextBox_WorkNumber": `${TextBox_WorkNumber}`, "TextBox_Date": `${TextBox_Date}`,
+                "TextBox_Truedate": `${TextBox_Truedate}`, "Link": `${Link}`,
+                "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
+                "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`
+            };
+            //console.log("初始", data);
+            return data;
+        }
+
+
 
         //$('#Change_DataTable').dataTable(
         //    {
@@ -381,10 +481,18 @@
 
         //    });
         //jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
-        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', '<%=th.ToString() %>',"<%=tr.ToString()%>");
+
+        
+        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', '<%=th.ToString() %>', "<%=tr.ToString()%>");
+        //產生DataTable前清空所有state資料
+        var table = $("#table-form").DataTable();
+        table.state.clear();
         //產生相對應的JScode
-        set_Table('#table-form');
+        stateSave_Table('#table-form');
         //防止頁籤跑版
         loadpage('', '');
+        
+
+
     </script>
 </asp:Content>

@@ -285,7 +285,6 @@
                     success: function (xml) {
                         $(xml).find("ROOT").each(function (i) {
                             //alert();
-                            console.log("in")
                             var _class = "label label-danger pull-right";
                             var _count = $(this).attr("system_msg").valueOf();
                             if (_count > 0) {
@@ -474,7 +473,6 @@
         function showcookie() {
            
             var y = get_ClickHistory();
-            console.log(y);
             //如果是展開的情況或是剛進來的話，則保持原樣
             if (y == "fa fa-chevron-left" || y == "") {
                 document.cookie = "clickhistory=" + changeicon.className + ";path=/";
@@ -520,7 +518,7 @@
         //20220817 以原功能為基礎,補強選轉螢幕後收縮箭頭顯示不正常
         function mobile_Mode() {
             if ($("#main_body").attr("class") == "footer_fixed nav-sm" || $("#main_body").attr("class") == "nav-sm footer_fixed") {
-                console.log("nav-sm <991");
+               // console.log("nav-sm <991");
                 document.cookie = "clickhistory=" + "fa fa-chevron-left" + ";path=/";//手機版變回電腦版,cookie須重設
                 $("#BorderBox3").show();
                 $("#BorderBox1").hide();
@@ -528,7 +526,7 @@
                 $('#changeicon').attr('data-original-title', '');
 
             } else {
-                console.log("nav-md <991");
+               // console.log("nav-md <991");
                 $("#BorderBox2").show();
                 $("#BorderBox3").hide();
             }
@@ -560,7 +558,7 @@
         /*------------------------------------------------------------------*/
         /*手機板使用，清除側欄用*/
         function seticon() {
-            console.log("inn");
+           // console.log("inn");
             document.getElementById("BorderBox").style.display = "none";
             changeicon.className = "fa fa-chevron-right";
             changeicon.classList == "fa fa-chevron-right"
@@ -576,7 +574,7 @@
                     $('#changeicon').attr('data-original-title', '');
                     document.cookie = "clickhistory=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 }
-                console.log("手機");
+                //console.log("手機");
                 document.cookie = "clickhistory=" + changeicon.className + ";path=/";
             });
         }
@@ -617,46 +615,20 @@
             //增加timer
             if (resizeTimer) clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function () {
-                console.log($(window).width());
+                //console.log($(window).width());
                 //mobile_Check();
                 if ($("#main_body").width() < 991) {
                     try { $("#menu_toggle").unbind("click", pctoggle); } catch (e) { console.log(e) } //無pctoggle監聽,略過
                     try { $("#menu_toggle").unbind("click", mobile_menu_toggle); } catch (e) { console.log(e) } //無mobile_menu_toggle監聽,略過
                     seticon();
                     mobile_Mode();
-                    //if ($("#main_body").attr("class") == "footer_fixed nav-sm" || $("#main_body").attr("class") == "nav-sm footer_fixed") {
-                    //    console.log("nav-sm <991");
-                    //    document.cookie = "clickhistory=" + "fa fa-chevron-left" + ";path=/";
-                    //    $("#BorderBox3").show();
-                    //    $("#BorderBox1").hide();
-                    //    $('#changeicon').attr('data-original-title', '');
-                    //} else {
-                    //    console.log("nav-md <991");
-                    //    $("#BorderBox2").show();
-
-                    //}
+                    
                 } else if ($("#main_body").width() > 991) {
                     try { $("#menu_toggle").unbind("click", mobile_menu_toggle); } catch (e) { console.log(e) }
                     try { $("#menu_toggle").unbind("click", pctoggle); } catch (e) { console.log(e) } //無pctoggle監聽,略過
                     pcMenuToggle();
                     pc_Mode();
-                    //if ($("#main_body").attr("class") == "footer_fixed nav-md" || $("#main_body").attr("class") == "nav-md footer_fixed") {
-                    //    console.log("991>電腦nav-md");
-                    //    $("#BorderBox3").hide();
-                    //    $("#BorderBox2").hide();
-                    //    $("#BorderBox").show();
-                    //    changeicon.classList = "fa fa-chevron-left"
-                    //    //$('#changeicon').attr('data-original-title', '');
-
-                    //} else {
-                    //    console.log("991>電腦nav-sm");
-                    //    $("#BorderBox3").hide();
-                    //    $("#BorderBox2").hide();
-                    //    $("#BorderBox1").show();
-                    //    changeicon.classList = "fa fa-chevron-right"
-                    //    document.cookie = "clickhistory=" + "fa fa-chevron-right" + ";path=/";
-                    //    console.log(document.cookie);
-                    //}                  
+                           
                 }
             }, 100);
         });

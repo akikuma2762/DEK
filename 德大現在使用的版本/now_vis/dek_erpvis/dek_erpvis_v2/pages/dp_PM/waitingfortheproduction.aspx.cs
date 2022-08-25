@@ -207,7 +207,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 string condition_copy = condition.Replace("工作站編號", " a.工作站編號 ");
-                string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyymmdd");
+                string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
                 sqlcmd = SLS.Waitingfortheproduction_Hor_Table(upper_Month, condition_copy, date_str, date_end, dropdownlist_Factory.SelectedItem.Value);
                 DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
 
@@ -259,7 +259,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             //從dek ERP撈取本月排程資料
             //20220728 大圓盤部分暫時全搜索,待從立式移除後,歸類於臥室
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekERPDataTable);
-            string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyymmdd");
+            string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
             sqlcmd = SLS.Waitingfortheproduction_BigDisc_Table(upper_Month, date_str, date_end,"dek");
 
             DataTable dek_dt = DataTableUtils.GetDataTable(sqlcmd);

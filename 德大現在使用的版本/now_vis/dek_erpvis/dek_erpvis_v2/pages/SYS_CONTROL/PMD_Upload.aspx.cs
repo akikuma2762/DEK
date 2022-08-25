@@ -19,8 +19,6 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         public string color = "";
         public string th = "";
         public string tr = "";
-        public string th2 = "";
-        public string tr2 = "";
         string acc = "";
         string Link = "";
         string condition = "";
@@ -87,7 +85,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         }
 
         [WebMethod]
-        public static object PostData(string _data)//這個方法需要是靜態的方法要用到關鍵字static       
+        public static object postData(string _data)//這個方法需要是靜態的方法要用到關鍵字static       
         {
             //object stringArray = new object[1];
             // Array odata = new Array[1];
@@ -107,75 +105,111 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string _Link = Rp_data.Rows[0]["Link"].ToString().ToLower();
             string txt_str = Rp_data.Rows[0]["txt_str"].ToString();
             string txt_end = Rp_data.Rows[0]["txt_end"].ToString();
-            string Act_Type = Rp_data.Rows[0]["Act_Type"].ToString();
+            string click_Type = Rp_data.Rows[0]["click_Type"].ToString();
+            string product_Line = Rp_data.Rows[0]["product_Line"].ToString();
+            string TextBox_keyWord = Rp_data.Rows[0]["TextBox_keyWord"].ToString();
+            string sqlcmd = "";
+            DataTable dt = new DataTable();
+            string dt_st = "";
+            string dt_ed = "";
+            string condition = "";
+            PMD_Upload1 PMD = new PMD_Upload1();
 
-            switch (Act_Type) {
+
+            if (product_Line != "全部")
+            {
+                if (int.Parse(product_Line) > 0)
+                    condition += $" and 工作站狀態資料表.工作站編號 = '{product_Line}' ";
+            }
+                
+            if (TextBox_keyWord != "")
+                condition += $" and 工作站狀態資料表.排程編號 like '%{TextBox_keyWord}%' ";
+
+            switch (click_Type) {
                 case "Update":
-                    
+                    if (_Link == "ver")
+                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    else if (_Link == "hor")
+                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                     sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
+                     dt = DataTableUtils.GetDataTable(sqlcmd);
+                    if (HtmlUtil.Check_DataTable(dt))
+                    {
+                        DataRow row = dt.NewRow();
+                        row["組裝編號"] = TextBox_Order;
+                        row["排程編號"] = TextBox_Number;
+                        row["進度"] = DropDownList_Percent.Replace("%", "");
+                        row["狀態"] = DropDownList_Status;
+                        row["工作站編號"] = DropDownList_Work;
+                        row["組裝日"] = TextBox_Date.Replace("-", "");
+                        row["實際組裝時間"] = TextBox_Truedate.Replace("-", "");
+                        if (DropDownList_Status == "未動工")
+                        {
+                            row["進度"] = "0";
+                            row["實際啟動時間"] = "";
+                            row["再次啟動時間"] = "";
+                            row["暫停時間"] = "";
+                            row["實際完成時間"] = "";
+                        }
+
+                        if (_Link == "ver")
+                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                        else if (_Link == "hor")
+                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
+                        if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'", row))
+                        {
+                            dt_st = txt_str;
+                            dt_ed = txt_end;
+                            data = PMD.Set_Post_DataTable(_Link, dt_st.Replace("-", ""), dt_ed.Replace("-", ""),condition,"更新成功!");
+                            //_Data = JsonConvert.SerializeObject(odata);
+                        }
+
+                        else {
+                            data = new { status = "更新失敗!" };
+                        }
+                    }
+                    else
+                    {
+                        data = new { status = "更新失敗,資料不存在!" };
+                    }
                     break;
+
                 case "Delete":
-                    
+                    if (_Link == "ver")
+                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    else if (_Link == "hor")
+                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
+                     sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間 From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
+                     dt = DataTableUtils.GetDataTable(sqlcmd);
+
+                    if (HtmlUtil.Check_DataTable(dt))
+                    {
+                        if (_Link == "ver")
+                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                        else if (_Link == "hor")
+                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                        if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'"))
+                        {
+                            dt_st = txt_str;
+                            dt_ed = txt_end;
+                            data = PMD.Set_Post_DataTable(_Link, dt_st.Replace("-", ""), dt_ed.Replace("-", ""),condition,"刪除成功!");
+                        }
+                        else
+                        {
+                            data = new { status = "刪除失敗!" };
+                        }
+                    }
                     break;
+
                 case "Insert":
                     
                     
                     break;
             }
             
-            if (_Link == "ver")
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            else if (_Link == "hor")
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-            string sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
-            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
-            if (HtmlUtil.Check_DataTable(dt))
-            {
-                DataRow row = dt.NewRow();
-                row["組裝編號"] = TextBox_Order;
-                row["排程編號"] = TextBox_Number;
-                row["進度"] = DropDownList_Percent.Replace("%","");
-                row["狀態"] = DropDownList_Status;
-                row["工作站編號"] = DropDownList_Work;
-                row["組裝日"] = TextBox_Date.Replace("-", "");
-                row["實際組裝時間"] = TextBox_Truedate.Replace("-", "");
-                if (DropDownList_Status == "未動工")
-                {
-                    row["進度"] = "0";
-                    row["實際啟動時間"] = "";
-                    row["再次啟動時間"] = "";
-                    row["暫停時間"] = "";
-                    row["實際完成時間"] = "";
-                }
 
-                if (_Link == "ver")
-                {
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                }
-                   
-                else if (_Link == "hor") 
-                {
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                }
-                if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'", row))
-                {
-                    data = new { status = "失敗" };
-                }
-                else 
-                {
-                    data = new { status = "失敗" };
-                }
-                    
-                string dt_st = txt_str;
-                string dt_ed = txt_end;
-                PMD_Upload1 PMD = new PMD_Upload1();
-                data = PMD.Set_DataTable2(_Link, dt_st.Replace("-", ""), dt_ed.Replace("-", ""), "");
-                //_Data = JsonConvert.SerializeObject(odata);
-            }
-            else
-            {
-                data = new{status = "失敗"};
-                return data;
-            }
 
             return data;
         }
@@ -288,7 +322,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
         }
 
-        private object Set_DataTable2(string Link, string start, string end, string sqlcmd)
+        private object Set_Post_DataTable(string Link, string start, string end,string sqlcmd ,string status)
         {
             object[] stringArray = new object[2];
             object data = new { };
@@ -312,15 +346,18 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 dt.Columns["刪除"].SetOrdinal(1);
 
                 string title = "";
-                th2 = HtmlUtil.Set_Table_Title(dt, out title);
-                tr2 = HtmlUtil.Set_Table_Content(dt, title, PMD_Uploadcallback);
-                data = new{th = th2,tr = tr2,status = "成功"};
+                th = HtmlUtil.Set_Table_Title(dt, out title);
+                tr = HtmlUtil.Set_Table_Content(dt, title, PMD_Uploadcallback);
+                data = new { th = th, tr = tr, status = status };
                 //20220824多維物件用法,暫時不用
                 //stringArray[0] = th2;
                 //stringArray[1] = tr2;
             }
             else
-                HtmlUtil.NoData(out th2, out th2);
+            {
+                HtmlUtil.NoData(out th, out tr);
+                data = new { th = th, tr = tr, status = "沒有資料!" };
+            }
             return data;
 
         }
