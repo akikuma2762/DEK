@@ -290,6 +290,7 @@ namespace dek_erpvis_v2.pages.dp_SD
             double time = Get_DifferenceDay(start, end);
             string max = "";
             string sqlcmd = "";
+            //20220826 待修改 更該為業務部月產能抓取語法
             if (value == "sowon")
                 sqlcmd = "SELECT sum(目標件數) 量能 FROM (SELECT ASSEMBLY_GROUP.GROUP_NAME 產線名稱, ASSEMBLY_LINE_GROUP.LINE_ID FROM ASSEMBLY_GROUP, ASSEMBLY_LINE_GROUP WHERE ASSEMBLY_LINE_GROUP.GROUP_ID = ASSEMBLY_GROUP.GROUP_ID and ISNUMERIC( ASSEMBLY_LINE_GROUP.LINE_ID)=1 and ASSEMBLY_LINE_GROUP.LINE_ID <> '11' ) a LEFT JOIN (SELECT 工作站編號,目標件數 FROM dekvisassm.dbo.工作站型態資料表 WHERE 工作站是否使用中 = '1') b ON cast(a.LINE_ID as int) = cast(b.工作站編號 as int) where 工作站編號 IS NOT NULL ";
             else if (value == "dek")

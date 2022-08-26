@@ -371,13 +371,13 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string value = "";
 
             if (field_name == "編輯")
-                value = $"<td style='width:7%'><b><u><div onclick=Set_Value('{DataTableUtils.toString(row["組裝編號"])}'," +
-                                                                        $"'{DataTableUtils.toString(row["排程編號"])}'," +
+                value = $"<td style='width:7%'><b><u><a href='javascript: void()' onclick=Set_Value('{DataTableUtils.toString(row["組裝編號"])}'," +
+                                                        $"'{DataTableUtils.toString(row["排程編號"])}'," +
                                                                         $"'{DataTableUtils.toString(row["進度"])}'," +
                                                                         $"'{DataTableUtils.toString(row["狀態"])}'," +
                                                                         $"'{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}'," +
                                                                         $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["組裝日"]), "-")}'," +
-                                                                        $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["實際組裝時間"]), "-")}') data-toggle = 'modal' data-target = '#exampleModal'>編輯</div></u></b></td>";
+                                                                        $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["實際組裝時間"]), "-")}') data-toggle = 'modal' data-target = '#exampleModal'>編輯</a></div></u></b></td>";
             else if (field_name == "刪除")
                 value = $"<td style='width:7%'><b><u><a href='javascript: void()' onclick=Delete_Value('{DataTableUtils.toString(row["組裝編號"])}','{DataTableUtils.toString(row["排程編號"])}','{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}')>刪除</a></u></b></td>";
             else if (field_name == "組裝日" || field_name == "實際組裝時間")
@@ -391,6 +391,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         //設定進度
         private void Set_Percent()
         {
+            
             if (DropDownList_Percent.Items.Count == 0)
             {
                 DropDownList_Percent.Items.Clear();
@@ -398,6 +399,15 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     DropDownList_Percent.Items.Add(i.ToString() + "%");
                 DropDownList_Percent.Items.Add("99" + "%");
                 DropDownList_Percent.Items.Add("100" + "%");
+            }
+            //20220826 新增Insert表單選項
+            if (Insert_DropDownList_Percent.Items.Count == 0)
+            {
+                Insert_DropDownList_Percent.Items.Clear();
+                for (int i = 0; i < 100; i = i + 10)
+                    Insert_DropDownList_Percent.Items.Add(i.ToString() + "%");
+                Insert_DropDownList_Percent.Items.Add("99" + "%");
+                Insert_DropDownList_Percent.Items.Add("100" + "%");
             }
 
         }
@@ -412,7 +422,15 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 DropDownList_Status.Items.Add("暫停");
                 DropDownList_Status.Items.Add("完成");
             }
-
+            //20220826 新增Insert表單選項
+            if (Insert_DropDownList_Status.Items.Count == 0)
+            {
+                Insert_DropDownList_Status.Items.Clear();
+                Insert_DropDownList_Status.Items.Add("未動工");
+                Insert_DropDownList_Status.Items.Add("啟動");
+                Insert_DropDownList_Status.Items.Add("暫停");
+                Insert_DropDownList_Status.Items.Add("完成");
+            }
         }
         //設定工作站編號
         private void Set_Work()
@@ -438,6 +456,22 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 }
 
             }
+            //20220826 新增Insert表單選項
+            if (HtmlUtil.Check_DataTable(dt))
+            {
+                if (Insert_DropDownList_Work.Items.Count == 0)
+                {
+                    Insert_DropDownList_Work.Items.Clear();
+                    ListItem list = new ListItem();
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        list = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
+                        Insert_DropDownList_Work.Items.Add(list);
+                    }
+                }
+
+            }
+
         }
         //變更工作站編號
         private string Change_WorkID(string Number)
