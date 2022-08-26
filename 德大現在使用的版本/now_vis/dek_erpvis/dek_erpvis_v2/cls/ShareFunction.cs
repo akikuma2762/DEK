@@ -120,10 +120,17 @@ namespace dek_erpvis_v2.cls
 
             }
 
-            //撈出預計下架日在本月的,或是預計完成日在下個月的(完成日在本月沒列入計算)
+            //撈出預計下架日在本月的, (此段敘述額外移出執行------或是預計完成日在下個月且實際完成在本月--------)
             DataTable dt_now = dt.Clone();
             string sqlcmd = $"預計完工日>='{start_date}' and 預計完工日<='{end_date}' ";
             DataRow[] rows = dt.Select(sqlcmd);
+            if (rows != null && rows.Length > 0)
+                for (int i = 0; i < rows.Length; i++)
+                    dt_now.ImportRow(rows[i]);
+
+            //20220826 抓出預計完工日在下個月但在實際完成在本月的例外
+            sqlcmd = $"預計完工日>'{end_date}' and (實際完成時間>='{start_date}' and '{end_date}'>=實際完成時間) ";
+             rows = dt.Select(sqlcmd);
             if (rows != null && rows.Length > 0)
                 for (int i = 0; i < rows.Length; i++)
                     dt_now.ImportRow(rows[i]);

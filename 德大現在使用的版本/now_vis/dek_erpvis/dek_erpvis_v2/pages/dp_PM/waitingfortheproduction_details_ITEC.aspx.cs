@@ -117,8 +117,8 @@ namespace dek_erpvis_v2.pages.dp_PM
                     ok = false;
                 }
                 condition = condition != "" ? $" and ( {condition} ) " : "";
-
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                //20220826 大圓盤資料已跟臥式連結
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 sqlcmd = $" select " +
                          $"排程編號," +
                          $"進度," +
@@ -216,12 +216,12 @@ namespace dek_erpvis_v2.pages.dp_PM
                 if (dt_now != null)
                 {
                     dt_本月應生產 = dt_now.Clone();
-                    //20220803 PrimaryKey 會錯誤,無發現用途,暫時拔除
-                    //dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
-                    //dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
+                    //20220826 PrimaryKey Merge時如無主鍵,資料會重複
+                    dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
+                    dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
                     dt_本月應生產.Merge(dt_now);
                 }
-                if (HtmlUtil.Check_DataTable(dt_NoFinish))
+                if (HtmlUtil.Check_DataTable(dt_NoFinish) && DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
                 {
                     dt_NoFinish.PrimaryKey = new DataColumn[] { dt_NoFinish.Columns["排程編號"], dt_NoFinish.Columns["工作站編號"] };
                     dt_本月應生產.Merge(dt_NoFinish, true, MissingSchemaAction.Ignore);

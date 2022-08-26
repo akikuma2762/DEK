@@ -165,17 +165,33 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         private string Set_Energy_callback(DataRow row, string field_name)
         {
             string value = "";
-            if (field_name == "編輯")
+            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
             {
-                value = $"<td data-toggle=\"modal\" data-target=\"#exampleModal_information\">" +
-                            $"<u>" +
-                                $"<a href=\"javascript:void(0)\" onclick=Set_Value(\"{row[field_name]}\")>" +
-                                    $"編輯" +
-                                $"</a>" +
-                            $"</u>" +
-                        $"</td>";
-            }
 
+                if (field_name == "編輯")
+                {
+                    value = $"<td data-toggle=\"modal\" data-target=\"#exampleModal_information\">" +
+                                $"<u>" +
+                                    $"<a href=\"javascript:void(0)\" onclick=Set_Value(\"{row[field_name]}\",\"{row["每日產能"]}\")>" +
+                                        $"編輯" +
+                                    $"</a>" +
+                                $"</u>" +
+                            $"</td>";
+                }
+
+            }
+            else {
+                if (field_name == "編輯")
+                {
+                    value = $"<td data-toggle=\"modal\" data-target=\"#exampleModal_information\">" +
+                                $"<u>" +
+                                    $"<a href=\"javascript:void(0)\" onclick=Set_Value(\"{row[field_name]}\",\"{row["每月產能"]}\")>" +
+                                        $"編輯" +
+                                    $"</a>" +
+                                $"</u>" +
+                            $"</td>";
+                }
+            }
             return value;
         }
     }

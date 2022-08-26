@@ -75,7 +75,7 @@
                             </h5>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    請填入每日產能：<asp:TextBox ID="TextBox_Qty" runat="server" TextMode="Number"></asp:TextBox>
+                                    請填入產能：<asp:TextBox ID="TextBox_Qty" runat="server" TextMode="Number"></asp:TextBox>
                                 </div>
                             </div>
                         </div>
@@ -111,9 +111,9 @@
         //防止頁籤跑版
         loadpage('', '');
 
-        function Set_Value(value) {
-            document.getElementById("<%=TextBox_Qty.ClientID%>").value = 0;
-            document.getElementById("<%=TextBox_Number.ClientID %>").value = value;
+        function Set_Value(product_Line,capacity) {
+            document.getElementById("<%=TextBox_Qty.ClientID%>").value = capacity;
+            document.getElementById("<%=TextBox_Number.ClientID %>").value = product_Line;
         }
     </script>
 </asp:Content>

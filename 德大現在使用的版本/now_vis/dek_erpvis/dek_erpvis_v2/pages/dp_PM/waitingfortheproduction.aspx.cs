@@ -232,9 +232,9 @@ namespace dek_erpvis_v2.pages.dp_PM
             {
                 dt_本月應生產 = dt_now.Clone();
 
-                //20220803 PrimaryKey 會錯誤,無發現用途,暫時拔除
-                //dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
-                //dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
+                //20220826 PrimaryKey Merge時如無主鍵,資料會重複
+                dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
+                dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
                 dt_本月應生產.Merge(dt_now);
             }
             if (HtmlUtil.Check_DataTable(dt_Finish) && DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
@@ -607,9 +607,10 @@ namespace dek_erpvis_v2.pages.dp_PM
         {
             DataTable dt_day = Get_Monthday(date_str, date_end);
             string sqlcmd = "";
-            int 預定生產 = 0;
-            int 預計生產量=0;
-            int 實際生產 = 0;
+            int _預定生產 = 0;
+            int _預計生產量=0;
+            int _實際生產 = 0;
+            string 差異量 = "";
             DataRow[] rows = null;
             for (int i = 0; i < dt_day.Rows.Count; i++)
             {
@@ -620,29 +621,29 @@ namespace dek_erpvis_v2.pages.dp_PM
                     sqlcmd = $"預計完工日 = '{dt_day.Rows[i]["日期"]}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
                 sqlcmd = sqlcmd + $" AND 產線群組='{row["產線群組"]}'";
                 rows = dt_本月應生產.Select(sqlcmd);
-                預定生產 += rows.Length;
+                _預定生產 += rows.Length;
 
                 //到今天為止應生產多少
-                預計生產量 += DataTableUtils.toInt(dt_day.Rows[i]["日期"].ToString()) <= DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) ? rows.Length : 0;
+                _預計生產量 += DataTableUtils.toInt(dt_day.Rows[i]["日期"].ToString()) <= DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) ? rows.Length : 0;
 
                 //實際生產
                 sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成'";
                 sqlcmd = sqlcmd + $" AND 產線群組='{row["產線群組"]}'";
                 rows = dt_本月應生產.Select(sqlcmd);
 
-                實際生產 += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
+                _實際生產 += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
             }
-            預定生產 = 預定生產 == 0 ? 0 : 預定生產;
-            差值 = (實際生產 - 預計生產量).ToString();
+            _預定生產 = _預定生產 == 0 ? 0 : _預定生產;
+            差異量 = (_實際生產 - _預計生產量).ToString();
             string value = "";
             if (field_name == "本期計畫生產")
-                value = 預定生產.ToString();
+                value = _預定生產.ToString();
             if (field_name == "應有進度")
-                value = 預計生產量.ToString();
+                value = _預計生產量.ToString();
             if (field_name == "實際進度")
-                value = 實際生產.ToString();
+                value = _實際生產.ToString();
             if (field_name == "差異")
-                value = 差值;
+                value = 差異量;
 
             return value == "" ? "" : $"<td align=\"right\"> {value} </td>";
         }
