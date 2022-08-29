@@ -96,8 +96,8 @@ margin:0px;
 .padding-right-4 {
     padding-right: 4px !important;
 }
-#btncheck {
-    margin:0px !important;
+#btncheck, #btn_Insert {
+    margin: 0px !important;
 }
 /*20220718 統一修改外掛套件樣式 ---------------End--------------*/
 @media screen and (max-width:768px) {

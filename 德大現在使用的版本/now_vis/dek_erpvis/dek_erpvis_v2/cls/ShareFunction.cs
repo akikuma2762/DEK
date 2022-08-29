@@ -83,6 +83,7 @@ namespace dek_erpvis_v2.cls
             dt.Columns.Add("預計完工日");
             work.工作時段_新增(8, 0, 12, 0);
             work.工作時段_新增(13, 0, 17, 0);
+            DateTime stand_endtime = new DateTime();
 
             int standard_work = 0;
             foreach (DataRow row in dt.Rows)
@@ -90,7 +91,10 @@ namespace dek_erpvis_v2.cls
                 standard_work = DataTableUtils.toInt(DataTableUtils.toString(row["標準工時"]));
                 standard_work = standard_work == 0 ? 1 : standard_work;
 
-                DateTime stand_endtime = work.目標日期(StrToDate(row["上線日"].ToString()), new TimeSpan(0, 0, standard_work));
+                if (row["組裝預計完工日"].ToString() != "")
+                    stand_endtime = DateTime.ParseExact(row["組裝預計完工日"].ToString(), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+                else
+                    stand_endtime = work.目標日期(StrToDate(row["上線日"].ToString()), new TimeSpan(0, 0, standard_work));
                 row["預計完工日"] = stand_endtime.ToString("yyyyMMdd");
             }
             return dt;
@@ -120,23 +124,29 @@ namespace dek_erpvis_v2.cls
 
             }
 
-            //撈出預計下架日在本月的, (此段敘述額外移出執行------或是預計完成日在下個月且實際完成在本月--------)
+            //撈出預計下架日在本月的, 與預計完工在下個月,但在本月提早完成的訂單
             DataTable dt_now = dt.Clone();
-            string sqlcmd = $"預計完工日>='{start_date}' and 預計完工日<='{end_date}' ";
+            DataTable dt_now_link = dt.Clone();
+            string sqlcmd = $" 預計完工日>='{start_date}' and 預計完工日<='{end_date}' OR(預計完工日>'{end_date}' and (實際完成時間>='{start_date}' and '{end_date}'>=實際完成時間)) ";
             DataRow[] rows = dt.Select(sqlcmd);
             if (rows != null && rows.Length > 0)
                 for (int i = 0; i < rows.Length; i++)
-                    dt_now.ImportRow(rows[i]);
+                    dt_now.ImportRow(rows[i]); 
 
-            //20220826 抓出預計完工日在下個月但在實際完成在本月的例外
-            sqlcmd = $"預計完工日>'{end_date}' and (實際完成時間>='{start_date}' and '{end_date}'>=實際完成時間) ";
-             rows = dt.Select(sqlcmd);
-            if (rows != null && rows.Length > 0)
-                for (int i = 0; i < rows.Length; i++)
-                    dt_now.ImportRow(rows[i]);
+            //-----Linq寫法-----//
+            //var dt_1 = dt.AsEnumerable().Where(w => 
+            //                                      DataTableUtils.toDouble(w.Field<string>("預計完工日")) >= DataTableUtils.toDouble($"{start_date}") &&
+            //                                       DataTableUtils.toDouble(w.Field<string>("預計完工日")) <= DataTableUtils.toDouble($"{end_date}"));
+            //    if (dt_1.FirstOrDefault() != null)
+            //        {
+            //            foreach (DataRow row in dt_1.CopyToDataTable().Rows) {
+            //               dt_now_link.ImportRow(row);
+            //           } 
+            //       }
+            //------------------//
 
-            //撈出預計下架日在上個月，但在本月完成
-            DataTable dt_Finish = dt.Clone();
+                //撈出預計下架日在上個月，但在本月完成
+                DataTable dt_Finish = dt.Clone();
             sqlcmd = $"預計完工日<'{start_date}' and (實際完成時間>='{start_date}000000' OR 實際完成時間>='{start_date}')";
             rows = dt.Select(sqlcmd);
             if (rows != null && rows.Length > 0)

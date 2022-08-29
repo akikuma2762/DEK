@@ -143,7 +143,7 @@
         //});
 
         //防止頁籤跑版
-        loadpage('Orders_DayTotal=Orders_DayTotal_cust', '#Orders_ProductTotals');
+        loadpage('', '');
 
 
 

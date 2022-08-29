@@ -125,12 +125,16 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             if (TextBox_keyWord != "")
                 condition += $" and 工作站狀態資料表.排程編號 like '%{TextBox_keyWord}%' ";
 
+            if (_Link == "ver")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            else if (_Link == "hor")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
             switch (click_Type) {
+
                 case "Update":
-                    if (_Link == "ver")
-                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    else if (_Link == "hor")
-                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
+                   
                      sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
                      dt = DataTableUtils.GetDataTable(sqlcmd);
                     if (HtmlUtil.Check_DataTable(dt))
@@ -152,10 +156,10 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                             row["實際完成時間"] = "";
                         }
 
-                        if (_Link == "ver")
-                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                        else if (_Link == "hor")
-                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                        //if (_Link == "ver")
+                        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                        //else if (_Link == "hor")
+                        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
 
                         if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'", row))
                         {
@@ -176,19 +180,20 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     break;
 
                 case "Delete":
-                    if (_Link == "ver")
-                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    else if (_Link == "hor")
-                        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
+                    //if (_Link == "ver")
+                    //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    //else if (_Link == "hor")
+                    //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
 
                      sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間 From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
                      dt = DataTableUtils.GetDataTable(sqlcmd);
 
                     if (HtmlUtil.Check_DataTable(dt))
                     {
-                        if (_Link == "ver")
-                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                        else if (_Link == "hor")
+                        //if (_Link == "ver")
+                        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                        //else if (_Link == "hor")
                             GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                         if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'"))
                         {
@@ -204,8 +209,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     break;
 
                 case "Insert":
-                    
-                    
+                     dt = DataTableUtils.DataTable_TableNoRow("工作站狀態資料表");
+
+
                     break;
             }
             
