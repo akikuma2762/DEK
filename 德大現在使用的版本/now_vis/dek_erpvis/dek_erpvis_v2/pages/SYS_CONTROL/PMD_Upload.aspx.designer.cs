@@ -195,76 +195,76 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         protected global::System.Web.UI.WebControls.Button Button_Save;
 
         /// <summary>
-        /// Insert_Custmer_Name 控制項。
+        /// Custmer_Name 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Insert_Custmer_Name;
+        protected global::System.Web.UI.WebControls.TextBox Custmer_Name;
 
         /// <summary>
-        /// Insert_Key_Number 控制項。
+        /// Key_Number 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Insert_Key_Number;
+        protected global::System.Web.UI.WebControls.TextBox Key_Number;
 
         /// <summary>
-        /// Insert_Key_Sn 控制項。
+        /// Key_Sn 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Insert_Key_Sn;
+        protected global::System.Web.UI.WebControls.TextBox Key_Sn;
 
         /// <summary>
-        /// Insert_Order 控制項。
+        /// Order_Num 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Insert_Order;
+        protected global::System.Web.UI.WebControls.TextBox Order_Num;
 
         /// <summary>
-        /// Insert_Number 控制項。
+        /// Schedule_Number 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Insert_Number;
+        protected global::System.Web.UI.WebControls.TextBox Schedule_Number;
 
         /// <summary>
-        /// Insert_DropDownList_Percent 控制項。
+        /// Insert_Percent 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Insert_DropDownList_Percent;
+        protected global::System.Web.UI.WebControls.DropDownList Insert_Percent;
 
         /// <summary>
-        /// Insert_DropDownList_Status 控制項。
+        /// Insert_Status 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Insert_DropDownList_Status;
+        protected global::System.Web.UI.WebControls.DropDownList Insert_Status;
 
         /// <summary>
-        /// Insert_DropDownList_Work 控制項。
+        /// Insert_Work_Num 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Insert_DropDownList_Work;
+        protected global::System.Web.UI.WebControls.DropDownList Insert_Work_Num;
 
         /// <summary>
         /// Build_Date 控制項。

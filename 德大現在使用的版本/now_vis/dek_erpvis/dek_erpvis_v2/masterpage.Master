@@ -517,8 +517,8 @@
 
         //20220817 以原功能為基礎,補強選轉螢幕後收縮箭頭顯示不正常
         function mobile_Mode() {
-            if ($("#main_body").attr("class") == "footer_fixed nav-sm" || $("#main_body").attr("class") == "nav-sm footer_fixed") {
-               // console.log("nav-sm <991");
+            if ($("#main_body").attr("class").indexOf("nav-sm") != -1) {
+                //console.log("nav-sm <991");
                 document.cookie = "clickhistory=" + "fa fa-chevron-left" + ";path=/";//手機版變回電腦版,cookie須重設
                 $("#BorderBox3").show();
                 $("#BorderBox1").hide();
@@ -526,7 +526,7 @@
                 $('#changeicon').attr('data-original-title', '');
 
             } else {
-               // console.log("nav-md <991");
+                console.log("nav-md <991");
                 $("#BorderBox2").show();
                 $("#BorderBox3").hide();
             }
@@ -534,7 +534,7 @@
         }
         //20220817 以原功能為基礎,補強選轉螢幕後收縮箭頭顯示不正常
         function pc_Mode() {
-            if ($("#main_body").attr("class") == "footer_fixed nav-md" || $("#main_body").attr("class") == "nav-md footer_fixed") {
+            if ($("#main_body").attr("class").indexOf("nav-md")!=-1) {
                 //console.log("991>電腦nav-md");
                 $("#BorderBox3").hide();
                 $("#BorderBox2").hide();

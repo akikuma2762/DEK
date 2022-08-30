@@ -4013,6 +4013,7 @@
     <Compile Include="cls\BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="cls\Class1.cs" />
     <Compile Include="cls\CNCUtils.cs" />
     <Compile Include="cls\HtmlUtil.cs" />
     <Compile Include="cls\myclass.cs" />

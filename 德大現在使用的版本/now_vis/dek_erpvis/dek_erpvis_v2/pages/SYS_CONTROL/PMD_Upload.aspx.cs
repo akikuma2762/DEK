@@ -91,132 +91,225 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             // Array odata = new Array[1];
             DataTable Rp_data = JsonToDataTable.JsonStringToDataTable(_data);
             object data = new { };
-            
-            string TextBox_Order = Rp_data.Rows[0]["TextBox_Order"].ToString();
-            string TextBox_Number = Rp_data.Rows[0]["TextBox_Number"].ToString();
-            string DropDownList_Percent = Rp_data.Rows[0]["DropDownList_Percent"].ToString();
-            string DropDownList_Status = Rp_data.Rows[0]["DropDownList_Status"].ToString();
-            string DropDownList_Work = Rp_data.Rows[0]["DropDownList_Work"].ToString();
-            string TextBox_OrderNum = Rp_data.Rows[0]["TextBox_OrderNum"].ToString();
-            string TextBox_Schedule = Rp_data.Rows[0]["TextBox_Schedule"].ToString();
-            string TextBox_WorkNumber = Rp_data.Rows[0]["TextBox_WorkNumber"].ToString();
-            string TextBox_Date = Rp_data.Rows[0]["TextBox_Date"].ToString();
-            string TextBox_Truedate = Rp_data.Rows[0]["TextBox_Truedate"].ToString();
-            string _Link = Rp_data.Rows[0]["Link"].ToString().ToLower();
-            string txt_str = Rp_data.Rows[0]["txt_str"].ToString();
-            string txt_end = Rp_data.Rows[0]["txt_end"].ToString();
-            string click_Type = Rp_data.Rows[0]["click_Type"].ToString();
-            string product_Line = Rp_data.Rows[0]["product_Line"].ToString();
-            string TextBox_keyWord = Rp_data.Rows[0]["TextBox_keyWord"].ToString();
-            string sqlcmd = "";
             DataTable dt = new DataTable();
+            PMD_Upload1 PMD = new PMD_Upload1();
+            DataRow dt_Row;
+            string sqlcmd = "";
             string dt_st = "";
             string dt_ed = "";
             string condition = "";
-            PMD_Upload1 PMD = new PMD_Upload1();
+            string Num = "";
+            string Sn = "";
+            int success = 0;
+            Dictionary<string, string> myData = new Dictionary<string, string>();
 
-
-            if (product_Line != "全部")
+            foreach (DataRow dr in Rp_data.Rows)
             {
-                if (int.Parse(product_Line) > 0)
-                    condition += $" and 工作站狀態資料表.工作站編號 = '{product_Line}' ";
+                foreach (DataColumn dc in Rp_data.Columns)
+                {
+                    string dc_Name = dc.ToString();
+                    myData.Add(dc_Name, dr[dc_Name].ToString());
+                }
+            }
+
+           
+
+            if (myData["product_Line"] != "全部")
+            {
+                if (int.Parse(myData["product_Line"]) > 0)
+                    condition += $" and 工作站狀態資料表.工作站編號 = '{myData["product_Line"]}' ";
             }
                 
-            if (TextBox_keyWord != "")
-                condition += $" and 工作站狀態資料表.排程編號 like '%{TextBox_keyWord}%' ";
+            if (myData["TextBox_keyWord"] != "")
+                condition += $" and 工作站狀態資料表.排程編號 like '%{myData["TextBox_keyWord"]}%' ";
 
-            if (_Link == "ver")
+            if (myData["_Link"] == "ver")
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            else if (_Link == "hor")
+            else if (myData["_Link"] == "hor")
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
 
-            switch (click_Type) {
+            switch (myData["click_Type"]) {
 
                 case "Update":
 
-                   
-                     sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
+                     sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'";
                      dt = DataTableUtils.GetDataTable(sqlcmd);
                     if (HtmlUtil.Check_DataTable(dt))
                     {
-                        DataRow row = dt.NewRow();
-                        row["組裝編號"] = TextBox_Order;
-                        row["排程編號"] = TextBox_Number;
-                        row["進度"] = DropDownList_Percent.Replace("%", "");
-                        row["狀態"] = DropDownList_Status;
-                        row["工作站編號"] = DropDownList_Work;
-                        row["組裝日"] = TextBox_Date.Replace("-", "");
-                        row["實際組裝時間"] = TextBox_Truedate.Replace("-", "");
-                        if (DropDownList_Status == "未動工")
+                        dt_Row = dt.NewRow();
+                        dt_Row["組裝編號"] = myData["TextBox_Order"];
+                        dt_Row["排程編號"] = myData["TextBox_Number"];
+                        dt_Row["進度"] = myData["DropDownList_Percent"];
+                        dt_Row["狀態"] = myData["DropDownList_Status"];
+                        dt_Row["工作站編號"] = myData["DropDownList_Work"];
+                        dt_Row["組裝日"] = myData["TextBox_Date"];
+                        dt_Row["實際組裝時間"] = myData["TextBox_Truedate"];
+                        if (myData["DropDownList_Status"] == "未動工")
                         {
-                            row["進度"] = "0";
-                            row["實際啟動時間"] = "";
-                            row["再次啟動時間"] = "";
-                            row["暫停時間"] = "";
-                            row["實際完成時間"] = "";
+                            dt_Row["進度"] = "0";
+                            dt_Row["實際啟動時間"] = "";
+                            dt_Row["再次啟動時間"] = "";
+                            dt_Row["暫停時間"] = "";
+                            dt_Row["實際完成時間"] = "";
                         }
-
-                        //if (_Link == "ver")
-                        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                        //else if (_Link == "hor")
-                        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-
-                        if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'", row))
+                        Num = DataTableUtils.toString(dt.Rows[0]["鍵編號"]);
+                        Sn = dt.Rows[0]["鍵序號"].ToString();
+                        //20220830修改資料前先確定租裝資料表有無資料,暫時先用此方法
+                        sqlcmd = $"Select * From 組裝資料表 where   Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'";
+                        dt = DataTableUtils.GetDataTable(sqlcmd);
+                        if (HtmlUtil.Check_DataTable(dt))
                         {
-                            dt_st = txt_str;
-                            dt_ed = txt_end;
-                            data = PMD.Set_Post_DataTable(_Link, dt_st.Replace("-", ""), dt_ed.Replace("-", ""),condition,"更新成功!");
-                            //_Data = JsonConvert.SerializeObject(odata);
-                        }
+                            if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'", dt_Row))
+                            {
+                                sqlcmd = $"Select * From 組裝資料表 where   Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'";
+                                dt = DataTableUtils.GetDataTable(sqlcmd);
+                                if (HtmlUtil.Check_DataTable(dt))
+                                {
+                                    if (myData["_Link"] == "hor")
+                                    {
+                                        if (myData["DropDownList_Work"].ToString() == "1")
+                                        {
+                                            myData["DropDownList_Work"] = "100";
+                                        }
+                                        else if (myData["DropDownList_Work"].ToString() == "2")
+                                        {
+                                            myData["DropDownList_Work"] = "110";
+                                        }
+                                    }
+                                    dt_Row = dt.NewRow();
+                                    dt_Row["排程編號"] = myData["TextBox_Number"];
+                                    dt_Row["FAB_USER"] = myData["DropDownList_Work"];
+                                    if (DataTableUtils.Update_DataRow("組裝資料表", $" Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'", dt_Row))
+                                    {
+                                        dt_st = myData["txt_str"];
+                                        dt_ed = myData["txt_end"];
+                                        data = PMD.Set_Post_DataTable(myData["_Link"], dt_st, dt_ed, condition, "更新成功!");
+                                        //_Data = JsonConvert.SerializeObject(odata);
 
-                        else {
-                            data = new { status = "更新失敗!" };
+                                    }
+                                    else
+                                    {
+                                        data = new { status = "組裝資料更新失敗!" };
+                                    }
+
+                                }
+                                else
+                                {
+                                    data = new { status = "更新失敗,組裝資料不存在!" };
+                                }
+                            }
+                            else
+                            {
+                                data = new { status = "更新失敗!" };
+                            }
+                        }
+                        else
+                        {
+                            data = new { status = "更新失敗,工作資料或組裝資料不存在!" };
                         }
                     }
                     else
                     {
-                        data = new { status = "更新失敗,資料不存在!" };
+                        data = new { status = "更新失敗,工作資料不存在!" };
                     }
                     break;
 
                 case "Delete":
 
-                    //if (_Link == "ver")
-                    //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    //else if (_Link == "hor")
-                    //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-
-                     sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間 From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'";
+                     sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間,鍵編號,鍵序號 From 工作站狀態資料表 where  組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'";
                      dt = DataTableUtils.GetDataTable(sqlcmd);
 
                     if (HtmlUtil.Check_DataTable(dt))
                     {
-                        //if (_Link == "ver")
-                        //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                        //else if (_Link == "hor")
-                            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                        if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum}' and  排程編號= '{TextBox_Schedule}' and 工作站編號= '{TextBox_WorkNumber}'"))
+                         Num = DataTableUtils.toString(dt.Rows[0]["鍵編號"]);
+                         Sn = dt.Rows[0]["鍵序號"].ToString();
+                        sqlcmd = $"Select * From 組裝資料表 where  Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'";
+                        dt = DataTableUtils.GetDataTable(sqlcmd);
+                        if (HtmlUtil.Check_DataTable(dt))
                         {
-                            dt_st = txt_str;
-                            dt_ed = txt_end;
-                            data = PMD.Set_Post_DataTable(_Link, dt_st.Replace("-", ""), dt_ed.Replace("-", ""),condition,"刪除成功!");
+                            if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'"))
+                            {
+                                if (DataTableUtils.Delete_Record("組裝資料表", $" Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'"))
+                                {
+                                    dt_st = myData["txt_str"];
+                                    dt_ed = myData["txt_end"];
+                                    data = PMD.Set_Post_DataTable(myData["_Link"], dt_st, dt_ed, condition, "刪除成功!");
+                                }
+                                else
+                                {
+                                    data = new { status = "組裝資料表刪除失敗!" };
+                                }
+                            }
+                            else
+                            {
+                                data = new { status = "工作狀態表刪除失敗!" };
+                            }
                         }
                         else
                         {
-                            data = new { status = "刪除失敗!" };
+                            data = new { status = "資料表刪除失敗!" };
                         }
                     }
                     break;
 
                 case "Insert":
-                     dt = DataTableUtils.DataTable_TableNoRow("工作站狀態資料表");
+                    
+                        dt = DataTableUtils.DataTable_TableNoRow("工作站狀態資料表");
+                        dt_Row = dt.NewRow();
+                        dt_st = myData["txt_str"];
+                        dt_ed = myData["txt_end"];
+                        dt_Row["排程編號"] = myData["Schedule_Number"];
+                        dt_Row["組裝編號"] = myData["Order_Num"];
+                        dt_Row["進度"] = myData["Insert_Percent"];
+                        dt_Row["狀態"] = myData["Insert_Status"];
+                        dt_Row["工作站編號"] = myData["Insert_Work_Num"];
+                        dt_Row["組裝日"] = myData["Build_Date"];
+                        dt_Row["實際組裝時間"] = myData["Build_Date_True"];
+                        dt_Row["鍵編號"] = myData["Key_Number"];
+                        dt_Row["鍵序號"] = myData["Key_Sn"];
+                        dt.Rows.Add(dt_Row);
+                        success = DataTableUtils.Insert_TableRows("工作站狀態資料表", dt);
+                        if (success == 1)
+                        {
+                            //臥式 INTE 代號轉換
+                            if(myData["_Link"] == "hor")
+                            {
+                                if (myData["Insert_Work_Num"].ToString() == "1")
+                                {
+                                    myData["Insert_Work_Num"] = "100";
+                                }
+                                else if (myData["Insert_Work_Num"].ToString() == "2")
+                                {
+                                    myData["Insert_Work_Num"] = "110";
+                                }
+                            }
 
-
+                            dt = DataTableUtils.DataTable_TableNoRow("組裝資料表");
+                            dt_Row = dt.NewRow();
+                            dt_Row["排程編號"] = myData["Schedule_Number"];
+                            dt_Row["Num"] = myData["Key_Number"];
+                            dt_Row["Sn"] = myData["Key_Sn"];
+                            dt_Row["CUSTNM"] = myData["Custmer_Name"];
+                            dt_Row["FAB_USER"] = myData["Insert_Work_Num"];
+                            dt.Rows.Add(dt_Row);
+                            success = DataTableUtils.Insert_TableRows("組裝資料表", dt);
+                            if (success == 1)
+                            {
+                                data = PMD.Set_Post_DataTable(myData["_Link"], dt_st, dt_ed, condition, "新增成功!");
+                            }
+                            else
+                            {
+                                DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{myData["Order_Num"]}' and  排程編號= '{myData["Schedule_Number"]}' and 工作站編號= '{myData["Insert_Work_Num"]}'");
+                                data = new { status = "組裝資料表新增失敗!" };
+                            }
+                        }
+                        else
+                        {
+                            DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{myData["Order_Num"]}' and  排程編號= '{myData["Schedule_Number"]}' and 工作站編號= '{myData["Insert_Work_Num"]}'");
+                            data = new { status = "工作站狀態資料表新增失敗!" };
+                        }
                     break;
             }
-            
-
-
             return data;
         }
 
@@ -407,13 +500,13 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 DropDownList_Percent.Items.Add("100" + "%");
             }
             //20220826 新增Insert表單選項
-            if (Insert_DropDownList_Percent.Items.Count == 0)
+            if (Insert_Percent.Items.Count == 0)
             {
-                Insert_DropDownList_Percent.Items.Clear();
+                Insert_Percent.Items.Clear();
                 for (int i = 0; i < 100; i = i + 10)
-                    Insert_DropDownList_Percent.Items.Add(i.ToString() + "%");
-                Insert_DropDownList_Percent.Items.Add("99" + "%");
-                Insert_DropDownList_Percent.Items.Add("100" + "%");
+                    Insert_Percent.Items.Add(i.ToString() + "%");
+                Insert_Percent.Items.Add("99" + "%");
+                Insert_Percent.Items.Add("100" + "%");
             }
 
         }
@@ -429,13 +522,13 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 DropDownList_Status.Items.Add("完成");
             }
             //20220826 新增Insert表單選項
-            if (Insert_DropDownList_Status.Items.Count == 0)
+            if (Insert_Status.Items.Count == 0)
             {
-                Insert_DropDownList_Status.Items.Clear();
-                Insert_DropDownList_Status.Items.Add("未動工");
-                Insert_DropDownList_Status.Items.Add("啟動");
-                Insert_DropDownList_Status.Items.Add("暫停");
-                Insert_DropDownList_Status.Items.Add("完成");
+                Insert_Status.Items.Clear();
+                Insert_Status.Items.Add("未動工");
+                Insert_Status.Items.Add("啟動");
+                Insert_Status.Items.Add("暫停");
+                Insert_Status.Items.Add("完成");
             }
         }
         //設定工作站編號
@@ -465,19 +558,18 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             //20220826 新增Insert表單選項
             if (HtmlUtil.Check_DataTable(dt))
             {
-                if (Insert_DropDownList_Work.Items.Count == 0)
+                if (Insert_Work_Num.Items.Count == 0)
                 {
-                    Insert_DropDownList_Work.Items.Clear();
+                    Insert_Work_Num.Items.Clear();
                     ListItem list = new ListItem();
                     foreach (DataRow row in dt.Rows)
                     {
                         list = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
-                        Insert_DropDownList_Work.Items.Add(list);
+                        Insert_Work_Num.Items.Add(list);
                     }
                 }
 
             }
-
         }
         //變更工作站編號
         private string Change_WorkID(string Number)

@@ -234,7 +234,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <d>客戶名稱:</d><br />
-                                            <asp:TextBox ID="Insert_Custmer_Name" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Custmer_Name" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +244,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>鍵編號:</b><br />
-                                            <asp:TextBox ID="Insert_Key_Number" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Key_Number" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +254,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>鍵序號:</b><br />
-                                            <asp:TextBox ID="Insert_Key_Sn" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Key_Sn" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -265,7 +265,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>組裝編號:</b><br />
-                                            <asp:TextBox ID="Insert_Order" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Order_Num" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -275,7 +275,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>排程編號:</b><br />
-                                            <asp:TextBox ID="Insert_Number" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Schedule_Number" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -286,7 +286,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>進度:</b><br />
-                                            <asp:DropDownList ID="Insert_DropDownList_Percent" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="Insert_Percent" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -296,7 +296,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>狀態:</b><br />
-                                            <asp:DropDownList ID="Insert_DropDownList_Status" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="Insert_Status" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -307,7 +307,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>工作站名稱:</b><br />
-                                            <asp:DropDownList ID="Insert_DropDownList_Work" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="Insert_Work_Num" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -442,22 +442,22 @@
             //確認修改鈕
             $("#btnSave").click(function () {
 
-                var WhatSystem = navigator.userAgent;
-                if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
-                } else {
-                    $.blockUI({ message: '<img src="../../images/loading.gif" />' });
-                    document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
-                    document.getElementById('btnSave').disabled = true;
-                    document.getElementById('btn_Cancel').disabled = true;
-                }
-            //20220824 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
-            //document.getElementById('<%=Button_Save.ClientID %>').click();  
+                //var WhatSystem = navigator.userAgent;
+                //if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+                //} else {
+                //    $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                //    document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
+                //    document.getElementById('btnSave').disabled = true;
+                //    document.getElementById('btn_Cancel').disabled = true;
+                //}
+                //20220824 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
+                //document.getElementById('<%=Button_Save.ClientID %>').click();  
                 var data = update_Item_Data();
-            data["click_Type"] = "Update";
-            data = JSON.stringify(data);
-            postData(data);
+                data["click_Type"] = "Update";
+                data = JSON.stringify(data);
+                postData(data);
 
-        });
+            });
 
             //執行搜索
             $("#btncheck").click(function () {
@@ -470,7 +470,8 @@
                 }
 
                 document.getElementById('<%=button_select.ClientID %>').click();
-        });
+            });
+
 
             //防止切換頁籤時跑版
             $(document).ready(function () {
@@ -482,11 +483,12 @@
                 //});
 
                 //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
-                top_Link = $('#ContentPlaceHolder1_DropDownList_Type').val();
+                top_Link = $('#ContentPlaceHolder1_DropDownList_Type').val().toLowerCase();
                 top_Product_Line = $('#ContentPlaceHolder1_DropDownList_Product').val();
                 top_TextBox_KeyWord = $('#ContentPlaceHolder1_TextBox_keyWord').val();
-                top_Txt_Str = $('#ContentPlaceHolder1_txt_str').val();
-                top_Txt_End = $('#ContentPlaceHolder1_txt_end').val();
+                top_Txt_Str = $('#ContentPlaceHolder1_txt_str').val().replace(/-/g,"");
+                top_Txt_End = $('#ContentPlaceHolder1_txt_end').val().replace(/-/g, "");
+                console.log(top_Txt_Str, top_Txt_End)
                 //20220826動態變更主表格標題
                 if (top_Link.toLowerCase() == "ver") {
                     $("._mdTitle").text("立式廠資料變更");
@@ -505,6 +507,14 @@
 
             //20220825 資料傳輸更該為AJAX模式
             function postData(data) {
+                var WhatSystem = navigator.userAgent;
+                if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+                } else {
+                    $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                    document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
+                    document.getElementById('btnSave').disabled = true;
+                    document.getElementById('btn_Cancel').disabled = true;
+                }
                 $.ajax({
                     type: "post",
                     contentType: "application/json",
@@ -517,6 +527,14 @@
                         if (results_Data["status"].indexOf("成功") != -1) {
                             create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', results_Data["th"], results_Data["tr"]);
                             stateSave_Table('#table-form');
+                            if (top_Link.toLowerCase() == "ver") {
+                                $("._mdTitle").text("立式廠資料變更");
+                                $("._xsTitle").text("立式廠資料變更");
+                            }
+                            else {
+                                $("._mdTitle").text("臥式廠資料變更");
+                                $("._xsTitle").text("臥式廠資料變更");
+                            }
                             alert(results_Data["status"]);
                         } else if (results_Data["status"].indexOf("失敗") != -1) {
                             alert(results_Data["status"]);
@@ -547,16 +565,16 @@
             function update_Item_Data() {
                 var TextBox_Order = $('#ContentPlaceHolder1_TextBox_Order').val();
                 var TextBox_Number = $('#ContentPlaceHolder1_TextBox_Number').val();
-                var DropDownList_Percent = $("#ContentPlaceHolder1_DropDownList_Percent").val();
+                var DropDownList_Percent = $("#ContentPlaceHolder1_DropDownList_Percent").val().replace("%","");
                 var DropDownList_Status = $("#ContentPlaceHolder1_DropDownList_Status").val();
                 var DropDownList_Work = $("#ContentPlaceHolder1_DropDownList_Work").val();
                 var TextBox_OrderNum = $('#ContentPlaceHolder1_TextBox_OrderNum').val();
                 var TextBox_Schedule = $('#ContentPlaceHolder1_TextBox_Schedule').val();
                 var TextBox_WorkNumber = $('#ContentPlaceHolder1_TextBox_WorkNumber').val();
-                var TextBox_Date = $('#ContentPlaceHolder1_TextBox_Date').val();
-                var TextBox_Truedate = $('#ContentPlaceHolder1_TextBox_Truedate').val();
+                var TextBox_Date = $('#ContentPlaceHolder1_TextBox_Date').val().replace(/-/g,"");
+                var TextBox_Truedate = $('#ContentPlaceHolder1_TextBox_Truedate').val().replace(/-/g, "");
                 //搜尋選項載入後取值,未搜尋保持載入時參數
-                var Link = top_Link;
+                var _Link = top_Link;
                 var product_Line = top_Product_Line;
                 var TextBox_keyWord = top_TextBox_KeyWord;
                 var txt_str = top_Txt_Str;
@@ -568,7 +586,7 @@
                     "DropDownList_Work": `${DropDownList_Work}`,
                     "TextBox_OrderNum": `${TextBox_OrderNum}`, "TextBox_Schedule": `${TextBox_Schedule}`,
                     "TextBox_WorkNumber": `${TextBox_WorkNumber}`, "TextBox_Date": `${TextBox_Date}`,
-                    "TextBox_Truedate": `${TextBox_Truedate}`, "Link": `${Link}`,
+                    "TextBox_Truedate": `${TextBox_Truedate}`, "_Link": `${_Link}`,
                     "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
                     "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`
                 };
@@ -587,37 +605,38 @@
      
 
             function insertValue() {
-
-                var Insert_Custmer_Name = $('#ContentPlaceHolder1_Insert_Custmer_Name').val();
-                var Insert_Key_Number = $('#ContentPlaceHolder1_Insert_Key_Number').val();
-                var Insert_Key_Sn = $("#ContentPlaceHolder1_Insert_Key_Sn").val();
-                var Insert_Order = $("#ContentPlaceHolder1_Insert_Order").val();
-                var Insert_Number = $("#ContentPlaceHolder1_Insert_Number").val();
-                var Insert_DropDownList_Percent = $('#ContentPlaceHolder1_Insert_DropDownList_Percent').val();
-                var Insert_DropDownList_Status = $('#ContentPlaceHolder1_Insert_DropDownList_Status').val();
-                var Insert_DropDownList_Work = $('#ContentPlaceHolder1_Insert_DropDownList_Work').val();
-                var Build_Date = $('#ContentPlaceHolder1_Build_Date').val();
-                var Build_Date_True = $('#ContentPlaceHolder1_Build_Date_True').val();
+                var inupu_Null = false;
+                var Custmer_Name = $('#ContentPlaceHolder1_Custmer_Name').val();
+                var Key_Number = $('#ContentPlaceHolder1_Key_Number').val();
+                var Key_Sn = $("#ContentPlaceHolder1_Key_Sn").val();
+                var Order_Num = $("#ContentPlaceHolder1_Order_Num").val();
+                var Schedule_Number = $("#ContentPlaceHolder1_Schedule_Number").val();
+                var Insert_Percent = $('#ContentPlaceHolder1_Insert_Percent').val().replace("%","");
+                var Insert_Status = $('#ContentPlaceHolder1_Insert_Status').val();
+                var Insert_Work_Num = $('#ContentPlaceHolder1_Insert_Work_Num').val();
+                var Build_Date = $('#ContentPlaceHolder1_Build_Date').val().replace(/-/g,"");
+                var Build_Date_True = $('#ContentPlaceHolder1_Build_Date_True').val().replace(/-/g, "");
                 //搜尋選項載入後取值,未搜尋保持載入時參數
-                var Link = top_Link;
+                var _Link = top_Link;
                 var product_Line = top_Product_Line;
                 var TextBox_keyWord = top_TextBox_KeyWord;
                 var txt_str = top_Txt_Str;
                 var txt_end = top_Txt_End;
                 var click_Type = "Insert";
                 var data = {
-                    "Insert_Custmer_Name": `${Insert_Custmer_Name}`, "Insert_Key_Number": `${Insert_Key_Number}`,
-                    "Insert_Key_Sn": `${Insert_Key_Sn}`, "Insert_Order": `${Insert_Order}`,
-                    "Insert_Number": `${Insert_Number}`,
-                    "Insert_DropDownList_Percent": `${Insert_DropDownList_Percent}`, "Insert_DropDownList_Status": `${Insert_DropDownList_Status}`,
-                    "Insert_DropDownList_Work": `${Insert_DropDownList_Work}`, "Build_Date": `${Build_Date}`, "Build_Date_True": `${Build_Date_True}`,
-                    "Link": `${Link}`,
+                    "Custmer_Name": `${Custmer_Name}`, "Key_Number": `${Key_Number}`,
+                    "Key_Sn": `${Key_Sn}`, "Order_Num": `${Order_Num}`,
+                    "Schedule_Number": `${Schedule_Number}`,
+                    "Insert_Percent": `${Insert_Percent}`, "Insert_Status": `${Insert_Status}`,
+                    "Insert_Work_Num": `${Insert_Work_Num}`, "Build_Date": `${Build_Date}`, "Build_Date_True": `${Build_Date_True}`,
+                    "_Link": `${_Link}`,
                     "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
                     "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`
                 };
                 console.log("初始", data);
                 console.log($("#myModalLabel3").text());
 
+                //判斷input欄位不得為空
                 $("#testmodal3 input").each(function (index, val) {
                     console.log($(this).val(), $(this).parent().children()[0].innerText);
                     var value = $(this).val();
@@ -625,15 +644,16 @@
                         var Text = $(this).parent().children()[0].innerText;
                         Text = Text.replace(":","")
                         alert(Text + "不得為空!!!");
+                        inupu_Null = true;
                         return false;
                     }
-                       
-                    //console.log(index,val)
                 })
-                return data;
-
-
-
+                console.log(inupu_Null);
+                if (inupu_Null != true) {
+                    console.log(inupu_Null);
+                    data = JSON.stringify(data);
+                    postData(data);
+                }
             }
 
             //$('#Change_DataTable').dataTable(
