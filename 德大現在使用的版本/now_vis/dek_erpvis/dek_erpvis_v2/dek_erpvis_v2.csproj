@@ -3976,6 +3976,7 @@
     <Content Include="pages\SYS_CONTROL\rights_mag_details.aspx" />
     <Content Include="pages\SYS_CONTROL\Set_Energy.aspx" />
     <Content Include="pages\SYS_CONTROL\set_parameter.aspx" />
+    <Content Include="pages\SYS_CONTROL\Set_Month_WorkTime.aspx" />
     <Content Include="pages\SYS_CONTROL\Set_WorkTime.aspx" />
     <Content Include="pages\SYS_CONTROL\Write_ShipmentInformation.aspx" />
     <Content Include="pages\usercontrol\Image_Control.ascx" />
@@ -4628,6 +4629,13 @@
     </Compile>
     <Compile Include="pages\SYS_CONTROL\set_parameter.aspx.designer.cs">
       <DependentUpon>set_parameter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pages\SYS_CONTROL\Set_Month_WorkTime.aspx.cs">
+      <DependentUpon>Set_Month_WorkTime.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\SYS_CONTROL\Set_Month_WorkTime.aspx.designer.cs">
+      <DependentUpon>Set_Month_WorkTime.aspx</DependentUpon>
     </Compile>
     <Compile Include="pages\SYS_CONTROL\Set_WorkTime.aspx.cs">
       <DependentUpon>Set_WorkTime.aspx</DependentUpon>

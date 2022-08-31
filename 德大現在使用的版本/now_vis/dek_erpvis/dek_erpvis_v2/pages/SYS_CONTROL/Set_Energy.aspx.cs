@@ -120,9 +120,38 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         //需要執行的程式
         private void MainProcess()
         {
+            set_DropDownlist();
             Get_MonthTotal();
             Set_Table();
         }
+
+        private void set_DropDownlist()
+        {
+            if (dropdownlist_Factory.SelectedItem.Value.ToLower() == "sowon")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            else if (dropdownlist_Factory.SelectedItem.Value.ToLower() == "iTec" || dropdownlist_Factory.SelectedItem.Value.ToLower() == "dek")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
+            string sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中='1' ";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+
+            if (HtmlUtil.Check_DataTable(dt))
+            {
+                if (Workstation.Items.Count == 0)
+                {
+                    ListItem listItem = new ListItem();
+                    Workstation.Items.Clear();
+                    Workstation.Items.Add("全部");
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        listItem = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
+                        Workstation.Items.Add(listItem);
+                    }
+                }
+            }
+
+        }
+
 
         private void Get_MonthTotal()
         {
@@ -132,17 +161,17 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 case "sowon":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    sqlcmd = "select 工作站編號 AS 編輯,工作站名稱,目標件數 AS 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 <> '11'";
+                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 <> '11'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "dek":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
-                    sqlcmd = "select 工作站編號 AS 編輯,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 = '11'";
+                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 = '11'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "iTec":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                    sqlcmd = "select 工作站編號 AS 編輯,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and ( 工作站編號 = '1' OR 工作站編號 = '2') ";
+                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and ( 工作站編號 = '1' OR 工作站編號 = '2') ";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
             }
@@ -155,6 +184,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             if (HtmlUtil.Check_DataTable(dt))
             {
                 string titlename = "";
+                dt.Columns.Add("工人工時編輯");
+                dt.Columns["工人工時編輯"].SetOrdinal(1);
                 th.Append(HtmlUtil.Set_Table_Title(dt, out titlename));
                 tr.Append(HtmlUtil.Set_Table_Content(dt, titlename, Set_Energy_callback));
             }
@@ -165,32 +196,30 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         private string Set_Energy_callback(DataRow row, string field_name)
         {
             string value = "";
-            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
+            string capacity = "";
+            capacity = dropdownlist_Factory.SelectedItem.Value == "sowon" ? row["每日產能"].ToString() : row["每月產能"].ToString();
+
+
+            if (field_name == "編輯產能")
             {
-
-                if (field_name == "編輯")
-                {
-                    value = $"<td data-toggle=\"modal\" data-target=\"#exampleModal_information\">" +
-                                $"<u>" +
-                                    $"<a href=\"javascript:void(0)\" onclick=Set_Value(\"{row[field_name]}\",\"{row["每日產能"]}\")>" +
-                                        $"編輯" +
-                                    $"</a>" +
-                                $"</u>" +
-                            $"</td>";
-                }
-
+                value = $"<td>" +
+                            $"<u>" +
+                                $"<a href=\"javascript:void(0)\" onclick=Set_Value(\"{row[field_name]}\",\"{capacity}\")  data-toggle=\"modal\" data-target=\"#exampleModal_information\">" +
+                                    $"編輯" +
+                                $"</a>" +
+                            $"</u>" +
+                        $"</td>";
             }
-            else {
-                if (field_name == "編輯")
-                {
-                    value = $"<td data-toggle=\"modal\" data-target=\"#exampleModal_information\">" +
+            else if (field_name == "工人工時編輯")
+            {
+                string url = $"Set_Month_WorkTime.aspx?key={WebUtils.UrlStringEncode($"workstation={row["工作站名稱"]},workstation_Num={row["編輯產能"]}")}";
+                value = $"<td>" +
                                 $"<u>" +
-                                    $"<a href=\"javascript:void(0)\" onclick=Set_Value(\"{row[field_name]}\",\"{row["每月產能"]}\")>" +
-                                        $"編輯" +
+                                    $"<a href=\"{url}\">" +
+                                        $"工人工時編輯" +
                                     $"</a>" +
                                 $"</u>" +
                             $"</td>";
-                }
             }
             return value;
         }
