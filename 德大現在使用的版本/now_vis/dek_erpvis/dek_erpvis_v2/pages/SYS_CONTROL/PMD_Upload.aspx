@@ -126,7 +126,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title modaltextstyle" id="myModalLabel2"><i class="fa fa-file-text"></i>新增資料</h4>
+                        <h4 class="modal-title modaltextstyle" id="myModalLabel2"><i class="fa fa-file-text"></i>編輯資料</h4>
                     </div>
                     <div class="modal-body">
                         <div id="testmodal2" style="padding: 5px 20px;">
@@ -514,6 +514,8 @@
                     document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
                     document.getElementById('btnSave').disabled = true;
                     document.getElementById('btn_Cancel').disabled = true;
+                    document.getElementById('Insert_btnSave').disabled = true;
+                    document.getElementById('Insert_Btn_Cancel').disabled = true;
                 }
                 $.ajax({
                     type: "post",
@@ -556,6 +558,18 @@
                         //打開儲存&取消按鈕
                         document.getElementById('btnSave').disabled = false;
                         document.getElementById('btn_Cancel').disabled = false;
+                        document.getElementById('Insert_btnSave').disabled = false;
+                        document.getElementById('Insert_Btn_Cancel').disabled = false;
+
+                        //20220831 新增後重置所有欄位資料
+                        $("#testmodal3 input").each(function (index, val) {
+                            $(this).val("");
+                        });
+                        $("#testmodal3 select").each(function (index, val) {
+                            $(this).get(0).selectedIndex = 0;
+                        });
+
+
                     }
                 })
 
