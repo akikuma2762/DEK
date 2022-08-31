@@ -568,7 +568,8 @@
                         $("#testmodal3 select").each(function (index, val) {
                             $(this).get(0).selectedIndex = 0;
                         });
-
+                        //電腦板新增後跑版
+                        $("#table-form_wrapper").css("overflow-x", "auto");
 
                     }
                 })
