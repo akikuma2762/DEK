@@ -96,7 +96,10 @@ margin:0px;
 .padding-right-4 {
     padding-right: 4px !important;
 }
-#btncheck, #btn_Insert, #btn_Month, #btn_SigleDay {
+#btncheck, #btn_Insert {
+    margin: 0px !important;
+}
+button {
     margin: 0px !important;
 }
 /*20220718 統一修改外掛套件樣式 ---------------End--------------*/

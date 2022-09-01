@@ -488,7 +488,7 @@
                 top_TextBox_KeyWord = $('#ContentPlaceHolder1_TextBox_keyWord').val();
                 top_Txt_Str = $('#ContentPlaceHolder1_txt_str').val().replace(/-/g,"");
                 top_Txt_End = $('#ContentPlaceHolder1_txt_end').val().replace(/-/g, "");
-                console.log(top_Txt_Str, top_Txt_End)
+                
                 //20220826動態變更主表格標題
                 if (top_Link.toLowerCase() == "ver") {
                     $("._mdTitle").text("立式廠資料變更");
@@ -572,7 +572,7 @@
                         $("#table-form_wrapper").css("overflow-x", "auto");
 
                     }
-                })
+                });
 
             }
 
@@ -652,25 +652,25 @@
                 console.log($("#myModalLabel3").text());
 
                 //判斷input欄位不得為空
-                $("#testmodal3 input").each(function (index, val) {
-                    console.log($(this).val(), $(this).parent().children()[0].innerText);
-                    var value = $(this).val();
-                    if (value == "" || value == null) {
-                        var Text = $(this).parent().children()[0].innerText;
-                        Text = Text.replace(":","")
-                        alert(Text + "不得為空!!!");
-                        inupu_Null = true;
-                        return false;
-                    }
-                })
-                console.log(inupu_Null);
+                //$("#testmodal3 input").each(function (index, val) {
+                //    //console.log($(this).val(), $(this).parent().children()[0].innerText);
+                //    var value = $(this).val();
+                //    if (value == "" || value == null) {
+                //        var Text = $(this).parent().children()[0].innerText;
+                //        Text = Text.replace(":","")
+                //        alert(Text + "不得為空!!!");
+                //        inupu_Null = true;
+                //        return false;
+                //    }
+                //})     
+                inupu_Null = check_Modal_Input("testmodal3");
                 if (inupu_Null != true) {
-                    console.log(inupu_Null);
                     data = JSON.stringify(data);
                     postData(data);
                 }
             }
-
+            //清空modal資訊
+            clearModal();
             //$('#Change_DataTable').dataTable(
             //    {
             //        destroy: true,

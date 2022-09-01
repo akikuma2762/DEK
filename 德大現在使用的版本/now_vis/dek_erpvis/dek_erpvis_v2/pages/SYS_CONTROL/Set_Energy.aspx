@@ -42,12 +42,12 @@
                                         </asp:PlaceHolder>
                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
                                             <div class="col-md-12 col-xs-12 text-align-end">
-                                                    <button id="btn_Month" type="button" class="btn btn-primary antosubmit2" data-toggle="modal" data-target="#Insert_Month_Working_People">新增月份工時</button>
+                                                    <button id="btn_Month_WorkTime" type="button" class="btn btn-primary antosubmit2" data-toggle="modal" data-target="#Insert_Month_WorkTime">新增月份工時</button>
                                                 </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 col-style">
                                             <div class="col-md-12 col-xs-12 text-align-end">
-                                                    <button id="btn_SigleDay" type="button" class="btn btn-primary antosubmit2">新增單日工時</button>
+                                                    <button id="btn_Day_WorkTime" type="button" class="btn btn-primary antosubmit2" data-toggle="modal" data-target="#Insert_Day_WorkTime">新增單日工時</button>
                                                 </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 col-style">
@@ -96,21 +96,22 @@
     </div>
 
     <!-- set Modal -->
-        <div id="Insert_Month_Working_People" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="Insert_Month_WorkTime" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title modaltextstyle" id="myModalLabel3"><i class="fa fa-file-text"></i>新增月份工時</h4>
+                        <h4 class="modal-title modaltextstyle" id="Month_WorkTime_Title"><i class="fa fa-file-text"></i>新增月份工時</h4>
                     </div>
                     <div class="modal-body">
-                        <div id="Month_Working_People" style="padding: 5px 20px;">
+                        <div id="Month_WorkTime" style="padding: 5px 20px;">
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
-                                            <d>預設每日上班人數:</d><br />
-                                            <asp:TextBox ID="Working_People" maxlength="2" runat="server"></asp:TextBox>
+                                        <div id="Working_People_Content" class="btn-group btn-group-justified">
+                                            <b>預設每日上班人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Working_People" class="int_Value"/>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -118,9 +119,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div id="Work_Time_Content" class="btn-group btn-group-justified">
                                             <b>預設每日工作時數:</b><br />
-                                            <asp:TextBox ID="Work_Time" maxlength="2" runat="server"></asp:TextBox>
+                                            <input  type="text" maxlength="2" id="Work_Time" class="int_Value"/>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -136,35 +138,90 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            
                             
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
-                                            <b>選擇年分:</b><br/>
-                                            <select id="select_Year"></select>
+                                            <b>選擇月份:</b><br/>
+                                            <input type="month" id="Single_Month" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
-                                            <b>選擇月分:</b><br/>
-                                            <select id="select_Month"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
+
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="Insert_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
-                       
-                        <button id="Insert_btnSave" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">新增</button>
+                        <button id="Insert_Month_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                        <button id="Insert_Month_Btn_Save" type="button"  class="btn btn-primary antosubmit2">新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/set Modal-->
+     <!-- set Modal -->
+        <div id="Insert_Day_WorkTime" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title modaltextstyle" id="Day_WorkTime_Title"><i class="fa fa-file-text"></i>新增月份工時</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="Day_WorkTime" style="padding: 5px 20px;">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div  id="Day_Working_People_Content"class="btn-group btn-group-justified">
+                                            <b>預設每日上班人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Day_Working_People" class="int_Value"/>
+                                            <span></span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="Day_Work_Time_Content" class="btn-group btn-group-justified">
+                                            <b>預設每日工作時數:</b><br />
+                                            <input  type="text" maxlength="2" id="Day_Work_Time" class="int_Value"/>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>工作站名稱:</b><br />
+                                            <asp:DropDownList ID="Workstation2" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>選擇日期:</b><br/>
+                                            <input type="date" id="Single_Day" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="Insert_Day_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                        <button id="Insert_Day_Btn_Save" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">新增資料</button>
                     </div>
                 </div>
             </div>
@@ -176,34 +233,36 @@
 
     <%=Use_Javascript.Quote_Javascript() %>
     <script>
+        var warning = {};
+        var top_Link = "";
         $(document).ready(function () {
-            var date = new Date();
-            var Year = date.getFullYear();
-            var Month = date.getMonth() + 1;
-            //設定年範圍
-            for (var i = 2022; i <= 2100; i++) {
-                $('#select_Year').append($('<option>').val(i).text(i));
-                $('#select_Year').css("width","86px");
-            }
-            //設定月範圍
-            for (var i = 1; i <= 12; i++) {
-                $('#select_Month').append($('<option>').val(i).text(i));
-                $('#select_Month').css("width", "86px");
-            }
-            //預設當下年月
-            $("#select_Year option").each(function () {
-                if ($(this).text() == Year)
-                    $(this).attr("selected", "selected");
-            });
-            $("#select_Month option").each(function () {
-                if ($(this).text() == Month) {
-                    $(this).attr("selected", "selected");
-                }
-                    
-            });
-        });
-        
+           
+            //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
+            top_Link = $('#ContentPlaceHolder1_dropdownlist_Factory').val().toLowerCase();
 
+            //20220826動態變更主表格標題
+            if (top_Link.toLowerCase() == "sowon") {
+                $("._mdTitle").text("立式廠產量編輯");
+                $("._xsTitle").text("立式廠產量編輯");
+            }
+            else if (top_Link.toLowerCase() == "dek") {
+                $("._mdTitle").text("大圓盤產量編輯");
+                $("._xsTitle").text("大圓盤產量編輯");
+            } else {
+                $("._mdTitle").text("臥式廠產量編輯");
+                $("._xsTitle").text("臥式廠產量編輯");
+
+            }
+
+        });
+        //產生表格的HTML碼
+        create_tablehtmlcode('Set_Energy', '產量編輯', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString()%>');
+
+        //產生相對應的JScode
+        set_Table('#datatable-buttons');
+
+        //防止頁籤跑版
+        loadpage('', '');
 
         $("#btncheck").click(function () {
             $.blockUI({ message: '<img src="../../images/loading.gif" />' });
@@ -216,18 +275,169 @@
                 document.getElementById('<%=Button_Add.ClientID %>').click();
             } else
                 alert('請輸入正數');
-
         });
-        //產生表格的HTML碼
-        create_tablehtmlcode('Set_Energy', '產量編輯', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString()%>');
-        //產生相對應的JScode
-        set_Table('#datatable-buttons');
-        //防止頁籤跑版
-        loadpage('', '');
 
         function Set_Value(product_Line,capacity) {
             document.getElementById("<%=TextBox_Qty.ClientID%>").value = capacity;
             document.getElementById("<%=TextBox_Number.ClientID %>").value = product_Line;
         }
+
+        $("#Insert_Month_Btn_Save").click(function () {
+            var inupu_Null = false;
+            var objectLength = Object.keys(warning).length;
+            inupu_Null = check_Modal_Input("Month_WorkTime");
+            if (inupu_Null) return;
+            if (objectLength > 0) {
+                alert("輸入資料有誤,請修正資料!");
+                return;
+            } else {
+                var data = {};
+                var cookieInfo = readCookie('userInfo');
+                var arry = cookieInfo.split("&");
+                var obj = {};
+                for (var i = 0; i < arry.length; i++) {
+                    var arry2 = arry[i].split("=");
+                    obj[arry2[0]] = arry2[1];
+                }
+                data["Factory"] = $("#ContentPlaceHolder1_dropdownlist_Factory").val();
+                data["Working_People"] = $("#Working_People").val();
+                data["Work_Time"] = $("#Work_Time").val();
+                data["Workstation"] = $("#ContentPlaceHolder1_Workstation").val();
+                data["Month"] = $("#Single_Month").val().replace(/-/g, "");
+                data["User_Acc"] = obj["user_ACC"];
+                console.log(data);
+                data = JSON.stringify(data);
+                postData(data);
+            }
+
+        });
+        //20220901判斷數字群組
+        $(".int_Value").keyup(function () {
+            // 驗證輸入字串
+            var obj = {};
+            const rules = /^[0-9]*$/;
+            var id = $(this).parent().attr("id")
+            var value = $(this).val();
+            if (!rules.test(value) && value != "") {
+                $("#" + id + " span").text("請輸入數字!");
+                $("#" + id + " span").css("color", "red");
+                warning[id] = "";
+            } else {
+                $("#" + id + " span").text("");
+                delete warning[id];
+            }
+
+            console.log(warning);
+        });
+
+
+
+        //清空modal資訊
+        clearModal();
+
+        
+        $('body').on('show.bs.modal', ".modal", function () {
+            console.log($(this).attr("id"));
+            var id = $(this).attr("id");
+            if (top_Link.toLowerCase() == "sowon") {
+                if (id.indexOf("Month") != -1) {
+                    $(this).find('.modal-title').text("立式廠 單月工時新增"); 
+                } else
+                {
+                    $(this).find('.modal-title').text("立式廠 單日工時新增");
+                }              
+            }
+            else if (top_Link.toLowerCase() == "dek") {
+                if (id.indexOf("Month") != -1) {
+                    $(this).find('.modal-title').text("大圓盤 單月工時新增");
+                } else {
+                    $(this).find('.modal-title').text("大圓盤 單日工時新增");
+                }
+            } else {
+                if (id.indexOf("Month") != -1) {
+                    $(this).find('.modal-title').text("臥式廠 單月工時新增");
+                } else {
+                    $(this).find('.modal-title').text("臥式廠 單日工時新增");
+                }
+            }
+            
+        });
+
+        function postData(data) {
+            var WhatSystem = navigator.userAgent;
+            if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            } else {
+                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
+                $("#Insert_Month_WorkTime button").disabled = true;
+                //document.getElementById('btn_Cancel').disabled = true;
+                //document.getElementById('Insert_btnSave').disabled = true;
+                //document.getElementById('Insert_Btn_Cancel').disabled = true;
+            }
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                url: "Set_Energy.aspx/postData",
+                data: "{_data:'" + data + "'}",
+                dataType: "json",
+                success: function (result) {
+                    var results_Data = result.d;
+                    //console.log(results_Data);
+                    if (results_Data["status"].indexOf("成功") != -1) {
+                        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', results_Data["th"], results_Data["tr"]);
+                        stateSave_Table('#table-form');
+                        if (top_Link.toLowerCase() == "sowon")
+                        {
+                            $("._mdTitle").text("立式廠產量編輯");
+                            $("._xsTitle").text("立式廠產量編輯");
+                        }
+                        else if (top_Link.toLowerCase() == "dek")
+                        {
+                            $("._mdTitle").text("大圓盤產量編輯");
+                            $("._xsTitle").text("大圓盤產量編輯");
+                        } else {
+                            $("._mdTitle").text("臥式廠產量編輯");
+                            $("._xsTitle").text("臥式廠產量編輯");
+
+                        }
+                        alert(results_Data["status"]);
+                    } else if (results_Data["status"].indexOf("失敗") != -1) {
+                        alert(results_Data["status"]);
+                    } else if (results_Data["status"].indexOf("沒有資料") != -1) {
+                        alert(results_Data["status"]);
+                    }
+
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("資料傳輸錯誤,請檢查資料傳遞格式!!");
+                    //alert(XMLHttpRequest.status);
+                    //alert(XMLHttpRequest.readyState);
+                    //alert(textStatus);
+                }
+                , complete: function (jqXHR) {
+                    //關閉loading視窗及修改視窗
+                    $('#exampleModal').click();
+                    $.unblockUI();
+                    $(".blockUI").fadeOut("slow");
+                    //打開儲存&取消按鈕
+                    $("#Insert_Month_WorkTime button").disabled = false;
+                    //document.getElementById('btn_Cancel').disabled = false;
+                    //document.getElementById('Insert_btnSave').disabled = false;
+                    //document.getElementById('Insert_Btn_Cancel').disabled = false;
+
+                    
+                    //電腦板新增後跑版
+                    $("#table-form_wrapper").css("overflow-x", "auto");
+
+                }
+            });
+
+        }
+
+
+
+
+
+
+
     </script>
 </asp:Content>

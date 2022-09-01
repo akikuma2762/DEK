@@ -10,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -116,6 +117,45 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             MainProcess();
 
         }
+        [WebMethod]
+        public static object postData(string _data) {
+            DataTable Rp_data = JsonToDataTable.JsonStringToDataTable(_data);
+            object data = new { };
+            DataTable dt = new DataTable();
+            Dictionary<string, string> myData = new Dictionary<string, string>();
+            Set_Energy Energy = new Set_Energy();
+            DataRow dt_Row;
+            
+
+
+
+            foreach (DataRow dr in Rp_data.Rows)
+            {
+                foreach (DataColumn dc in Rp_data.Columns)
+                {
+                    string dc_Name = dc.ToString();
+                    myData.Add(dc_Name, dr[dc_Name].ToString());
+                }
+            }
+            if (myData["Factory"]=="sowon")
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            else
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+
+            data = Energy.getMonth_Rare(myData["User_Acc"]);
+
+            return "a";
+        }
+        public object getMonth_Rare(string acc) {
+            object data = new { };
+            string[] date = 德大機械.德大專用月份(acc).Split(',');
+            string dt_str = date[0];
+            string dt_end = date[1];
+            string date_str = HtmlUtil.changetimeformat(date[0], "-");
+            string date_end = HtmlUtil.changetimeformat(date[1], "-");
+            data = new { dt_str = dt_str, dt_end= dt_end };
+            return data;
+        }
         //-----------------------------------------------------Function---------------------------------------------------------------------      
         //需要執行的程式
         private void MainProcess()
@@ -127,27 +167,39 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
         private void set_DropDownlist()
         {
+            string sqlcmd = "";
             if (dropdownlist_Factory.SelectedItem.Value.ToLower() == "sowon")
+            {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            else if (dropdownlist_Factory.SelectedItem.Value.ToLower() == "iTec" || dropdownlist_Factory.SelectedItem.Value.ToLower() == "dek")
+                sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中 = '1'";
+            }
+            else if (dropdownlist_Factory.SelectedItem.Value == "iTec") 
+            {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中 = '1' and 工作站編號 <> '11'";//大圓盤獨立顯示
+            } 
+            else if (dropdownlist_Factory.SelectedItem.Value.ToLower() == "dek") {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                 sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中='1'  and 工作站編號 = '11'";
+            }
 
-            string sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中='1' ";
+             
             DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
 
             if (HtmlUtil.Check_DataTable(dt))
             {
-                if (Workstation.Items.Count == 0)
-                {
                     ListItem listItem = new ListItem();
                     Workstation.Items.Clear();
+                    Workstation2.Items.Clear();
                     Workstation.Items.Add("全部");
-                    foreach (DataRow row in dt.Rows)
+                    Workstation2.Items.Add("全部");
+                foreach (DataRow row in dt.Rows)
                     {
                         listItem = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
                         Workstation.Items.Add(listItem);
-                    }
+                        Workstation2.Items.Add(listItem);
                 }
+                
             }
 
         }
@@ -161,7 +213,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 case "sowon":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 <> '11'";
+                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每日產能 from 工作站型態資料表 where 工作站是否使用中 = '1'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "dek":
@@ -171,7 +223,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     break;
                 case "iTec":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and ( 工作站編號 = '1' OR 工作站編號 = '2') ";
+                    sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號<>'11' ";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
             }
