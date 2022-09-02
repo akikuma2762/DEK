@@ -167,7 +167,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title modaltextstyle" id="Day_WorkTime_Title"><i class="fa fa-file-text"></i>新增月份工時</h4>
+                        <h4 class="modal-title modaltextstyle" id="Day_WorkTime_Title"><i class="fa fa-file-text"></i>新增單日工時</h4>
                     </div>
                     <div class="modal-body">
                         <div id="Day_WorkTime" style="padding: 5px 20px;">
@@ -175,7 +175,7 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div  id="Day_Working_People_Content"class="btn-group btn-group-justified">
-                                            <b>預設每日上班人數:</b><br />
+                                            <b>預設上班人數:</b><br />
                                             <input  type="text" maxlength="2" id="Day_Working_People" class="int_Value"/>
                                             <span></span> 
                                         </div>
@@ -186,7 +186,7 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div id="Day_Work_Time_Content" class="btn-group btn-group-justified">
-                                            <b>預設每日工作時數:</b><br />
+                                            <b>預設工作時數:</b><br />
                                             <input  type="text" maxlength="2" id="Day_Work_Time" class="int_Value"/>
                                             <span></span>
                                         </div>
@@ -199,7 +199,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>工作站名稱:</b><br />
-                                            <asp:DropDownList ID="Workstation2" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="Day_Workstation" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -302,8 +302,11 @@
                 data["Factory"] = $("#ContentPlaceHolder1_dropdownlist_Factory").val();
                 data["Working_People"] = $("#Working_People").val();
                 data["Work_Time"] = $("#Work_Time").val();
-                data["Workstation"] = $("#ContentPlaceHolder1_Workstation").val();
+                data["Workstation"] = $("#ContentPlaceHolder1_Workstation option:selected").text();
+                data["Workstation_Num"] = $("#ContentPlaceHolder1_Workstation").val();
                 data["Month"] = $("#Single_Month").val().replace(/-/g, "");
+                data["Day"] = "";
+                data["Mode"] = "Month";
                 data["User_Acc"] = obj["user_ACC"];
                 console.log(data);
                 data = JSON.stringify(data);
@@ -311,22 +314,57 @@
             }
 
         });
+
+        $("#Insert_Day_Btn_Save").click(function () {
+            var inupu_Null = false;
+            var objectLength = Object.keys(warning).length;
+            inupu_Null = check_Modal_Input("Day_WorkTime");
+            if (inupu_Null) return;
+            if (objectLength > 0) {
+                alert("輸入資料有誤,請修正資料!");
+                return;
+            } else {
+                var data = {};
+                var cookieInfo = readCookie('userInfo');
+                var arry = cookieInfo.split("&");
+                var obj = {};
+                for (var i = 0; i < arry.length; i++) {
+                    var arry2 = arry[i].split("=");
+                    obj[arry2[0]] = arry2[1];
+                }
+                data["Factory"] = $("#ContentPlaceHolder1_dropdownlist_Factory").val();
+                data["Working_People"] = $("#Day_Working_People").val();
+                data["Work_Time"] = $("#Day_Work_Time").val();
+                data["Workstation"] = $("#ContentPlaceHolder1_Day_Workstation option:selected").text();
+                data["Workstation_Num"] = $("#ContentPlaceHolder1_Day_Workstation").val();
+                data["Month"] = "";
+                data["Day"] = $("#Single_Day").val().replace(/-/g, "");
+                data["Mode"] = "Day";
+                data["User_Acc"] = obj["user_ACC"];
+                console.log(data);
+                data = JSON.stringify(data);
+                postData(data);
+            }
+
+        });
+
+
         //20220901判斷數字群組
         $(".int_Value").keyup(function () {
             // 驗證輸入字串
             var obj = {};
-            const rules = /^[0-9]*$/;
+            const rules = /^[1-9][0-9]*$/;
             var id = $(this).parent().attr("id")
             var value = $(this).val();
             if (!rules.test(value) && value != "") {
-                $("#" + id + " span").text("請輸入數字!");
+                $("#" + id + " span").text("資料格式錯誤!");
                 $("#" + id + " span").css("color", "red");
                 warning[id] = "";
             } else {
                 $("#" + id + " span").text("");
                 delete warning[id];
             }
-
+            console.log($('body [class="modal fade in"]'));
             console.log(warning);
         });
 
@@ -384,8 +422,7 @@
                     var results_Data = result.d;
                     //console.log(results_Data);
                     if (results_Data["status"].indexOf("成功") != -1) {
-                        create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', results_Data["th"], results_Data["tr"]);
-                        stateSave_Table('#table-form');
+                       
                         if (top_Link.toLowerCase() == "sowon")
                         {
                             $("._mdTitle").text("立式廠產量編輯");
@@ -415,7 +452,7 @@
                 }
                 , complete: function (jqXHR) {
                     //關閉loading視窗及修改視窗
-                    $('#exampleModal').click();
+                    $('body [class="modal fade in"]').click();
                     $.unblockUI();
                     $(".blockUI").fadeOut("slow");
                     //打開儲存&取消按鈕
@@ -432,12 +469,7 @@
             });
 
         }
-
-
-
-
-
-
+       
 
     </script>
 </asp:Content>
