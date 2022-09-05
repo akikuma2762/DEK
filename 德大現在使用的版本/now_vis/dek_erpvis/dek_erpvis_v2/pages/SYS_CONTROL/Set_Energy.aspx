@@ -406,7 +406,7 @@
             if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
             } else {
                 $.blockUI({ message: '<img src="../../images/loading.gif" />' });
-                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
+                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 100000;
                 $("#Insert_Month_WorkTime button").disabled = true;
                 //document.getElementById('btn_Cancel').disabled = true;
                 //document.getElementById('Insert_btnSave').disabled = true;

@@ -25,25 +25,8 @@
             <div id="_Title" class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel Div_Shadow">
                     <div class="x_content">
-                        <div class="col-md-9 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h1 class="text-center _mdTitle" style="width: 100%"><b>工人工時編輯</b></h1>
-                                    <h3 class="text-center _xsTitle" style="width: 100%"><b>工人工時編輯</b></h3>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <table id="datatable-buttons" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr id="tr_row">
-                                            <%=th%>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <%= tr %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                         <div id="order"></div>
+                        
                         <div class="col-md-3 col-sm-12 col-xs-12 _select _setborder">
                             <div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="dashboard_graph x_panel">
@@ -53,43 +36,53 @@
                                         </asp:ScriptManager>
                                         <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
                                             <ContentTemplate>
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="col-md-5 col-sm-3 col-xs-4">
+                                               <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>廠區選擇</span>
                                                     </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-8">
-                                                        <div class="row">
-                                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                                <asp:DropDownList ID="DropDownList_Type" AutoPostBack="true" CssClass="btn btn-default dropdown-toggle" Width="96%" runat="server" OnSelectedIndexChanged="DropDownList_Type_SelectedIndexChanged">
-                                                                    <asp:ListItem Value="Ver" Selected="True">立式廠</asp:ListItem>
-                                                                    <asp:ListItem Value="Hor">臥式廠</asp:ListItem>
+                                                        <div class="col-md-8 col-sm-9 col-xs-8">                                                       
+                                                                <asp:DropDownList ID="DropDownList_Factory" AutoPostBack="true" CssClass="btn btn-default dropdown-toggle form-control"  runat="server" OnSelectedIndexChanged="DropDownList_Factory_SelectedIndexChanged">
+                                                                    <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
+                                                                    <asp:ListItem Value="dek">大圓盤</asp:ListItem>
+                                                                    <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
                                                                 </asp:DropDownList>
-
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="col-md-5 col-sm-3 col-xs-4">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>產線選擇</span>
                                                     </div>
-                                                    <div class="col-md-7 col-sm-9 col-xs-8">
-                                                        <div class="row">
-                                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                                <asp:DropDownList ID="DropDownList_Product" CssClass="btn btn-default dropdown-toggle" Width="96%" runat="server">
+                                                        <div class="col-md-8 col-sm-9 col-xs-8">
+                                                                <asp:DropDownList ID="DropDownList_Product" CssClass="btn btn-default dropdown-toggle form-control"  runat="server">
                                                                 </asp:DropDownList>
-                                                            </div>
                                                         </div>
                                                     </div>
+
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
+                                                        <span>起始月份</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
+                                                    <asp:TextBox ID="Select_Month" runat="server" TextMode="month" CssClass="form-control"></asp:TextBox>
+                                                    </div>
                                                 </div>
+
+
                                             </ContentTemplate>
                                         </asp:UpdatePanel>
-
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="col-md-9 col-xs-8">
-                                            </div>
-                                            <div class="col-md-3 col-xs-12">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                            <div class="col-md-12 col-xs-12 text-align-end">
+                                                    <button id="btn_Month_WorkTime" type="button" class="btn btn-info" data-toggle="modal" data-target="#Insert_Month_WorkTime">新增月份工時</button>
+                                                </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
+                                            <div class="col-md-12 col-xs-12 text-align-end">
+                                                    <button id="btn_Day_WorkTime" type="button" class="btn btn-info" data-toggle="modal" data-target="#Insert_Day_WorkTime">新增單日工時</button>
+                                                </div>
+                                        </div>
+                                         <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-12 col-xs-12 text-align-end">
                                                 <asp:Button ID="button_select" runat="server" Text="執行檢索" class="btn btn-secondary" OnClick="button_select_Click" Style="display: none" />
                                                 <button id="btncheck" type="button" class="btn btn-primary antosubmit2">執行搜索</button>
                                             </div>
@@ -103,67 +96,381 @@
             </div>
         </div>
     </div>
-
-
     <!-----------------/content------------------>
+ 
     <!-- set Modal -->
+        <div id="Insert_Month_WorkTime" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title modaltextstyle" id="Month_WorkTime_Title"><i class="fa fa-file-text"></i>新增月份工時</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="Month_WorkTime" style="padding: 5px 20px;">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="Working_People_Content" class="btn-group btn-group-justified">
+                                            <b>預設每日上班人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Working_People" class="int_Value"/>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="Work_Time_Content" class="btn-group btn-group-justified">
+                                            <b>預設每日工作時數:</b><br />
+                                            <input  type="text" maxlength="2" id="Work_Time" class="int_Value"/>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>工作站名稱:</b><br />
+                                            <asp:DropDownList ID="Month_Workstation" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>選擇月份:</b><br/>
+                                            <input type="month" id="Single_Month" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="Insert_Month_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                        <button id="Insert_Month_Btn_Save" type="button"  class="btn btn-primary antosubmit2">新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/set Modal-->
+     <!-- set Modal -->
+        <div id="Insert_Day_WorkTime" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title modaltextstyle" id="Day_WorkTime_Title"><i class="fa fa-file-text"></i>新增單日工時</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="Day_WorkTime" style="padding: 5px 20px;">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div  id="Day_Working_People_Content"class="btn-group btn-group-justified">
+                                            <b>預設上班人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Day_Working_People" class="int_Value"/>
+                                            <span></span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="Day_Work_Time_Content" class="btn-group btn-group-justified">
+                                            <b>預設工作時數:</b><br />
+                                            <input  type="text" maxlength="2" id="Day_Work_Time" class="int_Value"/>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>工作站名稱:</b><br />
+                                            <asp:DropDownList ID="Day_Workstation" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>選擇日期:</b><br/>
+                                            <input type="date" id="Single_Day" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="Insert_Day_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                        <button id="Insert_Day_Btn_Save" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">新增資料</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/set Modal-->
 
 
-    <!--/set Modal-->
-    <!-- Modal -->
 
-    <!-- /Modal -->
-    <!-- jQuery -->
-    <script src="../../assets/vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="../../assets/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="../../assets/vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../../assets/vendors/nprogress/nprogress.js"></script>
-    <!-- bootstrap-progressbar -->
-    <script src="../../assets/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <!-- iCheck -->
-    <script src="../../assets/vendors/iCheck/icheck.min.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="../../assets/vendors/moment/min/moment.min.js"></script>
-    <script src="../../assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <!-- bootstrap-wysiwyg -->
-    <script src="../../assets/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-    <script src="../../assets/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
-    <script src="../../assets/vendors/google-code-prettify/src/prettify.js"></script>
-    <!-- jQuery Tags Input -->
-    <script src="../../assets/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
-    <!-- Switchery -->
-    <script src="../../assets/vendors/switchery/dist/switchery.min.js"></script>
-    <!-- Select2 -->
-    <script src="../../assets/vendors/select2/dist/js/select2.full.min.js"></script>
-    <!-- Autosize -->
-    <script src="../../assets/vendors/autosize/dist/autosize.min.js"></script>
-    <!-- jQuery autocomplete -->
-    <script src="../../assets/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
-    <!-- starrr -->
-    <script src="../../assets/vendors/starrr/dist/starrr.js"></script>
-    <!-- Custom Theme Scripts -->
-    <script src="../../assets/build/js/custom.min.js"></script>
-    <!-- FloatingActionButton -->
-    <script src="../../assets/vendors/FloatingActionButton/js/index.js"></script>
-    <!-- canvasjs -->
-    <script src="../../assets/vendors/canvas_js/canvasjs.min.js"></script>
-    <!-- Datatables -->
-    <script src="../../assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="../../assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="../../assets/vendors/datatables.net-colReorder/dataTables.colReorder.min.js"></script>
-    <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
-    <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
-    <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
-    <script src="../../assets/vendors/time/loading.js"></script>
+    <%=Use_Javascript.Quote_Javascript() %>
+
+    <script>
+        var warning = {};
+        var top_Link = "";
+        $(document).ready(function () {
+
+            //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
+            top_Link = $('#ContentPlaceHolder1_DropDownList_Factory').val().toLowerCase();
+
+            //20220826動態變更主表格標題
+            if (top_Link.toLowerCase() == "sowon") {
+                $("._mdTitle").text("立式廠 工人工時編輯");
+                $("._xsTitle").text("立式廠 工人工時編輯");
+            }
+            else if (top_Link.toLowerCase() == "dek") {
+                $("._mdTitle").text("大圓盤 工人工時編輯");
+                $("._xsTitle").text("大圓盤 工人工時編輯");
+            } else {
+                $("._mdTitle").text("臥式廠 工人工時編輯");
+                $("._xsTitle").text("臥式廠 工人工時編輯");
+
+            }
+
+        });
+
+
+        //執行搜索
+        $("#btncheck").click(function () {
+
+            var WhatSystem = navigator.userAgent;
+            if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            } else {
+                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+
+            }
+
+            document.getElementById('<%=button_select.ClientID %>').click();
+            });
+
+
+        //產生表格的HTML碼
+        create_tablehtmlcode('order', '工人工時表', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString() %>');
+        //產生相對應的JScode
+        set_Table('#table-form');
+        $("#Insert_Month_Btn_Save").click(function () {
+            var inupu_Null = false;
+            var objectLength = Object.keys(warning).length;
+            inupu_Null = check_Modal_Input("Month_WorkTime");
+            if (inupu_Null) return;
+            if (objectLength > 0) {
+                alert("輸入資料有誤,請修正資料!");
+                return;
+            } else {
+                var data = {};
+                var cookieInfo = readCookie('userInfo');
+                var arry = cookieInfo.split("&");
+                var obj = {};
+                for (var i = 0; i < arry.length; i++) {
+                    var arry2 = arry[i].split("=");
+                    obj[arry2[0]] = arry2[1];
+                }
+                data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
+                data["Working_People"] = $("#Working_People").val();
+                data["Work_Time"] = $("#Work_Time").val();
+                data["Workstation"] = $("#ContentPlaceHolder1_Month_Workstation option:selected").text();
+                data["Workstation_Num"] = $("#ContentPlaceHolder1_Month_Workstation").val();
+                data["Month"] = $("#Single_Month").val().replace(/-/g, "");
+                data["Day"] = "";
+                data["Mode"] = "Month";
+                data["User_Acc"] = obj["user_ACC"];
+                console.log(data);
+                data = JSON.stringify(data);
+                postData(data);
+            }
+
+        });
+
+        $("#Insert_Day_Btn_Save").click(function () {
+            var inupu_Null = false;
+            var objectLength = Object.keys(warning).length;
+            inupu_Null = check_Modal_Input("Day_WorkTime");
+            if (inupu_Null) return;
+            if (objectLength > 0) {
+                alert("輸入資料有誤,請修正資料!");
+                return;
+            } else {
+                var data = {};
+                var cookieInfo = readCookie('userInfo');
+                var arry = cookieInfo.split("&");
+                var obj = {};
+                for (var i = 0; i < arry.length; i++) {
+                    var arry2 = arry[i].split("=");
+                    obj[arry2[0]] = arry2[1];
+                }
+                data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
+                data["Working_People"] = $("#Day_Working_People").val();
+                data["Work_Time"] = $("#Day_Work_Time").val();
+                data["Workstation"] = $("#ContentPlaceHolder1_Day_Workstation option:selected").text();
+                data["Workstation_Num"] = $("#ContentPlaceHolder1_Day_Workstation").val();
+                data["Month"] = "";
+                data["Day"] = $("#Single_Day").val().replace(/-/g, "");
+                data["Mode"] = "Day";
+                data["User_Acc"] = obj["user_ACC"];
+                console.log(data);
+                data = JSON.stringify(data);
+                postData(data);
+            }
+
+        });
+
+
+        //20220901判斷數字群組
+        $(".int_Value").keyup(function () {
+            // 驗證輸入字串
+            var obj = {};
+            const rules = /^[1-9][0-9]*$/;
+            var id = $(this).parent().attr("id")
+            var value = $(this).val();
+            if (!rules.test(value) && value != "") {
+                $("#" + id + " span").text("資料格式錯誤!");
+                $("#" + id + " span").css("color", "red");
+                warning[id] = "";
+            } else {
+                $("#" + id + " span").text("");
+                delete warning[id];
+            }
+            console.log($('body [class="modal fade in"]'));
+            console.log(warning);
+        });
+
+
+
+        //清空modal資訊
+        clearModal();
+
+
+        $('body').on('show.bs.modal', ".modal", function () {
+            console.log($(this).attr("id"));
+            var id = $(this).attr("id");
+            if (top_Link.toLowerCase() == "sowon") {
+                if (id.indexOf("Month") != -1) {
+                    $(this).find('.modal-title').text("立式廠 單月工時新增");
+                } else {
+                    $(this).find('.modal-title').text("立式廠 單日工時新增");
+                }
+            }
+            else if (top_Link.toLowerCase() == "dek") {
+                if (id.indexOf("Month") != -1) {
+                    $(this).find('.modal-title').text("大圓盤 單月工時新增");
+                } else {
+                    $(this).find('.modal-title').text("大圓盤 單日工時新增");
+                }
+            } else {
+                if (id.indexOf("Month") != -1) {
+                    $(this).find('.modal-title').text("臥式廠 單月工時新增");
+                } else {
+                    $(this).find('.modal-title').text("臥式廠 單日工時新增");
+                }
+            }
+
+        });
+
+        function postData(data) {
+            var WhatSystem = navigator.userAgent;
+            if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            } else {
+                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 100000;
+                $("#Insert_Month_WorkTime button").disabled = true;
+                //document.getElementById('btn_Cancel').disabled = true;
+                //document.getElementById('Insert_btnSave').disabled = true;
+                //document.getElementById('Insert_Btn_Cancel').disabled = true;
+            }
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                url: "Set_Month_WorkTime.aspx/postData",
+                data: "{_data:'" + data + "'}",
+                dataType: "json",
+                success: function (result) {
+                    var results_Data = result.d;
+                    //console.log(results_Data);
+                    if (results_Data["status"].indexOf("成功") != -1) {
+
+                        if (top_Link.toLowerCase() == "sowon") {
+                            $("._mdTitle").text("立式廠 工人工時編輯");
+                            $("._xsTitle").text("立式廠 工人工時編輯");
+                        }
+                        else if (top_Link.toLowerCase() == "dek") {
+                            $("._mdTitle").text("大圓盤 工人工時編輯");
+                            $("._xsTitle").text("大圓盤 工人工時編輯");
+                        } else {
+                            $("._mdTitle").text("臥式廠 工人工時編輯");
+                            $("._xsTitle").text("臥式廠 工人工時編輯");
+
+                        }
+                        alert(results_Data["status"]);
+                    } else if (results_Data["status"].indexOf("失敗") != -1) {
+                        alert(results_Data["status"]);
+                    } else if (results_Data["status"].indexOf("沒有資料") != -1) {
+                        alert(results_Data["status"]);
+                    }
+
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("資料傳輸錯誤,請檢查資料傳遞格式!!");
+                    //alert(XMLHttpRequest.status);
+                    //alert(XMLHttpRequest.readyState);
+                    //alert(textStatus);
+                }
+                , complete: function (jqXHR) {
+                    //關閉loading視窗及修改視窗
+                    $('body [class="modal fade in"]').click();
+                    $.unblockUI();
+                    $(".blockUI").fadeOut("slow");
+                    //打開儲存&取消按鈕
+                    $("#Insert_Month_WorkTime button").disabled = false;
+                    //document.getElementById('btn_Cancel').disabled = false;
+                    //document.getElementById('Insert_btnSave').disabled = false;
+                    //document.getElementById('Insert_Btn_Cancel').disabled = false;
+
+
+                    //電腦板新增後跑版
+                    $("#table-form_wrapper").css("overflow-x", "auto");
+
+                }
+            });
+
+        }
+
+
+
+
+
+
+
+
+
+
+    </script>
 </asp:Content>

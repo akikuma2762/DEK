@@ -160,16 +160,17 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
                 if (myData["Workstation"] == "全部")
                 {
-                Energy.set_Connect(factory);
-                sqlcmd = Energy.set_Sqlcmd(factory);
-                dt = DataTableUtils.GetDataTable(sqlcmd);
+                    Energy.set_Connect(factory);
+                    sqlcmd = Energy.set_Sqlcmd(factory);
+                    dt = DataTableUtils.GetDataTable(sqlcmd);
                     foreach (DataRow row in dt.Rows)
                     {
-                        conditiion += $" OR 工作站編號='{row["工作站編號"]}'";
+                        conditiion += $"工作站編號='{row["工作站編號"]}' OR ";
                         workstation_info = new { 工作站編號 = row["工作站編號"], 工作站名稱 = row["工作站名稱"] };
                         workstation_All.Add(workstation_info);
                     }
-                }
+                conditiion = conditiion.Substring(0, conditiion.Length - 4);
+            }
                 else 
                 {
                 if (factory == "sowon")
@@ -197,7 +198,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
             if (mode == "Month")
             {
-                sqlcmd = $"Select * From 人員工時表 where 日期>='{date_str}' and 日期<='{date_end}'{conditiion}";
+                sqlcmd = $"Select * From 人員工時表 where 日期>='{date_str}' and 日期<='{date_end}' and ({conditiion})";
                 dt = DataTableUtils.GetDataTable(sqlcmd);
                 month = d_end.Month.ToString();
                 if (!HtmlUtil.Check_DataTable(dt))
@@ -274,7 +275,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     month = d_start.Month.ToString();
                 }
 
-                sqlcmd = $"Select * From 人員工時表 where 日期='{myData["Day"]}'{conditiion}";
+                sqlcmd = $"Select * From 人員工時表 where 日期='{myData["Day"]}' and ({conditiion})";
                 dt = DataTableUtils.GetDataTable(sqlcmd);
                 if (!HtmlUtil.Check_DataTable(dt))
                 {
@@ -465,7 +466,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             }
             else if (field_name == "工人工時編輯")
             {
-                string url = $"Set_Month_WorkTime.aspx?key={WebUtils.UrlStringEncode($"workstation={row["工作站名稱"]},workstation_Num={row["編輯產能"]}")}";
+                string url = $"Set_Month_WorkTime.aspx?key={WebUtils.UrlStringEncode($"workstation={row["工作站名稱"]},workstation_Num={row["編輯產能"]},factory={dropdownlist_Factory.SelectedItem.Value}")}";
                 value = $"<td>" +
                                 $"<u>" +
                                     $"<a href=\"{url}\">" +
