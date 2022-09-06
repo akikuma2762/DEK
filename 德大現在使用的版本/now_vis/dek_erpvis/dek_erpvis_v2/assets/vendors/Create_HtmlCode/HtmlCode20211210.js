@@ -510,12 +510,22 @@ function clearModal() {
 }
 //20220901讀取cookkie
 function readCookie(name) {
+    var obj = {};
+    var cookieInfo = "";
     var cookie_name = name + "=";
     var arry = document.cookie.split(';');
     for (var i = 0; i < arry.length; i++) {
         var cookie_value = arry[i];
         while (cookie_value.charAt(0) == ' ') cookie_value = cookie_value.substring(1, cookie_value.length);
-        if (cookie_value.indexOf(cookie_name) == 0) return cookie_value.substring(cookie_name.length, cookie_value.length);
+        if (cookie_value.indexOf(cookie_name) == 0) {
+            cookieInfo= cookie_value.substring(cookie_name.length, cookie_value.length);
+            var arry = cookieInfo.split("&");
+            for (var i = 0; i < arry.length; i++) {
+                var arry2 = arry[i].split("=");
+                obj[arry2[0]] = arry2[1];
+            }
+            return obj;
+        } 
     }
     return null;
 }

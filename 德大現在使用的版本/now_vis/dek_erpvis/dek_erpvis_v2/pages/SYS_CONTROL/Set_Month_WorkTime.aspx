@@ -44,7 +44,7 @@
                                                                 <asp:DropDownList ID="DropDownList_Factory" AutoPostBack="true" CssClass="btn btn-default dropdown-toggle form-control"  runat="server" OnSelectedIndexChanged="DropDownList_Factory_SelectedIndexChanged">
                                                                     <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                                     <asp:ListItem Value="dek">大圓盤</asp:ListItem>
-                                                                    <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
+                                                                    <asp:ListItem Value="hor">臥式廠</asp:ListItem>
                                                                 </asp:DropDownList>
                                                     </div>
                                                 </div>
@@ -230,6 +230,69 @@
             </div>
         </div>
         <!--/set Modal-->
+     <!-- set Modal -->
+        <div id="Update_Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title modaltextstyle" id="myUpdateModal"><i class="fa fa-file-text"></i>編輯資料</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="updatemodal" style="padding: 5px 20px;">
+                             <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>選擇日期:</b><br/>
+                                            <input type="date" id="Update_Date"  readonly="readonly"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>工作站名稱:</b><br />
+                                            <asp:DropDownList ID="Update_WorkStation" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div  id="Update_Working_People_Content"class="btn-group btn-group-justified">
+                                            <b>工作人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Update_Working_People" class="int_Value"/>
+                                            <span></span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="Update_Work_Time_Content" class="btn-group btn-group-justified">
+                                            <b>工作時數:</b><br />
+                                            <input  type="text" maxlength="2" id="Update_Work_Time" class="int_Value"/>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="Insert_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
+                        <asp:Button ID="Button2" runat="server" Text="Button" OnClick="Button_Save_Click" Style="display: none" />
+                        <button id="Insert_btnSave" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">儲存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/set Modal-->
 
 
 
@@ -276,6 +339,11 @@
 
         //產生表格的HTML碼
         create_tablehtmlcode('order', '工人工時表', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString() %>');
+        //產生DataTable前清空所有state資料
+        var table = $("#table-form").DataTable();
+        table.state.clear();
+        //產生相對應的JScode
+        stateSave_Table('#table-form');
         //產生相對應的JScode
         set_Table('#table-form');
         $("#Insert_Month_Btn_Save").click(function () {
@@ -288,13 +356,8 @@
                 return;
             } else {
                 var data = {};
-                var cookieInfo = readCookie('userInfo');
-                var arry = cookieInfo.split("&");
-                var obj = {};
-                for (var i = 0; i < arry.length; i++) {
-                    var arry2 = arry[i].split("=");
-                    obj[arry2[0]] = arry2[1];
-                }
+                var obj = readCookie('userInfo');
+               
                 data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
                 data["Working_People"] = $("#Working_People").val();
                 data["Work_Time"] = $("#Work_Time").val();
@@ -302,8 +365,10 @@
                 data["Workstation_Num"] = $("#ContentPlaceHolder1_Month_Workstation").val();
                 data["Month"] = $("#Single_Month").val().replace(/-/g, "");
                 data["Day"] = "";
-                data["Mode"] = "Month";
+                data["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
+                data["Inser_Type"] = "Month";
                 data["User_Acc"] = obj["user_ACC"];
+                data["click_Type"] = "Insert";
                 console.log(data);
                 data = JSON.stringify(data);
                 postData(data);
@@ -321,13 +386,8 @@
                 return;
             } else {
                 var data = {};
-                var cookieInfo = readCookie('userInfo');
-                var arry = cookieInfo.split("&");
-                var obj = {};
-                for (var i = 0; i < arry.length; i++) {
-                    var arry2 = arry[i].split("=");
-                    obj[arry2[0]] = arry2[1];
-                }
+                var obj = readCookie('userInfo');
+                
                 data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
                 data["Working_People"] = $("#Day_Working_People").val();
                 data["Work_Time"] = $("#Day_Work_Time").val();
@@ -335,14 +395,37 @@
                 data["Workstation_Num"] = $("#ContentPlaceHolder1_Day_Workstation").val();
                 data["Month"] = "";
                 data["Day"] = $("#Single_Day").val().replace(/-/g, "");
-                data["Mode"] = "Day";
+                data["Inser_Type"] = "Day";
+                data["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
                 data["User_Acc"] = obj["user_ACC"];
+                data["click_Type"] = "Insert";
                 console.log(data);
                 data = JSON.stringify(data);
                 postData(data);
             }
 
         });
+        function Delete_Value(workStion_Num, date) {
+            var data = {};
+            var obj = readCookie('userInfo');
+            data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
+            data["Workstation_Num"] = workStion_Num;
+            data["Day"] = date;
+            data["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
+            data["click_Type"] = "Delete";
+            data["User_Acc"] = obj["user_ACC"];
+            var answer = confirm("您確定要刪除嗎??");
+            if (answer) {                    
+                    data = JSON.stringify(data);
+                    postData(data);
+                }
+        }
+        function Update_Value(workStion_Num, date, working_People, workTime) {
+            $("#Update_Date").val(date);
+            $("#Update_Working_People").val(working_People);
+            $("#Update_Work_Time").val(workTime);
+
+        }
 
 
         //20220901判斷數字群組
@@ -415,8 +498,10 @@
                 dataType: "json",
                 success: function (result) {
                     var results_Data = result.d;
-                    //console.log(results_Data);
+                    console.log(results_Data);
                     if (results_Data["status"].indexOf("成功") != -1) {
+                        create_tablehtmlcode("order", "工人工時表", "table-form", results_Data["th"], results_Data["tr"]);
+                        stateSave_Table('#table-form');
 
                         if (top_Link.toLowerCase() == "sowon") {
                             $("._mdTitle").text("立式廠 工人工時編輯");

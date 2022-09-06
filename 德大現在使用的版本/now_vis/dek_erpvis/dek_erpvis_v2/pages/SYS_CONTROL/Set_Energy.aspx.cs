@@ -97,7 +97,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                         ok = DataTableUtils.Update_DataRow("工作站型態資料表", $"工作站編號 ='{TextBox_Number.Text}'", row);
                     }
                     break;
-                case "iTec":
+                case "hor":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                     sqlcmd = $"select * from 工作站型態資料表 where 工作站編號 ='{TextBox_Number.Text}'";
                     dt = DataTableUtils.GetDataTable(sqlcmd);
@@ -177,7 +177,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 {
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
                 }
-                else if (factory == "iTec")
+                else if (factory == "hor")
                 {
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 }
@@ -328,7 +328,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
             }
-            else if (factory == "iTec")
+            else if (factory == "hor")
             {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
             }
@@ -346,7 +346,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中 = '1'";
             }
-            else if (factory == "iTec")
+            else if (factory == "hor")
             {
                 sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中 = '1' and 工作站編號 <> '11'";//大圓盤獨立顯示
             }
@@ -375,7 +375,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
                 sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中 = '1'";
             }
-            else if (dropdownlist_Factory.SelectedItem.Value == "iTec") 
+            else if (dropdownlist_Factory.SelectedItem.Value == "hor") 
             {
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 sqlcmd = "select 工作站編號, 工作站名稱 from 工作站型態資料表   where 工作站是否使用中 = '1' and 工作站編號 <> '11'";//大圓盤獨立顯示
@@ -423,7 +423,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號 = '11'";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);
                     break;
-                case "iTec":
+                case "hor":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                     sqlcmd = "select 工作站編號 AS 編輯產能,工作站名稱,目標件數 AS 每月產能 from 工作站型態資料表 where 工作站是否使用中 = '1' and 工作站編號<>'11' ";
                     dt_monthtotal = DataTableUtils.GetDataTable(sqlcmd);

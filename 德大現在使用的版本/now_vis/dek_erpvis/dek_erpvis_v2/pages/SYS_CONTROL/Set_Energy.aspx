@@ -35,7 +35,7 @@
                                                             <asp:DropDownList ID="dropdownlist_Factory" runat="server" CssClass="btn btn-default form-control dropdown-toggle">
                                                                 <asp:ListItem Value="sowon" Selected="True">立式廠</asp:ListItem>
                                                                 <asp:ListItem Value="dek">大圓盤</asp:ListItem>
-                                                                <asp:ListItem Value="iTec">臥式廠</asp:ListItem>
+                                                                <asp:ListItem Value="hor">臥式廠</asp:ListItem>
                                                             </asp:DropDownList>
                                                 </div>
                                             </div>
@@ -292,13 +292,8 @@
                 return;
             } else {
                 var data = {};
-                var cookieInfo = readCookie('userInfo');
-                var arry = cookieInfo.split("&");
-                var obj = {};
-                for (var i = 0; i < arry.length; i++) {
-                    var arry2 = arry[i].split("=");
-                    obj[arry2[0]] = arry2[1];
-                }
+                var obj = readCookie('userInfo');
+               
                 data["Factory"] = $("#ContentPlaceHolder1_dropdownlist_Factory").val();
                 data["Working_People"] = $("#Working_People").val();
                 data["Work_Time"] = $("#Work_Time").val();
@@ -325,13 +320,8 @@
                 return;
             } else {
                 var data = {};
-                var cookieInfo = readCookie('userInfo');
-                var arry = cookieInfo.split("&");
-                var obj = {};
-                for (var i = 0; i < arry.length; i++) {
-                    var arry2 = arry[i].split("=");
-                    obj[arry2[0]] = arry2[1];
-                }
+                var obj = readCookie('userInfo');
+
                 data["Factory"] = $("#ContentPlaceHolder1_dropdownlist_Factory").val();
                 data["Working_People"] = $("#Day_Working_People").val();
                 data["Work_Time"] = $("#Day_Work_Time").val();
