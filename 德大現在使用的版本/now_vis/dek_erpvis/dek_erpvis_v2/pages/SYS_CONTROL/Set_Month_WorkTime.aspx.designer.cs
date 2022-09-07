@@ -42,13 +42,13 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         protected global::System.Web.UI.WebControls.DropDownList DropDownList_Factory;
 
         /// <summary>
-        /// DropDownList_Product 控制項。
+        /// DropDownList_WorkStation 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList_Product;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_WorkStation;
 
         /// <summary>
         /// Select_Month 控制項。
@@ -69,22 +69,22 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         protected global::System.Web.UI.WebControls.Button button_select;
 
         /// <summary>
-        /// Month_Workstation 控制項。
+        /// Month_WorkStation 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Month_Workstation;
+        protected global::System.Web.UI.WebControls.DropDownList Month_WorkStation;
 
         /// <summary>
-        /// Day_Workstation 控制項。
+        /// Day_WorkStation 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Day_Workstation;
+        protected global::System.Web.UI.WebControls.DropDownList Day_WorkStation;
 
         /// <summary>
         /// Update_WorkStation 控制項。

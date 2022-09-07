@@ -54,7 +54,7 @@
                                                         <span>產線選擇</span>
                                                     </div>
                                                         <div class="col-md-8 col-sm-9 col-xs-8">
-                                                                <asp:DropDownList ID="DropDownList_Product" CssClass="btn btn-default dropdown-toggle form-control"  runat="server">
+                                                                <asp:DropDownList ID="DropDownList_WorkStation" CssClass="btn btn-default dropdown-toggle form-control"  runat="server">
                                                                 </asp:DropDownList>
                                                         </div>
                                                     </div>
@@ -136,7 +136,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>工作站名稱:</b><br />
-                                            <asp:DropDownList ID="Month_Workstation" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="Month_WorkStation" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@
                     </div>
                     <div class="modal-footer">
                         <button id="Insert_Month_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
-                        <button id="Insert_Month_Btn_Save" type="button"  class="btn btn-primary antosubmit2">新增</button>
+                        <button id="Insert_Month_Btn_Save" type="button"  class="btn btn-primary antosubmit2">新增資料</button>
                     </div>
                 </div>
             </div>
@@ -202,7 +202,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="btn-group btn-group-justified">
                                             <b>工作站名稱:</b><br />
-                                            <asp:DropDownList ID="Day_Workstation" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="Day_WorkStation" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -224,7 +224,7 @@
                     </div>
                     <div class="modal-footer">
                         <button id="Insert_Day_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
-                        <button id="Insert_Day_Btn_Save" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">新增資料</button>
+                        <button id="Insert_Day_Btn_Save" type="button" class="btn btn-primary antosubmit2">新增資料</button>
                     </div>
                 </div>
             </div>
@@ -240,26 +240,6 @@
                     </div>
                     <div class="modal-body">
                         <div id="updatemodal" style="padding: 5px 20px;">
-                             <div class="form-group">
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
-                                            <b>選擇日期:</b><br/>
-                                            <input type="date" id="Update_Date"  readonly="readonly"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
-                                            <b>工作站名稱:</b><br />
-                                            <asp:DropDownList ID="Update_WorkStation" runat="server"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -282,12 +262,34 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>工作站名稱:</b><br />
+                                            <asp:DropDownList ID="Update_WorkStation" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group btn-group-justified">
+                                            <b>選擇日期:</b><br/>
+                                            <input type="date" id="Update_Date"  readonly="readonly"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button id="Insert_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
                         <asp:Button ID="Button2" runat="server" Text="Button" OnClick="Button_Save_Click" Style="display: none" />
-                        <button id="Insert_btnSave" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">儲存</button>
+                        <button id="Update_btn" type="button" class="btn btn-primary antosubmit2">儲存變更</button>
                     </div>
                 </div>
             </div>
@@ -300,25 +302,28 @@
 
     <script>
         var warning = {};
-        var top_Link = "";
+        top["Factory"] = "";
+        top["Factory_Name"] = "";
+        top["Serch_Month"] = "";
+        top["WorkStation_Num"] = "";
+        top["WorkStation_Name"] = "";
+        top["Update_Date"] = "";
+        top["Update_Working_People"] = "";
+        top["Update_Work_Time"] = "";
+        top["Update_WorkStation"] = "";
         $(document).ready(function () {
 
             //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
-            top_Link = $('#ContentPlaceHolder1_DropDownList_Factory').val().toLowerCase();
-
+            top["Factory"] = $('#ContentPlaceHolder1_DropDownList_Factory').val().toLowerCase();
+            top["Factory_Name"] = $('#ContentPlaceHolder1_DropDownList_Factory [selected=selected]').text();
+            top["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
+            top["Serch_WorkStation"] = $("#ContentPlaceHolder1_DropDownList_WorkStation").val();
+            top["WorkStation_Num"] = $("#ContentPlaceHolder1_DropDownList_WorkStation").val();
+            top["WorkStation_Name"] = $("#ContentPlaceHolder1_DropDownList_WorkStation [selected=selected]").text();
+            console.log(top["Factory"], top["Factory_Name"], top["WorkStation_Num"]);
             //20220826動態變更主表格標題
-            if (top_Link.toLowerCase() == "sowon") {
-                $("._mdTitle").text("立式廠 工人工時編輯");
-                $("._xsTitle").text("立式廠 工人工時編輯");
-            }
-            else if (top_Link.toLowerCase() == "dek") {
-                $("._mdTitle").text("大圓盤 工人工時編輯");
-                $("._xsTitle").text("大圓盤 工人工時編輯");
-            } else {
-                $("._mdTitle").text("臥式廠 工人工時編輯");
-                $("._xsTitle").text("臥式廠 工人工時編輯");
-
-            }
+            $("._mdTitle").text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 工人工時編輯`);
+            $("._xsTitle").text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 工人工時編輯`);
 
         });
 
@@ -346,6 +351,8 @@
         stateSave_Table('#table-form');
         //產生相對應的JScode
         set_Table('#table-form');
+
+        //新增月份
         $("#Insert_Month_Btn_Save").click(function () {
             var inupu_Null = false;
             var objectLength = Object.keys(warning).length;
@@ -358,14 +365,15 @@
                 var data = {};
                 var obj = readCookie('userInfo');
                
-                data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
+                data["Factory"] = top["Factory"];
                 data["Working_People"] = $("#Working_People").val();
                 data["Work_Time"] = $("#Work_Time").val();
-                data["Workstation"] = $("#ContentPlaceHolder1_Month_Workstation option:selected").text();
-                data["Workstation_Num"] = $("#ContentPlaceHolder1_Month_Workstation").val();
+                data["WorkStation_Name"] = $("#ContentPlaceHolder1_Month_WorkStation option:selected").text();
+                data["WorkStation_Num"] = $("#ContentPlaceHolder1_Month_WorkStation").val();
+                data["Serch_WorkStation"]=top["Serch_WorkStation"];
                 data["Month"] = $("#Single_Month").val().replace(/-/g, "");
                 data["Day"] = "";
-                data["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
+                data["Serch_Month"] = top["Serch_Month"];
                 data["Inser_Type"] = "Month";
                 data["User_Acc"] = obj["user_ACC"];
                 data["click_Type"] = "Insert";
@@ -375,7 +383,7 @@
             }
 
         });
-
+        //新增單日
         $("#Insert_Day_Btn_Save").click(function () {
             var inupu_Null = false;
             var objectLength = Object.keys(warning).length;
@@ -388,15 +396,16 @@
                 var data = {};
                 var obj = readCookie('userInfo');
                 
-                data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
+                data["Factory"] = top["Factory"];
                 data["Working_People"] = $("#Day_Working_People").val();
                 data["Work_Time"] = $("#Day_Work_Time").val();
-                data["Workstation"] = $("#ContentPlaceHolder1_Day_Workstation option:selected").text();
-                data["Workstation_Num"] = $("#ContentPlaceHolder1_Day_Workstation").val();
+                data["WorkStation_Name"] = $("#ContentPlaceHolder1_Day_WorkStation option:selected").text();
+                data["WorkStation_Num"] = $("#ContentPlaceHolder1_Day_WorkStation").val();
+                data["Serch_WorkStation"] = top["Serch_WorkStation"];
                 data["Month"] = "";
                 data["Day"] = $("#Single_Day").val().replace(/-/g, "");
                 data["Inser_Type"] = "Day";
-                data["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
+                data["Serch_Month"] = top["Serch_Month"];
                 data["User_Acc"] = obj["user_ACC"];
                 data["click_Type"] = "Insert";
                 console.log(data);
@@ -405,13 +414,15 @@
             }
 
         });
+        //刪除
         function Delete_Value(workStion_Num, date) {
             var data = {};
             var obj = readCookie('userInfo');
-            data["Factory"] = $("#ContentPlaceHolder1_DropDownList_Factory").val();
-            data["Workstation_Num"] = workStion_Num;
-            data["Day"] = date;
-            data["Serch_Month"] = $("#ContentPlaceHolder1_Select_Month").val().replace(/-/g, "");
+            data["Factory"] = top["Factory"];
+            data["WorkStation_Num"] = workStion_Num;
+            data["Serch_WorkStation"] = top["Serch_WorkStation"];
+            data["Day"] = date.replace(/-/g,"");
+            data["Serch_Month"] = top["Serch_Month"];
             data["click_Type"] = "Delete";
             data["User_Acc"] = obj["user_ACC"];
             var answer = confirm("您確定要刪除嗎??");
@@ -420,18 +431,40 @@
                     postData(data);
                 }
         }
+        //預設修改參數
         function Update_Value(workStion_Num, date, working_People, workTime) {
             $("#Update_Date").val(date);
             $("#Update_Working_People").val(working_People);
             $("#Update_Work_Time").val(workTime);
+            $("#Update_WorkStation").val(workStion_Num);
+            top["Update_Date"] = date.replace(/-/g,"");
+            top["Update_Working_People"] = working_People;
+            top["Update_Work_Time"] = workTime;
+            top["Update_WorkStation"] = workStion_Num;
 
         }
+        $("#Update_btn").click(function () {
+            var data = {};
+            var obj = readCookie('userInfo');
+            data["Factory"] = top["Factory"];
+            data["Serch_Month"] = top["Serch_Month"];
+            data["Original_Date"] = top["Update_Date"];
+            data["WorkStation_Num"] = $("#ContentPlaceHolder1_Update_WorkStation").val();
+            data["WorkStation_Name"] = $("#ContentPlaceHolder1_Update_WorkStation option:selected").text();
+            data["Serch_WorkStation"] = top["Serch_WorkStation"];
+            data["Working_People"] = $("#Update_Working_People").val();
+            data["Work_Time"] = $("#Update_Work_Time").val();
+            data["New_Date"] = $("#Update_Date").val().replace(/-/g,"");
+            data["click_Type"] = "Update";
+            data["User_Acc"] = obj["user_ACC"];
+            data = JSON.stringify(data);
+            postData(data);
+        });
 
 
         //20220901判斷數字群組
         $(".int_Value").keyup(function () {
             // 驗證輸入字串
-            var obj = {};
             const rules = /^[1-9][0-9]*$/;
             var id = $(this).parent().attr("id")
             var value = $(this).val();
@@ -449,34 +482,23 @@
 
 
 
-        //清空modal資訊
-        clearModal();
+        
 
-
+        //modal 開啟時修改標題
         $('body').on('show.bs.modal', ".modal", function () {
             console.log($(this).attr("id"));
             var id = $(this).attr("id");
-            if (top_Link.toLowerCase() == "sowon") {
-                if (id.indexOf("Month") != -1) {
-                    $(this).find('.modal-title').text("立式廠 單月工時新增");
-                } else {
-                    $(this).find('.modal-title').text("立式廠 單日工時新增");
-                }
-            }
-            else if (top_Link.toLowerCase() == "dek") {
-                if (id.indexOf("Month") != -1) {
-                    $(this).find('.modal-title').text("大圓盤 單月工時新增");
-                } else {
-                    $(this).find('.modal-title').text("大圓盤 單日工時新增");
-                }
+            var mydate = new Date();
+            if (id.indexOf("Month") != -1) {
+                $(this).find('.modal-title').text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 單月工時新增`);
+            } else if (id.indexOf("Day") != -1) {
+                $(this).find('.modal-title').text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 單日工時新增`);
             } else {
-                if (id.indexOf("Month") != -1) {
-                    $(this).find('.modal-title').text("臥式廠 單月工時新增");
-                } else {
-                    $(this).find('.modal-title').text("臥式廠 單日工時新增");
-                }
+                $(this).find('.modal-title').text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 工人工時編輯`);
             }
-
+            //預設當日日期或當月月份
+            $("#Single_Month").val($("#ContentPlaceHolder1_Select_Month").val());
+            $("#Single_Day").val($("#ContentPlaceHolder1_Select_Month").val() + "-" + mydate.format("dd"));
         });
 
         function postData(data) {
@@ -485,7 +507,10 @@
             } else {
                 $.blockUI({ message: '<img src="../../images/loading.gif" />' });
                 document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 100000;
-                $("#Insert_Month_WorkTime button").disabled = true;
+                //關閉所有modal 按鈕,防止誤按
+                $(".modal-content").find("button").each(function () {
+                    $(this).attr("disabled", true);
+                });
                 //document.getElementById('btn_Cancel').disabled = true;
                 //document.getElementById('Insert_btnSave').disabled = true;
                 //document.getElementById('Insert_Btn_Cancel').disabled = true;
@@ -503,11 +528,11 @@
                         create_tablehtmlcode("order", "工人工時表", "table-form", results_Data["th"], results_Data["tr"]);
                         stateSave_Table('#table-form');
 
-                        if (top_Link.toLowerCase() == "sowon") {
+                        if (top["Factory"].toLowerCase() == "sowon") {
                             $("._mdTitle").text("立式廠 工人工時編輯");
                             $("._xsTitle").text("立式廠 工人工時編輯");
                         }
-                        else if (top_Link.toLowerCase() == "dek") {
+                        else if (top["Factory"].toLowerCase() == "dek") {
                             $("._mdTitle").text("大圓盤 工人工時編輯");
                             $("._xsTitle").text("大圓盤 工人工時編輯");
                         } else {
@@ -534,14 +559,14 @@
                     $.unblockUI();
                     $(".blockUI").fadeOut("slow");
                     //打開儲存&取消按鈕
-                    $("#Insert_Month_WorkTime button").disabled = false;
-                    //document.getElementById('btn_Cancel').disabled = false;
-                    //document.getElementById('Insert_btnSave').disabled = false;
-                    //document.getElementById('Insert_Btn_Cancel').disabled = false;
-
+                    $(".modal-content").find("button").each(function () {
+                        $(this).removeAttr("disabled");
+                    });
 
                     //電腦板新增後跑版
                     $("#table-form_wrapper").css("overflow-x", "auto");
+                    //清空modal資訊
+                    clearModal(top["WorkStation_Num"]);
 
                 }
             });

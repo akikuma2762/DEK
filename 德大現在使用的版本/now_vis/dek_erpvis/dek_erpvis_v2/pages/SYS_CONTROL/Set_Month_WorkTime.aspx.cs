@@ -23,8 +23,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         string dt_end = "";
         public string date_str = "";
         public string date_end = "";
-        public string workstation = "";
-        public string workstation_Num = "";
+        public string request_WorkStation = "";
+        public string request_WorkStation_Num = "";
         object obj_date;
         public string th = "";
         public string tr = "";
@@ -78,9 +78,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             Dictionary<string, string> myData = new Dictionary<string, string>();
             DataTable Rp_data = JsonToDataTable.JsonStringToDataTable(_data);
             Set_Month_WorkTime SMW = new Set_Month_WorkTime();
-            string mode = "";
             object data = new { };
-
 
             foreach (DataRow dr in Rp_data.Rows)
             {
@@ -95,15 +93,14 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 case "Insert":
                     data= SMW.insert(myData);
                     break;
-                case "Update": break;
+                case "Update":
+                    data = SMW.update(myData);
+                    break;
                 case "Delete":
                     data = SMW.delete(myData);
                     
                     break;
             }
-            
-
-
             return data;
         }
         public object getMonth_Rare(string acc)
@@ -135,10 +132,11 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             object workstation_info;
             string factory = myData["Factory"];
             string insert_Type = myData["Inser_Type"];
+            //計算日期區間
             obj_date = insert_Type == "Month" ? SF.monthInterval(myData["Month"] + "01", myData["User_Acc"]) : SF.monthInterval(myData["Day"], myData["User_Acc"]);
 
 
-            if (myData["Workstation"] == "全部")
+            if (myData["WorkStation_Num"] == "全部")
             {
                 set_Connect(factory);
                 sqlcmd = set_Sqlcmd(factory);
@@ -154,8 +152,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             else
             {
                 set_Connect(factory);
-                conditiion += $"工作站編號='{myData["Workstation_Num"]}'";
-                workstation_info = new { 工作站編號 = myData["Workstation_Num"], 工作站名稱 = myData["Workstation"] };
+                conditiion += $"工作站編號='{myData["WorkStation_Num"]}'";
+                workstation_info = new { 工作站編號 = myData["WorkStation_Num"], 工作站名稱 = myData["WorkStation_Name"] };
                 workstation_All.Add(workstation_info);
             }
 
@@ -235,13 +233,18 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             }
             else if (insert_Type == "Day")
             {
+                //判斷所屬月份
                 if (int.Parse(myData["Day"]) > int.Parse(date_str) && int.Parse(myData["Day"]) <= int.Parse(date_end))
                 {
                     month = d_end.Month.ToString();
                 }
+                else if (int.Parse(myData["Day"]) > int.Parse(date_end)) 
+                {
+                    month = d_end.AddMonths(1).Month.ToString();
+                }
                 else
                 {
-                    month = d_start.Month.ToString();
+                    month = d_start.AddMonths(1).Month.ToString();
                 }
 
                 sqlcmd = $"Select * From 人員工時表 where 日期='{myData["Day"]}' and ({conditiion})";
@@ -283,7 +286,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         {
             object data = new { };
             string factory = myData["Factory"];
-            string workstation_Num = myData["Workstation_Num"];
+            string workstation_Num = myData["WorkStation_Num"];
             string date = myData["Day"];
             set_Connect(factory);
             string sqlcmd = $"Select * From 人員工時表 Where 工作站編號='{workstation_Num}' and 日期='{date}'";
@@ -300,13 +303,59 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     data = new { status = "失敗" };
                 }
             }
-           
+            else
+            {
+                data = new { status = "失敗" };
+            }
+
+
+            return data;
+        }
+
+        public object update(Dictionary<string, string> myData)
+        {
+            object data = new { };
+            string factory = myData["Factory"];
+            string workstation_Num = myData["WorkStation_Num"];
+            string workstation_Name = myData["WorkStation_Name"];
+            string working_People = myData["Working_People"];
+            string work_Time = myData["Work_Time"];
+            string date = myData["Original_Date"];
+            string new_date = myData["New_Date"];
+            set_Connect(factory);
+            string sqlcmd = $"Select * From 人員工時表 Where 工作站編號='{workstation_Num}' and 日期='{date}'";
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+            if (HtmlUtil.Check_DataTable(dt))
+            {
+                DataRow row = dt.NewRow();
+                row["日期"] = new_date;
+                row["工作站編號"] = workstation_Num;
+                row["工作站名稱"] = workstation_Name;
+                row["工作人數"] = working_People;
+                row["工作時數"] = work_Time;
+                //row["所屬月份"] = TextBox_Date.Text.Replace("-", "");
+                if (DataTableUtils.Update_DataRow("人員工時表", $"工作站編號='{workstation_Num}' and 日期='{date}'",row))
+                {
+
+                    data = set_Table(myData, "修改成功");
+
+                }
+                else
+                {
+                    data = new { status = "失敗" };
+                }
+            }
+            else
+            {
+                data = new { status = "失敗" };
+            }
+
 
             return data;
         }
 
 
-            private void set_Connect(string factory)
+        private void set_Connect(string factory)
         {
             if (factory == "sowon")
             {
@@ -340,10 +389,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         private void set_DropDownlist()
         {
             string sqlcmd = "";
-            string select_value = "";
             string factory = DropDownList_Factory.SelectedItem.Value;
-            if (DropDownList_Product.SelectedItem != null)
-                workstation_Num = DropDownList_Product.SelectedItem.Value;
+            if (DropDownList_WorkStation.SelectedItem != null)
+                request_WorkStation_Num = DropDownList_WorkStation.SelectedItem.Value;
 
             set_Connect(factory);
             sqlcmd=set_Sqlcmd(factory);
@@ -353,27 +401,29 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             if (HtmlUtil.Check_DataTable(dt))
             {
                 ListItem listItem = new ListItem();
-                DropDownList_Product.Items.Clear();
-                Month_Workstation.Items.Clear();
-                Day_Workstation.Items.Clear();
-                Month_Workstation.Items.Add("全部");
-                Day_Workstation.Items.Add("全部");
-                DropDownList_Product.Items.Add("全部");
+                DropDownList_WorkStation.Items.Clear();
+                Month_WorkStation.Items.Clear();
+                Day_WorkStation.Items.Clear();
+                Update_WorkStation.Items.Clear();
+                Month_WorkStation.Items.Add("全部");
+                Day_WorkStation.Items.Add("全部");
+                DropDownList_WorkStation.Items.Add("全部");
+                Update_WorkStation.Items.Add("全部");
                 foreach (DataRow row in dt.Rows)
                 {
                     listItem = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
-                    Month_Workstation.Items.Add(listItem);
-                    Day_Workstation.Items.Add(listItem);
-                    DropDownList_Product.Items.Add(listItem);
-
+                    Month_WorkStation.Items.Add(listItem);
+                    Day_WorkStation.Items.Add(listItem);
+                    DropDownList_WorkStation.Items.Add(listItem);
+                    Update_WorkStation.Items.Add(listItem);
                 }
-                if (workstation_Num != null || workstation_Num != "")
+                if (request_WorkStation_Num != null || request_WorkStation_Num != "")
                 {
-                    for (int i = 0; i < DropDownList_Product.Items.Count; i++)
+                    for (int i = 0; i < DropDownList_WorkStation.Items.Count; i++)
                     {
-                        if (DropDownList_Product.Items[i].Value == workstation_Num)
+                        if (DropDownList_WorkStation.Items[i].Value == request_WorkStation_Num)
                         {
-                            DropDownList_Product.Items[i].Selected = true;
+                            DropDownList_WorkStation.Items[i].Selected = true;
                         }
                     }
                 }
@@ -421,37 +471,116 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
             MainProcess();
         }
+        
+
+        //設定數值
+        private void GetCondi()
+        {
+            Response.Buffer = false;
+            if (Request.QueryString["key"] != null)
+            {
+                Dictionary<string, string> keyValues = HtmlUtil.Return_dictionary(Request.QueryString["key"]);
+                request_WorkStation_Num = HtmlUtil.Search_Dictionary(keyValues, "workstation_Num");
+                request_WorkStation = HtmlUtil.Search_Dictionary(keyValues, "workstation");
+                DropDownList_Factory.SelectedValue = HtmlUtil.Search_Dictionary(keyValues, "factory"); ;
+            }
+            else
+                Response.Redirect("Set_Energy.aspx", false);
+        }
+
+        protected void DropDownList_Factory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            set_DropDownlist(true);
+        }
+
+        private void set_DropDownlist(bool Refalsh = false)
+        {
+            string sqlcmd = "";
+            string factory = DropDownList_Factory.SelectedItem.Value;
+            set_Connect(factory);
+            sqlcmd = set_Sqlcmd(factory);
+
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+
+            if (HtmlUtil.Check_DataTable(dt))
+            {
+                if (Refalsh || DropDownList_WorkStation.Items.Count == 0)
+                {
+                    ListItem listItem = new ListItem();
+                    DropDownList_WorkStation.Items.Clear();
+                    DropDownList_WorkStation.Items.Add("全部");
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        listItem = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
+                        DropDownList_WorkStation.Items.Add(listItem);
+                    }
+                }
+            }
+
+
+        }
+        private void Get_DataTable()
+        {
+            string sqlcmd = "";
+            string factory = DropDownList_Factory.SelectedItem.Value;
+            string date = (Select_Month.Text.Replace("-", "")) + "01";
+            obj_date = SF.monthInterval(date, acc);
+            date_str = obj_date.GetType().GetProperty("startDay").GetValue(obj_date).ToString();
+            date_end = obj_date.GetType().GetProperty("endDay").GetValue(obj_date).ToString();
+            condition = DropDownList_WorkStation.SelectedItem.Value == "全部" ? "" : $"and 工作站編號={DropDownList_WorkStation.SelectedItem.Value}";
+            switch (factory)
+            {
+                case "sowon":
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} {condition} order by 工作站名稱,日期";
+                    dataTable = DataTableUtils.GetDataTable(sqlcmd);
+                    break;
+                case "dek":
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號='11' order by 工作站名稱,日期";
+                    dataTable = DataTableUtils.GetDataTable(sqlcmd);
+                    break;
+                case "hor":
+                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號<>'11' {condition} order by 工作站名稱,日期";
+                    dataTable = DataTableUtils.GetDataTable(sqlcmd);
+                    break;
+            }
+        }
+
+        //一般table
         private void set_Table()
         {
             DataTable dt = dataTable;
             if (HtmlUtil.Check_DataTable(dt))
             {
                 string titlename = "";
-               
+
                 dt.Columns.Add("刪除", typeof(string));
                 //dt.Columns.Add("編輯");
                 //dt.Columns.Add("刪除");
-                
+
                 dt.Columns["刪除"].SetOrdinal(1);
-                th=HtmlUtil.Set_Table_Title(dt, out titlename);
-                tr=HtmlUtil.Set_Table_Content(dt, titlename, Set_Energy_callback);
+                th = HtmlUtil.Set_Table_Title(dt, out titlename);
+                tr = HtmlUtil.Set_Table_Content(dt, titlename, Set_Energy_callback);
             }
             else
                 HtmlUtil.NoData(out th, out tr);
         }
 
-        private object set_Table(Dictionary<string,string> myData ,string status)
+        //CRUD後重載Table
+        private object set_Table(Dictionary<string, string> myData, string status)
         {
             object data = new { };
             string sqlcmd = "";
             string factory = myData["Factory"];
-            string workStation_Num= myData["Workstation_Num"];
+            string Serch_WorkStation = myData["Serch_WorkStation"];
             string date = myData["Serch_Month"] + "01";
             string acc = myData["User_Acc"];
             obj_date = SF.monthInterval(date, acc);
             date_str = obj_date.GetType().GetProperty("startDay").GetValue(obj_date).ToString();
             date_end = obj_date.GetType().GetProperty("endDay").GetValue(obj_date).ToString();
-            condition = workStation_Num == "全部" ? "" : $"and 工作站編號={workStation_Num}";
+            condition = Serch_WorkStation == "全部" ? "" : $"and 工作站編號={Serch_WorkStation}";
             switch (factory)
             {
                 case "sowon":
@@ -491,94 +620,14 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             return data;
         }
 
-        protected void DropDownList_Factory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            set_DropDownlist(true);
-        }
-
-        private void set_DropDownlist(bool Refalsh = false)
-        {
-            string sqlcmd = "";
-            string factory = DropDownList_Factory.SelectedItem.Value;
-            set_Connect(factory);
-            sqlcmd = set_Sqlcmd(factory);
-
-            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
-
-            if (HtmlUtil.Check_DataTable(dt))
-            {
-                if (Refalsh || DropDownList_Product.Items.Count == 0)
-                {
-                    ListItem listItem = new ListItem();
-                    DropDownList_Product.Items.Clear();
-                    DropDownList_Product.Items.Add("全部");
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        listItem = new ListItem(DataTableUtils.toString(row["工作站名稱"]), DataTableUtils.toString(row["工作站編號"]));
-                        DropDownList_Product.Items.Add(listItem);
-                    }
-                }
-            }
-
-
-        }
-        private void Get_DataTable()
-        {
-            string sqlcmd = "";
-            string factory = DropDownList_Factory.SelectedItem.Value;
-            string date = (Select_Month.Text.Replace("-", "")) + "01";
-            obj_date = SF.monthInterval(date, acc);
-            date_str = obj_date.GetType().GetProperty("startDay").GetValue(obj_date).ToString();
-            date_end = obj_date.GetType().GetProperty("endDay").GetValue(obj_date).ToString();
-            condition = DropDownList_Product.SelectedItem.Value == "全部" ? "" : $"and 工作站編號={DropDownList_Product.SelectedItem.Value}";
-            switch (factory)
-            {
-                case "sowon":
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} {condition} order by 工作站名稱,日期";
-                    dataTable = DataTableUtils.GetDataTable(sqlcmd);
-                    break;
-                case "dek":
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號='11' order by 工作站名稱,日期";
-                    dataTable = DataTableUtils.GetDataTable(sqlcmd);
-                    break;
-                case "hor":
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號<>'11' {condition} order by 工作站名稱,日期";
-                    dataTable = DataTableUtils.GetDataTable(sqlcmd);
-                    break;
-            }
-        }
-       
-
-        //設定數值
-        private void GetCondi()
-        {
-            Response.Buffer = false;
-            if (Request.QueryString["key"] != null)
-            {
-
-                Dictionary<string, string> keyValues = HtmlUtil.Return_dictionary(Request.QueryString["key"]);
-                workstation_Num = HtmlUtil.Search_Dictionary(keyValues, "workstation_Num");
-                workstation = HtmlUtil.Search_Dictionary(keyValues, "workstation");
-                DropDownList_Factory.SelectedValue = HtmlUtil.Search_Dictionary(keyValues, "factory"); ;
-            }
-            else
-                Response.Redirect("Set_Energy.aspx", false);
-        }
-
         private string Set_Energy_callback(DataRow row, string field_name)
         {
             string value = "";
-            string capacity = "";
             string workStion_Num = DataTableUtils.toString(row["編輯"]);
             string date = DataTableUtils.toString(row["日期"]);
             date=DateTime.ParseExact(date, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces).ToString("yyyy-MM-dd");
             string working_People = DataTableUtils.toString(row["工作人數"]);
             string workTime = DataTableUtils.toString(row["工作時數"]);
-
-
             if (field_name == "編輯")
             {
                 value = $"<td>" +

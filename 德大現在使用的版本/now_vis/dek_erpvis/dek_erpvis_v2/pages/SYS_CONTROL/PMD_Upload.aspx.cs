@@ -123,9 +123,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             if (myData["TextBox_keyWord"] != "")
                 condition += $" and 工作站狀態資料表.排程編號 like '%{myData["TextBox_keyWord"]}%' ";
 
-            if (myData["_Link"] == "ver")
+            if (myData["Factory"] == "ver")
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            else if (myData["_Link"] == "hor")
+            else if (myData["Factory"] == "hor")
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
 
             switch (myData["click_Type"]) {
@@ -165,7 +165,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                                 dt = DataTableUtils.GetDataTable(sqlcmd);
                                 if (HtmlUtil.Check_DataTable(dt))
                                 {
-                                    if (myData["_Link"] == "hor")
+                                    if (myData["Factory"] == "hor")
                                     {
                                         if (myData["DropDownList_Work"].ToString() == "1")
                                         {
@@ -183,7 +183,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                                     {
                                         dt_st = myData["txt_str"];
                                         dt_ed = myData["txt_end"];
-                                        data = PMD.Set_Post_DataTable(myData["_Link"], dt_st, dt_ed, condition, "更新成功!");
+                                        data = PMD.Set_Post_DataTable(myData["Factory"], dt_st, dt_ed, condition, "更新成功!");
                                         //_Data = JsonConvert.SerializeObject(odata);
 
                                     }
@@ -233,7 +233,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                                 {
                                     dt_st = myData["txt_str"];
                                     dt_ed = myData["txt_end"];
-                                    data = PMD.Set_Post_DataTable(myData["_Link"], dt_st, dt_ed, condition, "刪除成功!");
+                                    data = PMD.Set_Post_DataTable(myData["Factory"], dt_st, dt_ed, condition, "刪除成功!");
                                 }
                                 else
                                 {
@@ -272,7 +272,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                         if (success == 1)
                         {
                             //臥式 INTE 代號轉換
-                            if(myData["_Link"] == "hor")
+                            if(myData["Factory"] == "hor")
                             {
                                 if (myData["Insert_Work_Num"].ToString() == "1")
                                 {
@@ -295,7 +295,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                             success = DataTableUtils.Insert_TableRows("組裝資料表", dt);
                             if (success == 1)
                             {
-                                data = PMD.Set_Post_DataTable(myData["_Link"], dt_st, dt_ed, condition, "新增成功!");
+                                data = PMD.Set_Post_DataTable(myData["Factory"], dt_st, dt_ed, condition, "新增成功!");
                             }
                             else
                             {

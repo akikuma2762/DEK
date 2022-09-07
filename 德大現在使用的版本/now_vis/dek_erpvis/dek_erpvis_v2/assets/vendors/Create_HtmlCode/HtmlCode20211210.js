@@ -498,13 +498,19 @@ function check_Modal_Input(id) {
     return bool;
 }
 //20220901 清空modal 中已輸入資料
-function clearModal() {
+function clearModal(Product) {
     $('body').on('hidden.bs.modal', ".modal", function () {
         $(this).find('input').val("");
         $(this).find('span').text("");
         var select = $(this).find('select');
         $(select).each(function (index, val) {
             $(this).get(0).selectedIndex = 0;
+            //清空後回填目前搜索產線
+            $(this).each(function () {
+                if(Product!=null)
+                    $(this).val(Product);
+                console.log($(this).val(), $(this).text());
+            })
         });
     });
 }

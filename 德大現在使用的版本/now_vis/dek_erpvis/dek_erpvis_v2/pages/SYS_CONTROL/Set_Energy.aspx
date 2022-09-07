@@ -42,12 +42,12 @@
                                         </asp:PlaceHolder>
                                        <div class="col-md-12 col-sm-12 col-xs-12 col-style">
                                             <div class="col-md-12 col-xs-12 text-align-end">
-                                                    <button id="btn_Month_WorkTime" type="button" class="btn btn-primary antosubmit2" data-toggle="modal" data-target="#Insert_Month_WorkTime">新增月份工時</button>
+                                                    <button id="btn_Month_WorkTime" type="button" class="btn btn-primary antosubmit2" style="display:none" data-toggle="modal" data-target="#Insert_Month_WorkTime">新增月份工時</button>
                                                 </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 col-style">
                                             <div class="col-md-12 col-xs-12 text-align-end">
-                                                    <button id="btn_Day_WorkTime" type="button" class="btn btn-primary antosubmit2" data-toggle="modal" data-target="#Insert_Day_WorkTime">新增單日工時</button>
+                                                    <button id="btn_Day_WorkTime" type="button" class="btn btn-primary antosubmit2" style="display:none" data-toggle="modal" data-target="#Insert_Day_WorkTime">新增單日工時</button>
                                                 </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 col-style">
