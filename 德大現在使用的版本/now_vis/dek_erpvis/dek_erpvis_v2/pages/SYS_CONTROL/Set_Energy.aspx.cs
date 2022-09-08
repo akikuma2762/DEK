@@ -142,7 +142,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string month = "";
             string conditiion = "";
             object data = new { };
-            object obj_date ;
+            //object obj_date ;
+            Dictionary<string, string> obj_date = new Dictionary<string, string>();
             object workstation_info;
 
             foreach (DataRow dr in Rp_data.Rows)
@@ -191,8 +192,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 }
 
                 
-                date_str = obj_date.GetType().GetProperty("startDay").GetValue(obj_date).ToString();
-                date_end = obj_date.GetType().GetProperty("endDay").GetValue(obj_date).ToString();
+                date_str = obj_date["startDay"];
+                date_end = obj_date["endDay"];
                 d_start = DateTime.ParseExact(date_str, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                 d_end = DateTime.ParseExact(date_end, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 

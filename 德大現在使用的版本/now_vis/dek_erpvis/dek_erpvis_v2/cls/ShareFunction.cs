@@ -4673,9 +4673,9 @@ namespace dek_erpvis_v2.cls
         }
 
         //計算起開始月份及結束月份
-        public object monthInterval(string date,string acc)
+        public Dictionary <string,string> monthInterval(string date, string acc)
         {
-            object obj = new { };
+            Dictionary<string,string> obj = new Dictionary<string, string>();
             DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
             DataTable user_Acc = DataTableUtils.DataTable_GetTable($"SELECT * FROM SYSTEM_PARAMETER WHERE USER_ACC='{acc}'");
             //轉換日期型態
@@ -4685,9 +4685,12 @@ namespace dek_erpvis_v2.cls
             //結合帳號月區間重新組合日期
             endDay = new DateTime(endDay.Year, endDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
             startDay = new DateTime(startDay.Year, startDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
-            obj =new{ startDay= startDay.ToString("yyyyMMdd"),endDay = endDay.ToString("yyyyMMdd"), interval= (((endDay - startDay).Days) + 1).ToString()};
+            obj["startDay"] = startDay.ToString("yyyyMMdd");
+            obj["endDay"] = endDay.ToString("yyyyMMdd");
+            obj["interval"] = ((endDay - startDay).Days + 1).ToString();
             return obj;
         }
+
     }
     //=====================Class==============================================================
     class LineData

@@ -282,6 +282,8 @@
             document.getElementById("<%=TextBox_Number.ClientID %>").value = product_Line;
         }
 
+
+        //新增功能全部移至Set_Month_WorkTime 底下執行 新增按鈕全部暫時隱藏//
         $("#Insert_Month_Btn_Save").click(function () {
             var inupu_Null = false;
             var objectLength = Object.keys(warning).length;

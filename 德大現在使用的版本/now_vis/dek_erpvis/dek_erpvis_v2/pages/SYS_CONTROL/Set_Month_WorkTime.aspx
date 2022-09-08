@@ -311,6 +311,7 @@
         top["Update_Working_People"] = "";
         top["Update_Work_Time"] = "";
         top["Update_WorkStation"] = "";
+        top["Update_WorkStation_Num"] = "";
         $(document).ready(function () {
 
             //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
@@ -325,6 +326,21 @@
             $("._mdTitle").text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 工人工時編輯`);
             $("._xsTitle").text(`${top["Factory_Name"]} ${top["WorkStation_Name"]} 工人工時編輯`);
 
+
+            //模組關閉時清空警示物件
+            $('body').on('hidden.bs.modal', ".modal", function () {
+                warning = {};
+            });
+            //清空input 重設select
+            clearModal(top["WorkStation_Num"]);
+
+            $('body').on('hidden.bs.modal', "#Update_Modal", function () {
+                console.log(top["Update_WorkStation_Num"]);
+                $("#ContentPlaceHolder1_Update_WorkStation").val(top["Update_WorkStation"]);
+            });
+
+            //產生儲存當前頁面資訊的table
+            stateSave_Table('#table-form');
         });
 
 
@@ -347,8 +363,7 @@
         //產生DataTable前清空所有state資料
         var table = $("#table-form").DataTable();
         table.state.clear();
-        //產生相對應的JScode
-        stateSave_Table('#table-form');
+        
         //產生相對應的JScode
         set_Table('#table-form');
 
@@ -374,7 +389,7 @@
                 data["Month"] = $("#Single_Month").val().replace(/-/g, "");
                 data["Day"] = "";
                 data["Serch_Month"] = top["Serch_Month"];
-                data["Inser_Type"] = "Month";
+                data["Insert_Type"] = "Month";
                 data["User_Acc"] = obj["user_ACC"];
                 data["click_Type"] = "Insert";
                 console.log(data);
@@ -404,7 +419,7 @@
                 data["Serch_WorkStation"] = top["Serch_WorkStation"];
                 data["Month"] = "";
                 data["Day"] = $("#Single_Day").val().replace(/-/g, "");
-                data["Inser_Type"] = "Day";
+                data["Insert_Type"] = "Day";
                 data["Serch_Month"] = top["Serch_Month"];
                 data["User_Acc"] = obj["user_ACC"];
                 data["click_Type"] = "Insert";
@@ -441,24 +456,43 @@
             top["Update_Working_People"] = working_People;
             top["Update_Work_Time"] = workTime;
             top["Update_WorkStation"] = workStion_Num;
+           
+            $("#ContentPlaceHolder1_Update_WorkStation").val(workStion_Num);
+            //防止修改工作站
+            $('#ContentPlaceHolder1_Update_WorkStation').attr("disabled", true);
+            //$("#ContentPlaceHolder1_Update_WorkStation").find(`option[value=${workStion_Num}]`).attr("selected",true);
+            //console.log($("#ContentPlaceHolder1_Update_WorkStation").find(`option[value=${workStion_Num}]`).text());
+
 
         }
+        //更新資料
         $("#Update_btn").click(function () {
             var data = {};
             var obj = readCookie('userInfo');
-            data["Factory"] = top["Factory"];
-            data["Serch_Month"] = top["Serch_Month"];
-            data["Original_Date"] = top["Update_Date"];
-            data["WorkStation_Num"] = $("#ContentPlaceHolder1_Update_WorkStation").val();
-            data["WorkStation_Name"] = $("#ContentPlaceHolder1_Update_WorkStation option:selected").text();
-            data["Serch_WorkStation"] = top["Serch_WorkStation"];
-            data["Working_People"] = $("#Update_Working_People").val();
-            data["Work_Time"] = $("#Update_Work_Time").val();
-            data["New_Date"] = $("#Update_Date").val().replace(/-/g,"");
-            data["click_Type"] = "Update";
-            data["User_Acc"] = obj["user_ACC"];
-            data = JSON.stringify(data);
-            postData(data);
+            var inupu_Null = false;
+            var objectLength = Object.keys(warning).length;
+            inupu_Null = check_Modal_Input("updatemodal");
+            if (inupu_Null) return;
+            if (objectLength > 0) {
+                console.log(objectLength, Object.keys(warning));
+                alert("輸入資料有誤,請修正資料!");
+                return;
+            } else {
+                $('#ContentPlaceHolder1_Update_WorkStation').attr("disabled", true);
+                data["Factory"] = top["Factory"];
+                data["Serch_Month"] = top["Serch_Month"];
+                data["Original_Date"] = top["Update_Date"];
+                data["WorkStation_Num"] = $("#ContentPlaceHolder1_Update_WorkStation").val();
+                data["WorkStation_Name"] = $("#ContentPlaceHolder1_Update_WorkStation option:selected").text();
+                data["Serch_WorkStation"] = top["Serch_WorkStation"];
+                data["Working_People"] = $("#Update_Working_People").val();
+                data["Work_Time"] = $("#Update_Work_Time").val();
+                data["New_Date"] = $("#Update_Date").val().replace(/-/g, "");
+                data["click_Type"] = "Update";
+                data["User_Acc"] = obj["user_ACC"];
+                data = JSON.stringify(data);
+                postData(data);
+            }
         });
 
 
@@ -472,14 +506,16 @@
                 $("#" + id + " span").text("資料格式錯誤!");
                 $("#" + id + " span").css("color", "red");
                 warning[id] = "";
+                console.log(warning);
             } else {
                 $("#" + id + " span").text("");
                 delete warning[id];
+                console.log("delete");
             }
             console.log($('body [class="modal fade in"]'));
-            console.log(warning);
+            
         });
-
+        
 
 
         
@@ -501,6 +537,7 @@
             $("#Single_Day").val($("#ContentPlaceHolder1_Select_Month").val() + "-" + mydate.format("dd"));
         });
 
+        //傳送資料
         function postData(data) {
             var WhatSystem = navigator.userAgent;
             if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
@@ -522,7 +559,7 @@
                 data: "{_data:'" + data + "'}",
                 dataType: "json",
                 success: function (result) {
-                    var results_Data = result.d;
+                    var results_Data = result.d.data;
                     console.log(results_Data);
                     if (results_Data["status"].indexOf("成功") != -1) {
                         create_tablehtmlcode("order", "工人工時表", "table-form", results_Data["th"], results_Data["tr"]);

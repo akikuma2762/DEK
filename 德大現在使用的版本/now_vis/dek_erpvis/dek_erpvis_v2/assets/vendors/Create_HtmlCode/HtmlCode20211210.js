@@ -510,6 +510,7 @@ function clearModal(Product) {
                 if(Product!=null)
                     $(this).val(Product);
                 console.log($(this).val(), $(this).text());
+                console.log("Product", Product);
             })
         });
     });

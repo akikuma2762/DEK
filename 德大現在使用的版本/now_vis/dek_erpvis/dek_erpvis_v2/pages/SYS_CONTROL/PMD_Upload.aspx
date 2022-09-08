@@ -498,7 +498,10 @@
                 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                     $($.fn.dataTable.tables(true)).DataTable()
                         .columns.adjust();
+
                 });
+                //產生儲存當前頁面資訊的table
+                stateSave_Table('#table-form');
             });
 
             //20220825 資料傳輸更該為AJAX模式
@@ -700,8 +703,7 @@
             //產生DataTable前清空所有state資料
             var table = $("#table-form").DataTable();
             table.state.clear();
-            //產生相對應的JScode
-            stateSave_Table('#table-form');
+            
             //防止頁籤跑版
             loadpage('', '');
 
