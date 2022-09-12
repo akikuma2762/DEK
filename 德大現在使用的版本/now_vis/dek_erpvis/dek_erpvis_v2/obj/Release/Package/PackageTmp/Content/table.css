@@ -8,9 +8,13 @@
 }*/
 
 /*/20220715修正table生成樣式跑版 --------------------------------------------start----------------------------/*/
-.top-list {
+.top-list, .top-list-contrl-button {
     display: flex;
     justify-content: center;
+}
+.top-list-contrl-button {
+
+    padding-top:5px;
 }
 
     .top-list .pull-left, .top-list .pull-middle {
@@ -54,7 +58,7 @@ td {
 
 
 @media screen and (max-width:414px) {
-    .top-list {
+    .top-list, top-list-contrl-button {
         flex-wrap: wrap;
     }
 

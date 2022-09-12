@@ -5,8 +5,9 @@
     <%=color %>
     <link href="../../Content/Default_input.css" rel="stylesheet" />
     <link href="../../Content/Default.css" rel="stylesheet" />
-    <link href="../../Content/table.css" rel="stylesheet" media="screen and (max-width:768px)" />
+    <link href="../../Content/table.css" rel="stylesheet" />
     <link href="../../Content/dp_WH/InactiveInventory.css" rel="stylesheet" />
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -30,7 +31,7 @@
                                 <table id="TB" class="table table-ts table-bordered nowrap" cellspacing="0" width="100%">
                                     <thead>
                                         <tr id="tr_row">
-                                            <th class="th_centet">使用率</th>
+                                            <th class="th_centet">呆滯率</th>
                                             <th class="th_centet">呆滯金額</th>
                                         </tr>
                                     </thead>
@@ -164,9 +165,9 @@
         });
 
         //產生表格的HTML碼
-        create_tablehtmlcode('InactiveInventory', '呆滯物料統計表', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString()%>');
+        create_tablehtmlcode('InactiveInventory', '呆滯物料統計表', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString()%>');
         //產生相對應的JScode
-        set_Table('#datatable-buttons');
+        set_Table('#table-form');
         //防止頁籤跑版
         loadpage('', '');
     </script>

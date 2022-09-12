@@ -1002,7 +1002,7 @@
                             var now_list = $(this).attr("now_list").valueOf();
                             var next_list = $(this).attr("next_list").valueOf();
                             var staff = $(this).attr("staff").valueOf();
-                            //20220622新增
+                            //20220622新增                
                             var spindle_shock = $(this).attr("spindle_shock").valueOf();
                             var spindle_side_temp = $(this).attr("spindle_side_temp").valueOf();
                             var daoku_motor_electric = $(this).attr("daoku_motor_electric").valueOf();
@@ -1016,6 +1016,19 @@
                             var qiexieye_concentration = $(this).attr("qiexieye_concentration").valueOf();
                             var qiexieye_temp = $(this).attr("qiexieye_temp").valueOf();
                             var air_pressure = $(this).attr("air_pressure").valueOf();
+
+                            var Spindle_temp = $(this).attr("Spindle_temp").valueOf();
+                            var Tank_Hydraulic_Temp = $(this).attr("Tank_Hydraulic_Temp").valueOf();
+                            var MainClamp_Hydraulic_Temp = $(this).attr("MainClamp_Hydraulic_Temp").valueOf();
+                            var AngularPositioning_Hydraulic_Temp = $(this).attr("AngularPositioning_Hydraulic_Temp").valueOf();
+                            var Brake_Hydraulic_Temp_4th = $(this).attr("Brake_Hydraulic_Temp_4th").valueOf();
+                            var Tank_Hydraulic_Pressure = $(this).attr("Tank_Hydraulic_Pressure").valueOf();
+                            var MainClamp_Hydraulic_Pressure = $(this).attr("MainClamp_Hydraulic_Pressure").valueOf();
+                            var AngularPositioning_Hydraulic_Pressure = $(this).attr("AngularPositioning_Hydraulic_Pressure").valueOf();
+                            var Brake_Hydraulic_Pressure_4th = $(this).attr("Brake_Hydraulic_Pressure_4th").valueOf();
+                            var Coolant_Concentration = $(this).attr("Coolant_Concentration").valueOf();
+                            var Coolant_Temp = $(this).attr("Coolant_Temp").valueOf();
+                            var Air_Temp = $(this).attr("Air_Temp").valueOf();
 
                             //紀錄表格元素的陣列
                             var tablearray = ['設備名稱', 'mach_name', Dev_Name,
@@ -1057,7 +1070,19 @@
                                 '治具油壓_壓力監視', 'tool_oil_pressure', tool_oil_pressure,
                                 '切屑液_濃度檢知', 'qiexieye_concentration', qiexieye_concentration,
                                 '切屑液_溫度檢知', 'qiexieye_temp', qiexieye_temp,
-                                '氣壓源_壓力檢知', 'air_pressure', air_pressure]
+                                '氣壓源_壓力檢知', 'air_pressure', air_pressure,
+                                '主軸溫升', 'Spindle_temp', Spindle_temp,
+                                '油箱油溫', 'Tank_Hydraulic_Temp', Tank_Hydraulic_Temp,
+                                '主夾迴路油溫', 'MainClamp_Hydraulic_Temp', MainClamp_Hydraulic_Temp,
+                                '角向定位迴路油溫', 'AngularPositioning_Hydraulic_Temp', AngularPositioning_Hydraulic_Temp,
+                                '剎車迴路油溫', 'Brake_Hydraulic_Temp_4th', Brake_Hydraulic_Temp_4th,
+                                '油箱油壓', 'Tank_Hydraulic_Pressure', Tank_Hydraulic_Pressure,
+                                '主夾迴路油壓', 'MainClamp_Hydraulic_Pressure', MainClamp_Hydraulic_Pressure,
+                                '角向定位迴路油壓', 'AngularPositioning_Hydraulic_Pressure', AngularPositioning_Hydraulic_Pressure,
+                                '剎車迴路油壓', 'Brake_Hydraulic_Pressure_4th', Brake_Hydraulic_Pressure_4th,
+                                '切削液濃度', 'Coolant_Concentration', Coolant_Concentration,
+                                '切削液溫度', 'Coolant_Temp', Coolant_Temp,
+                                '空壓源溫度', 'Air_Temp', Air_Temp];
 
 
 
@@ -1257,7 +1282,9 @@
 
                                 }
                                 else {
-                                    document.getElementById(td_column).innerHTML = check_value(td_value);
+                                   
+                                        document.getElementById(td_column).innerHTML = check_value(td_value);
+                                   
                                 }
                             }
 

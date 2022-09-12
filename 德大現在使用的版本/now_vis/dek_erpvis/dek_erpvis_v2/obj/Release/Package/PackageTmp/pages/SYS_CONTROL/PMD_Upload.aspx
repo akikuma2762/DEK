@@ -403,11 +403,12 @@
         <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
         <script>
             //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
-            var top_Link = "";
-            var top_Product_Line = "";
-            var top_TextBox_KeyWord = "";
-            var top_Txt_Str = "";
-            var top_Txt_End = "";
+            top["Factory"] = "";
+            top["Factory_Name"] = "";
+            top["Product_Line"] = "";
+            top["TextBox_KeyWord"] = "";
+            top["Txt_Str"] = "";
+            top["Txt_End"] = "";
 
             function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
                 $('#ContentPlaceHolder1_TextBox_Order').val('' + Order + '');
@@ -428,7 +429,7 @@
                 $('#ContentPlaceHolder1_TextBox_OrderNum').val('' + Order + '');
                 $('#ContentPlaceHolder1_TextBox_Schedule').val('' + Number + '');
                 $('#ContentPlaceHolder1_TextBox_WorkNumber').val('' + WorkNumber + '');
-                console.log($('#ContentPlaceHolder1_TextBox_OrderNum').val(), $('#ContentPlaceHolder1_TextBox_Schedule').val(), $('#ContentPlaceHolder1_TextBox_WorkNumber').val());
+                //console.log($('#ContentPlaceHolder1_TextBox_OrderNum').val(), $('#ContentPlaceHolder1_TextBox_Schedule').val(), $('#ContentPlaceHolder1_TextBox_WorkNumber').val());
                 var answer = confirm("您確定要刪除嗎??");
                 if (answer) {
                 //20220825 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
@@ -483,26 +484,24 @@
                 //});
 
                 //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
-                top_Link = $('#ContentPlaceHolder1_DropDownList_Type').val().toLowerCase();
-                top_Product_Line = $('#ContentPlaceHolder1_DropDownList_Product').val();
-                top_TextBox_KeyWord = $('#ContentPlaceHolder1_TextBox_keyWord').val();
-                top_Txt_Str = $('#ContentPlaceHolder1_txt_str').val().replace(/-/g,"");
-                top_Txt_End = $('#ContentPlaceHolder1_txt_end').val().replace(/-/g, "");
-                console.log(top_Txt_Str, top_Txt_End)
+                top["Factory"] = $('#ContentPlaceHolder1_DropDownList_Type').val().toLowerCase();
+                top["Factory_Name"] = $('#ContentPlaceHolder1_DropDownList_Type [selected=selected]').text();
+                top["Product_Line"] = $('#ContentPlaceHolder1_DropDownList_Product').val();
+                top["TextBox_KeyWord"] = $('#ContentPlaceHolder1_TextBox_keyWord').val();
+                top["Txt_Str"] = $('#ContentPlaceHolder1_txt_str').val().replace(/-/g,"");
+                top["Txt_End"] = $('#ContentPlaceHolder1_txt_end').val().replace(/-/g, "");
+                
                 //20220826動態變更主表格標題
-                if (top_Link.toLowerCase() == "ver") {
-                    $("._mdTitle").text("立式廠資料變更");
-                    $("._xsTitle").text("立式廠資料變更");
-                }
-                else {
-                    $("._mdTitle").text("臥式廠資料變更");
-                    $("._xsTitle").text("臥式廠資料變更");
-                }                  
+                    $("._mdTitle").text(`${top["Factory_Name"]} 資料變更`);
+                    $("._xsTitle").text(`${top["Factory_Name"]} 資料變更`);
 
                 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                     $($.fn.dataTable.tables(true)).DataTable()
                         .columns.adjust();
+
                 });
+                //產生儲存當前頁面資訊的table
+                stateSave_Table('#table-form');
             });
 
             //20220825 資料傳輸更該為AJAX模式
@@ -529,14 +528,9 @@
                         if (results_Data["status"].indexOf("成功") != -1) {
                             create_tablehtmlcode('Change_DataTable', '變更資料', 'table-form', results_Data["th"], results_Data["tr"]);
                             stateSave_Table('#table-form');
-                            if (top_Link.toLowerCase() == "ver") {
-                                $("._mdTitle").text("立式廠資料變更");
-                                $("._xsTitle").text("立式廠資料變更");
-                            }
-                            else {
-                                $("._mdTitle").text("臥式廠資料變更");
-                                $("._xsTitle").text("臥式廠資料變更");
-                            }
+                                $("._mdTitle").text(`${top["Factory_Name"]} 資料變更`);
+                                $("._xsTitle").text(`${top["Factory_Name"]} 資料變更`);
+                            
                             alert(results_Data["status"]);
                         } else if (results_Data["status"].indexOf("失敗") != -1) {
                             alert(results_Data["status"]);
@@ -572,7 +566,7 @@
                         $("#table-form_wrapper").css("overflow-x", "auto");
 
                     }
-                })
+                });
 
             }
 
@@ -589,11 +583,11 @@
                 var TextBox_Date = $('#ContentPlaceHolder1_TextBox_Date').val().replace(/-/g,"");
                 var TextBox_Truedate = $('#ContentPlaceHolder1_TextBox_Truedate').val().replace(/-/g, "");
                 //搜尋選項載入後取值,未搜尋保持載入時參數
-                var _Link = top_Link;
-                var product_Line = top_Product_Line;
-                var TextBox_keyWord = top_TextBox_KeyWord;
-                var txt_str = top_Txt_Str;
-                var txt_end = top_Txt_End;
+                var Factory = top["Factory"];
+                var product_Line = top["Product_Line"];
+                var TextBox_keyWord = top["TextBox_KeyWord"];
+                var txt_str = top["Txt_Str"];
+                var txt_end = top["Txt_End"];
                 var click_Type = "";
                 var data = {
                     "TextBox_Order": `${TextBox_Order}`, "TextBox_Number": `${TextBox_Number}`,
@@ -601,7 +595,7 @@
                     "DropDownList_Work": `${DropDownList_Work}`,
                     "TextBox_OrderNum": `${TextBox_OrderNum}`, "TextBox_Schedule": `${TextBox_Schedule}`,
                     "TextBox_WorkNumber": `${TextBox_WorkNumber}`, "TextBox_Date": `${TextBox_Date}`,
-                    "TextBox_Truedate": `${TextBox_Truedate}`, "_Link": `${_Link}`,
+                    "TextBox_Truedate": `${TextBox_Truedate}`, "Factory": `${Factory}`,
                     "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
                     "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`
                 };
@@ -611,10 +605,7 @@
 
             //20220826動態變更新增表格標題
             $("#btn_Insert").click(function () {
-                if (top_Link.toLowerCase() == "ver")
-                    $("#myModalLabel3").text("新增立式廠資料") ;
-                if (top_Link.toLowerCase() == "hor")
-                    $("#myModalLabel3").text("新增臥式廠資料");
+                    $("#myModalLabel3").text(`新增${top["Factory_Name"]}資料`) ;
             });
                 
      
@@ -632,11 +623,11 @@
                 var Build_Date = $('#ContentPlaceHolder1_Build_Date').val().replace(/-/g,"");
                 var Build_Date_True = $('#ContentPlaceHolder1_Build_Date_True').val().replace(/-/g, "");
                 //搜尋選項載入後取值,未搜尋保持載入時參數
-                var _Link = top_Link;
-                var product_Line = top_Product_Line;
-                var TextBox_keyWord = top_TextBox_KeyWord;
-                var txt_str = top_Txt_Str;
-                var txt_end = top_Txt_End;
+                var Factory = top["Factory"];
+                var product_Line = top["Product_Line"];
+                var TextBox_keyWord = top["TextBox_KeyWord"];
+                var txt_str = top["Txt_Str"];
+                var txt_end = top["Txt_End"];
                 var click_Type = "Insert";
                 var data = {
                     "Custmer_Name": `${Custmer_Name}`, "Key_Number": `${Key_Number}`,
@@ -644,7 +635,7 @@
                     "Schedule_Number": `${Schedule_Number}`,
                     "Insert_Percent": `${Insert_Percent}`, "Insert_Status": `${Insert_Status}`,
                     "Insert_Work_Num": `${Insert_Work_Num}`, "Build_Date": `${Build_Date}`, "Build_Date_True": `${Build_Date_True}`,
-                    "_Link": `${_Link}`,
+                    "Factory": `${Factory}`,
                     "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
                     "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`
                 };
@@ -652,25 +643,25 @@
                 console.log($("#myModalLabel3").text());
 
                 //判斷input欄位不得為空
-                $("#testmodal3 input").each(function (index, val) {
-                    console.log($(this).val(), $(this).parent().children()[0].innerText);
-                    var value = $(this).val();
-                    if (value == "" || value == null) {
-                        var Text = $(this).parent().children()[0].innerText;
-                        Text = Text.replace(":","")
-                        alert(Text + "不得為空!!!");
-                        inupu_Null = true;
-                        return false;
-                    }
-                })
-                console.log(inupu_Null);
+                //$("#testmodal3 input").each(function (index, val) {
+                //    //console.log($(this).val(), $(this).parent().children()[0].innerText);
+                //    var value = $(this).val();
+                //    if (value == "" || value == null) {
+                //        var Text = $(this).parent().children()[0].innerText;
+                //        Text = Text.replace(":","")
+                //        alert(Text + "不得為空!!!");
+                //        inupu_Null = true;
+                //        return false;
+                //    }
+                //})     
+                inupu_Null = check_Modal_Input("testmodal3");
                 if (inupu_Null != true) {
-                    console.log(inupu_Null);
                     data = JSON.stringify(data);
                     postData(data);
                 }
             }
-
+            //清空modal資訊
+            clearModal();
             //$('#Change_DataTable').dataTable(
             //    {
             //        destroy: true,
@@ -712,8 +703,7 @@
             //產生DataTable前清空所有state資料
             var table = $("#table-form").DataTable();
             table.state.clear();
-            //產生相對應的JScode
-            stateSave_Table('#table-form');
+            
             //防止頁籤跑版
             loadpage('', '');
 

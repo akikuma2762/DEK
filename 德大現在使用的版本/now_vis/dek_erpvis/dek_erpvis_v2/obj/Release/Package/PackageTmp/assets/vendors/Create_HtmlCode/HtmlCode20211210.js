@@ -480,6 +480,62 @@ function checkstatus(checkid, textboxid) {
         text.disabled = false;
     }
 }
+
+//20220901檢查bootstrap modal的input是否為空
+function check_Modal_Input(id) {
+    var bool = false;
+    $("#"+id +" input").each(function (index, val) {
+        //console.log($(this).val(), $(this).parent().children()[0].innerText);
+        var value = $(this).val();
+        if (value == "" || value == null) {
+            var Text = $(this).parent().children()[0].innerText;
+            Text = Text.replace(":", "")
+            alert(Text + "不得為空!!!");
+            bool = true;
+            return false;
+        }
+    })
+    return bool;
+}
+//20220901 清空modal 中已輸入資料
+function clearModal(Product) {
+    $('body').on('hidden.bs.modal', ".modal", function () {
+        $(this).find('input').val("");
+        $(this).find('span').text("");
+        var select = $(this).find('select');
+        $(select).each(function (index, val) {
+            $(this).get(0).selectedIndex = 0;
+            //清空後回填目前搜索產線
+            $(this).each(function () {
+                if(Product!=null)
+                    $(this).val(Product);
+                console.log($(this).val(), $(this).text());
+                console.log("Product", Product);
+            })
+        });
+    });
+}
+//20220901讀取cookkie
+function readCookie(name) {
+    var obj = {};
+    var cookieInfo = "";
+    var cookie_name = name + "=";
+    var arry = document.cookie.split(';');
+    for (var i = 0; i < arry.length; i++) {
+        var cookie_value = arry[i];
+        while (cookie_value.charAt(0) == ' ') cookie_value = cookie_value.substring(1, cookie_value.length);
+        if (cookie_value.indexOf(cookie_name) == 0) {
+            cookieInfo= cookie_value.substring(cookie_name.length, cookie_value.length);
+            var arry = cookieInfo.split("&");
+            for (var i = 0; i < arry.length; i++) {
+                var arry2 = arry[i].split("=");
+                obj[arry2[0]] = arry2[1];
+            }
+            return obj;
+        } 
+    }
+    return null;
+}
 /*--------------------------------------------------------------------------------------以下產生HTML碼----------------------------------------------------------------------------------------------------*/
 //產生表格的程式碼(無控制項版本)
 function create_tablecode(div_table, tabletitle, datatableid, th, tr) {
