@@ -135,13 +135,14 @@ namespace dek_erpvis_v2.pages.dp_SD
             if (dt_ed != "")
             {
                 //20220822月產能包含下個月提早做完的訂單
-                if (mode.Contains("capacity"))
+                if (mode.Contains("order_month_capacity"))
                 {
                     dt = dt_monthtotal;
                 }
                 else
                 {
                     //20220819 月訂單篩選最終月份,不須顯示到下個月份的訂單
+                    dt = dt_monthtotal;
                     string end_Date = dt_ed.Substring(0, 6);
                     DataTable dt_clone = dt.Clone();
                     DataRow[] rows = dt.Select($"計算月份<={end_Date}");

@@ -136,7 +136,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 }
                 condition = condition != "" ? $" and ( {condition} ) " : "";
 
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 sqlcmd = $" select " +
                          $"排程編號," +
                          $"進度," +

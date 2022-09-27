@@ -928,12 +928,23 @@
         else
             action_ok = y;
 
+        //20220926圖片模式每天半夜0時重整
+        setInterval(function () {
+            var mydate = new Date();
+            //console.log(mydate.format("HHmmss"));
+            var a = mydate.format("HHmmss");
+            if (a > "000000" && a < "000059") {
+                console.log("進入");
+                window.location.reload();
+            }
+        }, 40000);
+
         //表格閃爍機制
         var mTimer;
         var Timer_Count = 0;//閃爍機制
         var loadTime = <%=Refresh_Time%>;
         mTimer = setTimeout(function () { GetMachineData(); }, loadTime);
-
+        
 
 
 
@@ -1029,7 +1040,6 @@
                             var Coolant_Concentration = $(this).attr("Coolant_Concentration").valueOf();
                             var Coolant_Temp = $(this).attr("Coolant_Temp").valueOf();
                             var Air_Temp = $(this).attr("Air_Temp").valueOf();
-
                             //紀錄表格元素的陣列
                             var tablearray = ['設備名稱', 'mach_name', Dev_Name,
                                 '校機人員', 'check_staff', check_staff,

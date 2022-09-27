@@ -196,6 +196,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 dt_month = dt_sowon;
 
                 //20220822 增加月產能表格
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
                 month_Capacity = DataTableUtils.GetDataTable("select 工作站編號 AS 產線代號,工作站名稱,目標件數 AS 日產能 FROM 工作站型態資料表 WHERE 工作站是否使用中='1'");
                 month_Capacity = myclass.Add_LINE_GROUP(month_Capacity).ToTable();
                
