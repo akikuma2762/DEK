@@ -1013,20 +1013,20 @@
                             var now_list = $(this).attr("now_list").valueOf();
                             var next_list = $(this).attr("next_list").valueOf();
                             var staff = $(this).attr("staff").valueOf();
-                            //20220622新增                
-                            var spindle_shock = $(this).attr("spindle_shock").valueOf();
-                            var spindle_side_temp = $(this).attr("spindle_side_temp").valueOf();
-                            var daoku_motor_electric = $(this).attr("daoku_motor_electric").valueOf();
-                            var spindle_koudao_shock = $(this).attr("spindle_koudao_shock").valueOf();
-                            var spindle_position = $(this).attr("spindle_position").valueOf();
-                            var spindle_ladao_position = $(this).attr("spindle_ladao_position").valueOf();
-                            var oil_level = $(this).attr("oil_level").valueOf();
-                            var ball_screw_hightemp = $(this).attr("ball_screw_hightemp").valueOf();
-                            var tool_oil_temp = $(this).attr("tool_oil_temp").valueOf();
-                            var tool_oil_pressure = $(this).attr("tool_oil_pressure").valueOf();
-                            var qiexieye_concentration = $(this).attr("qiexieye_concentration").valueOf();
-                            var qiexieye_temp = $(this).attr("qiexieye_temp").valueOf();
-                            var air_pressure = $(this).attr("air_pressure").valueOf();
+                            //20220622新增 20220928移除                
+                            //var spindle_shock = $(this).attr("spindle_shock").valueOf();
+                            //var spindle_side_temp = $(this).attr("spindle_side_temp").valueOf();
+                            //var daoku_motor_electric = $(this).attr("daoku_motor_electric").valueOf();
+                            //var spindle_koudao_shock = $(this).attr("spindle_koudao_shock").valueOf();
+                            //var spindle_position = $(this).attr("spindle_position").valueOf();
+                            //var spindle_ladao_position = $(this).attr("spindle_ladao_position").valueOf();
+                            //var oil_level = $(this).attr("oil_level").valueOf();
+                            //var ball_screw_hightemp = $(this).attr("ball_screw_hightemp").valueOf();
+                            //var tool_oil_temp = $(this).attr("tool_oil_temp").valueOf();
+                            //var tool_oil_pressure = $(this).attr("tool_oil_pressure").valueOf();
+                            //var qiexieye_concentration = $(this).attr("qiexieye_concentration").valueOf();
+                            //var qiexieye_temp = $(this).attr("qiexieye_temp").valueOf();
+                            //var air_pressure = $(this).attr("air_pressure").valueOf();
 
                             var Spindle_temp = $(this).attr("Spindle_temp").valueOf();
                             var Tank_Hydraulic_Temp = $(this).attr("Tank_Hydraulic_Temp").valueOf();
@@ -1068,19 +1068,19 @@
                                 '通電時間', 'poweron_time', poweron_time,
                                 '異警資訊', 'alarm_mesg', alarm_mesg,
                                 '工單報工', 'next_button', '',
-                                '主軸震動', 'spindle_shock', spindle_shock,
-                                '主軸側溫度', 'spindle_side_temp', spindle_side_temp,
-                                '刀庫馬達電流_損壞預警', 'daoku_motor_electric', daoku_motor_electric,
-                                '主軸扣刀_震動監視', 'spindle_koudao_shock', spindle_koudao_shock,
-                                '主軸定位_在位確認', 'spindle_position', spindle_position,
-                                '主軸拉刀_在位確認', 'spindle_ladao_position', spindle_ladao_position,
-                                '潤滑油_油位檢知', 'oil_level', oil_level,
-                                'ball_screw_高溫監視', 'ball_screw_hightemp', ball_screw_hightemp,
-                                '治具油壓_溫度監視', 'tool_oil_temp', tool_oil_temp,
-                                '治具油壓_壓力監視', 'tool_oil_pressure', tool_oil_pressure,
-                                '切屑液_濃度檢知', 'qiexieye_concentration', qiexieye_concentration,
-                                '切屑液_溫度檢知', 'qiexieye_temp', qiexieye_temp,
-                                '氣壓源_壓力檢知', 'air_pressure', air_pressure,
+                                //'主軸震動', 'spindle_shock', spindle_shock,
+                                //'主軸側溫度', 'spindle_side_temp', spindle_side_temp,
+                                //'刀庫馬達電流_損壞預警', 'daoku_motor_electric', daoku_motor_electric,
+                                //'主軸扣刀_震動監視', 'spindle_koudao_shock', spindle_koudao_shock,
+                                //'主軸定位_在位確認', 'spindle_position', spindle_position,
+                                //'主軸拉刀_在位確認', 'spindle_ladao_position', spindle_ladao_position,
+                                //'潤滑油_油位檢知', 'oil_level', oil_level,
+                                //'ball_screw_高溫監視', 'ball_screw_hightemp', ball_screw_hightemp,
+                                //'治具油壓_溫度監視', 'tool_oil_temp', tool_oil_temp,
+                                //'治具油壓_壓力監視', 'tool_oil_pressure', tool_oil_pressure,
+                                //'切屑液_濃度檢知', 'qiexieye_concentration', qiexieye_concentration,
+                                //'切屑液_溫度檢知', 'qiexieye_temp', qiexieye_temp,
+                                //'氣壓源_壓力檢知', 'air_pressure', air_pressure,
                                 '主軸溫升', 'Spindle_temp', Spindle_temp,
                                 '油箱油溫', 'Tank_Hydraulic_Temp', Tank_Hydraulic_Temp,
                                 '主夾迴路油溫', 'MainClamp_Hydraulic_Temp', MainClamp_Hydraulic_Temp,

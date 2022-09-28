@@ -228,21 +228,20 @@ namespace dek_erpvis_v2.pages.dp_CNC
                         string prog_run_cmd = Web_Data.Get_Information(dt_data, "prog_run_cmd");//運行程式註解
                         string overrides = Web_Data.Get_Information(dt_data, "override");//進給率
 
-                        //20220622新增
-                        
-                        string spindle_shock = Web_Data.Get_Information(dt_data, "spindle_shock");//主軸震動
-                        string spindle_side_temp = Web_Data.Get_Information(dt_data, "spindle_side_temp");// 主軸側溫度
-                        string daoku_motor_electric = Web_Data.Get_Information(dt_data, "daoku_motor_electric");// 刀庫馬達電流_損壞預警
-                        string spindle_koudao_shock = Web_Data.Get_Information(dt_data, "spindle_koudao_shock");//主軸扣刀_震動監視
-                        string spindle_position = Web_Data.Get_Information(dt_data, "spindle_position");//主軸定位_在位確認
-                        string spindle_ladao_position = Web_Data.Get_Information(dt_data, "spindle_ladao_position");//主軸拉刀_在位確認
-                        string oil_level = Web_Data.Get_Information(dt_data, "oil_level");//潤滑油_油位檢知
-                        string ball_screw_hightemp = Web_Data.Get_Information(dt_data, "ball_screw_hightemp");//ball_screw_高溫監視
-                        string tool_oil_temp = Web_Data.Get_Information(dt_data, "tool_oil_temp");//治具油壓_溫度監視
-                        string tool_oil_pressure = Web_Data.Get_Information(dt_data, "tool_oil_pressure");//治具油壓_壓力監視
-                        string qiexieye_concentration = Web_Data.Get_Information(dt_data, "qiexieye_concentration");//切屑液_濃度檢知
-                        string qiexieye_temp = Web_Data.Get_Information(dt_data, "qiexieye_temp");//切屑液_溫度檢知
-                        string air_pressure = Web_Data.Get_Information(dt_data, "air_pressure");//氣壓源_壓力檢知
+                        //20220622新增 20220928移除
+                        //string spindle_shock = Web_Data.Get_Information(dt_data, "spindle_shock");//主軸震動
+                        //string spindle_side_temp = Web_Data.Get_Information(dt_data, "spindle_side_temp");// 主軸側溫度
+                        //string daoku_motor_electric = Web_Data.Get_Information(dt_data, "daoku_motor_electric");// 刀庫馬達電流_損壞預警
+                        //string spindle_koudao_shock = Web_Data.Get_Information(dt_data, "spindle_koudao_shock");//主軸扣刀_震動監視
+                        //string spindle_position = Web_Data.Get_Information(dt_data, "spindle_position");//主軸定位_在位確認
+                        //string spindle_ladao_position = Web_Data.Get_Information(dt_data, "spindle_ladao_position");//主軸拉刀_在位確認
+                        //string oil_level = Web_Data.Get_Information(dt_data, "oil_level");//潤滑油_油位檢知
+                        //string ball_screw_hightemp = Web_Data.Get_Information(dt_data, "ball_screw_hightemp");//ball_screw_高溫監視
+                        //string tool_oil_temp = Web_Data.Get_Information(dt_data, "tool_oil_temp");//治具油壓_溫度監視
+                        //string tool_oil_pressure = Web_Data.Get_Information(dt_data, "tool_oil_pressure");//治具油壓_壓力監視
+                        //string qiexieye_concentration = Web_Data.Get_Information(dt_data, "qiexieye_concentration");//切屑液_濃度檢知
+                        //string qiexieye_temp = Web_Data.Get_Information(dt_data, "qiexieye_temp");//切屑液_溫度檢知
+                        //string air_pressure = Web_Data.Get_Information(dt_data, "air_pressure");//氣壓源_壓力檢知
 
                         //20220912新增
                         string Spindle_temp = Web_Data.Get_Information(dt_data, "Spindle_temp");//主軸溫升
@@ -290,7 +289,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                         
 
                         設定圖塊(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time);
-                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, spindle_shock, spindle_side_temp, daoku_motor_electric, spindle_koudao_shock, spindle_position, spindle_ladao_position, oil_level, ball_screw_hightemp, tool_oil_temp, tool_oil_pressure, qiexieye_concentration, qiexieye_temp, air_pressure, Spindle_temp, Tank_Hydraulic_Temp, MainClamp_Hydraulic_Temp, AngularPositioning_Hydraulic_Temp, Brake_Hydraulic_Temp_4th, Tank_Hydraulic_Pressure, MainClamp_Hydraulic_Pressure, AngularPositioning_Hydraulic_Pressure, Brake_Hydraulic_Pressure_4th, Coolant_Concentration, Coolant_Temp, Air_Temp ,order_num, count, can_next, now_detailstatus);
+                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, Spindle_temp, Tank_Hydraulic_Temp, MainClamp_Hydraulic_Temp, AngularPositioning_Hydraulic_Temp, Brake_Hydraulic_Temp_4th, Tank_Hydraulic_Pressure, MainClamp_Hydraulic_Pressure, AngularPositioning_Hydraulic_Pressure, Brake_Hydraulic_Pressure_4th, Coolant_Concentration, Coolant_Temp, Air_Temp ,order_num, count, can_next, now_detailstatus);
 
 
 
@@ -303,7 +302,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             else if ((ls_data == null || ls_data.Count == 0) && th == null && tr == null)
                 HtmlUtil.NoData(out th, out tr);
         }
-        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間,string 主軸轉動,string 主軸側溫度 , string 刀庫馬達電流_損壞預警, string 主軸扣刀_震動監視, string 主軸定位_在位確認, string 主軸拉刀_在位確認, string 潤滑油_油位檢知, string ball_screw_高溫監視, string 治具油壓_溫度監視, string 治具油壓_壓力監視, string 切屑液_濃度檢知, string 切屑液_溫度檢知, string 氣壓源_壓力檢知, string 主軸溫升, string 油箱油溫, string 主夾迴路油溫, string 角向定位迴路油溫, string 剎車迴路油溫, string 油箱油壓, string 主夾迴路油壓, string 角向定位迴路油壓, string 剎車迴路油壓, string 切削液濃度, string 切削液溫度, string 空壓源溫度, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
+        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間, string 主軸溫升, string 油箱油溫, string 主夾迴路油溫, string 角向定位迴路油溫, string 剎車迴路油溫, string 油箱油壓, string 主夾迴路油壓, string 角向定位迴路油壓, string 剎車迴路油壓, string 切削液濃度, string 切削液溫度, string 空壓源溫度, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
         {
             string total_Value = "";
             string 設備狀態_色彩 = cNC_Class.mach_status_Color(設備狀態);
@@ -425,19 +424,19 @@ namespace dek_erpvis_v2.pages.dp_CNC
             tr.Append(show_table(old_name, "cut_time", 切削時間));
             tr.Append(show_table(old_name, "poweron_time", 通電時間));
             tr.Append(show_table(old_name, "alarm_mesg", 異警資訊));
-            tr.Append(show_table(old_name, "spindle_shock", 主軸轉動));
-            tr.Append(show_table(old_name, "spindle_side_temp", 主軸側溫度));
-            tr.Append(show_table(old_name, "daoku_motor_electric", 刀庫馬達電流_損壞預警));
-            tr.Append(show_table(old_name, "spindle_koudao_shock", 主軸扣刀_震動監視));
-            tr.Append(show_table(old_name, "spindle_position", 主軸定位_在位確認));
-            tr.Append(show_table(old_name, "spindle_ladao_position", 主軸拉刀_在位確認));
-            tr.Append(show_table(old_name, "oil_level", 潤滑油_油位檢知));
-            tr.Append(show_table(old_name, "ball_screw_hightemp", ball_screw_高溫監視));
-            tr.Append(show_table(old_name, "tool_oil_temp", 治具油壓_溫度監視));
-            tr.Append(show_table(old_name, "tool_oil_pressure", 治具油壓_壓力監視));
-            tr.Append(show_table(old_name, "qiexieye_concentration", 切屑液_濃度檢知));
-            tr.Append(show_table(old_name, "qiexieye_temp", 切屑液_溫度檢知));
-            tr.Append(show_table(old_name, "air_pressure", 氣壓源_壓力檢知));
+            //tr.Append(show_table(old_name, "spindle_shock", 主軸轉動));
+            //tr.Append(show_table(old_name, "spindle_side_temp", 主軸側溫度));
+            //tr.Append(show_table(old_name, "daoku_motor_electric", 刀庫馬達電流_損壞預警));
+            //tr.Append(show_table(old_name, "spindle_koudao_shock", 主軸扣刀_震動監視));
+            //tr.Append(show_table(old_name, "spindle_position", 主軸定位_在位確認));
+            //tr.Append(show_table(old_name, "spindle_ladao_position", 主軸拉刀_在位確認));
+            //tr.Append(show_table(old_name, "oil_level", 潤滑油_油位檢知));
+            //tr.Append(show_table(old_name, "ball_screw_hightemp", ball_screw_高溫監視));
+            //tr.Append(show_table(old_name, "tool_oil_temp", 治具油壓_溫度監視));
+            //tr.Append(show_table(old_name, "tool_oil_pressure", 治具油壓_壓力監視));
+            //tr.Append(show_table(old_name, "qiexieye_concentration", 切屑液_濃度檢知));
+            //tr.Append(show_table(old_name, "qiexieye_temp", 切屑液_溫度檢知));
+            //tr.Append(show_table(old_name, "air_pressure", 氣壓源_壓力檢知));
 
             tr.Append(show_table(old_name, "Spindle_temp", 主軸溫升));
             tr.Append(show_table(old_name, "Tank_Hydraulic_Temp", 油箱油溫));
