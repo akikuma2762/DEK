@@ -691,7 +691,7 @@
     <script src="../../assets/vendors/time/loading.js"></script>
     <script src="../../gantt/js/jquery.fn.gantt.js"></script>
     <script src="../../gantt/js/prettify.min.js"></script>
-    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
     <script>          
         function testtop() {
             var RD = document.getElementsByClassName("bar ganttRedDark");
@@ -932,8 +932,8 @@
         setInterval(function () {
             var mydate = new Date();
             //console.log(mydate.format("HHmmss"));
-            var a = mydate.format("HHmmss");
-            if (a > "000000" && a < "000059") {
+            var timer = mydate.format("HHmmss");
+            if (timer > "000000" && timer < "000059") {
                 console.log("進入");
                 window.location.reload();
             }

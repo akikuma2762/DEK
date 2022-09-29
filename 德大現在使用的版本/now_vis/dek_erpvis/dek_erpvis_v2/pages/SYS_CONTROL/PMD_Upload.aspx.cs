@@ -317,30 +317,30 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
 
         //刪除
-        protected void Button_Delete_Click(object sender, EventArgs e)
-        {
-            if (Link == "ver")
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-            else if (Link == "hor")
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+        //protected void Button_Delete_Click(object sender, EventArgs e)
+        //{
+        //    if (Link == "ver")
+        //        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+        //    else if (Link == "hor")
+        //        GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
 
-            string sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間 From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum.Text}' and  排程編號= '{TextBox_Schedule.Text}' and 工作站編號= '{TextBox_WorkNumber.Text}'";
-            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+        //    string sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間 From 工作站狀態資料表 where  組裝編號= '{TextBox_OrderNum.Text}' and  排程編號= '{TextBox_Schedule.Text}' and 工作站編號= '{TextBox_WorkNumber.Text}'";
+        //    DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
 
-            if (HtmlUtil.Check_DataTable(dt))
-            {
-                if (Link == "ver")
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                else if (Link == "hor")
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum.Text}' and  排程編號= '{TextBox_Schedule.Text}' and 工作站編號= '{TextBox_WorkNumber.Text}'"))
-                    Page.ClientScript.RegisterStartupScript(Page.GetType(), "message", "<script>alert('刪除成功');</script>");
-                else
-                    Page.ClientScript.RegisterStartupScript(Page.GetType(), "message", "<script>alert('刪除失敗');</script>");
-            }
-            //load_data(); //chrome重整問題 暫時註解
-            button_select_Click(sender, e); //解決chrome閃除完成後重整問題
-        }
+        //    if (HtmlUtil.Check_DataTable(dt))
+        //    {
+        //        if (Link == "ver")
+        //            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+        //        else if (Link == "hor")
+        //            GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+        //        if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{TextBox_OrderNum.Text}' and  排程編號= '{TextBox_Schedule.Text}' and 工作站編號= '{TextBox_WorkNumber.Text}'"))
+        //            Page.ClientScript.RegisterStartupScript(Page.GetType(), "message", "<script>alert('刪除成功');</script>");
+        //        else
+        //            Page.ClientScript.RegisterStartupScript(Page.GetType(), "message", "<script>alert('刪除失敗');</script>");
+        //    }
+        //    //load_data(); //chrome重整問題 暫時註解
+        //    button_select_Click(sender, e); //解決chrome閃除完成後重整問題
+        //}
         //查詢
         protected void button_select_Click(object sender, EventArgs e)
         {

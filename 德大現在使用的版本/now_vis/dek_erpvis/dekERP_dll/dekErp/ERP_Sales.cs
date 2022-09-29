@@ -29,6 +29,7 @@ namespace dekERP_dll.dekErp
             string sqlcmd = GetOrders_Over_Detail(start, detail);
             return iTech.Get_DataTable(sqlcmd, source);
         }
+
         //20220812 大圓盤逾期語法優化,新增判斷客戶名稱
         public DataTable Orders_Over_Detail_Customer(string start, string source, bool detail = false, string customer = "")
         {

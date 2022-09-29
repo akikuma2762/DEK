@@ -14,26 +14,57 @@ namespace dek_erpvis_v2.cls
 {
     public class myclass
     {
-        //首旺相關連線
-        public static string GetConnByDetaSowon = clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "FJWSQL", "dek", "asus54886961");
-        public static string GetConnByDetaEip = clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "Eip", "dek", "asus54886961");
-        //德科ERP的連線
-        public static string GetConnByDekERPDataTable = clsDB_Server.GetConntionString_MySQL("192.168.1.26", "erp", "jroot", "erp89886066");
+        //---------------------------------------------------正式區--------------------------------------------------------------------------//
+        ////首旺相關連線
+        //public static string GetConnByDetaSowon = clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "FJWSQL", "dek", "asus54886961");
+        //public static string GetConnByDetaEip = clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "Eip", "dek", "asus54886961");
+        ////德科ERP的連線
+        //public static string GetConnByDekERPDataTable = clsDB_Server.GetConntionString_MySQL("192.168.1.26", "erp", "jroot", "erp89886066");
 
+
+
+        ////加工可視化連線
+        //public static string GetConnByDekVisCnc_inside = clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066");
+        //public static string GetConnByDekVisCnc_outside = clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066");
 
         ////MSSQL 用戶基本資料連線
-        public static string GetConnByDekVisErp = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisErp", "sa", "asus54886961");
-        //加工可視化連線
-        public static string GetConnByDekVisCnc_inside = clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066");
-        public static string GetConnByDekVisCnc_outside = clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066");
-        //立式廠連線
-        public static string GetConnByDekdekVisAssm = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisAssm", "sa", "asus54886961");
-        //臥式廠連線
-        public static string GetConnByDekdekVisAssmHor = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "detaVisHor", "sa", "asus54886961");
-        //電控產線連線
-        public static string GetConnByDetaELine = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "DetaELine", "sa", "asus54886961");
+        //public static string GetConnByDekVisErp = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisErp", "sa", "asus54886961");
+        ////立式廠連線
+        //public static string GetConnByDekdekVisAssm = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisAssm", "sa", "asus54886961");
+        ////臥式廠連線
+        //public static string GetConnByDekdekVisAssmHor = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "detaVisHor", "sa", "asus54886961");
+        ////電控產線連線
+        //public static string GetConnByDetaELine = clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "DetaELine", "sa", "asus54886961");
 
-        //////測試區->連到文心的電腦
+        //---------------------------------------------------正式區結束--------------------------------------------------------------------------//
+
+
+        //------------------------------------------------20220929新測試區&正式區----------------------------------------------------------------------//
+        public static string test_mode = WebUtils.GetAppSettings("test_mode");
+        //首旺相關連線
+        public static string GetConnByDetaSowon = test_mode == "Y"? clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "TEST", "dek", "asus54886961"): clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "FJWSQL", "dek", "asus54886961");
+        public static string GetConnByDetaEip = test_mode == "Y" ? clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "Eip", "dek", "asus54886961"): clsDB_Server.GetConntionString_MsSQL("192.168.1.210", "Eip", "dek", "asus54886961");
+        //德科ERP的連線
+        public static string GetConnByDekERPDataTable = test_mode == "Y" ? clsDB_Server.GetConntionString_MySQL("192.168.1.26", "erp_new1", "jroot", "erp89886066"): clsDB_Server.GetConntionString_MySQL("192.168.1.26", "erp", "jroot", "erp89886066");
+
+
+        //加工可視化連線
+        public static string GetConnByDekVisCnc_inside = test_mode == "Y" ? clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066"): clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066");
+        public static string GetConnByDekVisCnc_outside = test_mode == "Y" ? clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066") : clsDB_Server.GetConntionString_MySQL("192.168.1.221", "cnc_db", "erp", "erp89886066");
+
+        //MSSQL 用戶基本資料連線
+        public static string GetConnByDekVisErp = test_mode == "Y" ? clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisErp_VM", "sa", "asus54886961"): clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisErp", "sa", "asus54886961");
+        //立式廠連線
+        public static string GetConnByDekdekVisAssm = test_mode == "Y" ? clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisAssm_VM", "sa", "asus54886961"): clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "dekVisAssm", "sa", "asus54886961");
+        //臥式廠連線
+        public static string GetConnByDekdekVisAssmHor = test_mode == "Y" ? clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "detaVisHor_VM", "sa", "asus54886961"): clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "detaVisHor", "sa", "asus54886961");
+        //電控產線連線
+        public static string GetConnByDetaELine = test_mode == "Y" ? clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "DetaELine_VM", "sa", "asus54886961"): clsDB_Server.GetConntionString_MsSQL("192.168.1.46,5872", "DetaELine", "sa", "asus54886961");
+
+        //------------------------------------------------20220929新測試區&正式區結束------------------------------------------------------------------//
+
+        //------------------------------------------------------舊測試區------------------------------------------------------------------------------------//
+        //////測試區(舊)->連到文心的電腦
         ////MSSQL 用戶基本資料連線
         //public static string GetConnByDekVisErp = clsDB_Server.GetConntionString_MsSQL("172.23.10.106,1433", "dekVisErpMirco", "sa", "dek1234");
         ////加工可視化連線
@@ -45,6 +76,7 @@ namespace dek_erpvis_v2.cls
         //public static string GetConnByDekdekVisAssmHor = clsDB_Server.GetConntionString_MsSQL("172.23.10.106,1433", "detaVisHor", "sa", "dek1234");
         ////電控產線連線
         //public static string GetConnByDetaELine = clsDB_Server.GetConntionString_MsSQL("172.23.10.106,1433", "DetaELine", "sa", "dek1234");
+        //------------------------------------------------------舊測試區結束----------------------------------------------------------------------------------//
 
 
         //鉅茂的連線

@@ -232,7 +232,7 @@
     <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
     <script src="../../assets/vendors/time/loading.js"></script>
-    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
 
     <!-----------------------Chart-------------------------------------->
     <script>

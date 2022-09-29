@@ -309,7 +309,7 @@
     <script src="../../assets/vendors/time/loading.js"></script>
     <!--返回上一個畫面時，要回到上一動-->
     <script src="../../assets/vendors/cookies/cookie_action.js"></script>
-    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
     <script>
         //$("form input:checkbox").addClass('flat');//flat樣式使checkbox失效 2022/6/1
         function select_all() {

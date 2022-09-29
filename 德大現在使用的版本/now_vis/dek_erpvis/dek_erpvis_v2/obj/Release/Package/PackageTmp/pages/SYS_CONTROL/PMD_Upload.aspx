@@ -130,7 +130,6 @@
                     </div>
                     <div class="modal-body">
                         <div id="testmodal2" style="padding: 5px 20px;">
-                            <asp:Button ID="Button_Delete" runat="server" Text="Button" OnClick="Button_Delete_Click" Style="display: none" />
                             <asp:TextBox ID="TextBox_OrderNum" runat="server" Style="display: none"></asp:TextBox>
                             <asp:TextBox ID="TextBox_Schedule" runat="server" Style="display: none"></asp:TextBox>
                             <asp:TextBox ID="TextBox_WorkNumber" runat="server" Style="display: none"></asp:TextBox>
@@ -138,9 +137,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="textbox_order">
                                             <b>組裝編號：</b><br />
-                                            <asp:TextBox ID="TextBox_Order" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="TextBox_Order" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -148,9 +148,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="textbox_number">
                                             <b>排程編號：</b><br />
-                                            <asp:TextBox ID="TextBox_Number" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="TextBox_Number" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -232,9 +233,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="custmer_name">
                                             <d>客戶名稱:</d><br />
-                                            <asp:TextBox ID="Custmer_Name" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Custmer_Name" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -242,9 +244,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="key_number">
                                             <b>鍵編號:</b><br />
-                                            <asp:TextBox ID="Key_Number" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Key_Number" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -252,9 +255,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="key_sn">
                                             <b>鍵序號:</b><br />
-                                            <asp:TextBox ID="Key_Sn" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Key_Sn" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -263,9 +267,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="order_num">
                                             <b>組裝編號:</b><br />
-                                            <asp:TextBox ID="Order_Num" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Order_Num" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -273,9 +278,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="btn-group btn-group-justified">
+                                        <div class="btn-group btn-group-justified" id="schedule_number">
                                             <b>排程編號:</b><br />
-                                            <asp:TextBox ID="Schedule_Number" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="Schedule_Number" runat="server" CssClass="int_Value"></asp:TextBox>
+                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -400,7 +406,7 @@
         <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
         <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
         <script src="../../assets/vendors/time/loading.js"></script>
-        <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js"></script>
+        <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
         <script>
             //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
             top["Factory"] = "";
@@ -409,7 +415,7 @@
             top["TextBox_KeyWord"] = "";
             top["Txt_Str"] = "";
             top["Txt_End"] = "";
-
+            var warning = {};
             function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
                 $('#ContentPlaceHolder1_TextBox_Order').val('' + Order + '');
                 $('#ContentPlaceHolder1_TextBox_Number').val('' + Number + '');
@@ -433,7 +439,6 @@
                 var answer = confirm("您確定要刪除嗎??");
                 if (answer) {
                 //20220825 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
-                //document.getElementById('<%=Button_Delete.ClientID %>').click();
                     var data = update_Item_Data();
                     data["click_Type"] = "Delete";
                     data = JSON.stringify(data);
@@ -442,7 +447,7 @@
             }
             //確認修改鈕
             $("#btnSave").click(function () {
-
+                var inupu_Null = false;
                 //var WhatSystem = navigator.userAgent;
                 //if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
                 //} else {
@@ -455,9 +460,19 @@
                 //document.getElementById('<%=Button_Save.ClientID %>').click();  
                 var data = update_Item_Data();
                 data["click_Type"] = "Update";
-                data = JSON.stringify(data);
-                postData(data);
-
+                //20220929 補空白防呆判斷
+                inupu_Null = check_Modal_Input("testmodal2");
+                console.log(inupu_Null);
+                if (inupu_Null != true) {
+                    var objectLength = Object.keys(warning).length;
+                    if (objectLength > 0) {
+                        alert("輸入資料有誤,請修正資料!");
+                        return;
+                    } else {
+                        data = JSON.stringify(data);
+                        postData(data);
+                    }
+                }
             });
 
             //執行搜索
@@ -653,11 +668,17 @@
                 //        inupu_Null = true;
                 //        return false;
                 //    }
-                //})     
+                //})
                 inupu_Null = check_Modal_Input("testmodal3");
                 if (inupu_Null != true) {
-                    data = JSON.stringify(data);
-                    postData(data);
+                    var objectLength = Object.keys(warning).length;
+                    if (objectLength > 0) {
+                        alert("輸入資料有誤,請修正資料!");
+                        return;
+                    } else {
+                        data = JSON.stringify(data);
+                        postData(data);
+                    }
                 }
             }
             //清空modal資訊
@@ -707,7 +728,29 @@
             //防止頁籤跑版
             loadpage('', '');
 
-
+            //20220929判斷數空白字元
+            $(".int_Value").keyup(function () {
+                // 驗證輸入字串
+                var obj = {};
+                const rules = /^[^ \r\t\n\f][^ \r\t\n\f]*$/;
+                var id = $(this).parent().attr("id")
+                var value = $(this).val();
+                console.log(id);
+                if (!rules.test(value) && value != "") {
+                    $("#" + id + " span").text("輸入資料不可包含空白字元!");
+                    $("#" + id + " span").css("color", "red");
+                    warning[id] = "";
+                } else {
+                    $("#" + id + " span").text("");
+                    delete warning[id];
+                }
+                console.log($('body [class="modal fade in"]'));
+                console.log(warning);
+            });
+            //模組關閉時清空警示物件
+            $('body').on('hidden.bs.modal', ".modal", function () {
+                warning = {};
+            });
 
         </script>
 </asp:Content>
