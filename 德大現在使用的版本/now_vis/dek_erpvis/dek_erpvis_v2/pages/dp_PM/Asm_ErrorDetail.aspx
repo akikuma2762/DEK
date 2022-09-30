@@ -344,7 +344,7 @@
     <script src="../../assets/vendors/jszip/dist/jszip.min.js"></script>
     <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
-    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.1"></script>
     <!-----------------20200424留言板功能------------------------------------->
     <script>
         //隨著文字長度變更TEXTBOX長度

@@ -490,9 +490,12 @@ function check_Modal_Input(id) {
         if (value == "" || value == null) {
             var Text = $(this).parent().children()[0].innerText;
             Text = Text.replace(":", "")
-            alert(Text + "不得為空!!!");
-            bool = true;
-            return false;
+            //20220930 新增特規
+            if (Text != "鍵編號" && Text != "鍵序號") {
+                alert(Text + "不得為空!!!");
+                bool = true;
+                return false;
+            };
         }
     })
     return bool;

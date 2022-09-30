@@ -1689,6 +1689,6 @@ public class Use_Javascript
                 "<script src=\"../../assets/vendors/pdfmake/build/pdfmake.min.js\"></script>\n" +
                 "<script src=\"../../assets/vendors/pdfmake/build/vfs_fonts.js\"></script>\n" +
                    "<script src=\"../../assets/vendors/time/loading.js\"></script>" +
-                "<script src=\"../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0\"></script>";
+                "<script src=\"../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.1\"></script>";
     }
 }

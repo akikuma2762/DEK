@@ -406,7 +406,7 @@
         <script src="../../assets/vendors/pdfmake/build/pdfmake.min.js"></script>
         <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
         <script src="../../assets/vendors/time/loading.js"></script>
-        <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
+        <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.1"></script>
         <script>
             //20220825 重載DataTable時如未搜尋或重整,則記錄初始狀態
             top["Factory"] = "";
@@ -415,6 +415,11 @@
             top["TextBox_KeyWord"] = "";
             top["Txt_Str"] = "";
             top["Txt_End"] = "";
+
+            //20220930 新增原始data
+            top["TextBox_Order_Origin"] = "";
+            top["TextBox_Number_Origin"] = "";
+
             var warning = {};
             function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
                 $('#ContentPlaceHolder1_TextBox_Order').val('' + Order + '');
@@ -429,6 +434,8 @@
 
                 $('#ContentPlaceHolder1_TextBox_Date').val('' + Date + '');
                 $('#ContentPlaceHolder1_TextBox_Truedate').val('' + TrueDate + '');
+                top["TextBox_Order_Origin"] = Order;
+                top["TextBox_Number_Origin"] = Number;
             }
             //刪除
             function Delete_Value(Order, Number, WorkNumber) {
@@ -588,6 +595,7 @@
             //20220825 製作修該資料JSON檔
             function update_Item_Data() {
                 var TextBox_Order = $('#ContentPlaceHolder1_TextBox_Order').val();
+                console.log("TextBox_Order", TextBox_Order);
                 var TextBox_Number = $('#ContentPlaceHolder1_TextBox_Number').val();
                 var DropDownList_Percent = $("#ContentPlaceHolder1_DropDownList_Percent").val().replace("%","");
                 var DropDownList_Status = $("#ContentPlaceHolder1_DropDownList_Status").val();
@@ -604,6 +612,7 @@
                 var txt_str = top["Txt_Str"];
                 var txt_end = top["Txt_End"];
                 var click_Type = "";
+
                 var data = {
                     "TextBox_Order": `${TextBox_Order}`, "TextBox_Number": `${TextBox_Number}`,
                     "DropDownList_Percent": `${DropDownList_Percent}`, "DropDownList_Status": `${DropDownList_Status}`,
@@ -614,7 +623,7 @@
                     "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
                     "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`
                 };
-                //console.log("初始", data);
+                console.log("初始", data);
                 return data;
             }
 

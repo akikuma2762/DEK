@@ -691,7 +691,7 @@
     <script src="../../assets/vendors/time/loading.js"></script>
     <script src="../../gantt/js/jquery.fn.gantt.js"></script>
     <script src="../../gantt/js/prettify.min.js"></script>
-    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.0"></script>
+    <script src="../../assets/vendors/Create_HtmlCode/HtmlCode20211210.js?version = 1.1"></script>
     <script>          
         function testtop() {
             var RD = document.getElementsByClassName("bar ganttRedDark");

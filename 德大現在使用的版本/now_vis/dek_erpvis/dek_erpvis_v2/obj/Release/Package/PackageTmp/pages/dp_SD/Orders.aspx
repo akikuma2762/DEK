@@ -291,7 +291,7 @@
             } else {
                 text.disabled = false;
             }
-
+            console.log("結束");
 
         });
 

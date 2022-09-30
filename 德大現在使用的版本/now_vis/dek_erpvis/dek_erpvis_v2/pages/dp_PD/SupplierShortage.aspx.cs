@@ -187,6 +187,8 @@ namespace dek_erpvis_v2.pages.dp_PD
                 else
                     HtmlUtil.NoData(out th, out tr);
             }
+            else
+                HtmlUtil.NoData(out th, out tr);
         }
 
         //例外處理

@@ -4068,16 +4068,28 @@ namespace dek_erpvis_v2.cls
             GlobalVar.UseDB_setConnString(ConnByDekVisTmp);
             DataRow dr_line_Name = DataTableUtils.DataTable_GetDataRow("select 工作站名稱 from " + ShareMemory.SQLAsm_WorkStation_Type + condition);
             //  if (ConnByDekVisTmp.Contains("DetaVisHor"))
-            if (ConnByDekVisTmp.Contains("detaVisHor"))
-            {
-                CCSStr = "CCS";
-                IP_Port = "57958";
+            string[] words = ConnByDekVisTmp.Split(';');
+            string DB_Name = words[2].Replace("Database=", "");
+            switch (DB_Name) {
+                case "dekVisAssm":
+                    CCSStr = "ITEM_NO";
+                    IP_Port = "57957";
+                    break;
+                case "detaVisHor":
+                    CCSStr = "CCS";
+                    IP_Port = "57959";
+                    break;
+
+                case "dekVisAssm_VM":
+                    CCSStr = "ITEM_NO";
+                    IP_Port = "57958";
+                    break;
+                case "detaVisHor_VM":
+                    CCSStr = "CCS";
+                    IP_Port = "57958";
+                    break;
             }
-            else
-            {
-                CCSStr = "ITEM_NO";
-                IP_Port = "57958";
-            }
+    
             GlobalVar.UseDB_setConnString(ConnByDekVisTmp);
             string sqlcmds = "select " + CCSStr + " from " + ShareMemory.SQLAsm_RowsData + " where " + "排程編號=" + "'" + PK + "'";
             dr_ccs = DataTableUtils.DataTable_GetDataRow(sqlcmds);
