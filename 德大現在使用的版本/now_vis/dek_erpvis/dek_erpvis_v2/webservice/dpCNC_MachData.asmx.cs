@@ -131,17 +131,25 @@ namespace dek_erpvis_v2.webservice
 
                                 //20220912新增
                                 string Spindle_temp = Web_Data.Get_Information(dt_data, "Spindle_temp");//主軸溫升
-                                string Tank_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Temp");//油箱油溫
-                                string MainClamp_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Temp");//主夾迴路油溫
-                                string AngularPositioning_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Temp");//角向定位迴路油溫
-                                string Brake_Hydraulic_Temp_4th = Web_Data.Get_Information(dt_data, "4th_Brake_Hydraulic_Temp");//剎車迴路油溫
-                                string Tank_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Pressure");//主軸溫升
-                                string MainClamp_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Pressure");//主軸溫升
-                                string AngularPositioning_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Pressure");//角向定位迴路油壓
-                                string Brake_Hydraulic_Pressure_4th = Web_Data.Get_Information(dt_data, "4th_Brake_Hydraulic_Pressure");//剎車迴路油壓
+                                //string Tank_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Temp");//油箱油溫
+                                //string MainClamp_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Temp");//主夾迴路油溫
+                                //string AngularPositioning_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Temp");//角向定位迴路油溫
+                                //string Brake_Hydraulic_Temp_4th = Web_Data.Get_Information(dt_data, "4th_Brake_Hydraulic_Temp");//剎車迴路油溫
+                                //string Tank_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Pressure");//主軸溫升
+                                //string MainClamp_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Pressure");//主軸溫升
+                                //string AngularPositioning_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Pressure");//角向定位迴路油壓
+                                //string Brake_Hydraulic_Pressure_4th = Web_Data.Get_Information(dt_data, "4th_Brake_Hydraulic_Pressure");//剎車迴路油壓
                                 string Coolant_Concentration = Web_Data.Get_Information(dt_data, "Coolant_Concentration");//切削液濃度
                                 string Coolant_Temp = Web_Data.Get_Information(dt_data, "Coolant_Temp");//切削液溫度
                                 string Air_Temp = Web_Data.Get_Information(dt_data, "Air_Temp");//空壓源溫度
+
+                                //20221004新增
+                                string Air_Pressure = Web_Data.Get_Information(dt_data, "Air_Pressure");//空壓源壓力
+                                string Spindle_loading = Web_Data.Get_Information(dt_data, "Spindle_loading");//主軸負載(Deep)
+                                string Servo_loading_X = Web_Data.Get_Information(dt_data, "Servo_loading_X");//伺服軸負載(X)
+                                string Servo_loading_Y = Web_Data.Get_Information(dt_data, "Servo_loading_Y");//伺服軸負載(Y)
+                                string Servo_loading_Z = Web_Data.Get_Information(dt_data, "Servo_loading_Z");//伺服軸負載(Z)
+                                string Servo_loading_B = Web_Data.Get_Information(dt_data, "Servo_loading_B");//伺服軸負載(B)
 
                                 //20210105新增
                                 string complete_time = Web_Data.Get_Information(dt_data, "complete_time");//通電時間
@@ -227,17 +235,25 @@ namespace dek_erpvis_v2.webservice
                                 //xmlElemA.SetAttribute("air_pressure", air_pressure);
 
                                 xmlElemA.SetAttribute("Spindle_temp", Spindle_temp);
-                                xmlElemA.SetAttribute("Tank_Hydraulic_Temp", Tank_Hydraulic_Temp);
-                                xmlElemA.SetAttribute("MainClamp_Hydraulic_Temp", MainClamp_Hydraulic_Temp);
-                                xmlElemA.SetAttribute("AngularPositioning_Hydraulic_Temp", AngularPositioning_Hydraulic_Temp);
-                                xmlElemA.SetAttribute("Brake_Hydraulic_Temp_4th", Brake_Hydraulic_Temp_4th);
-                                xmlElemA.SetAttribute("Tank_Hydraulic_Pressure", Tank_Hydraulic_Pressure);
-                                xmlElemA.SetAttribute("MainClamp_Hydraulic_Pressure", MainClamp_Hydraulic_Pressure);
-                                xmlElemA.SetAttribute("AngularPositioning_Hydraulic_Pressure", AngularPositioning_Hydraulic_Pressure);
-                                xmlElemA.SetAttribute("Brake_Hydraulic_Pressure_4th", Brake_Hydraulic_Pressure_4th);
+                                //xmlElemA.SetAttribute("Tank_Hydraulic_Temp", Tank_Hydraulic_Temp);
+                                //xmlElemA.SetAttribute("MainClamp_Hydraulic_Temp", MainClamp_Hydraulic_Temp);
+                                //xmlElemA.SetAttribute("AngularPositioning_Hydraulic_Temp", AngularPositioning_Hydraulic_Temp);
+                                //xmlElemA.SetAttribute("Brake_Hydraulic_Temp_4th", Brake_Hydraulic_Temp_4th);
+                                //xmlElemA.SetAttribute("Tank_Hydraulic_Pressure", Tank_Hydraulic_Pressure);
+                                //xmlElemA.SetAttribute("MainClamp_Hydraulic_Pressure", MainClamp_Hydraulic_Pressure);
+                                //xmlElemA.SetAttribute("AngularPositioning_Hydraulic_Pressure", AngularPositioning_Hydraulic_Pressure);
+                                //xmlElemA.SetAttribute("Brake_Hydraulic_Pressure_4th", Brake_Hydraulic_Pressure_4th);
                                 xmlElemA.SetAttribute("Coolant_Concentration", Coolant_Concentration);
                                 xmlElemA.SetAttribute("Coolant_Temp", Coolant_Temp);
                                 xmlElemA.SetAttribute("Air_Temp", Air_Temp);
+
+                                //20221004新增
+                                xmlElemA.SetAttribute("Air_Pressure", Air_Pressure);
+                                xmlElemA.SetAttribute("Spindle_loading", Spindle_loading);
+                                xmlElemA.SetAttribute("Servo_loading_X", Servo_loading_X);
+                                xmlElemA.SetAttribute("Servo_loading_Y", Servo_loading_Y);
+                                xmlElemA.SetAttribute("Servo_loading_Z", Servo_loading_Z);
+                                xmlElemA.SetAttribute("Servo_loading_B", Servo_loading_B);
 
 
                                 string now_list = $"{CNCUtils.MachName_translation(MachName)}^{WorkStaff}^{ManuId}^{CustomName}^{ProductName}^{ProductNumber}^{CraftName}^{DataTableUtils.toInt(CountToday)}^{DataTableUtils.toInt(ExpCountToday)}^";

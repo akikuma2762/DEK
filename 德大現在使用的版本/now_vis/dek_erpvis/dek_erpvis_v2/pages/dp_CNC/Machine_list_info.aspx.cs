@@ -245,18 +245,27 @@ namespace dek_erpvis_v2.pages.dp_CNC
 
                         //20220912新增
                         string Spindle_temp = Web_Data.Get_Information(dt_data, "Spindle_temp");//主軸溫升
-                        string Tank_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Temp");//油箱油溫
-                        string MainClamp_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Temp");//主夾迴路油溫
-                        string AngularPositioning_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Temp");//角向定位迴路油溫
-                        string Brake_Hydraulic_Temp_4th = Web_Data.Get_Information(dt_data,"4th_Brake_Hydraulic_Temp");//剎車迴路油溫
-                        string Tank_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Pressure");//主軸溫升
-                        string MainClamp_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Pressure");//主軸溫升
-                        string AngularPositioning_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Pressure");//角向定位迴路油壓
-                        string Brake_Hydraulic_Pressure_4th = Web_Data.Get_Information(dt_data, "4th_Brake_Hydraulic_Pressure");//剎車迴路油壓
+                        //string Tank_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Temp");//油箱油溫
+                        //string MainClamp_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Temp");//主夾迴路油溫
+                        //string AngularPositioning_Hydraulic_Temp = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Temp");//角向定位迴路油溫
+                        //string Brake_Hydraulic_Temp_4th = Web_Data.Get_Information(dt_data,"4th_Brake_Hydraulic_Temp");//剎車迴路油溫
+                        //string Tank_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "Tank_Hydraulic_Pressure");//主軸溫升
+                        //string MainClamp_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "MainClamp_Hydraulic_Pressure");//主軸溫升
+                        //string AngularPositioning_Hydraulic_Pressure = Web_Data.Get_Information(dt_data, "AngularPositioning_Hydraulic_Pressure");//角向定位迴路油壓
+                        //string Brake_Hydraulic_Pressure_4th = Web_Data.Get_Information(dt_data, "4th_Brake_Hydraulic_Pressure");//剎車迴路油壓
                         string Coolant_Concentration = Web_Data.Get_Information(dt_data, "Coolant_Concentration");//切削液濃度
                         string Coolant_Temp = Web_Data.Get_Information(dt_data, "Coolant_Temp");//切削液溫度
                         string Air_Temp = Web_Data.Get_Information(dt_data, "Air_Temp");//空壓源溫度
-                        
+
+                        //20221004新增
+                        string Air_Pressure = Web_Data.Get_Information(dt_data, "Air_Pressure");//空壓源壓力
+                        string Spindle_loading = Web_Data.Get_Information(dt_data, "Spindle_loading");//主軸負載(Deep)
+                        string Servo_loading_X = Web_Data.Get_Information(dt_data, "Servo_loading_X");//伺服軸負載(X)
+                        string Servo_loading_Y = Web_Data.Get_Information(dt_data, "Servo_loading_Y");//伺服軸負載(Y)
+                        string Servo_loading_Z = Web_Data.Get_Information(dt_data, "Servo_loading_Z");//伺服軸負載(Z)
+                        string Servo_loading_B = Web_Data.Get_Information(dt_data, "Servo_loading_B");//伺服軸負載(B)
+
+
                         string run_time = Web_Data.Get_Information(dt_data, "run_time");//運轉時間
                         string cut_time = Web_Data.Get_Information(dt_data, "cut_time");//切削時間
                         string poweron_time = Web_Data.Get_Information(dt_data, "poweron_time");//通電時間
@@ -289,7 +298,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
                         
 
                         設定圖塊(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time);
-                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, Spindle_temp, Tank_Hydraulic_Temp, MainClamp_Hydraulic_Temp, AngularPositioning_Hydraulic_Temp, Brake_Hydraulic_Temp_4th, Tank_Hydraulic_Pressure, MainClamp_Hydraulic_Pressure, AngularPositioning_Hydraulic_Pressure, Brake_Hydraulic_Pressure_4th, Coolant_Concentration, Coolant_Temp, Air_Temp ,order_num, count, can_next, now_detailstatus);
+                        設定表格(MachName, CheckStaff, WorkStaff, MachStatus, OperRate, StatusBar, ManuId, CustomName, ProductName, ProductNumber, ProgramRun, CountTotal, ExpCountToday, FinishTime, "0", CountTodayRate, AlarmMesg, CountToday, CraftName, acts, spindleload, spindlespeed, spindletemp, prog_main, prog_main_cmd, prog_run_cmd, overrides, run_time, cut_time, poweron_time, complete_time, Spindle_temp, Coolant_Concentration, Coolant_Temp, Air_Temp, Air_Pressure, Spindle_loading, Servo_loading_X, Servo_loading_Y, Servo_loading_Z, Servo_loading_B, order_num, count, can_next, now_detailstatus);
 
 
 
@@ -302,7 +311,7 @@ namespace dek_erpvis_v2.pages.dp_CNC
             else if ((ls_data == null || ls_data.Count == 0) && th == null && tr == null)
                 HtmlUtil.NoData(out th, out tr);
         }
-        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間, string 主軸溫升, string 油箱油溫, string 主夾迴路油溫, string 角向定位迴路油溫, string 剎車迴路油溫, string 油箱油壓, string 主夾迴路油壓, string 角向定位迴路油壓, string 剎車迴路油壓, string 切削液濃度, string 切削液溫度, string 空壓源溫度, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
+        private void 設定表格(string 設備名稱, string 校機人員, string 加工人員, string 設備狀態, string 設備稼動, string 設備稼動_長條圖, string 製令單號, string 客戶名稱, string 產品名稱, string 料件編號, string 加工程式, string 生產件數, string 預計生產件數, string 預計完工時間, string 問題回報, string 生產進度, string 異警資訊, string 今日生產件數, string 工藝名稱, string 主軸轉速, string 主軸負載, string 主軸速度, string 主軸溫度, string 主程式, string 主程式註解, string 運行程式註解, string 進給率, string 運轉時間, string 切削時間, string 通電時間, string 應完工時間, string 主軸溫升, string 切削液濃度, string 切削液溫度, string 空壓源溫度,string 空壓源壓力, string 主軸負載Deep, string 伺服軸負載X, string 伺服軸負載Y, string 伺服軸負載Z, string 伺服軸負載B, string 工藝, int next_count = 0, string 能否繼續 = "", string 明細狀態 = "")
         {
             string total_Value = "";
             string 設備狀態_色彩 = cNC_Class.mach_status_Color(設備狀態);
@@ -439,17 +448,24 @@ namespace dek_erpvis_v2.pages.dp_CNC
             //tr.Append(show_table(old_name, "air_pressure", 氣壓源_壓力檢知));
 
             tr.Append(show_table(old_name, "Spindle_temp", 主軸溫升));
-            tr.Append(show_table(old_name, "Tank_Hydraulic_Temp", 油箱油溫));
-            tr.Append(show_table(old_name, "MainClamp_Hydraulic_Temp", 主夾迴路油溫));
-            tr.Append(show_table(old_name, "AngularPositioning_Hydraulic_Temp", 角向定位迴路油溫));
-            tr.Append(show_table(old_name, "Brake_Hydraulic_Temp_4th", 剎車迴路油溫));
-            tr.Append(show_table(old_name, "Tank_Hydraulic_Pressure", 油箱油壓));
-            tr.Append(show_table(old_name, "MainClamp_Hydraulic_Pressure", 主夾迴路油壓));
-            tr.Append(show_table(old_name, "AngularPositioning_Hydraulic_Pressure", 角向定位迴路油壓));
-            tr.Append(show_table(old_name, "Brake_Hydraulic_Pressure_4th", 剎車迴路油壓));
+            //tr.Append(show_table(old_name, "Tank_Hydraulic_Temp", 油箱油溫));
+            //tr.Append(show_table(old_name, "MainClamp_Hydraulic_Temp", 主夾迴路油溫));
+            //tr.Append(show_table(old_name, "AngularPositioning_Hydraulic_Temp", 角向定位迴路油溫));
+            //tr.Append(show_table(old_name, "Brake_Hydraulic_Temp_4th", 剎車迴路油溫));
+            //tr.Append(show_table(old_name, "Tank_Hydraulic_Pressure", 油箱油壓));
+            //tr.Append(show_table(old_name, "MainClamp_Hydraulic_Pressure", 主夾迴路油壓));
+            //tr.Append(show_table(old_name, "AngularPositioning_Hydraulic_Pressure", 角向定位迴路油壓));
+            //tr.Append(show_table(old_name, "Brake_Hydraulic_Pressure_4th", 剎車迴路油壓));
             tr.Append(show_table(old_name, "Coolant_Concentration", 切削液濃度));
             tr.Append(show_table(old_name, "Coolant_Temp", 切削液溫度));
             tr.Append(show_table(old_name, "Air_Temp", 空壓源溫度));
+
+            tr.Append(show_table(old_name, "Air_Pressure", 空壓源壓力));
+            tr.Append(show_table(old_name, "Spindle_loading", 主軸負載Deep));
+            tr.Append(show_table(old_name, "Servo_loading_X", 伺服軸負載X));
+            tr.Append(show_table(old_name, "Servo_loading_Y", 伺服軸負載Y));
+            tr.Append(show_table(old_name, "Servo_loading_Z", 伺服軸負載Z));
+            tr.Append(show_table(old_name, "Servo_loading_B", 伺服軸負載B));
 
             tr.Append("</tr>");
         }

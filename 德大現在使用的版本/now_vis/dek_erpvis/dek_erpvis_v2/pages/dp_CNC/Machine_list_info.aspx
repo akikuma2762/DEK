@@ -1029,17 +1029,26 @@
                             //var air_pressure = $(this).attr("air_pressure").valueOf();
 
                             var Spindle_temp = $(this).attr("Spindle_temp").valueOf();
-                            var Tank_Hydraulic_Temp = $(this).attr("Tank_Hydraulic_Temp").valueOf();
-                            var MainClamp_Hydraulic_Temp = $(this).attr("MainClamp_Hydraulic_Temp").valueOf();
-                            var AngularPositioning_Hydraulic_Temp = $(this).attr("AngularPositioning_Hydraulic_Temp").valueOf();
-                            var Brake_Hydraulic_Temp_4th = $(this).attr("Brake_Hydraulic_Temp_4th").valueOf();
-                            var Tank_Hydraulic_Pressure = $(this).attr("Tank_Hydraulic_Pressure").valueOf();
-                            var MainClamp_Hydraulic_Pressure = $(this).attr("MainClamp_Hydraulic_Pressure").valueOf();
-                            var AngularPositioning_Hydraulic_Pressure = $(this).attr("AngularPositioning_Hydraulic_Pressure").valueOf();
-                            var Brake_Hydraulic_Pressure_4th = $(this).attr("Brake_Hydraulic_Pressure_4th").valueOf();
+                            //var Tank_Hydraulic_Temp = $(this).attr("Tank_Hydraulic_Temp").valueOf();
+                            //var MainClamp_Hydraulic_Temp = $(this).attr("MainClamp_Hydraulic_Temp").valueOf();
+                            //var AngularPositioning_Hydraulic_Temp = $(this).attr("AngularPositioning_Hydraulic_Temp").valueOf();
+                            //var Brake_Hydraulic_Temp_4th = $(this).attr("Brake_Hydraulic_Temp_4th").valueOf();
+                            //var Tank_Hydraulic_Pressure = $(this).attr("Tank_Hydraulic_Pressure").valueOf();
+                            //var MainClamp_Hydraulic_Pressure = $(this).attr("MainClamp_Hydraulic_Pressure").valueOf();
+                            //var AngularPositioning_Hydraulic_Pressure = $(this).attr("AngularPositioning_Hydraulic_Pressure").valueOf();
+                            //var Brake_Hydraulic_Pressure_4th = $(this).attr("Brake_Hydraulic_Pressure_4th").valueOf();
                             var Coolant_Concentration = $(this).attr("Coolant_Concentration").valueOf();
                             var Coolant_Temp = $(this).attr("Coolant_Temp").valueOf();
                             var Air_Temp = $(this).attr("Air_Temp").valueOf();
+
+                            //20221004新增
+                            var Air_Pressure = $(this).attr("Air_Pressure").valueOf();
+                            var Spindle_loading = $(this).attr("Spindle_loading").valueOf();
+                            var Servo_loading_X = $(this).attr("Servo_loading_X").valueOf();
+                            var Servo_loading_Y = $(this).attr("Servo_loading_Y").valueOf();
+                            var Servo_loading_Z = $(this).attr("Servo_loading_Z").valueOf();
+                            var Servo_loading_B = $(this).attr("Servo_loading_B").valueOf();
+
                             //紀錄表格元素的陣列
                             var tablearray = ['設備名稱', 'mach_name', Dev_Name,
                                 '校機人員', 'check_staff', check_staff,
@@ -1068,31 +1077,16 @@
                                 '通電時間', 'poweron_time', poweron_time,
                                 '異警資訊', 'alarm_mesg', alarm_mesg,
                                 '工單報工', 'next_button', '',
-                                //'主軸震動', 'spindle_shock', spindle_shock,
-                                //'主軸側溫度', 'spindle_side_temp', spindle_side_temp,
-                                //'刀庫馬達電流_損壞預警', 'daoku_motor_electric', daoku_motor_electric,
-                                //'主軸扣刀_震動監視', 'spindle_koudao_shock', spindle_koudao_shock,
-                                //'主軸定位_在位確認', 'spindle_position', spindle_position,
-                                //'主軸拉刀_在位確認', 'spindle_ladao_position', spindle_ladao_position,
-                                //'潤滑油_油位檢知', 'oil_level', oil_level,
-                                //'ball_screw_高溫監視', 'ball_screw_hightemp', ball_screw_hightemp,
-                                //'治具油壓_溫度監視', 'tool_oil_temp', tool_oil_temp,
-                                //'治具油壓_壓力監視', 'tool_oil_pressure', tool_oil_pressure,
-                                //'切屑液_濃度檢知', 'qiexieye_concentration', qiexieye_concentration,
-                                //'切屑液_溫度檢知', 'qiexieye_temp', qiexieye_temp,
-                                //'氣壓源_壓力檢知', 'air_pressure', air_pressure,
                                 '主軸溫升', 'Spindle_temp', Spindle_temp,
-                                '油箱油溫', 'Tank_Hydraulic_Temp', Tank_Hydraulic_Temp,
-                                '主夾迴路油溫', 'MainClamp_Hydraulic_Temp', MainClamp_Hydraulic_Temp,
-                                '角向定位迴路油溫', 'AngularPositioning_Hydraulic_Temp', AngularPositioning_Hydraulic_Temp,
-                                '剎車迴路油溫', 'Brake_Hydraulic_Temp_4th', Brake_Hydraulic_Temp_4th,
-                                '油箱油壓', 'Tank_Hydraulic_Pressure', Tank_Hydraulic_Pressure,
-                                '主夾迴路油壓', 'MainClamp_Hydraulic_Pressure', MainClamp_Hydraulic_Pressure,
-                                '角向定位迴路油壓', 'AngularPositioning_Hydraulic_Pressure', AngularPositioning_Hydraulic_Pressure,
-                                '剎車迴路油壓', 'Brake_Hydraulic_Pressure_4th', Brake_Hydraulic_Pressure_4th,
                                 '切削液濃度', 'Coolant_Concentration', Coolant_Concentration,
                                 '切削液溫度', 'Coolant_Temp', Coolant_Temp,
-                                '空壓源溫度', 'Air_Temp', Air_Temp];
+                                '空壓源溫度', 'Air_Temp', Air_Temp,
+                                '空壓源壓力', 'Air_Pressure', Air_Pressure,
+                                '主軸負載(Deep)', 'Spindle_loading', Spindle_loading,
+                                '伺服軸負載(X)', 'Servo_loading_X', Servo_loading_X,
+                                '伺服軸負載(Y)', 'Servo_loading_Y', Servo_loading_Y,
+                                '伺服軸負載(Z)', 'Servo_loading_Z', Servo_loading_Z,
+                                '伺服軸負載(B)', 'Servo_loading_B', Servo_loading_B];
 
 
 
@@ -1292,9 +1286,7 @@
 
                                 }
                                 else {
-                                   
                                         document.getElementById(td_column).innerHTML = check_value(td_value);
-                                   
                                 }
                             }
 

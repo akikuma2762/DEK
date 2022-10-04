@@ -100,7 +100,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string condition = "";
             string Num = "";
             string Sn = "";
-            string Fab_User = "";
+            string Fab_User_Old = "";
+            string Fab_User_New = "";
+            string click_Type = "";
             int success = 0;
             Dictionary<string, string> myData = new Dictionary<string, string>();
 
@@ -129,7 +131,30 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             else if (myData["Factory"] == "hor")
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
 
-            switch (myData["click_Type"]) {
+            Fab_User_Old = myData["TextBox_WorkNumber"].ToString();
+            Fab_User_New = myData["DropDownList_Work"].ToString();
+            //臥室編號轉換
+            if (myData["Factory"] == "hor")
+            {
+                if (myData["TextBox_WorkNumber"].ToString() == "1")
+                {
+                    Fab_User_Old = "100";
+                }
+                else if (myData["TextBox_WorkNumber"].ToString() == "2")
+                {
+                    Fab_User_Old = "110";
+                }
+                if (myData["DropDownList_Work"].ToString() == "1")
+                {
+                    Fab_User_New = "100";
+                }
+                else if (myData["DropDownList_Work"].ToString() == "2")
+                {
+                    Fab_User_New = "110";
+                }
+            }
+            click_Type = myData["click_Type"].ToString();
+            switch (click_Type) {
 
                 case "Update":
 
@@ -153,42 +178,33 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                             dt_Row["暫停時間"] = "";
                             dt_Row["實際完成時間"] = "";
                         }
-                        Num = DataTableUtils.toString(dt.Rows[0]["鍵編號"]);
-                        Sn = dt.Rows[0]["鍵序號"].ToString();
-                        Fab_User = dt.Rows[0]["工作站編號"].ToString();
-                        if (myData["Factory"] == "hor") {
-                            if (dt.Rows[0]["工作站編號"].ToString() == "1") {
-                                Fab_User = "100";
-                            } else if (dt.Rows[0]["工作站編號"].ToString() == "2") {
-                                Fab_User = "110";
-                            }
-                        }
+                        //Num = DataTableUtils.toString(dt.Rows[0]["鍵編號"]);
+                        //Sn = dt.Rows[0]["鍵序號"].ToString();
+                        //Fab_User = dt.Rows[0]["工作站編號"].ToString();
+                        //if (myData["Factory"] == "hor") {
+                        //    if (dt.Rows[0]["工作站編號"].ToString() == "1") {
+                        //        Fab_User = "100";
+                        //    } else if (dt.Rows[0]["工作站編號"].ToString() == "2") {
+                        //        Fab_User = "110";
+                        //    }
+                        //}
+
                         //20220830修改資料前先確定租裝資料表有無資料,暫時先用此方法
-                        sqlcmd = $"Select * From 組裝資料表 where FAB_USER='{Fab_User}' and 排程編號= '{myData["TextBox_Schedule"]}'";
+                        sqlcmd = $"Select * From 組裝資料表 where FAB_USER='{Fab_User_Old}' and 排程編號= '{myData["TextBox_Schedule"]}'";
                         dt = DataTableUtils.GetDataTable(sqlcmd);
                         if (HtmlUtil.Check_DataTable(dt))
                         {
                             if (DataTableUtils.Update_DataRow("工作站狀態資料表", $" 組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'", dt_Row))
                             {
-                                sqlcmd = $"Select * From 組裝資料表 where FAB_USER='{Fab_User}' and 排程編號= '{myData["TextBox_Schedule"]}'";
+                                sqlcmd = $"Select * From 組裝資料表 where FAB_USER='{Fab_User_Old}' and 排程編號= '{myData["TextBox_Schedule"]}'";
                                 dt = DataTableUtils.GetDataTable(sqlcmd);
                                 if (HtmlUtil.Check_DataTable(dt))
                                 {
-                                    if (myData["Factory"] == "hor")
-                                    {
-                                        if (myData["DropDownList_Work"].ToString() == "1")
-                                        {
-                                            myData["DropDownList_Work"] = "100";
-                                        }
-                                        else if (myData["DropDownList_Work"].ToString() == "2")
-                                        {
-                                            myData["DropDownList_Work"] = "110";
-                                        }
-                                    }
-                                    dt_Row = dt.NewRow();
+
+                                        dt_Row = dt.NewRow();
                                     dt_Row["排程編號"] = myData["TextBox_Number"];
-                                    dt_Row["FAB_USER"] = myData["DropDownList_Work"];
-                                    if (DataTableUtils.Update_DataRow("組裝資料表", $" FAB_USER='{Fab_User}' and  排程編號= '{myData["TextBox_Schedule"]}'", dt_Row))
+                                    dt_Row["FAB_USER"] = Fab_User_New;
+                                    if (DataTableUtils.Update_DataRow("組裝資料表", $" FAB_USER='{Fab_User_Old}' and  排程編號= '{myData["TextBox_Schedule"]}'", dt_Row))
                                     {
                                         dt_st = myData["txt_str"];
                                         dt_ed = myData["txt_end"];
@@ -225,20 +241,21 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
                 case "Delete":
 
-                     sqlcmd = $"Select 組裝編號,排程編號,進度,狀態,工作站編號,組裝日,實際組裝時間,鍵編號,鍵序號 From 工作站狀態資料表 where  組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'";
+                     sqlcmd = $"Select * From 工作站狀態資料表 where  組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'";
                      dt = DataTableUtils.GetDataTable(sqlcmd);
 
                     if (HtmlUtil.Check_DataTable(dt))
                     {
                          Num = DataTableUtils.toString(dt.Rows[0]["鍵編號"]);
                          Sn = dt.Rows[0]["鍵序號"].ToString();
-                        sqlcmd = $"Select * From 組裝資料表 where  Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'";
+                        sqlcmd = $"Select * From 組裝資料表 where FAB_USER='{Fab_User_Old}' and 排程編號= '{myData["TextBox_Schedule"]}'";
+                        //sqlcmd = $"Select * From 組裝資料表 where  Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'";
                         dt = DataTableUtils.GetDataTable(sqlcmd);
                         if (HtmlUtil.Check_DataTable(dt))
                         {
                             if (DataTableUtils.Delete_Record("工作站狀態資料表", $" 組裝編號= '{myData["TextBox_OrderNum"]}' and  排程編號= '{myData["TextBox_Schedule"]}' and 工作站編號= '{myData["TextBox_WorkNumber"]}'"))
                             {
-                                if (DataTableUtils.Delete_Record("組裝資料表", $" Num= '{Num}' and  排程編號= '{myData["TextBox_Schedule"]}' and Sn= '{Sn}'"))
+                                if (DataTableUtils.Delete_Record("組裝資料表", $" FAB_USER='{Fab_User_Old}' and  排程編號= '{myData["TextBox_Schedule"]}'"))
                                 {
                                     dt_st = myData["txt_str"];
                                     dt_ed = myData["txt_end"];
