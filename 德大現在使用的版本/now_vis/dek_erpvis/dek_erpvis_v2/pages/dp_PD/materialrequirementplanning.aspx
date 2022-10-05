@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="materialrequirementplanning.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_PD.materialrequirementplanning_New" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <title>物料領用統計表 | <%= WebUtils.GetAppSettings("Company_Name") %></title>
+    <title>歷史用料統計表 | <%= WebUtils.GetAppSettings("Company_Name") %></title>
     <link href="../../assets/vendors/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.css" rel="stylesheet" type="text/css" media="all">
     <%=color %>
     <link href="../../Content/Default_input.css" rel="stylesheet" />
@@ -333,7 +333,7 @@
 
 
         //產生表格的HTML碼
-        create_tablehtmlcode('materialrequirementplanning', '物料領用統計表', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString()%>');
+        create_tablehtmlcode('materialrequirementplanning', '歷史用料統計表', 'datatable-buttons', '<%=th.ToString() %>', '<%=tr.ToString()%>');
         //產生相對應的JScode
         set_Table('#datatable-buttons');
         //防止頁籤跑版

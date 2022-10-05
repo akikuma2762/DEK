@@ -41,7 +41,7 @@ namespace dekERP_dll.dekErp
             return Supplierscore_Detail(dt_st.ToString(DateFormat), dt_ed.ToString(DateFormat), cust);
         }
 
-        //物料領用統計表
+        //歷史用料統計表
         public DataTable materialrequirementplanning(string start, string end, string type, string item)
         {
             string sqlcmd = Getmaterialrequirementplanning(start, end, type, item);
@@ -54,7 +54,7 @@ namespace dekERP_dll.dekErp
             return materialrequirementplanning(dt_st.ToString(DateFormat), dt_ed.ToString(DateFormat), type, item);
         }
 
-        //物料領用統計表-細項
+        //歷史用料統計表-細項
         public DataTable materialrequirementplanning_Detail(string item, string start, string end, dekModel model)
         {
             string sqlcmd = Getmaterialrequirementplanning_Detail(item, start, end, model);
@@ -122,7 +122,7 @@ namespace dekERP_dll.dekErp
             return sqlcmd.ToString();
         }
 
-        //物料領用統計表
+        //歷史用料統計表
         string Getmaterialrequirementplanning(string start, string end, string type, string item)
         {
             StringBuilder sqlcmd = new StringBuilder();
@@ -131,7 +131,7 @@ namespace dekERP_dll.dekErp
             return sqlcmd.ToString();
         }
 
-        //物料領用統計表細項
+        //歷史用料統計表細項
         string Getmaterialrequirementplanning_Detail(string item, string start, string end, dekModel model)
         {
             StringBuilder sqlcmd = new StringBuilder();

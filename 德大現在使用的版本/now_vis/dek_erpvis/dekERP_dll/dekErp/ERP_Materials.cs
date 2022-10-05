@@ -163,7 +163,7 @@ namespace dekERP_dll.dekErp
             return sqlcmd.ToString();
         }
 
-        //物料領用統計表
+        //歷史用料統計表
         string Getmaterialrequirementplanning_Detail(string start, string end, RadioButtonList rbx, string item)
         {
             StringBuilder sqlcmd = new StringBuilder();

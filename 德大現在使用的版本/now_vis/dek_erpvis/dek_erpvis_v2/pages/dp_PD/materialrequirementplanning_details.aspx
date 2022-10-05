@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpage.Master" AutoEventWireup="true" CodeBehind="materialrequirementplanning_details.aspx.cs" Inherits="dek_erpvis_v2.pages.dp_PD.materialrequirementplanning_details_New" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <title><%=item_name %>物料領用統計表 | <%= WebUtils.GetAppSettings("Company_Name") %></title>
+    <title><%=item_name %>歷史用料統計表 | <%= WebUtils.GetAppSettings("Company_Name") %></title>
     <%=color %>
     <link href="../../Content/table.css" rel="stylesheet" media="screen and (max-width:768px)" />
     <link href="../../Content/dp_PD/materialrequirementplanning_details.css" rel="stylesheet" />
@@ -42,7 +42,7 @@
         <ol class="breadcrumb_">
             <li><u><a href="../index.aspx">首頁 </a></u></li>
             <li><u><a href="../SYS_CONTROL/dp_fuclist.aspx?dp=PCD">資材部</a></u></li>
-            <li><u><a onclick="history.go(-1)">物料領用統計表</a></u></li>
+            <li><u><a onclick="history.go(-1)">歷史用料統計表</a></u></li>
         </ol>
         <br>
         <div class="clearfix"></div>

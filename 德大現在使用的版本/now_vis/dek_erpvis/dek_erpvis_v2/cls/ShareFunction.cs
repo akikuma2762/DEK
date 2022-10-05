@@ -12,6 +12,7 @@ using System.Text;
 using Support;
 using System.Text.RegularExpressions;
 using System.Configuration;
+using Newtonsoft.Json;
 
 namespace dek_erpvis_v2.cls
 {
@@ -1830,7 +1831,7 @@ namespace dek_erpvis_v2.cls
         public string[] GetOverViewData(int LineNum, string LineName, string Acc, string _reqType, ref int total, ref int alarm_total, string judge = "")
         {
             string td = "";
-            string[] str = new string[7] { "0", "0", "0", "0", "0", "0", "0" };//0:all   1:finsh   2:Stop  3:all   4:td_finish   5:td_Stop  7:Data
+            string[] str = new string[7] { "0", "0", "0", "0", "0", "0", "0"};//0:all   1:finsh   2:Stop  3:all   4:td_finish   5:td_Stop  7:Data
             string[] ErrorStr;
             string color = "";
             string SubError = "";
@@ -1880,12 +1881,19 @@ namespace dek_erpvis_v2.cls
                 Condition += ")";
                 dt = DataTableUtils.DataTable_GetTable(ShareMemory.SQLAsm_WorkStation_State, Condition);
             }
-
+            string _data = JsonConvert.SerializeObject(dt);
+            
             if (HtmlUtil.Check_DataTable(dt))
             {
 
                 DataTable dt_select = tableColumnSelectForLineDetail(dt, LineNum.ToString());
                 str = GetEachPiece(dt);
+
+                //20221005 新增判斷網路導致資料讀取異常
+                Array.Resize(ref str, str.Length + 1);
+                str[str.Length - 1] = _data;
+                Array.Resize(ref str, str.Length + 1);
+                str[str.Length - 1] = JsonConvert.SerializeObject(dt_select);
 
                 if (HtmlUtil.Check_DataTable(dt_select))
                 {
@@ -2052,7 +2060,13 @@ namespace dek_erpvis_v2.cls
             {
                 total = count;
                 alarm_total = alarm_list.Count;
-                str[6] = " no data";
+                str[6] = "no data";
+
+                //20221005 新增判斷網路導致資料讀取異常
+                Array.Resize(ref str, str.Length + 1);
+                str[str.Length - 1] =_data;
+                Array.Resize(ref str, str.Length + 1);
+                str[str.Length - 1] = "select does't enter";
                 return str;
             }
         }

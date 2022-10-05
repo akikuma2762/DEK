@@ -63,11 +63,11 @@ namespace dekERP_dll
     //資材部
     interface IdepMaterial
     {
-        //物料領用統計表 start(開始時間) end(結束時間)
+        //歷史用料統計表 start(開始時間) end(結束時間)
         DataTable materialrequirementplanning(string start, string end, string type, string item);
         DataTable materialrequirementplanning(DateTime start, DateTime end, string type, string item);
 
-        //物料領用統計表詳細資訊 start(開始時間) end(結束時間) item(物料) img_or_tbl(圖/表)
+        //歷史用料統計表詳細資訊 start(開始時間) end(結束時間) item(物料) img_or_tbl(圖/表)
         DataTable materialrequirementplanning_Detail(string item, string start, string end, dekModel img_or_tbl);
         DataTable materialrequirementplanning_Detail(string item, DateTime start, DateTime end, dekModel img_or_tbl);
 
@@ -309,7 +309,7 @@ namespace dekERP_dll
         DataTable SupplierShortage_Delivery(List<string> orders, string source);
 
         /// <summary>
-        /// 物料領用統計表明細
+        /// 歷史用料統計表明細
         /// </summary>
         /// <param name="start">開始時間</param>
         /// <param name="end">結束時間</param>

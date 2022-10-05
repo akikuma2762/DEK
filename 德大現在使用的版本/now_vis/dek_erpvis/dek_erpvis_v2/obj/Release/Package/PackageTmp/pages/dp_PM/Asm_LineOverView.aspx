@@ -285,6 +285,8 @@
     <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
     <script src="../../assets/vendors/time/loading.js"></script>
     <script> 
+        //20221005查看 table資料是否正常
+        top[xData] = '<%=X_Data%>';
         function ChangeStatus(X, percent) {
             var key = document.getElementsByName("ctl00$ContentPlaceHolder1$Text2")[0].value = X;//Text_Story  
         };
@@ -311,6 +313,9 @@
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust();
             });
+            //20221005 新增判斷網路導致資料讀取異常
+            var _Data = '<%=_Data%>';
+            if (_Data.indexOf("null") != -1) alert('伺服器回應 : 無法載入資料,請聯絡德科人員或檢查您的網路連線。');
         });
 
 
@@ -349,6 +354,6 @@
             else {
                 document.getElementById('btncheck').style.visibility = 'hidden';
             }
-        }
+        }     
     </script>
 </asp:Content>

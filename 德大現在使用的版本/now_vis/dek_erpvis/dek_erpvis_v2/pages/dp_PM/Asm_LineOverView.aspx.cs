@@ -12,6 +12,9 @@ namespace dek_erpvis_v2.pages.dp_PD
 {
     public partial class Asm_LineOverView : System.Web.UI.Page
     {
+        public string X_Data = "";
+        public string _Data = "";
+        public string Select_Data = "";
         public string power = "";
         public string color = "";
         public string TagetPiece = "0";
@@ -129,6 +132,22 @@ namespace dek_erpvis_v2.pages.dp_PD
                 td_FinishPiece = result[4];
                 td_ErrorPiece = result[5];
                 RowsData = result[6];
+
+                //20221005 第二重檢測資料是否正常
+                _Data = result[7];
+                Select_Data = result[8];
+                for (int k = 0; k < result.Length; k++)
+                {
+                    if (k == 6 && result[6] != "no data")
+                    {
+                        X_Data += "id" + " " + k + "有資料";
+                    }
+                    else
+                    {
+                        X_Data += "id" + " " + k + " " + result[k];
+                    }
+                }
+
             }
             else
                 Response.Redirect(myclass.logout_url);

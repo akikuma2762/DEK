@@ -308,7 +308,7 @@ function set_stackedColumn(canvas, title, subtitle, xtext, ytext, name1, date1, 
         show_qty(chart, canvas, x_text, y_text);
 }
 
-//物料領用統計表明細用
+//歷史用料統計表明細用
 function set_manystackColumn(canvas, title, subtitle, datapoint) {
     var chartcol = new CanvasJS.Chart(canvas, {
         colorSet: "greenShades",
