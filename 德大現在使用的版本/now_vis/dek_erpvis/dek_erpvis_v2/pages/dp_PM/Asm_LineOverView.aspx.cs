@@ -140,11 +140,11 @@ namespace dek_erpvis_v2.pages.dp_PD
                 {
                     if (k == 6 && result[6] != "no data")
                     {
-                        X_Data += "id" + " " + k + "有資料";
+                        X_Data += $"id{k},HTML table有資料 ";
                     }
                     else
                     {
-                        X_Data += "id" + " " + k + " " + result[k];
+                        X_Data += $"id{k} data:{result[k]}; ";
                     }
                 }
 

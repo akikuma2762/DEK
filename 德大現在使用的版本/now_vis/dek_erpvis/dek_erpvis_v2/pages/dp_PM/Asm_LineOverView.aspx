@@ -285,8 +285,6 @@
     <script src="../../assets/vendors/pdfmake/build/vfs_fonts.js"></script>
     <script src="../../assets/vendors/time/loading.js"></script>
     <script> 
-        //20221005查看 table資料是否正常
-        top[xData] = '<%=X_Data%>';
         function ChangeStatus(X, percent) {
             var key = document.getElementsByName("ctl00$ContentPlaceHolder1$Text2")[0].value = X;//Text_Story  
         };
@@ -354,6 +352,8 @@
             else {
                 document.getElementById('btncheck').style.visibility = 'hidden';
             }
-        }     
+        }
+        //20221005查看 table資料是否正常
+        top['xData'] = '<%=X_Data%>';
     </script>
 </asp:Content>

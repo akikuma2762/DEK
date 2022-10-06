@@ -1906,13 +1906,13 @@ namespace dek_erpvis_v2.cls
                             if (dt_select.Columns[j].ColumnName == "狀態")
                             {
                                 if (dt.Rows[i]["狀態"].ToString() == "暫停")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'> <span style=color:red><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'> <span style='color:red'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else if (dt.Rows[i]["狀態"].ToString() == "完成")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style=color:green><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:green'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else if (dt.Rows[i]["狀態"].ToString() == "啟動")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style=color:blue><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:blue'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style=color:black><u>0%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:black'><u>0%</u></span></a></td> \n";
 
                                 color = "";
 
@@ -2066,7 +2066,7 @@ namespace dek_erpvis_v2.cls
                 Array.Resize(ref str, str.Length + 1);
                 str[str.Length - 1] =_data;
                 Array.Resize(ref str, str.Length + 1);
-                str[str.Length - 1] = "select does't enter";
+                str[str.Length - 1] = "select does not enter";
                 return str;
             }
         }
@@ -4313,7 +4313,7 @@ namespace dek_erpvis_v2.cls
             if (dt.Rows[0]["工作站編號"].ToString() != "5" && dt.Rows[0]["工作站編號"].ToString() != "6" && dt.Rows[0]["工作站編號"].ToString() != "7")
                 str[1] = dt_fin.Count.ToString();
             else // special for deta
-                str[1] = " <a href = 'Asm_Cahrt_Detail.aspx?Key=Asm_LineOverView_FinishSpecialFunction,LineNum=" + dt.Rows[0]["工作站編號"].ToString() + "' >" + dt_fin.Count.ToString() + "</a>";
+                str[1] = " <a href = \"Asm_Cahrt_Detail.aspx?Key=Asm_LineOverView_FinishSpecialFunction,LineNum=" + dt.Rows[0]["工作站編號"].ToString() + "\" >" + dt_fin.Count.ToString() + "</a>";
 
             //暫停
             dt_fin = dt.DefaultView;
