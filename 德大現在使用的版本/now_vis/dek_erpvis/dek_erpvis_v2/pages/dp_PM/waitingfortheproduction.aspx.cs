@@ -215,10 +215,11 @@ namespace dek_erpvis_v2.pages.dp_PM
                 //20220822 增加月產能表格,大圓盤&臥式統一在此取得
                 month_Capacity = DataTableUtils.GetDataTable("select 工作站編號 AS 產線代號,工作站名稱,目標件數 AS 月產能 FROM 工作站型態資料表 WHERE 工作站是否使用中='1'");
 
-                //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤
-                dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
                 if (HtmlUtil.Check_DataTable(dt_sowon))
                 {
+                    //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤
+                    dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
+
                     foreach (DataRow row in dt_sowon.Rows)
                         dt_month.ImportRow(row);
                 }
@@ -298,15 +299,12 @@ namespace dek_erpvis_v2.pages.dp_PM
                 DataTable dek_time = DataTableUtils.GetDataTable("select * from 組裝工藝");
 
 
-
                 DataRow[] rows = null;
                 if (HtmlUtil.Check_DataTable(dek_dtinformation))
                 {
                     //填入資料
                     foreach (DataRow row in dek_dt.Rows)
                     {
-                        if (row["排程編號"].ToString().Split('-')[0] == "R4MKV" && DataTableUtils.toInt(row["預計開工日"].ToString()) > 20220622)
-                            sqlcmd = "";
                         sqlcmd = $"排程編號='{row["排程編號"]}'";
                         rows = dek_dtinformation.Select(sqlcmd);
                         //有資料的情況
@@ -326,6 +324,10 @@ namespace dek_erpvis_v2.pages.dp_PM
                             {
                                 rows = dek_time.Select(sqlcmd);
                                 row["預計完工日"] = sfun.Test_calculation_finish(row["預計開工日"].ToString(), rows[0]["組裝時間"].ToString() == "" ? "1" : rows[0]["組裝時間"].ToString(), true);
+
+                                //20221007 如果erp有預計完成時間,則使用erp的預計完成時間
+                                string fnh_day = row["組裝預計完工日"].ToString();
+                                row["預計完工日"] = !string.IsNullOrEmpty(fnh_day) ? row["組裝預計完工日"].ToString() : row["預計完工日"].ToString();
                             }
                             catch
                             {

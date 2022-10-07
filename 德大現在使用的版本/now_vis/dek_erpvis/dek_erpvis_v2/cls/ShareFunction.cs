@@ -95,7 +95,8 @@ namespace dek_erpvis_v2.cls
                 if (row["組裝預計完工日"].ToString() != "")
                     stand_endtime = DateTime.ParseExact(row["組裝預計完工日"].ToString(), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                 else
-                    stand_endtime = work.目標日期(StrToDate(row["上線日"].ToString()), new TimeSpan(0, 0, standard_work));
+                    //完成時間剛好在當日結束的,減60秒,才不會跨日計算W
+                    stand_endtime = work.目標日期(StrToDate(row["上線日"].ToString()), new TimeSpan(0, 0, standard_work-60));
                 row["預計完工日"] = stand_endtime.ToString("yyyyMMdd");
             }
             return dt;
@@ -3442,7 +3443,11 @@ namespace dek_erpvis_v2.cls
                         work.工作時段_新增(13, 0, 17, 0);
                         DateTime StratTime = StrToDateTime(dr["維護內容"].ToString(), "yyyyMMddHHmmss");
                         DateTime Endtime = StrToDateTime(dr["時間紀錄"].ToString(), "yyyyMMddHHmmss");
-                        TimeSpan tsp = work.工作時數(StratTime, Endtime);
+                        TimeSpan tsp;
+                        if (StratTime.Year >2000)
+                            tsp = work.工作時數(StratTime, Endtime);
+                        else
+                            tsp = new TimeSpan(0, 0, 0);
                         ErrorTimeSum += tsp.TotalSeconds;
                         // if (!ErrorTime_ListD.ContainsKey(dr["結案判定類型"].ToString()))
                         //     ErrorTime_ListD.Add(kvp.Key, ErrorTimeSum);

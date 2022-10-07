@@ -1,4 +1,5 @@
 ﻿using dek_erpvis_v2.cls;
+using dekERP_dll.dekErp;
 using Support;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace dek_erpvis_v2.pages.dp_PM
         public string date_end = "";
         string acc = "";
         public string path = "";
+        ERP_Sales SLS = new ERP_Sales();
         myclass myclass = new myclass();
 
         DataTable dt_本月應生產 = new DataTable();
@@ -95,33 +97,15 @@ namespace dek_erpvis_v2.pages.dp_PM
             dt_Finish = new DataTable();
             dt_NoFinish = new DataTable();
             DataTable dt_month = new DataTable();
+            string sqlcmd = "";
             //找出本月需做之數量
             //--------------------------------------------------------德科部分-----------------------------------------------
             //從dek ERP撈取本月排程資料
             //從dek ERP撈取本月排程資料
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekERPDataTable);
-            string sqlcmd = "SELECT   " +
-                            "cust.custnm2 AS 客戶簡稱, " +
-                            "ws.PLINE_NO AS 產線代號, " +
-                            "ws.lot_no AS 排程編號, " +
-                            "ws.cord_no AS 訂單號碼, " +
-                            "cord.cord_no AS 客戶訂單, " +
-                            "mkordsub.item_no AS 品號," +
-                            "DATE_FORMAT(cordsub.trn_date, '%Y%m%d') AS 訂單日期, " +
-                            "DATE_FORMAT(mkordsub.str_date, '%Y%m%d') AS 預計開工日 " +
-                            "FROM ws " +
-                            "RIGHT JOIN mkordsub ON (ws.cord_no = mkordsub.cord_no AND ws.cord_sn = mkordsub.cord_sn AND (ws.lot_no = mkordsub.lot_no || ws.lot_no IS NULL || ws.lot_no = '')) " +
-                            "LEFT JOIN item ON (mkordsub.item_no = item.item_no) " +
-                            "LEFT JOIN cord ON (ws.cord_no = cord.trn_no) " +
-                            "LEFT JOIN cordsub ON (ws.cord_no = cordsub.trn_no AND ws.cord_sn = cordsub.sn) " +
-                            "LEFT JOIN invosub ON (ws.cord_no = invosub.cord_no AND ws.cord_sn = invosub.cord_sn AND ws.lot_no = invosub.lot_no) " +
-                            "LEFT JOIN citem ON (citem.cust_no = mkordsub.cust_no AND citem.item_no = mkordsub.item_no) " +
-                            "LEFT JOIN mkord ON (mkord.trn_no = mkordsub.trn_no) " +
-                            "LEFT JOIN cust ON (cust.cust_no = mkord.cust_no) " +
-                            "WHERE 1 = 1 AND ws.lot_no IS NOT NULL AND " +
-                            "LENGTH(ws.lot_no) > 0 AND mkordsub.fclose IS NULL AND " +
-                           $"DATE_FORMAT(mkordsub.str_date, '%Y%m%d') <= {date_end} AND DATE_FORMAT(mkordsub.str_date, '%Y%m%d') >= {HtmlUtil.StrToDate(date_str).AddMonths(-1):yyyyMMdd} ";
-
+            
+            string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
+            sqlcmd = SLS.Waitingfortheproduction_BigDisc_Table(upper_Month, date_str, date_end, "dek");
 
             DataTable dek_dt = DataTableUtils.GetDataTable(sqlcmd);
             //從組裝資料表撈取相對應資料
@@ -182,15 +166,19 @@ namespace dek_erpvis_v2.pages.dp_PM
                             sqlcmd = $"機種編號='{DataTableUtils.toString(row["排程編號"]).Split('-')[0]}'";
                             rows = dek_time.Select(sqlcmd);
                             //20220727 增加判斷 機種是否存在於組裝工藝中 ex:WDB不存在
-                                if (rows.Length == 0)
-                                {
-                                    row["預計完工日"] = "";
-                                }
-                                else
-                                {
-                                    row["預計完工日"] = sfun.Test_calculation_finish(row["預計開工日"].ToString(), rows[0]["組裝時間"].ToString() == "" ? "1" : rows[0]["組裝時間"].ToString(), true);
+                            if (rows.Length == 0)
+                            {
+                                row["預計完工日"] = "";
+                            }
+                            else
+                            {
+                                row["預計完工日"] = sfun.Test_calculation_finish(row["預計開工日"].ToString(), rows[0]["組裝時間"].ToString() == "" ? "1" : rows[0]["組裝時間"].ToString(), true);
 
-                                }                           
+                                //20221007 如果erp有預計完成時間,則使用erp的預計完成時間
+                                string fnh_day = row["組裝預計完工日"].ToString();
+                                row["預計完工日"] = !string.IsNullOrEmpty(fnh_day) ? row["組裝預計完工日"].ToString() : row["預計完工日"].ToString();
+                            }
+                                                       
                         }
 
                     }
