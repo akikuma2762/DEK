@@ -546,7 +546,8 @@ namespace dek_erpvis_v2.pages.dp_PM
         {
             CheckBoxList_Close.Items.Clear();
             CheckBoxList_UpdateError.Items.Clear();
-
+            //20221014 先按編輯再會回復會被關閉,改進入回復時打開
+            DropDownList_Status.Enabled = true;
             TextContent.Text = "";
             //要先找子項目，再找父項目
             if (HtmlUtil.Search_acc_Column(acc, "Last_Model").ToLower() == "ver")
