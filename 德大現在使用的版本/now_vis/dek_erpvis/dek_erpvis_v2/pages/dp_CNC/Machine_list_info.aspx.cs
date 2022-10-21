@@ -546,25 +546,28 @@ namespace dek_erpvis_v2.pages.dp_CNC
             }
             else
                 設備名稱 = str[0];
+
             string address2 = get_machineinformation(mach, "camera_address_2");
             int camera_count = string.IsNullOrEmpty(address2) ? 1 : 2;
+
             list_machname.Add(mach);
             list_machname.Add(設備名稱);
             area.Append("           <div class='left col-md-12 col-sm-12 col-xs-12' style='font-size:19px'>\n");
             area.Append("               <div class ='col-md-12 col-sm-12 col-xs-12' >\n");
             area.Append("                   <div class ='col-md-4 col-sm-12 col-xs-12' style='text-align:center;'>\n");
+            //20221014新增攝影機按鈕
             area.Append("<div style=\"display:flex;flex-warp:nowarp\">");
             for (int i = 1; i <= camera_count; i++) {
                 string camera_column = "camera_address";
                 if (i == 2) camera_column = "camera_address_2";
                 area.Append("<div style=\"display:flex;width:100%;\">");
                 area.Append($"            <button onclick=\"gotocamera('{ get_machineinformation(mach, camera_column)}')\" type=\"button\" id=\"exportChart\" title=\"前往攝影機畫面_{i}\" style=\"width:90%;margin-top:6px; text-align:center; text-valign:center;\">");
-            area.Append("<img src=\"../../assets/images/camera.png\" style=\"width:28px; height: 28px;\">");
-            area.Append("</button>");
+                area.Append("<img src=\"../../assets/images/camera.png\" style=\"width:28px; height: 28px;\">");
+                area.Append("</button>");
                 area.Append("</div>");
-
             }
             area.Append("</div>");
+
             area.Append($"                     <img  class='img-rounded' src='/pages/dp_CNC/CNC_Image/{get_machineinformation(mach, "img_url")}.jpg' alt='...' style='width:100%;height:240px;align-items:center;'>");
             area.Append("                   </div>\n");
             area.Append("                   <div class ='col-md-8 col-sm-12 col-xs-12'>\n");
