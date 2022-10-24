@@ -200,8 +200,10 @@ namespace dek_erpvis_v2.pages.dp_SD
         {
             if (HtmlUtil.Check_DataTable(dt_monthtotal))
             {
+                //20221024 每月訂單篩選增加預交日區間判斷,避免抓到非該區間資料
+                string condittion = $"and 預交日>='{dt_str}' and 預交日<='{dt_end}'";
                 //本月訂單
-                DataTable dt_normal = HtmlUtil.PrintChart_DataTable(dt_monthtotal, dropdownlist_X.SelectedItem.Text, dropdownlist_y.SelectedItem.Text);
+                DataTable dt_normal = HtmlUtil.PrintChart_DataTable(dt_monthtotal, dropdownlist_X.SelectedItem.Text, dropdownlist_y.SelectedItem.Text, condittion);
                 //逾期訂單
                 DataTable dt_Over = HtmlUtil.PrintChart_DataTable(dt_Overdue, dropdownlist_X.SelectedItem.Text, dropdownlist_y.SelectedItem.Text);
 
