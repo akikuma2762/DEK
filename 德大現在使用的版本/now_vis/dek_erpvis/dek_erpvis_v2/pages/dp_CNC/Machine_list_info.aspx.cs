@@ -561,10 +561,12 @@ namespace dek_erpvis_v2.pages.dp_CNC
                 string camera_column = "camera_address";
                 if (i == 2) camera_column = "camera_address_2";
                 area.Append("<div style=\"display:flex;width:100%;\">");
-                area.Append($"            <button onclick=\"gotocamera('{ get_machineinformation(mach, camera_column)}')\" type=\"button\" id=\"exportChart\" title=\"前往攝影機畫面_{i}\" style=\"width:90%;margin-top:6px; text-align:center; text-valign:center;\">");
+                area.Append($"            <button onclick=\"gotocamera('{ get_machineinformation(mach, camera_column)}')\" type=\"button\" id=\"exportChart\" title=\"前往攝影機畫面_{i}\" style=\"width:100%;margin-top:6px; text-align:center; text-valign:center;\">");
                 area.Append("<img src=\"../../assets/images/camera.png\" style=\"width:28px; height: 28px;\">");
                 area.Append("</button>");
                 area.Append("</div>");
+                //兩個按鈕間加空白元素,方便對齊
+                if(i==1) area.Append("<div style=\"width:20%;\"></div>");
             }
             area.Append("</div>");
 
