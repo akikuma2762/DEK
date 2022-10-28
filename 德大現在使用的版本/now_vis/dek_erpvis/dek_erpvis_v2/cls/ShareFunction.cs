@@ -4096,7 +4096,7 @@ namespace dek_erpvis_v2.cls
                     break;
                 case "detaVisHor":
                     CCSStr = "CCS";
-                    IP_Port = "57959";
+                    IP_Port = "57957";
                     break;
 
                 case "dekVisAssm_VM":
