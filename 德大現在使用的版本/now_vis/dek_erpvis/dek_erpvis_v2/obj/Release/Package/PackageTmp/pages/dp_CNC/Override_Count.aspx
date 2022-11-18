@@ -112,65 +112,73 @@
                                         </asp:ScriptManager>
                                         <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="True">
                                             <ContentTemplate>
-                                                <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+
+                                                 <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>廠區名稱</span>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-8">
                                                         <asp:DropDownList ID="DropDownList_factory" CssClass="btn btn-default dropdown-toggle" runat="server" Width="100%" onchange="dropdownlist_change('ContentPlaceHolder1_DropDownList_factory','ContentPlaceHolder1_DropDownList_Group')"></asp:DropDownList>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>群組名稱</span>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-8">
                                                         <asp:DropDownList ID="DropDownList_Group" CssClass="btn btn-default dropdown-toggle" runat="server" Width="100%" onchange="show_machines('ContentPlaceHolder1_DropDownList_Group')"></asp:DropDownList>
                                                     </div>
                                                 </div>
-                                                <div id="div_machines" class="col-md-12 col-sm-6 col-xs-12" style="display: none">
+                                                <div id="div_machines" class="col-md-12 col-sm-12 col-xs-12 flex-align col-style" style="display: none">
                                                     <asp:TextBox ID="TextBox_Machines" runat="server" Style="display: none"></asp:TextBox>
-                                                    <div class="col-md-4 col-sm-12 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
                                                         <span>群組機台</span>
                                                     </div>
-                                                    <div class="col-md-8 col-sm-12 col-xs-8">
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
                                                         <label id="machines"></label>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+
+                                                 <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>類型選擇</span>
                                                     </div>
-                                                    <div class="col-md-8 col-sm-12 col-xs-12">
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
                                                         <asp:DropDownList ID="DropDownList_Type"  CssClass="btn btn-default dropdown-toggle"  Width="100%" class="drop" runat="server">
                                                             <asp:ListItem Value="override">進給率</asp:ListItem>
                                                         </asp:DropDownList>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                    </div>
-                                                    <div class="col-md-2 col-sm-12 col-xs-12">
-                                                        <asp:DropDownList ID="DropDownList_Symbol" CssClass="btn btn-default dropdown-toggle"  Width="150%" class="drop" runat="server">
-                                                            <asp:ListItem Value=">">></asp:ListItem>
-                                                            <asp:ListItem Value="<"><</asp:ListItem>
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                    </div>
-                                                    <div class="col-md-5 col-sm-12 col-xs-12">
-                                                        <asp:TextBox ID="TextBox_Range" runat="server" Style="width: 100%" TextMode="Number"  CssClass="form-control   text-center" class="drop">80</asp:TextBox>
-                                                    </div>
-
                                                 </div>
 
 
-                                                <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <div class="col-md-4 col-sm-3 col-xs-4" style="margin: 5px 0px 5px 0px">
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-8 flex-align">
+                                                        <div class="col-md-5 col-sm-6 col-xs-5 padding-right-4">
+                                                            <asp:DropDownList ID="DropDownList_Symbol" CssClass="btn btn-default dropdown-toggle" Width="100%" class="drop" runat="server">
+                                                                <asp:ListItem Value=">">></asp:ListItem>
+                                                                <asp:ListItem Value="<"><</asp:ListItem>
+                                                            </asp:DropDownList>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-4" style="width: 100%;">
+                                                            <div class="flex-align">
+                                                                <asp:TextBox ID="TextBox_Range" runat="server" Style="width: 100%" TextMode="Number" CssClass="form-control   text-center" class="drop">80</asp:TextBox>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12 col-sm-12 col-xs-12 flex-align col-style">
+                                                    <div class="col-md-4 col-sm-3 col-xs-4">
                                                         <span>日期選擇</span>
                                                     </div>
-                                                    <div class="col-md-8 col-sm-9 col-xs-8" style="margin: 0px 0px 5px 0px">
+                                                    <div class="col-md-8 col-sm-9 col-xs-8">
                                                         <asp:TextBox ID="txt_date" runat="server" Style="" TextMode="Date" CssClass="form-control   text-center"></asp:TextBox>
                                                     </div>
                                                 </div>
+
 
                                             </ContentTemplate>
                                         </asp:UpdatePanel>
@@ -415,5 +423,13 @@
                 document.getElementById('div_machines').style.display = 'block';
             }
         }
+        //20221111新增 選完群組改選回預設時,隱藏群組機台
+        $("#ContentPlaceHolder1_DropDownList_Group").on('change', function () {
+            var select_val = $("#ContentPlaceHolder1_DropDownList_Group").val();
+            if (select_val == "1^")
+            {
+                document.getElementById('div_machines').style.display = 'none';
+            }
+        });
     </script>
 </asp:Content>
