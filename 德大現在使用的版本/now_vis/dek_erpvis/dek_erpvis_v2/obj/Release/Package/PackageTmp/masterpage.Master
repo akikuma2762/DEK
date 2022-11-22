@@ -179,10 +179,11 @@
 
                             <ul class="nav navbar-nav navbar-right">
                                 <div style="position: absolute; width: 37%"></div>
-                                <li class="">
-                                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <asp:Image ID="Image_user" runat="server" Width="29" Height="29" /><%=user_name %>
-                                        <span class=" fa fa-angle-down"></span>
+                                <li >
+                                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="display:flex;">
+                                       <div style="display:flex;align-items:center;"> <asp:Image ID="Image_user" runat="server" Width="29" Height="29" /></div>
+                                        <div><%=user_name %></div>
+                                        <div><span class=" fa fa-angle-down"></span></div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                                         <li>
