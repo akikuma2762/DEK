@@ -729,7 +729,7 @@
             //jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
 
-            create_tablehtmlcode('Change_DataTable', '', 'table-form', '<%=th.ToString() %>', "<%=tr.ToString()%>");
+            create_tablehtmlcode('Change_DataTable', '', 'table-form', '<%=th.ToString() %>', '<%=tr.ToString()%>');
             //產生DataTable前清空所有state資料
             var table = $("#table-form").DataTable();
             table.state.clear();

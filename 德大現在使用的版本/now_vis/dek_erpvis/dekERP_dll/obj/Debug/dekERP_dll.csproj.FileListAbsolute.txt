@@ -43,4 +43,3 @@ D:\DEK_GIT_Repository\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\
 D:\DEK_GIT_Repository\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.csproj.CopyComplete
 D:\DEK_GIT_Repository\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.dll
 D:\DEK_GIT_Repository\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.pdb
-D:\DEK_GIT_Repository\德大現在使用的版本\now_vis\dek_erpvis\dekERP_dll\obj\Debug\dekERP_dll.csproj.AssemblyReference.cache

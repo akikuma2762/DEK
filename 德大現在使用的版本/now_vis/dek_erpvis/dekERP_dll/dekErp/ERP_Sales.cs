@@ -159,10 +159,10 @@ namespace dekERP_dll.dekErp
         }
 
         //20220816生產推移圖立式資料
-        public string Waitingfortheproduction_Assm_Table(string start, string end, string source)
+        public string Waitingfortheproduction_Assm_Table(string upper_month ,string start, string end, string source)
         {
             iniManager = new IniManager($"{ConfigurationManager.AppSettings["ini_local"]}{source}Erp.ini");
-            string sqlcmd = GET_Waitingfortheproduction_Assm_Table(start, end);
+            string sqlcmd = GET_Waitingfortheproduction_Assm_Table(upper_month, start, end);
             return sqlcmd;
         }
         //20220816生產推移圖臥式資料
@@ -291,11 +291,11 @@ namespace dekERP_dll.dekErp
 
 
         //20220816生產推移圖立式語法格式化
-        string GET_Waitingfortheproduction_Assm_Table(string start, string end)
+        string GET_Waitingfortheproduction_Assm_Table(string upper_month, string start, string end)
         {
             StringBuilder sqlcmd = new StringBuilder();
             if (iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction", "") != "")
-                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction", ""), start, end);
+                sqlcmd.AppendFormat(iniManager.ReadIniFile("dekERPVIS", "Waitingfortheproduction", ""), upper_month, start, end);
             return sqlcmd.ToString();
         }
 

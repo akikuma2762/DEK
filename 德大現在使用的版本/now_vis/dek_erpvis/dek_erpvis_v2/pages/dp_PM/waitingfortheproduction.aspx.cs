@@ -190,10 +190,22 @@ namespace dek_erpvis_v2.pages.dp_PM
             if (dropdownlist_Factory.SelectedItem.Value == "sowon")
             {
                 //--------------------------------------------------------首旺部分-----------------------------------------------
+
+                //20221125 新規則-將預計開工於下個月但在這個月完成的資料抓出來
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                sqlcmd= SLS.Waitingfortheproduction_Assm_Table(date_end, date_str, dropdownlist_Factory.SelectedItem.Value);
+                DateTime datetime = DateTime.ParseExact(date_end, "yyyyMMdd", null);
+                datetime = datetime.AddMonths(1);
+                string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
+                string next_MonthEnd = datetime.ToString("yyyyMMdd");
+                sqlcmd = SLS.Waitingfortheproduction_Assm_Table(upper_Month,date_str, next_MonthEnd, dropdownlist_Factory.SelectedItem.Value);
                 DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
                 dt_month = dt_sowon;
+
+                //舊規則
+                //GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                //sqlcmd = SLS.Waitingfortheproduction_Assm_Table(date_end, date_str, dropdownlist_Factory.SelectedItem.Value);
+                //DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
+                //dt_month = dt_sowon;
 
                 //20220822 增加月產能表格
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
@@ -206,10 +218,20 @@ namespace dek_erpvis_v2.pages.dp_PM
             //臥式廠部分
             else
             {
+                //20221125 新規則-將預計開工於下個月但在這個月完成的資料抓出來
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 string condition_copy = condition.Replace("工作站編號", " a.工作站編號 ");
                 string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
-                sqlcmd = SLS.Waitingfortheproduction_Hor_Table(upper_Month, condition_copy, date_str, date_end, dropdownlist_Factory.SelectedItem.Value);
+                DateTime datetime = DateTime.ParseExact(date_end, "yyyyMMdd", null);
+                datetime = datetime.AddMonths(1);
+                string next_MonthEnd = datetime.ToString("yyyyMMdd");
+                sqlcmd = SLS.Waitingfortheproduction_Hor_Table(upper_Month, condition_copy, date_str, next_MonthEnd, dropdownlist_Factory.SelectedItem.Value);
+
+                //舊規則
+                //GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                //string condition_copy = condition.Replace("工作站編號", " a.工作站編號 ");
+                //string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
+                //sqlcmd = SLS.Waitingfortheproduction_Hor_Table(upper_Month, condition_copy, date_str, date_end, dropdownlist_Factory.SelectedItem.Value);
                 DataTable dt_sowon = DataTableUtils.GetDataTable(sqlcmd);
 
                 //20220822 增加月產能表格,大圓盤&臥式統一在此取得
@@ -260,9 +282,20 @@ namespace dek_erpvis_v2.pages.dp_PM
             //--------------------------------------------------------德科部分-----------------------------------------------
             //從dek ERP撈取本月排程資料
             //20220728 大圓盤部分暫時全搜索,待從立式移除後,歸類於臥室
+
+            //20221125 新規則-將預計開工於下個月但在這個月完成的資料抓出來
             GlobalVar.UseDB_setConnString(myclass.GetConnByDekERPDataTable);
             string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
-            sqlcmd = SLS.Waitingfortheproduction_BigDisc_Table(upper_Month, date_str, date_end,"dek");
+            DateTime datetime = DateTime.ParseExact(date_end, "yyyyMMdd", null);
+            datetime = datetime.AddMonths(1);
+            string next_MonthEnd = datetime.ToString("yyyyMMdd");
+            sqlcmd = SLS.Waitingfortheproduction_BigDisc_Table(upper_Month, date_str, next_MonthEnd, "dek");
+
+            //20221125 舊規則-
+            //GlobalVar.UseDB_setConnString(myclass.GetConnByDekERPDataTable);
+            //string upper_Month = (HtmlUtil.StrToDate(date_str).AddMonths(-1)).ToString("yyyyMMdd");
+            //sqlcmd = SLS.Waitingfortheproduction_BigDisc_Table(upper_Month, date_str, date_end, "dek");
+
 
             DataTable dek_dt = DataTableUtils.GetDataTable(sqlcmd);
             //從組裝資料表撈取相對應資料
@@ -370,6 +403,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             DataTable dt_day = Get_Monthday(date_str, date_end);
             string sqlcmd = "";
             DataRow[] rows = null;
+            int finisn_count = 0;
             for (int i = 0; i < dt_day.Rows.Count; i++)
             {
                 //預計生產
@@ -386,14 +420,23 @@ namespace dek_erpvis_v2.pages.dp_PM
                 預計生產量_至今 += DataTableUtils.toInt(dt_day.Rows[i]["日期"].ToString()) <= DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) ? rows.Length : 0;
 
                 //實際生產
-                sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成' {condition} ";
+                if (i == 0)
+                {
+                    sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成' {condition} OR {dt_day.Rows[i]["日期"]}>實際完成時間";
+                }
+                else 
+                {
+                    sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成' {condition} ";
+                }
                 rows = dt_本月應生產.Select(sqlcmd);
+                finisn_count += rows.Length;
                 if (DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
                     實際生產_data += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? "{" + $"label:'{dt_day.Rows[i]["日期"].ToString().Substring(6, 2)}日',y:{rows.Length} " + "}," : "";
                 else
                     實際生產_data += "{" + $"label:'{dt_day.Rows[i]["日期"].ToString().Substring(6, 2)}日',y:{rows.Length} " + "},";
 
-                實際生產_data_y_max += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
+                //實際生產_data_y_max += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
+                實際生產_data_y_max = finisn_count;
             }
             預定生產_data_y_max = 預定生產_data_y_max == 0 ? 1 : 預定生產_data_y_max;
             應有進度 = DataTableUtils.toDouble(預計生產量_至今 * 100 / 預定生產_data_y_max).ToString("0") + "%";

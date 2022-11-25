@@ -499,7 +499,7 @@
         //20220901判斷數字群組
         $(".int_Value").keyup(function () {
             // 驗證輸入字串
-            const rules = /^[1-9][0-9]*$/;
+            const rules = /^[1-9]*$/;
             var id = $(this).parent().attr("id")
             var value = $(this).val();
             if (!rules.test(value) && value != "") {

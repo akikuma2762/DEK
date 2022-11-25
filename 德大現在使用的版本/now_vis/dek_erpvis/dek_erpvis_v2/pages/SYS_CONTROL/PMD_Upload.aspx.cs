@@ -496,15 +496,15 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string value = "";
 
             if (field_name == "編輯")
-                value = $"<td style='width:7%'><b><u><a href='javascript: void()' onclick=Set_Value('{DataTableUtils.toString(row["組裝編號"])}'," +
-                                                        $"'{DataTableUtils.toString(row["排程編號"])}'," +
-                                                                        $"'{DataTableUtils.toString(row["進度"])}'," +
-                                                                        $"'{DataTableUtils.toString(row["狀態"])}'," +
-                                                                        $"'{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}'," +
-                                                                        $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["組裝日"]), "-")}'," +
-                                                                        $"'{HtmlUtil.changetimeformat(DataTableUtils.toString(row["實際組裝時間"]), "-")}') data-toggle = 'modal' data-target = '#exampleModal'>編輯</a></div></u></b></td>";
+                value = $"<td style=\"width:7%\"><b><u><a href=\"javascript: void()\" onclick=Set_Value(\"{DataTableUtils.toString(row["組裝編號"])}\"," +
+                                                        $"\"{DataTableUtils.toString(row["排程編號"])}\"," +
+                                                                        $"\"{DataTableUtils.toString(row["進度"])}\"," +
+                                                                        $"\"{DataTableUtils.toString(row["狀態"])}\"," +
+                                                                        $"\"{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}\"," +
+                                                                        $"\"{HtmlUtil.changetimeformat(DataTableUtils.toString(row["組裝日"]), "-")}\"," +
+                                                                        $"\"{HtmlUtil.changetimeformat(DataTableUtils.toString(row["實際組裝時間"]), "-")}\") data-toggle = \"modal\" data-target = \"#exampleModal\">編輯</a></div></u></b></td>";
             else if (field_name == "刪除")
-                value = $"<td style='width:7%'><b><u><a href='javascript: void()' onclick=Delete_Value('{DataTableUtils.toString(row["組裝編號"])}','{DataTableUtils.toString(row["排程編號"])}','{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}')>刪除</a></u></b></td>";
+                value = $"<td style=\"width:7%\"><b><u><a href=\"javascript: void()\" onclick=Delete_Value(\"{DataTableUtils.toString(row["組裝編號"])}\",\"{DataTableUtils.toString(row["排程編號"])}\",\"{Change_WorkID(DataTableUtils.toString(row["工作站名稱"]))}\")>刪除</a></u></b></td>";
             else if (field_name == "組裝日" || field_name == "實際組裝時間")
                 value = $"<td>{HtmlUtil.changetimeformat(DataTableUtils.toString(row[field_name]))}</td>";
 
