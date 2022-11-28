@@ -255,6 +255,9 @@ namespace dek_erpvis_v2.pages.dp_PD
             string CompLoacation = "";
             string[] QueryStr;
             QueryStr = HtmlUtil.Return_str(Request.QueryString["key"]);
+            string LineNum = QueryStr[1].ToString();
+            string ReqType = QueryStr[3].ToString();
+            bool no_Error = true;
             if (Key != "")
             {
 
@@ -263,46 +266,66 @@ namespace dek_erpvis_v2.pages.dp_PD
                 if (CompLoacation.ToUpper().Contains("HOR"))
                     SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssmHor;
 
-                if (QueryStr != null)
-                    condition = "排程編號=" + "'" + Key + "'" + " AND " + "工作站編號=" + "'" + QueryStr[1] + "'";
-                else
-                    condition = "排程編號=" + "'" + Key + "'";
+                //if (RadioButtonList_select_type.SelectedItem.Text == "完成") 
+                //{
+                //    no_Error = check_error(LineNum, CompLoacation);
+                //}
 
-                DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
-                DataRow dr = DataTableUtils.DataTable_GetDataRow(ShareMemory.SQLAsm_WorkStation_State, condition);
 
-                DataRow dr_select = SFun.Set_NewStatus(dr, RadioButtonList_select_type.SelectedValue, DropDownList_progress.SelectedItem.Text);
-                //
-                if (dr_select != null)
+                if (no_Error)
                 {
 
-                    CORD_NO = dr_select["鍵編號"].ToString();
-                    CORD_SN = dr_select["鍵序號"].ToString();
-                }
+                    if (QueryStr != null)
+                        condition = "排程編號=" + "'" + Key + "'" + " AND " + "工作站編號=" + "'" + QueryStr[1] + "'";
+                    else
+                        condition = "排程編號=" + "'" + Key + "'";
 
-                //bool UpdataOK = DataTableUtils.Update_DataRow(ShareMemory.SQLAsm_WorkStation_State, condition, dr_select);
-                DataTable dt = DataTableUtils.GetDataTable(ShareMemory.SQLAsm_WorkStation_State, condition);
-                bool updataok = SFun.change_status(acc,SFun.GetConnByDekVisTmp, dt, ShareMemory.SQLAsm_WorkStation_State, condition, RadioButtonList_select_type.SelectedItem.Text, TextBox_Report.Text.Replace("'", "^").Replace('"', '#').Replace(" ", "$").Replace("\r\n", "@"), DropDownList_progress.SelectedItem.Text.Trim('%'));
-                SFun.Set_MachineID_Line_Updata(dr["工作站編號"].ToString());
-                if (RadioButtonList_select_type.SelectedItem.Text == "完成")
-                {
-                    if (!Page.ClientScript.IsStartupScriptRegistered("alert"))
-                    {
-                        Page.ClientScript.RegisterStartupScript
-                            (this.GetType(), "alert", "invokeMeMaster(" + "'" + CORD_NO + "'" + "," + "'" + CORD_SN + "'" + ");", true);
-                    }
-                    //updata sowan database 
-
-                    DataTableUtils.Conn_String = myclass.GetConnByDetaSowon;
-                    DataRow dr_sowan = DataTableUtils.DataTable_GetDataRow("select * from FJWSQL.DBO.A22_FAB WHERE CORD_NO=" + "'" + CORD_NO + "'" + " AND CORD_SN=" + "'" + CORD_SN + "'");
-                    if (dr_sowan != null)
-                    {
-                        dr_sowan["OL_CLOSE"] = "已完工";
-                        DataTableUtils.Conn_String = myclass.GetConnByDetaSowon;
-                        bool ok = DataTableUtils.Update_DataRow("FJWSQL.DBO.A22_FAB", "CORD_NO = " + "'" + CORD_NO + "'" + " AND CORD_SN = " + "'" + CORD_SN + "'", dr_sowan);
-                    }
                     DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+                    DataRow dr = DataTableUtils.DataTable_GetDataRow(ShareMemory.SQLAsm_WorkStation_State, condition);
+
+                    DataRow dr_select = SFun.Set_NewStatus(dr, RadioButtonList_select_type.SelectedValue, DropDownList_progress.SelectedItem.Text);
+                    //
+                    if (dr_select != null)
+                    {
+
+                        CORD_NO = dr_select["鍵編號"].ToString();
+                        CORD_SN = dr_select["鍵序號"].ToString();
+                    }
+
+                    //bool UpdataOK = DataTableUtils.Update_DataRow(ShareMemory.SQLAsm_WorkStation_State, condition, dr_select);
+                    DataTable dt = DataTableUtils.GetDataTable(ShareMemory.SQLAsm_WorkStation_State, condition);
+                    bool updataok = SFun.change_status(acc, SFun.GetConnByDekVisTmp, dt, ShareMemory.SQLAsm_WorkStation_State, condition, RadioButtonList_select_type.SelectedItem.Text, TextBox_Report.Text.Replace("'", "^").Replace('"', '#').Replace(" ", "$").Replace("\r\n", "@"), DropDownList_progress.SelectedItem.Text.Trim('%'));
+                    SFun.Set_MachineID_Line_Updata(dr["工作站編號"].ToString());
+                    if (RadioButtonList_select_type.SelectedItem.Text == "完成")
+                    {
+                        if (!Page.ClientScript.IsStartupScriptRegistered("alert"))
+                        {
+                            Page.ClientScript.RegisterStartupScript
+                                (this.GetType(), "alert", "invokeMeMaster(" + "'" + CORD_NO + "'" + "," + "'" + CORD_SN + "'" + ");", true);
+                        }
+                        //updata sowan database 
+
+                        DataTableUtils.Conn_String = myclass.GetConnByDetaSowon;
+                        DataRow dr_sowan = DataTableUtils.DataTable_GetDataRow("select * from FJWSQL.DBO.A22_FAB WHERE CORD_NO=" + "'" + CORD_NO + "'" + " AND CORD_SN=" + "'" + CORD_SN + "'");
+                        if (dr_sowan != null)
+                        {
+                            dr_sowan["OL_CLOSE"] = "已完工";
+                            DataTableUtils.Conn_String = myclass.GetConnByDetaSowon;
+                            bool ok = DataTableUtils.Update_DataRow("FJWSQL.DBO.A22_FAB", "CORD_NO = " + "'" + CORD_NO + "'" + " AND CORD_SN = " + "'" + CORD_SN + "'", dr_sowan);
+                        }
+                        DataTableUtils.Conn_String = SFun.GetConnByDekVisTmp;
+                    }
+
                 }
+                else 
+                {
+                    msg = "尚有異常未解決,無法完成!!!";
+                    Response.Write($"<script>alert('{msg}');</script>");
+                    //Response.Write("<script language='javascript'>alert('伺服器回應 : " + msg + "');</script>");
+                }
+
+
+                
             }
             else
             {
@@ -314,11 +337,51 @@ namespace dek_erpvis_v2.pages.dp_PD
             string url = WebUtils.UrlStringEncode("LineNum=" + parameterList[0] + ",ReqType=" + parameterList[1]);
             if (parameterList.Count != 0)
                 Response.Redirect("../dp_PM/Asm_LineOverView.aspx?key=" + url);
+            //string full_url = "../dp_PM/Asm_LineOverView.aspx?key=" + url;
+            //if (parameterList.Count != 0)
+            //    Response.Write($"<script>alert('删除成功！');window.location.href='{full_url}';</script>");
 
         }
         protected void Button_Jump_Click(object sender, EventArgs e)
         {
             Response.Redirect("Asm_ErrorDetail.aspx?key=" + TextBox_textTemp.Text);
+        }
+
+
+
+
+        //20221128新增後端判斷異常數量
+        protected bool check_error(string LineNum,string Line)
+        {
+            bool no_Error = true;
+            GlobalVar.UseDB_setConnString(SFun.GetConnByDekdekVisAssmHor);
+            if (Line.ToUpper().Contains("HOR"))
+                GlobalVar.UseDB_setConnString(SFun.GetConnByDekdekVisAssmHor);
+            string sql = $"select * from 工作站異常維護資料表 where 排程編號 = '{LineNum}'";
+            DataTable dt_error = DataTableUtils.GetDataTable(sql);
+            string cmd = $"工作站編號='{LineNum}'";
+            DataRow[] rows_error = dt_error.Select(cmd);
+            foreach (DataRow row in rows_error)
+            {
+                string parent_Num = row[0].ToString();
+                sql = $"select * from 工作站異常維護資料表 where 父編號 = '{parent_Num}' order by 時間紀錄 desc";
+                DataTable dt_error_childs = DataTableUtils.GetDataTable(sql);
+                if (HtmlUtil.Check_DataTable(dt_error_childs))
+                {
+
+                    if (DataTableUtils.toString(dt_error_childs.Rows[0]["結案判定類型"]) == "")
+                    {
+                        no_Error = false;
+                        break;
+                    }
+                }
+                else
+                {
+                    no_Error = false;
+                    break;
+                }
+            }
+            return no_Error;
         }
 
     }

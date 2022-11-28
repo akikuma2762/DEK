@@ -1902,18 +1902,21 @@ namespace dek_erpvis_v2.cls
                     for (int i = 0; i < dt_select.Rows.Count; i++)
                     {
                         td += "<tr class='gradeX'> \n";
+                        list = check_case(DataTableUtils.toString(dt_select.Rows[i]["排程編號"]), GetConnByDekVisTmp, LineNum.ToString(), ref nosolved);
+
                         for (int j = 0; j < dt_select.Columns.Count; j++)
                         {
                             if (dt_select.Columns[j].ColumnName == "狀態")
                             {
+                                string err = list[1].ToString().Replace(" ","");
                                 if (dt.Rows[i]["狀態"].ToString() == "暫停")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'> <span style='color:red'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'> <span style='color:red'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else if (dt.Rows[i]["狀態"].ToString() == "完成")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:green'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'><span style='color:green'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else if (dt.Rows[i]["狀態"].ToString() == "啟動")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:blue'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'><span style='color:blue'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:black'><u>0%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'><span style='color:black'><u>0%</u></span></a></td> \n";
 
                                 color = "";
 
@@ -1962,7 +1965,7 @@ namespace dek_erpvis_v2.cls
                                     ErrorStr = DataTableUtils.toString(dt_select.Rows[i][j]).Split(',');
                                     for (int k = 1; k < ErrorStr.Length - 2; k++)
                                         SubError += " " + ErrorStr[k];
-                                    list = check_case(DataTableUtils.toString(dt_select.Rows[i]["排程編號"]), GetConnByDekVisTmp, LineNum.ToString(), ref nosolved);
+                                    //list = check_case(DataTableUtils.toString(dt_select.Rows[i]["排程編號"]), GetConnByDekVisTmp, LineNum.ToString(), ref nosolved);
                                     // content
                                     string url = $"ErrorID={DataTableUtils.toString(dt_select.Rows[i]["排程編號"])},ErrorLineNum={dt.Rows[0]["工作站編號"]},ErrorLineName={LineName}";
                                     if (ConfigurationManager.AppSettings["show_function"] == "1")
@@ -1981,7 +1984,7 @@ namespace dek_erpvis_v2.cls
                                 }
                                 else
                                 {
-                                    list = check_case(DataTableUtils.toString(dt_select.Rows[i]["排程編號"]), GetConnByDekVisTmp, LineNum.ToString(), ref nosolved);
+                                    //list = check_case(DataTableUtils.toString(dt_select.Rows[i]["排程編號"]), GetConnByDekVisTmp, LineNum.ToString(), ref nosolved);
                                     string url = $"ErrorID={DataTableUtils.toString(dt_select.Rows[i]["排程編號"])},ErrorLineNum={dt.Rows[0]["工作站編號"]},ErrorLineName={LineName}";
                                     if (ConfigurationManager.AppSettings["show_function"] == "1")
                                         td += $"<td style='text-align:center;width:48%;vertical-align: middle'><a onclick=jump_Asm_ErrorDetail('{WebUtils.UrlStringEncode(url)}')  href=\"javascript: void()\"><div style='height:100%;width:100%;font-size:20px;vertical-align: middle'>{list[0]} \t <u> [{list[1]}]</u></div></a></td> \n";

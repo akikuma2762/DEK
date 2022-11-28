@@ -289,12 +289,14 @@
             var key = document.getElementsByName("ctl00$ContentPlaceHolder1$Text2")[0].value = X;//Text_Story  
         };
 
-        function SetValue(number, percent, Report) {
+        function SetValue(number, percent, Report,error_str) {
 
             $('#ContentPlaceHolder1_TextBox_Number').val('' + number + '');
             $('#ContentPlaceHolder1_TextBox_show').val('' + number + '');
             $('#ContentPlaceHolder1_TextBox_Report').val('' + Report.replaceAll("^", "'").replaceAll('#', '"').replaceAll("$", " ").replaceAll('@', '\r\n') + '');
-
+            var error_ary = error_str.split("/");
+            top["err_count"] = error_ary[0];
+            console.log(error_ary);
             selectElement('ContentPlaceHolder1_DropDownList_progress', percent);
             checkpower();
         }
@@ -323,14 +325,23 @@
         }
         $("#btncheck").click(function () {
 
-            var WhatSystem = navigator.userAgent;
-            if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+            //20221128新增前端判斷異常數量
+            if (top["err_count"] != 0) {
+
+                alert("異常數量不為零!,無法完成!");
             } else {
-                $.blockUI({ message: '<img src="../../images/loading.gif" />' });
-                document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 1000000;
-                document.getElementById('btncheck').disabled = true;
+
+                var WhatSystem = navigator.userAgent;
+                if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
+                } else {
+                    $.blockUI({ message: '<img src="../../images/loading.gif" />' });
+                    document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 1000000;
+                    document.getElementById('btncheck').disabled = true;
+                }
+                document.getElementById('<%=button_select.ClientID %>').click();
+
             }
-            document.getElementById('<%=button_select.ClientID %>').click();
+           
         });
         function jump_Asm_ErrorDetail(paramer) {
 
