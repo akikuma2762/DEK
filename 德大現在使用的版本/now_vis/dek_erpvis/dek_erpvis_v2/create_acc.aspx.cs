@@ -8,6 +8,7 @@ using System.Data;
 using dek_erpvis_v2.cls;
 using Support;
 using System.Text.RegularExpressions;
+using System.Web.Configuration;
 
 namespace dek_erpvis_v2
 {
@@ -75,7 +76,27 @@ namespace dek_erpvis_v2
                         row["ADD_TIME"] = DateTime.Now.ToString();
                         row["Belong_Factory"] = DropDownList_Factory.SelectedItem.Value;
                         if (clsDB_sw.Insert_DataRow("USERS", row) == true)
-                            Response.Write("<script>alert('伺服器回應 : 已申請成功! 即將跳轉至登入頁!');location.href='../login.aspx';</script>");
+                        {
+                            //2022/12/02 新增帳號時填入預設SYSTEM_PARAMETER by秋雄
+                            DataTable ds_NoRow = clsDB_sw.DataTable_TableNoRow("SYSTEM_PARAMETER");
+                            row = ds_NoRow.NewRow();
+                            string id = "SET" + myclass.get_ran_id();
+                            row["SETID"] = id;
+                            row["USER_ACC"] = TextBox_Acc.Text.ToString();
+                            row["DATE_STR"] = WebConfigurationManager.AppSettings["defult_StartDay"];
+                            row["DATE_END"] = WebConfigurationManager.AppSettings["defult_EndDay"];
+                            bool success= clsDB_sw.Insert_DataRow("SYSTEM_PARAMETER", row);
+                            if (success)
+                            {
+                                Response.Write("<script>alert('伺服器回應 : 已申請成功! 即將跳轉至登入頁!');location.href='../login.aspx';</script>");
+                            }
+                            else {
+                                Response.Write("<script>alert('伺服器回應 : 已申請成功!基礎參數寫入失敗! 即將跳轉至登入頁!');location.href='../login.aspx';</script>");
+                            }
+                        }
+                        else
+                            Response.Write("<script>alert('伺服器回應 : 新增帳號失敗!');</script>");
+
                     }
                     else
                         Response.Write("<script>alert('伺服器回應 : 此手機號碼已經有人使用! 請輸入其它號碼!');</script>");
@@ -85,6 +106,7 @@ namespace dek_erpvis_v2
             }
             else
                 Response.Write("<script>alert('帳號或密碼包含特殊符號，請重新輸入');</script>");
+            clsDB_sw.dbClose();
         }
         private void Set_DropDownlist()
         {

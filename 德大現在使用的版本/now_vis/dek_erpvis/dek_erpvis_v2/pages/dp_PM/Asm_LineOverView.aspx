@@ -325,9 +325,10 @@
         }
         $("#btncheck").click(function () {
 
-            //20221128新增前端判斷異常數量
-            if (top["err_count"] != 0) {
-
+            //20221128新增前端判斷異常數量 status =2 為完成
+            if (top["err_count"] != 0 && top["status"]==2) {
+              
+                
                 alert("異常數量不為零!,無法完成!");
             } else {
 
@@ -366,5 +367,11 @@
         }
         //20221005查看 table資料是否正常
         top['xData'] = '<%=X_Data%>';
+
+        //20221130新增 判斷modal點擊哪種狀態
+        $("#ContentPlaceHolder1_RadioButtonList_select_type input").click(function () {
+            top["status"] = $(this).val();
+            console.log($(this).val());
+        });
     </script>
 </asp:Content>

@@ -282,7 +282,7 @@
                                                 </div>
                                                 <div class="col-12">
                                                     <label for="email">電郵Email * :</label>
-                                                    <asp:TextBox ID="TextBox_email" runat="server" class="form-control" placeholder=" ex. ABC123@deta.com" TextMode="Email"></asp:TextBox>
+                                                    <asp:TextBox ID="TextBox_email" runat="server" class="form-control" placeholder=" ex:ABC123@deta.com" TextMode="Email"></asp:TextBox>
                                                 </div>
                                                 <div class="col-12">
                                                     <label for="heard">部門Department * :</label>

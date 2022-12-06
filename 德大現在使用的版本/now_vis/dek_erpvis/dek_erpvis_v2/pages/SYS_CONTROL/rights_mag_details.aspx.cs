@@ -277,8 +277,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                                 DataTable ds = DataTableUtils.GetDataTable(sqlcmd);
                                 if (ds != null)
                                 {
-
-                                    DataRow rsw = ds.NewRow();
+                                    //20221202 show_page 不使用空白Tablerow 會自動產生ID,導致寫入錯誤 by 秋雄
+                                    DataTable ds_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
+                                    DataRow rsw = ds_NoRow.NewRow();
                                     rsw["URL"] = DataTableUtils.toString(li.Value);
                                     rsw["account"] = selected_user_acc;
                                     rsw["Allow"] = "Y";

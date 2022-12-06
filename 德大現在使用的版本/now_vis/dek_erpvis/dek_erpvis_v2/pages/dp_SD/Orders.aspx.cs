@@ -888,9 +888,25 @@ namespace dek_erpvis_v2.pages.dp_SD
             DateTime endDay = DateTime.ParseExact(date, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
             DateTime startDay = endDay.AddMonths(-1);
 
+            //20221202 補強判斷月份最大最小日期範圍
+            int d_end = DateTime.DaysInMonth(endDay.Year, endDay.Month);
+            int DATE_END = int.Parse(user_Acc.Rows[0]["DATE_END"].ToString());
+            int d_start = DateTime.DaysInMonth(startDay.Year, startDay.Month);
+            int DATE_STR = int.Parse(user_Acc.Rows[0]["DATE_STR"].ToString());
+            if (DATE_END <= d_end)
+            {
+                d_end = DATE_END;
+
+            }
+            if (DATE_STR <= d_start) 
+            {
+                d_start = DATE_STR;
+            }
+            
+
             //結合帳號月區間重新組合日期
-            endDay = new DateTime(endDay.Year, endDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
-            startDay = new DateTime(startDay.Year, startDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
+            endDay = new DateTime(endDay.Year, endDay.Month, d_end);
+            startDay = new DateTime(startDay.Year, startDay.Month, d_start);
             arr[0] = startDay.ToString("yyyyMMdd");
             arr[1] = endDay.ToString("yyyyMMdd");
             arr[2] = (((endDay - startDay).Days) + 1).ToString();
