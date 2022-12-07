@@ -129,10 +129,7 @@
                         <h4 class="modal-title modaltextstyle" id="myModalLabel2"><i class="fa fa-file-text"></i>編輯資料</h4>
                     </div>
                     <div class="modal-body">
-                        <div id="testmodal2" style="padding: 5px 20px;">
-                            <asp:TextBox ID="TextBox_OrderNum" runat="server" Style="display: none"></asp:TextBox>
-                            <asp:TextBox ID="TextBox_Schedule" runat="server" Style="display: none"></asp:TextBox>
-                            <asp:TextBox ID="TextBox_WorkNumber" runat="server" Style="display: none"></asp:TextBox>
+                        <div id="testmodal2" style="padding: 5px 20px;">  
 
                             <div class="form-group">
                                 <div class="row">
@@ -212,7 +209,6 @@
                     </div>
                     <div class="modal-footer">
                         <button id="btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
-                        <asp:Button ID="Button_Save" runat="server" Text="Button" OnClick="Button_Save_Click" Style="display: none" />
                         <button id="btnSave" type="button" class="btn btn-primary antosubmit2">儲存</button>
                     </div>
                 </div>
@@ -342,7 +338,6 @@
                     </div>
                     <div class="modal-footer">
                         <button id="Insert_Btn_Cancel" type="button" class="btn btn-default antoclose2" data-dismiss="modal">退出</button>
-                        <asp:Button ID="Button2" runat="server" Text="Button" OnClick="Button_Save_Click" Style="display: none" />
                         <button id="Insert_btnSave" type="button" onclick="insertValue()" class="btn btn-primary antosubmit2">儲存</button>
                     </div>
                 </div>
@@ -417,8 +412,8 @@
             top["Txt_End"] = "";
 
             //20220930 新增原始data
-            top["TextBox_Order_Origin"] = "";
-            top["TextBox_Number_Origin"] = "";
+            top["Order_Origin"] = "";
+            top["Schedule_Origin"] = "";
 
             var warning = {};
             function Set_Value(Order, Number, Percent, Status, WorkNumber, Date, TrueDate) {
@@ -434,8 +429,10 @@
 
                 $('#ContentPlaceHolder1_TextBox_Date').val('' + Date + '');
                 $('#ContentPlaceHolder1_TextBox_Truedate').val('' + TrueDate + '');
-                top["TextBox_Order_Origin"] = Order;
-                top["TextBox_Number_Origin"] = Number;
+
+                top["Order_Origin"] = Order;
+                top["Schedule_Origin"] = Number;
+                top["WorkStation_Number_Origin"] = WorkNumber;
             }
             //刪除
             function Delete_Value(Order, Number, WorkNumber) {
@@ -455,16 +452,6 @@
             //確認修改鈕
             $("#btnSave").click(function () {
                 var inupu_Null = false;
-                //var WhatSystem = navigator.userAgent;
-                //if (WhatSystem.match(/(iphone|ipad|ipod);?/i)) {
-                //} else {
-                //    $.blockUI({ message: '<img src="../../images/loading.gif" />' });
-                //    document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 10000;
-                //    document.getElementById('btnSave').disabled = true;
-                //    document.getElementById('btn_Cancel').disabled = true;
-                //}
-                //20220824 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
-                //document.getElementById('<%=Button_Save.ClientID %>').click();  
                 var data = update_Item_Data();
                 data["click_Type"] = "Update";
                 //20220929 補空白防呆判斷
@@ -617,8 +604,8 @@
                     "TextBox_Order": `${TextBox_Order}`, "TextBox_Number": `${TextBox_Number}`,
                     "DropDownList_Percent": `${DropDownList_Percent}`, "DropDownList_Status": `${DropDownList_Status}`,
                     "DropDownList_Work": `${DropDownList_Work}`,
-                    "TextBox_OrderNum": `${TextBox_OrderNum}`, "TextBox_Schedule": `${TextBox_Schedule}`,
-                    "TextBox_WorkNumber": `${TextBox_WorkNumber}`, "TextBox_Date": `${TextBox_Date}`,
+                    "Order_Origin": `${top["Order_Origin"]}`, "Schedule_Origin": `${top["Schedule_Origin"]}`,
+                    "WorkStation_Number_Origin": `${top["WorkStation_Number_Origin"]}`, "TextBox_Date": `${TextBox_Date}`,
                     "TextBox_Truedate": `${TextBox_Truedate}`, "Factory": `${Factory}`,
                     "txt_str": `${txt_str}`, "txt_end": `${txt_end}`, "click_Type": `${click_Type}`,
                     "product_Line": `${product_Line}`, "TextBox_keyWord": `${TextBox_keyWord}`

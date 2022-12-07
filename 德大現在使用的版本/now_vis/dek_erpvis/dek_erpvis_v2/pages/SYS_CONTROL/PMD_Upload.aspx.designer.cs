@@ -87,33 +87,6 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         protected global::System.Web.UI.WebControls.Button button_select;
 
         /// <summary>
-        /// TextBox_OrderNum 控制項。
-        /// </summary>
-        /// <remarks>
-        /// 自動產生的欄位。
-        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_OrderNum;
-
-        /// <summary>
-        /// TextBox_Schedule 控制項。
-        /// </summary>
-        /// <remarks>
-        /// 自動產生的欄位。
-        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_Schedule;
-
-        /// <summary>
-        /// TextBox_WorkNumber 控制項。
-        /// </summary>
-        /// <remarks>
-        /// 自動產生的欄位。
-        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox_WorkNumber;
-
-        /// <summary>
         /// TextBox_Order 控制項。
         /// </summary>
         /// <remarks>
@@ -175,15 +148,6 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TextBox_Truedate;
-
-        /// <summary>
-        /// Button_Save 控制項。
-        /// </summary>
-        /// <remarks>
-        /// 自動產生的欄位。
-        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button_Save;
 
         /// <summary>
         /// Custmer_Name 控制項。
@@ -274,14 +238,5 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox Build_Date_True;
-
-        /// <summary>
-        /// Button2 控制項。
-        /// </summary>
-        /// <remarks>
-        /// 自動產生的欄位。
-        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button2;
     }
 }

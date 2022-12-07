@@ -4725,6 +4725,34 @@ namespace dek_erpvis_v2.cls
             return obj;
         }
 
+
+        //---------------------------------202212--------------------------------//
+        //20221128新增後端判斷異常是否解決
+        public bool check_error(string LineNum, string ScheduleNum, string Line)
+        {
+            bool no_Error = true;
+            GlobalVar.UseDB_setConnString(GetConnByDekdekVisAssm);
+            if (Line.ToUpper().Contains("HOR"))
+                GlobalVar.UseDB_setConnString(GetConnByDekdekVisAssmHor);
+            string sql = $"select * from 工作站異常維護資料表 where 排程編號 = '{ScheduleNum}'";
+            DataTable dt_error = DataTableUtils.GetDataTable(sql);
+            if (HtmlUtil.Check_DataTable(dt_error)) 
+            {
+                string cmd = $"父編號 is not null";
+                DataRow[] rows_error = dt_error.Select(cmd);
+                foreach (DataRow row_child in rows_error)
+                {
+                    if (DataTableUtils.toString(row_child["結案判定類型"]) == "")
+                    {
+                        no_Error = false;
+                        break;
+                    }
+                }
+            }
+            return no_Error;
+        }
+        //-----------------------------------------------------------------------//
+
     }
     //=====================Class==============================================================
     class LineData

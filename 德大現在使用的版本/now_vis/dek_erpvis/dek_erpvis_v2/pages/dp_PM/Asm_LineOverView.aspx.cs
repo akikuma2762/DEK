@@ -268,7 +268,7 @@ namespace dek_erpvis_v2.pages.dp_PD
 
                 //if (RadioButtonList_select_type.SelectedItem.Text == "完成") 
                 //{
-                //    no_Error = check_error(LineNum, CompLoacation);
+                //    no_Error = check_error(LineNum,Key, CompLoacation);
                 //}
 
 
@@ -350,39 +350,7 @@ namespace dek_erpvis_v2.pages.dp_PD
 
 
 
-        //20221128新增後端判斷異常數量
-        protected bool check_error(string LineNum,string Line)
-        {
-            bool no_Error = true;
-            GlobalVar.UseDB_setConnString(SFun.GetConnByDekdekVisAssmHor);
-            if (Line.ToUpper().Contains("HOR"))
-                GlobalVar.UseDB_setConnString(SFun.GetConnByDekdekVisAssmHor);
-            string sql = $"select * from 工作站異常維護資料表 where 排程編號 = '{LineNum}'";
-            DataTable dt_error = DataTableUtils.GetDataTable(sql);
-            string cmd = $"工作站編號='{LineNum}'";
-            DataRow[] rows_error = dt_error.Select(cmd);
-            foreach (DataRow row in rows_error)
-            {
-                string parent_Num = row[0].ToString();
-                sql = $"select * from 工作站異常維護資料表 where 父編號 = '{parent_Num}' order by 時間紀錄 desc";
-                DataTable dt_error_childs = DataTableUtils.GetDataTable(sql);
-                if (HtmlUtil.Check_DataTable(dt_error_childs))
-                {
-
-                    if (DataTableUtils.toString(dt_error_childs.Rows[0]["結案判定類型"]) == "")
-                    {
-                        no_Error = false;
-                        break;
-                    }
-                }
-                else
-                {
-                    no_Error = false;
-                    break;
-                }
-            }
-            return no_Error;
-        }
+        
 
     }
 }
