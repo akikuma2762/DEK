@@ -51,6 +51,22 @@
                     <p></p>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                <div class="tile-stats dashboard_graph x_panel Div_Shadow">
+                    <div class="icon" style="margin-top:10px;"><i class="fa fa-money"></i></div>
+                    <div class="h3 text-secondary ">單價變更次數</div>
+                    <div class="count text-success"><%=HTML_單價變更次數 %> 次</div>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                <div class="tile-stats dashboard_graph x_panel Div_Shadow">
+                    <div class="icon" style="margin-top:10px;"><i class="fa fa-money"></i></div>
+                    <div class="h3 text-secondary ">外幣單價變更次數</div>
+                    <div class="count text-success"><%=HTML_外幣單價變更次數 %> 次</div>
+                    <p></p>
+                </div>
+            </div>
         </div>
         <div id="recordsofchangetheorder_details"></div>
     </div>

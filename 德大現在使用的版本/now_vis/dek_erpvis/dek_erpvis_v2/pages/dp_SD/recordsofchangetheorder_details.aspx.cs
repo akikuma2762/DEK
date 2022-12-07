@@ -31,6 +31,8 @@ namespace dek_erpvis_v2.pages.dp_SD
         public int HTML_數量變更總次數 = 0;
         public int HTML_品號變更總次數 = 0;
         public int HTML_客戶單號變更總次數 = 0;
+        public int HTML_單價變更次數 = 0;
+        public int HTML_外幣單價變更次數 = 0;
 
         //----------------------------------------------------Event----------------------------------------------------------------------
         //載入事件
@@ -118,6 +120,8 @@ namespace dek_erpvis_v2.pages.dp_SD
                 th.Append("<th>品號變更次數</th>");
                 th.Append("<th>數量變更次數</th>");
                 th.Append("<th>交期變更次數</th>");
+                th.Append("<th>單價變更次數</th>");
+                th.Append("<th>外幣單價變更次數</th>");
                 th.Append("<th>小計</th>");
                 th.Append("<th>德大變更</th>");
                 th.Append("<th>客戶變更</th>");
@@ -128,7 +132,7 @@ namespace dek_erpvis_v2.pages.dp_SD
                 th.Append("<th>CCS</th>");
                 th.Append("<th>機號</th>");
                 th.Append("<th>客戶品號</th>");
-                columns = "客戶名稱,訂單號碼,SN,變更日期,強迫結案次數,品號變更次數,數量變更次數,交期變更次數,小計,德大變更,客戶變更,船期變更,備註,變更前內容,變更後內容,CCS,機號,客戶機種,";
+                columns = "客戶名稱,訂單號碼,SN,變更日期,強迫結案次數,品號變更次數,數量變更次數,交期變更次數,單價變更次數,外幣單價變更次數,小計,德大變更,客戶變更,船期變更,備註,變更前內容,變更後內容,CCS,機號,客戶機種,";
                 tr.Append(HtmlUtil.Set_Table_Content(dt, columns, recordsofchangetheorder_details_Callback));
             }
             else
@@ -141,7 +145,7 @@ namespace dek_erpvis_v2.pages.dp_SD
             string value = "";
             if (field_name == "變更日期")
                 value = HtmlUtil.changetimeformat(DataTableUtils.toString(row[field_name]));
-            else if (field_name == "強迫結案次數" || field_name == "品號變更次數" || field_name == "數量變更次數" || field_name == "交期變更次數")
+            else if (field_name == "強迫結案次數" || field_name == "品號變更次數" || field_name == "數量變更次數" || field_name == "交期變更次數"|| field_name == "單價變更次數"|| field_name == "外幣單價變更次數")
             {
                 if (field_name == "強迫結案次數")
                     total = 0;
@@ -252,6 +256,10 @@ namespace dek_erpvis_v2.pages.dp_SD
                     return "(變更欄位='品號' OR 變更欄位 like '%品號%')";
                 case "強迫結案次數":
                     return "變更欄位='強迫結案'";
+                case "單價變更次數":
+                    return "變更欄位='單價'";
+                case "外幣單價變更次數":
+                    return "變更欄位='外幣單價'";
             }
             return "";
         }
@@ -272,6 +280,12 @@ namespace dek_erpvis_v2.pages.dp_SD
                     break;
                 case "強迫結案次數":
                     HTML_客戶單號變更總次數 += qty;
+                    break;
+                case "單價變更次數":
+                    HTML_單價變更次數 += qty;
+                    break;
+                case "外幣單價變更次數":
+                    HTML_外幣單價變更次數 += qty;
                     break;
             }
         }
