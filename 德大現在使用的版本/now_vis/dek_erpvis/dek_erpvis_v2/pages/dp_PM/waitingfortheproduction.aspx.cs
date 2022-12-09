@@ -182,10 +182,8 @@ namespace dek_erpvis_v2.pages.dp_PM
             dt_Finish = new DataTable();
             dt_NoFinish = new DataTable();
             DataTable dt_month = new DataTable();
-            string sqlcmd = "";
-            if (dropdownlist_Factory.SelectedItem.Value == "iTec") {
-                dt_month = get_大圓盤();
-            }
+            DataTable dt_BigDisck = new DataTable();
+            string sqlcmd = ""; 
 
             if (dropdownlist_Factory.SelectedItem.Value == "sowon")
             {
@@ -218,6 +216,12 @@ namespace dek_erpvis_v2.pages.dp_PM
             //臥式廠部分
             else
             {
+
+                if (condition.Contains("11") || string.IsNullOrEmpty(condition))
+                {
+                    dt_BigDisck = get_大圓盤();
+                }
+
                 //20221125 新規則-將預計開工於下個月但在這個月完成的資料抓出來
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
                 string condition_copy = condition.Replace("工作站編號", " a.工作站編號 ");
@@ -237,22 +241,45 @@ namespace dek_erpvis_v2.pages.dp_PM
                 //20220822 增加月產能表格,大圓盤&臥式統一在此取得
                 month_Capacity = DataTableUtils.GetDataTable("select 工作站編號 AS 產線代號,工作站名稱,目標件數 AS 月產能 FROM 工作站型態資料表 WHERE 工作站是否使用中='1'");
 
-                if (HtmlUtil.Check_DataTable(dt_sowon))
+                //20221208 補上防呆,空資料會錯誤  by秋雄
+                if (HtmlUtil.Check_DataTable(dt_BigDisck)) 
                 {
-                    //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤
-                    dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
+                    if (HtmlUtil.Check_DataTable(dt_sowon))
+                    {
+                        //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤
+                        dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
 
-                    foreach (DataRow row in dt_sowon.Rows)
-                        dt_month.ImportRow(row);
+                        foreach (DataRow row in dt_sowon.Rows)
+                            dt_BigDisck.ImportRow(row);
+                        dt_month = dt_BigDisck;
+                    }
+                    else {
+                        dt_month = dt_BigDisck;
+                    }
+                } 
+                else 
+                {
+                    if (HtmlUtil.Check_DataTable(dt_sowon))
+                    {
+                        //20220728 dt_sowon的標準工時在合併前須先轉換,否則後面會錯誤 
+                        dt_sowon = sfun.Format_NowMonthTotal(dt_sowon);
+                        dt_month = dt_sowon;
+                    }
+                    else {
+                        dt_sowon.Columns.Add("預計完工日");
+                        dt_BigDisck.Merge(dt_sowon);
+                        dt_month = dt_BigDisck;
+
+                    }
                 }
-                //dt_month = DataTableUtils.GetDataTable(sqlcmd);
+               
             }
             //---------------------------------------------------------------------------------合併------------------------------------------------------------
             //產生 本月應做 之前未做完但在本月做完 到目前為止皆未完成之資料表
             if (HtmlUtil.Check_DataTable(dt_month))
                 dt_now = sfun.Return_NowMonthTotal(dt_month, date_str, date_end, out dt_Finish, out dt_NoFinish);
 
-            if (dt_now != null)
+            if (HtmlUtil.Check_DataTable(dt_now))
             {
                 dt_本月應生產 = dt_now.Clone();
 
@@ -260,6 +287,9 @@ namespace dek_erpvis_v2.pages.dp_PM
                 dt_now.PrimaryKey = new DataColumn[] { dt_now.Columns["排程編號"], dt_now.Columns["工作站編號"] };
                 dt_本月應生產.PrimaryKey = new DataColumn[] { dt_本月應生產.Columns["排程編號"], dt_本月應生產.Columns["工作站編號"] };
                 dt_本月應生產.Merge(dt_now);
+            }
+            else {
+                dt_本月應生產 = dt_month.Clone();
             }
             if (HtmlUtil.Check_DataTable(dt_Finish) && DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
             {
@@ -394,6 +424,10 @@ namespace dek_erpvis_v2.pages.dp_PM
                         dt_month.ImportRow(rows[i]);
                 }
             }
+            else {
+                //20221208 補上防呆,空資料會錯 by秋雄
+                dt_month = dek_dt;
+            }
             return dt_month;
         }
 
@@ -403,46 +437,31 @@ namespace dek_erpvis_v2.pages.dp_PM
             DataTable dt_day = Get_Monthday(date_str, date_end);
             string sqlcmd = "";
             DataRow[] rows = null;
-            int finisn_count = 0;
+            string today = DateTime.Now.ToString("yyyyMMdd");
+            string expected_fn_day = "";
             for (int i = 0; i < dt_day.Rows.Count; i++)
             {
-                //舊預計生產
-                //if (DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
-                //    sqlcmd = (i == 0) ? $"(預計完工日 <= '{dt_day.Rows[i]["日期"]}' OR 預計完工日='開發機') {condition} and (substring(實際完成時間, 1, 8)>='{date_str}'  OR 實際完成時間 IS NULL  OR 實際完成時間 ='' ) " : $"預計完工日 = '{dt_day.Rows[i]["日期"]}' {condition} and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
-                //else
-                //    sqlcmd = $"預計完工日 = '{dt_day.Rows[i]["日期"]}' {condition} and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
-
+                expected_fn_day = dt_day.Rows[i]["日期"].ToString();
                 //20221128 新預計生產條件
-                if (DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
-                    sqlcmd = (i == 0) ? $"(預計完工日 <= '{dt_day.Rows[i]["日期"]}' OR 預計完工日='開發機' OR 預計完工日 = '{dt_day.Rows[i]["日期"]}') {condition} and (substring(實際完成時間, 1, 8)>='{date_str}'  OR 實際完成時間 IS NULL  OR 實際完成時間 ='' ) " : $"預計完工日 = '{dt_day.Rows[i]["日期"]}' {condition} ";
-                else
-                    sqlcmd = $"預計完工日 = '{dt_day.Rows[i]["日期"]}' {condition}";
-
+                sqlcmd = i == 0 ? ExpectedProduction_CMD(expected_fn_day, today, date_str, true) : ExpectedProduction_CMD(expected_fn_day, today, date_str, false);
+                sqlcmd += condition;
                 rows = dt_本月應生產.Select(sqlcmd);
-                預定生產_data += "{" + $"label:'{dt_day.Rows[i]["日期"].ToString().Substring(6, 2)}日',y:{rows.Length}" + "},";
+                //預計生產圖表
+                預定生產_data += ExpectedProduction_Chart(expected_fn_day, rows.Length);
+                //預計生產數量
                 預定生產_data_y_max += rows.Length;
 
                 //到今天為止應生產多少
-                預計生產量_至今 += DataTableUtils.toInt(dt_day.Rows[i]["日期"].ToString()) <= DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) ? rows.Length : 0;
-
-                //實際生產
-                if (i == 0)
-                {
-                    sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成' {condition} OR {dt_day.Rows[i]["日期"]}>實際完成時間";
-                }
-                else 
-                {
-                    sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成' {condition} ";
-                }
+                預計生產量_至今 += ExpectedProduction_Qty(expected_fn_day, today, rows.Length);
+                
+                //實際生產條件         
+                sqlcmd = i == 0 ? ActuallyProduction_CMD(expected_fn_day, true): ActuallyProduction_CMD(expected_fn_day, false);
+                sqlcmd += condition;
                 rows = dt_本月應生產.Select(sqlcmd);
-                finisn_count += rows.Length;
-                if (DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
-                    實際生產_data += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? "{" + $"label:'{dt_day.Rows[i]["日期"].ToString().Substring(6, 2)}日',y:{rows.Length} " + "}," : "";
-                else
-                    實際生產_data += "{" + $"label:'{dt_day.Rows[i]["日期"].ToString().Substring(6, 2)}日',y:{rows.Length} " + "},";
-
-                //實際生產_data_y_max += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
-                實際生產_data_y_max = finisn_count;
+                //實際生產圖表
+                實際生產_data += ActuallyProduction_Chart(expected_fn_day, today, date_str, rows.Length);
+                //實際生產數量
+                實際生產_data_y_max += ActuallyProduction_Qty(expected_fn_day, today, rows.Length);
             }
             預定生產_data_y_max = 預定生產_data_y_max == 0 ? 1 : 預定生產_data_y_max;
             應有進度 = DataTableUtils.toDouble(預計生產量_至今 * 100 / 預定生產_data_y_max).ToString("0") + "%";
@@ -567,6 +586,9 @@ namespace dek_erpvis_v2.pages.dp_PM
                 {
                     string sqlcmd = $"客戶簡稱='{row["客戶簡稱"]}' and 產線群組='{field_name}'";
                     DataRow[] rows = dt_未生產完成.Select(sqlcmd);
+                    DataTable test = dt_未生產完成.Clone();
+                    for (int i = 0; i < rows.Length; i++)
+                        test.ImportRow(rows[i]);
                     value = rows.Length.ToString();
                     total += rows.Length;
                 }
@@ -625,9 +647,14 @@ namespace dek_erpvis_v2.pages.dp_PM
                 //新增總計
                 target.Columns.Add("月產能");
                 target.Columns.Add("本期計畫生產");
-                target.Columns.Add("應有進度");
-                target.Columns.Add("實際進度");
+                target.Columns.Add("目前累計應有進度");
+                target.Columns.Add("目前累計實際進度");
                 target.Columns.Add("差異");
+                //target.Columns.Add("昨日應有進度");
+                //target.Columns.Add("昨日實際進度");
+                //target.Columns.Add("人力");
+                //target.Columns.Add("異常");
+
                 if (dropdownlist_Factory.SelectedItem.Value == "sowon") {
                     foreach (DataRow row in target.Rows) {
                         object dd = month_Capacity.Compute("sum(日產能)", $"產線群組='{row["產線群組"]}'");
@@ -664,35 +691,63 @@ namespace dek_erpvis_v2.pages.dp_PM
             int _實際生產 = 0;
             string 差異量 = "";
             DataRow[] rows = null;
+            string LineGroup = row["產線群組"].ToString();
+            string today = DateTime.Now.ToString("yyyyMMdd");
+            string excepted_fn_day = "";
+            //switch (field_name) 
+            //{
+            //    case "本期計畫生產":
+            //        for (int i = 0; i < dt_day.Rows.Count; i++)
+            //        { 
+
+            //        }
+            //            break;
+            //    case "應有進度":
+            //        break;
+
+            //    case "實際進度":
+            //        break;
+            //    case "差異":
+            //        break;
+            //    case "昨日應有進度":
+            //        break;
+            //    case "昨日實際進度":
+            //        break;
+            //    case "人力":
+            //        break;
+            //    case "異常":
+            //        break;
+
+            //}
             for (int i = 0; i < dt_day.Rows.Count; i++)
             {
+                excepted_fn_day = dt_day.Rows[i]["日期"].ToString();
                 //預計生產
-                if (DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(date_str))
-                    sqlcmd = (i == 0) ? $"(預計完工日 <= '{dt_day.Rows[i]["日期"]}' OR 預計完工日='開發機') and (substring(實際完成時間, 1, 8)>='{date_str}'  OR 實際完成時間 IS NULL  OR 實際完成時間 ='' ) " : $"預計完工日 = '{dt_day.Rows[i]["日期"]}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
-                else
-                    sqlcmd = $"預計完工日 = '{dt_day.Rows[i]["日期"]}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='') ";
-                sqlcmd = sqlcmd + $" AND 產線群組='{row["產線群組"]}'";
+                sqlcmd = i == 0 ? ExpectedProduction_CMD(excepted_fn_day,today, date_str, true) : ExpectedProduction_CMD(excepted_fn_day,today, date_str, false);
+                sqlcmd +=$" AND 產線群組='{row["產線群組"]}'";
                 rows = dt_本月應生產.Select(sqlcmd);
                 _預定生產 += rows.Length;
 
                 //到今天為止應生產多少
-                _預計生產量 += DataTableUtils.toInt(dt_day.Rows[i]["日期"].ToString()) <= DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) ? rows.Length : 0;
+                _預計生產量 += ExpectedProduction_Qty(excepted_fn_day, today, rows.Length);
 
                 //實際生產
-                sqlcmd = $" 實際完成時間  LIKE '%{dt_day.Rows[i]["日期"]}%' and 狀態 = '完成'";
-                sqlcmd = sqlcmd + $" AND 產線群組='{row["產線群組"]}'";
+                sqlcmd = i == 0 ? ActuallyProduction_CMD(excepted_fn_day, true) : ActuallyProduction_CMD(excepted_fn_day, false);
+                sqlcmd += $" and 產線群組='{LineGroup}'";
                 rows = dt_本月應生產.Select(sqlcmd);
+                
+                _實際生產 += ActuallyProduction_Qty(excepted_fn_day, today, rows.Length);
 
-                _實際生產 += DataTableUtils.toInt(DateTime.Now.ToString("yyyyMMdd")) >= DataTableUtils.toInt(DataTableUtils.toString(dt_day.Rows[i]["日期"])) ? rows.Length : 0;
             }
             _預定生產 = _預定生產 == 0 ? 0 : _預定生產;
             差異量 = (_實際生產 - _預計生產量).ToString();
             string value = "";
-            if (field_name == "本期計畫生產")
+            if (field_name == "本期計畫生產") {
                 value = _預定生產.ToString();
-            if (field_name == "應有進度")
+            }  
+            if (field_name == "目前累計應有進度")
                 value = _預計生產量.ToString();
-            if (field_name == "實際進度")
+            if (field_name == "目前累計實際進度")
                 value = _實際生產.ToString();
             if (field_name == "差異")
                 value = 差異量;
@@ -728,6 +783,71 @@ namespace dek_erpvis_v2.pages.dp_PM
             arr[1] = endDay.ToString("yyyyMMdd");
             arr[2] = (((endDay - startDay).Days) + 1).ToString();
             return arr;
+        }
+
+
+        //20221208 生產推移圖-預計生產篩選條件 by秋雄
+        public string ExpectedProduction_CMD(string expected_fn_day, string today, string date_str, bool first_day) {
+            string sqlcmd = "";
+                //預計生產 20221209 
+                if (DataTableUtils.toInt(today) >= DataTableUtils.toInt(date_str))
+                    sqlcmd = first_day ? $"((預計完工日 <= '{expected_fn_day}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR substring(實際完成時間, 1, 8)<='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 =''))  OR 預計完工日='開發機' ) " : $"預計完工日 = '{expected_fn_day}'";
+                else
+                    sqlcmd = $"預計完工日 = '{expected_fn_day}'";
+            return sqlcmd;
+        }
+
+        //20221208 生產推移圖-預計生產折線圖資料 by秋雄
+        public string ExpectedProduction_Chart(string expected_fn_day, int qty)
+        {
+            string value = "";
+            value = "{" + $"label:'{expected_fn_day.Substring(6, 2)}日',y:{qty}" + "},";
+            return value;
+        }
+        //20221208 生產推移圖-預計生產數量 by秋雄
+        public int ExpectedProduction_Qty(string expected_fn_day,string today,int qty)
+        {
+            int value = 0;
+            value = DataTableUtils.toInt(expected_fn_day) <= DataTableUtils.toInt(today) ? qty : 0;
+
+            if (DataTableUtils.toInt(date_str) > DataTableUtils.toInt(today))
+            {
+                value = DataTableUtils.toInt(expected_fn_day) == DataTableUtils.toInt(date_str) ? qty : 0;
+            }
+            return value;
+        }
+        //20221208 生產推移圖-實際生產篩選條件 by秋雄
+        public string ActuallyProduction_CMD(string expected_fn_day, bool first_day)
+        {
+            string sqlcmd = "";
+            if (first_day)
+            {
+                sqlcmd = $"(實際完成時間  LIKE '%{expected_fn_day}%' and 狀態 = '完成' OR {expected_fn_day}>實際完成時間)";
+            }
+            else
+            {
+                sqlcmd = $" 實際完成時間  LIKE '%{expected_fn_day}%' and 狀態 = '完成'";
+            }
+            return sqlcmd;
+        }
+        //20221208 生產推移圖-實際生產折線圖資料 by秋雄
+        public string ActuallyProduction_Chart(string expected_fn_day, string today,string date_str,int qty)
+        {
+            string value = "";
+            if (DataTableUtils.toInt(today) >= DataTableUtils.toInt(date_str))
+                value = DataTableUtils.toInt(today) >= DataTableUtils.toInt(DataTableUtils.toString(expected_fn_day)) ? "{" + $"label:'{expected_fn_day.Substring(6, 2)}日',y:{qty} " + "}," : "";
+            else
+                value = "{" + $"label:'{expected_fn_day.Substring(6, 2)}日',y:{qty} " + "},";
+            return value;
+        }
+
+        //20221208 生產推移圖-實際生產數量 by秋雄
+        public int ActuallyProduction_Qty(string expected_fn_day, string today, int qty)
+        {
+            int value = 0;
+            //實際生產數量
+            value=DataTableUtils.toInt(today) >= DataTableUtils.toInt(expected_fn_day) ? qty : 0;
+            return value;
         }
 
     }

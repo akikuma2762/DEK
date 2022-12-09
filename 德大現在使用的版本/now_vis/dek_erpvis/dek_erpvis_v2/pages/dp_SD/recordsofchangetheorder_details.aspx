@@ -54,7 +54,7 @@
             <div class="col-lg-2 col-md-3 col-sm-6 col-xs-6">
                 <div class="tile-stats dashboard_graph x_panel Div_Shadow">
                     <div class="icon" style="margin-top:10px;"><i class="fa fa-money"></i></div>
-                    <div class="h3 text-secondary ">外幣變更次數</div>
+                    <div class="h3 text-secondary ">台幣變更次數</div>
                     <div class="count text-success"><%=HTML_單價變更次數 %> 次</div>
                     <p></p>
                 </div>

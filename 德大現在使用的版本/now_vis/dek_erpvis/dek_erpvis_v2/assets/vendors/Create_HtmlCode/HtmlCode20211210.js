@@ -578,8 +578,7 @@ function create_tablecode(div_table, tabletitle, datatableid, th, tr) {
 function create_TotalTableCode(div_table, tabletitle, datatableid, th, tr) {
     var divname = document.getElementById(div_table);
     divname.innerHTML =
-        '<div class="row">' +
-        '<div class="col-md-12 col-sm-12 col-xs-12">' +
+        
         '<div class="x_panel Div_Shadow">' +
         '<div class="x_content">' +
         '<div class="x_panel">' +
@@ -593,8 +592,6 @@ function create_TotalTableCode(div_table, tabletitle, datatableid, th, tr) {
         tr +
         '</tbody>' +
         '</table>' +
-        '</div>' +
-        '</div>' +
         '</div>' +
         '</div>' +
         '</div>';

@@ -355,8 +355,11 @@ namespace dek_erpvis_v2.pages.dp_SD
                 {
                     if (Line_Name.IndexOf(field_name) == 0)
                         total = 0;
-
-                    string sqlcmd = $"客戶='{DataTableUtils.toString(row["客戶"])}' and 產線='{field_name}'";
+                    string end_Month = dt_end.Substring(0, 6);
+                    string sqlcmd = $"客戶='{DataTableUtils.toString(row["客戶"])}' and 產線='{field_name}' and 計算月份<='{end_Month}'";
+                    if (DataTableUtils.toString(row["客戶"]) == "MAZAK-LG") {
+                        string a = "123";
+                    }
                     DataRow[] rows = dt_monthtotal.Select(sqlcmd);
                     if (rows != null && rows.Length > 0)
                     {

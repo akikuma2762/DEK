@@ -199,6 +199,7 @@
             <!--整理後表格-->
             <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
                 <div id="order"></div>
+                <div id="order_total" ></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab2">
                 <div id="order_month"></div>
@@ -293,6 +294,24 @@
             }
             console.log("結束");
 
+            //20220610 新增小計table
+            order_TotalTable();
+
+            //監聽這幾行在table-form 下無效  要再找看看20220616 juiedit
+            $('select[name="table-form_length"]').change(function () {
+                order_TotalTable();
+            });
+            $('#table-form_filter input').on("input propertychange", function () {
+                order_TotalTable();
+            });
+            $('#tr_row').click(function () {
+                order_TotalTable();
+            })
+            $('#table-form_paginate').click(function () {
+                order_TotalTable();
+            });
+
+
         });
 
         function set_nowmonth() {
@@ -300,6 +319,62 @@
             document.getElementById('<%=txt_end.ClientID%>').value = '<%=date_end%>';
 
         }
+
+        //-------------------開始-------------------//20220610 總計table監聽
+        function order_TotalTable() {
+            var td = "<tr><td style='text-align:center;'>小計</td>";
+            var th = "<tr><td style='text-align:center;'>產線統計</td>";
+            var total = 0;
+            var count = 0;
+            var count_th = 0;
+            var noData = document.getElementsByClassName("dataTables_empty");
+            if (noData[0] != undefined && noData[0].innerText == "沒有符合的結果") {
+                td = "";
+                td += `<td colspan="9" style="text-align:center;" >沒有符合的結果</td>`;
+                create_tablecode('order_total', "", 'order_totals', '<%=th.ToString() %>', td);
+                set_TotalTable('#order_totals');
+                return;
+            }
+            //計算tbody tr總數
+            $("#table-form tbody tr").each(function () {
+                count = count + 1;
+            });
+            //計算 thead tr總數
+            $("#table-form thead #tr_row th").each(function () {
+                count_th = count_th + 1;
+            });
+            //製作新的thead tr資料
+            if (count_th != 0) {
+                for (var j = 1; j < count_th; j++) {
+                    console.log($("#table-form").children(0).children(0)[0].cells[j].innerText);
+                    var tr = $("#table-form").children(0).children(0)[0].cells[j].innerText;
+                    th += `<td style="text-align: center;">${tr}</td>`;
+                }
+                th += `</tr>`;
+            }
+            //製作新的tbody 資料
+            for (var j = 1; j < count_th; j++) {
+                total = 0;
+			
+                for (var i = 0; i < count; i++) {
+				  var num = $("#table-form").children(0).children(0)[i + 1].cells[j].innerText;
+                    total += parseInt(num.replace(/,/gi,''));
+					 
+                }
+                td += `<td id=total_${j} align="right">${toCurrency(total)}</td>`;
+            }
+            td += "</tr >";
+            create_TotalTableCode('order_total', "", 'order_totals', th, td);
+            set_TotalTable('#order_totals');
+        }
+        
+		function toCurrency(num){
+		var parts = num.toString().split('.');
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		return parts.join('.');
+        }
+        //---------------------結束------------------------//-------結束------------------------//
+
 
     </script>
 </asp:Content>
