@@ -148,7 +148,7 @@
                                             <td align="center" style='font-size: 20px; color: black'>
                                                 <b>
                                                     <span style="display: inline-block; width: 45%; text-align: right;"><%= 預定生產_data_y_max - 實際生產_data_y_max %></span>
-                                                    <span style="display: inline-block; width: 50%; text-align: right;">(<%=(Math.Abs(Int32.Parse(預定生產_data_y_max.ToString()))- Math.Abs(Int32.Parse(實際生產_data_y_max.ToString())))*100 / 預定生產_data_y_max %>%)</span>
+                                                    <span style="display: inline-block; width: 50%; text-align: right;">(<%=本期未生產_persent%>)</span>
 
                                                 </b>
                                             </td>

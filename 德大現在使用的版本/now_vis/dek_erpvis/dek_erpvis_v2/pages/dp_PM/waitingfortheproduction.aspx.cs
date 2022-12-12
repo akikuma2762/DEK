@@ -39,11 +39,15 @@ namespace dek_erpvis_v2.pages.dp_PM
         public string 預定生產_data = "";
         public string 實際生產_data = "";
         public string 實領料數_data = "";
+        public string 本期未生產_persent = "";
+        public int 實際工作人數 = 0;
         public string th = "";
         public string tr = "";
         DataTable dt_本月應生產 = new DataTable();
         DataTable dt_未生產完成 = new DataTable();
         DataTable month_Capacity = new DataTable();
+        DataTable dt_WorkerWorkTime = new DataTable();
+        DataTable dt_nosolve = new DataTable();
         int total = 0;
         string Line = "";
         string condition = "";
@@ -116,8 +120,10 @@ namespace dek_erpvis_v2.pages.dp_PM
             Set_CheckBox(dropdownlist_Factory.SelectedItem.Value);
             Set_SearchLine();
             Get_MonthTotal();
+            Get_AbbormalTable();
             Set_Chart();
             Set_Error();
+            GetWorkerWorkTimeDataTable();
             Set_Table();
             Set_Month_Capacity();
             Set_ShowImage();
@@ -449,10 +455,11 @@ namespace dek_erpvis_v2.pages.dp_PM
                 //預計生產圖表
                 預定生產_data += ExpectedProduction_Chart(expected_fn_day, rows.Length);
                 //預計生產數量
+                
                 預定生產_data_y_max += rows.Length;
 
                 //到今天為止應生產多少
-                預計生產量_至今 += ExpectedProduction_Qty(expected_fn_day, today, rows.Length);
+                預計生產量_至今 += ExpectedProduction_Qty(expected_fn_day, today, date_str, rows.Length);
                 
                 //實際生產條件         
                 sqlcmd = i == 0 ? ActuallyProduction_CMD(expected_fn_day, true): ActuallyProduction_CMD(expected_fn_day, false);
@@ -463,14 +470,13 @@ namespace dek_erpvis_v2.pages.dp_PM
                 //實際生產數量
                 實際生產_data_y_max += ActuallyProduction_Qty(expected_fn_day, today, rows.Length);
             }
-            預定生產_data_y_max = 預定生產_data_y_max == 0 ? 1 : 預定生產_data_y_max;
-            應有進度 = DataTableUtils.toDouble(預計生產量_至今 * 100 / 預定生產_data_y_max).ToString("0") + "%";
-            實際進度 = DataTableUtils.toDouble(實際生產_data_y_max * 100 / 預定生產_data_y_max).ToString("0") + "%";
+            預定生產_data_y_max = 預定生產_data_y_max == 0 ? 0 : 預定生產_data_y_max;
+            應有進度 = 預定生產_data_y_max==0? 0+"%":DataTableUtils.toDouble(預計生產量_至今 * 100 / 預定生產_data_y_max).ToString("0") + "%";
+            實際進度 = 預定生產_data_y_max == 0 ? 0+"%":DataTableUtils.toDouble(實際生產_data_y_max * 100 / 預定生產_data_y_max).ToString("0") + "%";
             差值 = (實際生產_data_y_max - 預計生產量_至今).ToString();
+            本期未生產_persent= 預定生產_data_y_max == 0 ? 0+"%":((Math.Abs(Int32.Parse(預定生產_data_y_max.ToString())) - Math.Abs(Int32.Parse(實際生產_data_y_max.ToString()))) * 100 / 預定生產_data_y_max).ToString()+"%";
         }
-        //顯示錯誤台數
-        private void Set_Error()
-        {
+        private void Get_AbbormalTable() {
             //列出目前所有排程
             string Error_Number = "";
             bool ok = true;
@@ -484,7 +490,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 Error_Number = Error_Number != "" ? $" where ( {Error_Number} ) " : "";
             }
 
-            DataTable dt_nosolve = new DataTable();
+            
             if (dropdownlist_Factory.SelectedItem.Value == "sowon")
             {
                 //取得目前未結案之數量
@@ -492,6 +498,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 string sqlcmd = $" SELECT " +
                                 $" DISTINCT " +
                                 $" 異常維護編號," +
+                                $"工作站編號 as 產線代號,"+
                                 $" 排程編號," +
                                 $" a.結案判定類型  " +
                                 $" FROM 工作站異常維護資料表 " +
@@ -505,14 +512,29 @@ namespace dek_erpvis_v2.pages.dp_PM
                                 $"           AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) " +
                                 $"           AND a.結案判定類型 IS NULL {condition.Replace("產線代號", "工作站異常維護資料表.工作站編號")} ORDER BY 工作站異常維護資料表.排程編號";
                 dt_nosolve = DataTableUtils.GetDataTable(sqlcmd);
+                dt_nosolve = myclass.Add_LINE_GROUP(dt_nosolve).ToTable();
             }
             else
             {
                 Error_Number = Error_Number != "" ? $" {Error_Number} and (工作站異常維護資料表.工作站編號='1' OR 工作站異常維護資料表.工作站編號='2'  OR 工作站異常維護資料表.工作站編號='9' ) " : "";
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                string sqlcmd = $" SELECT DISTINCT 異常維護編號,排程編號,a.結案判定類型  FROM 工作站異常維護資料表 LEFT JOIN (SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型 FROM 工作站異常維護資料表 where    結案判定類型 IS NOT NULL group by 父編號,排程編號,結案判定類型) a ON a.排程號碼 = 工作站異常維護資料表.排程編號 AND 工作站異常維護資料表.異常維護編號 = a.父編號 {Error_Number} AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) AND 工作站編號=1 AND a.結案判定類型 IS NULL ORDER BY 工作站異常維護資料表.排程編號";
+                string sqlcmd = $" SELECT DISTINCT 異常維護編號,(CASE when 工作站編號='1' then '100' when 工作站編號='2' then'110' else 工作站編號 End) AS 產線代號,排程編號,a.結案判定類型  FROM 工作站異常維護資料表 LEFT JOIN (SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型 FROM 工作站異常維護資料表 where    結案判定類型 IS NOT NULL group by 父編號,排程編號,結案判定類型) a ON a.排程號碼 = 工作站異常維護資料表.排程編號 AND 工作站異常維護資料表.異常維護編號 = a.父編號 {Error_Number} AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) AND 工作站編號=1 AND a.結案判定類型 IS NULL ORDER BY 工作站異常維護資料表.排程編號";
+
+                //20221212 無資料不抓異常
+                if (Error_Number == "")
+                    sqlcmd = "";
+
                 dt_nosolve = DataTableUtils.GetDataTable(sqlcmd);
+
+
+                dt_nosolve = myclass.Add_LINE_GROUP(dt_nosolve).ToTable();
             }
+        }
+
+
+        //顯示錯誤台數
+        private void Set_Error()
+        {
             if (HtmlUtil.Check_DataTable(dt_nosolve))
             {
                 //存入目前未結案的排程編號
@@ -643,17 +665,17 @@ namespace dek_erpvis_v2.pages.dp_PM
                 
 
                 DataTable target = dt_本月應生產.DefaultView.ToTable(true, new string[] {"產線群組"});
-
+                
                 //新增總計
                 target.Columns.Add("月產能");
                 target.Columns.Add("本期計畫生產");
                 target.Columns.Add("目前累計應有進度");
                 target.Columns.Add("目前累計實際進度");
                 target.Columns.Add("差異");
-                //target.Columns.Add("昨日應有進度");
-                //target.Columns.Add("昨日實際進度");
-                //target.Columns.Add("人力");
-                //target.Columns.Add("異常");
+                target.Columns.Add("昨日應有進度");
+                target.Columns.Add("昨日實際進度");
+                target.Columns.Add("人力");
+                target.Columns.Add("異常");
 
                 if (dropdownlist_Factory.SelectedItem.Value == "sowon") {
                     foreach (DataRow row in target.Rows) {
@@ -670,7 +692,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                         row["月產能"] = dd.ToString();
                     }
                 }
-               
+
 
                 string columns = "";
                 //20220729 新稱月產能
@@ -681,76 +703,259 @@ namespace dek_erpvis_v2.pages.dp_PM
                 HtmlUtil.NoData(out th_month_capacity, out tr_month_capacity);
         }
 
-        //20220822計算各生產數值
-        private string capacity_CallBack(DataRow row, string field_name)
+        private void Set_Month_Capacity_col()
+        {
+            if (HtmlUtil.Check_DataTable(dt_本月應生產))
+            {
+                DataTable dt_Copy = dt_本月應生產.Clone();
+
+                //清空陣列
+                //Line_Name.Clear();
+                avoid_again.Clear();
+
+
+
+
+                DataTable target = dt_本月應生產.DefaultView.ToTable(true, new string[] { "產線群組" });
+                DataTable test = new DataTable();
+                test.Columns.Add(" ");
+                foreach (DataRow dataRow in target.Rows)
+                {
+                    test.Columns.Add(dataRow[0].ToString());
+
+                }
+                
+
+                //新增總計
+                test.Rows.Add("月產能");
+                test.Rows.Add("本期計畫生產");
+                test.Rows.Add("目前累計應有進度");
+                test.Rows.Add("目前累計實際進度");
+                test.Rows.Add("差異");
+                test.Rows.Add("昨日應有進度");
+                test.Rows.Add("昨日實際進度");
+                test.Rows.Add("人力");
+                test.Rows.Add("異常");
+
+                if (dropdownlist_Factory.SelectedItem.Value == "sowon")
+                {
+                    int a = test.Columns.Count;
+                    for (int i = 1; i < a; i++)
+                    {
+                        object dd = month_Capacity.Compute("sum(日產能)", $"產線群組='{test.Columns[i].ColumnName}'");
+                        int workDay = int.Parse(month_WorkDay(date_str, date_end));
+                        test.Rows[0][test.Columns[i].ColumnName] = (int.Parse(dd.ToString()) * workDay).ToString();
+                    }
+                }
+                else
+                {
+                    foreach (DataRow row in target.Rows)
+                    {
+                        string line_Group = row["產線群組"].ToString() == "NEW INTE" ? line_Group = "NEW_INTE" : line_Group = row["產線群組"].ToString();
+                        object dd = month_Capacity.Compute("sum(月產能)", $"工作站名稱='{line_Group}'");
+                        row["月產能"] = dd.ToString();
+                    }
+                }
+
+
+                string columns = "";
+                //20220729 新稱月產能
+                //th_month_capacity.Append(HtmlUtil.Set_Table_Title(test, out columns));
+                //tr_month_capacity.Append(HtmlUtil.Set_Table_Content(test, columns, capacity_CallBack2));
+            }
+            else
+                //HtmlUtil.NoData(out th_month_capacity, out tr_month_capacity);
+        }
+
+
+
+
+        private string capacity_CallBack2(DataRow row, string field_name)
+        {
+            string value = "";
+            return value == "" ? "" : $"<td align=\"right\"> {value} </td>";
+        }
+            //20220822計算各生產數值
+            private string capacity_CallBack(DataRow row, string field_name)
         {
             DataTable dt_day = Get_Monthday(date_str, date_end);
             string sqlcmd = "";
             int _預定生產 = 0;
             int _預計生產量=0;
             int _實際生產 = 0;
+            int _昨日預定生產 = 0;
+            int _昨日實際生產 = 0;
+            int total = 0;
             string 差異量 = "";
             DataRow[] rows = null;
             string LineGroup = row["產線群組"].ToString();
             string today = DateTime.Now.ToString("yyyyMMdd");
             string excepted_fn_day = "";
-            //switch (field_name) 
-            //{
-            //    case "本期計畫生產":
-            //        for (int i = 0; i < dt_day.Rows.Count; i++)
-            //        { 
-
-            //        }
-            //            break;
-            //    case "應有進度":
-            //        break;
-
-            //    case "實際進度":
-            //        break;
-            //    case "差異":
-            //        break;
-            //    case "昨日應有進度":
-            //        break;
-            //    case "昨日實際進度":
-            //        break;
-            //    case "人力":
-            //        break;
-            //    case "異常":
-            //        break;
-
-            //}
+            string value = "";
+            實際工作人數 = 0;
+            string _異常量 = "";
             for (int i = 0; i < dt_day.Rows.Count; i++)
             {
                 excepted_fn_day = dt_day.Rows[i]["日期"].ToString();
-                //預計生產
-                sqlcmd = i == 0 ? ExpectedProduction_CMD(excepted_fn_day,today, date_str, true) : ExpectedProduction_CMD(excepted_fn_day,today, date_str, false);
-                sqlcmd +=$" AND 產線群組='{row["產線群組"]}'";
-                rows = dt_本月應生產.Select(sqlcmd);
-                _預定生產 += rows.Length;
+                switch (field_name) {
+                    case "本期計畫生產":
+                        //預計生產
+                        sqlcmd = i == 0 ? ExpectedProduction_CMD(excepted_fn_day, today, date_str, true) : ExpectedProduction_CMD(excepted_fn_day, today, date_str, false);
+                        sqlcmd += $" AND 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
+                        _預定生產 += rows.Length;
+                        break;
+                    case "目前累計應有進度":
+                        sqlcmd = i == 0 ? ExpectedProduction_CMD(excepted_fn_day, today, date_str, true) : ExpectedProduction_CMD(excepted_fn_day, today, date_str, false);
+                        sqlcmd += $" AND 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
+                        //到今天為止應生產多少
+                        _預計生產量 += ExpectedProduction_Qty(excepted_fn_day, today, date_str, rows.Length);
+                        break;
+                    case "目前累計實際進度":
+                        //實際生產
+                        sqlcmd = i == 0 ? ActuallyProduction_CMD(excepted_fn_day, true) : ActuallyProduction_CMD(excepted_fn_day, false);
+                        sqlcmd += $" and 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
 
-                //到今天為止應生產多少
-                _預計生產量 += ExpectedProduction_Qty(excepted_fn_day, today, rows.Length);
+                        _實際生產 += ActuallyProduction_Qty(excepted_fn_day, today, rows.Length);
+
+                        break;
+                    case "差異":
+                        sqlcmd = i == 0 ? ActuallyProduction_CMD(excepted_fn_day, true) : ActuallyProduction_CMD(excepted_fn_day, false);
+                        sqlcmd += $" and 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
+
+                        _實際生產 += ActuallyProduction_Qty(excepted_fn_day, today, rows.Length);
+
+                        sqlcmd = i == 0 ? ExpectedProduction_CMD(excepted_fn_day, today, date_str, true) : ExpectedProduction_CMD(excepted_fn_day, today, date_str, false);
+                        sqlcmd += $" AND 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
+                        //到今天為止應生產多少
+                        _預計生產量 += ExpectedProduction_Qty(excepted_fn_day, today, date_str, rows.Length);
+
+
+                        break;
+                    case "昨日應有進度":
+                        sqlcmd = i == 0 ? ExpectedProduction_CMD(excepted_fn_day, today, date_str, true) : ExpectedProduction_CMD(excepted_fn_day, today, date_str, false);
+                        sqlcmd += $" AND 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
+                        total+= ExpectedProduction_Qty(excepted_fn_day, today, date_str, rows.Length);
+                        //昨日預計生產
+                        if (i != 0 && int.Parse(excepted_fn_day) < int.Parse(today))
+                        {
+                            _昨日預定生產 = total;
+                        }
+                        break;
+
+                    case "昨日實際進度":
+                        //實際生產
+                        sqlcmd = i == 0 ? ActuallyProduction_CMD(excepted_fn_day, true) : ActuallyProduction_CMD(excepted_fn_day, false);
+                        sqlcmd += $" and 產線群組='{LineGroup}'";
+                        rows = dt_本月應生產.Select(sqlcmd);
+                        total+= ExpectedProduction_Qty(excepted_fn_day, today, date_str, rows.Length);
+                        if (i != 0 && int.Parse(excepted_fn_day) < int.Parse(today))
+                        {
+                            _昨日實際生產 = total;
+                        }
+                        break;
+
+                    case "人力":
+                        if (int.Parse(excepted_fn_day) == int.Parse(today))
+                        {
+                            if (HtmlUtil.Check_DataTable(dt_WorkerWorkTime))
+                            {
+                                sqlcmd = $"日期='{excepted_fn_day}' and 產線群組='{row["產線群組"]}'";
+                                rows = dt_WorkerWorkTime.Select(sqlcmd);
+
+                                foreach (DataRow dataRow in rows)
+                                {
+
+                                    實際工作人數 += int.Parse(dataRow["工作人數"].ToString());
+                                }
+                            }
+                        }
+                        break;
+
+                    case "異常":
+                        
+                        
+                        if (HtmlUtil.Check_DataTable(dt_nosolve))
+                        {
+                            sqlcmd = $"產線群組='{row["產線群組"]}'";
+                            rows = dt_nosolve.Select(sqlcmd);
+                            if (rows.Length > 0)
+                            {
+                                //存入目前未結案的排程編號
+                                List<string> list_schdule = new List<string>();
+                                foreach (DataRow dataRow in rows)
+                                    list_schdule.Add(dataRow["排程編號"].ToString());
+                                //排除重複項
+                                list_schdule = list_schdule.Distinct().ToList();
+                                //寫入排程編號跟維護編號
+                                string nosovle = "";
+                                foreach (DataRow dataRow1 in rows)
+                                    nosovle += $"{dataRow1["排程編號"]}!{dataRow1["異常維護編號"]}*";
+                                //導向網址
+                                _異常量 = dropdownlist_Factory.SelectedItem.Value == "sowon" ? $"<u><a href=\"Asm_NoSolve.aspx?key={WebUtils.UrlStringEncode($"mach={nosovle}")}\">{rows.Length}</a></u>" : $"<u><a href=\"Asm_NoSolve_ITEC.aspx?key={WebUtils.UrlStringEncode($"mach={nosovle}")}\">{rows.Length}</a></u>";
+
+
+                            }
+                            else 
+                            {
+                                _異常量 = "0";
+                            }
+
+                        }
+
+
+
+
+
+                        
+                        break;
+
+                }
 
                 //實際生產
-                sqlcmd = i == 0 ? ActuallyProduction_CMD(excepted_fn_day, true) : ActuallyProduction_CMD(excepted_fn_day, false);
-                sqlcmd += $" and 產線群組='{LineGroup}'";
-                rows = dt_本月應生產.Select(sqlcmd);
+                //sqlcmd = i == 0 ? ActuallyProduction_CMD(excepted_fn_day, true) : ActuallyProduction_CMD(excepted_fn_day, false);
+                //sqlcmd += $" and 產線群組='{LineGroup}'";
+                //rows = dt_本月應生產.Select(sqlcmd);
                 
-                _實際生產 += ActuallyProduction_Qty(excepted_fn_day, today, rows.Length);
+                //_實際生產 += ActuallyProduction_Qty(excepted_fn_day, today, rows.Length);
+                //if (i!=0 && int.Parse(excepted_fn_day) < int.Parse(today))
+                //{
+                //    _昨日實際生產 = _實際生產;
+                //}
 
+                
+                
             }
-            _預定生產 = _預定生產 == 0 ? 0 : _預定生產;
-            差異量 = (_實際生產 - _預計生產量).ToString();
-            string value = "";
+            
+            
+             value = "";
             if (field_name == "本期計畫生產") {
+                _預定生產 = _預定生產 == 0 ? 0 : _預定生產;
                 value = _預定生產.ToString();
             }  
             if (field_name == "目前累計應有進度")
                 value = _預計生產量.ToString();
             if (field_name == "目前累計實際進度")
                 value = _實際生產.ToString();
-            if (field_name == "差異")
+            if (field_name == "差異") 
+            {
+                差異量 = (_實際生產 - _預計生產量).ToString();
                 value = 差異量;
+            }
+                
+            if (field_name == "昨日應有進度")
+                value = _昨日預定生產.ToString();
+            if (field_name == "昨日實際進度")
+                value = _昨日實際生產.ToString();
+            if (field_name == "人力")
+                value = 實際工作人數.ToString();
+            if (field_name == "異常")
+                value = _異常量.ToString();
 
             return value == "" ? "" : $"<td align=\"right\"> {value} </td>";
         }
@@ -805,7 +1010,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             return value;
         }
         //20221208 生產推移圖-預計生產數量 by秋雄
-        public int ExpectedProduction_Qty(string expected_fn_day,string today,int qty)
+        public int ExpectedProduction_Qty(string expected_fn_day,string today,string date_str, int qty)
         {
             int value = 0;
             value = DataTableUtils.toInt(expected_fn_day) <= DataTableUtils.toInt(today) ? qty : 0;
@@ -848,6 +1053,41 @@ namespace dek_erpvis_v2.pages.dp_PM
             //實際生產數量
             value=DataTableUtils.toInt(today) >= DataTableUtils.toInt(expected_fn_day) ? qty : 0;
             return value;
+        }
+
+        public void GetWorkerWorkTimeDataTable() {
+
+            string sqlcmd = "select 日期,工作站編號 as 產線代號,工作站名稱,工作人數 from 人員工時表";
+            if (dropdownlist_Factory.SelectedItem.Value == "sowon") 
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            }
+
+            else
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+            }
+            dt_WorkerWorkTime = DataTableUtils.GetDataTable(sqlcmd);
+            if (HtmlUtil.Check_DataTable(dt_WorkerWorkTime)) 
+            {
+                dt_WorkerWorkTime = myclass.Add_LINE_GROUP(dt_WorkerWorkTime).ToTable();
+            }
+        }
+
+        public void GetWorkerWorkTime(string excepted_fn_day,string today)
+        {
+
+            string sqlcmd = $"日期='{excepted_fn_day}'";
+            if (dropdownlist_Factory.SelectedItem.Value == "sowon")
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+            }
+
+            else
+            {
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+            }
+            dt_WorkerWorkTime = DataTableUtils.GetDataTable(sqlcmd);
         }
 
     }
