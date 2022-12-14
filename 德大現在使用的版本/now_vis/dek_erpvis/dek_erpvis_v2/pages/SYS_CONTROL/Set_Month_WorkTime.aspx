@@ -111,8 +111,19 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="Excepted_People_Content" class="btn-group btn-group-justified">
+                                            <b>預設每日應到人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Excepted_People" class="int_Value"/>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div id="Working_People_Content" class="btn-group btn-group-justified">
-                                            <b>預設每日上班人數:</b><br />
+                                            <b>預設每日實到人數:</b><br />
                                             <input  type="text" maxlength="2" id="Working_People" class="int_Value"/>
                                             <span></span>
                                         </div>
@@ -177,8 +188,18 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div  id="Day_Excepted_People_Content"class="btn-group btn-group-justified">
+                                            <b>應到人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Day_Excepted_People" class="int_Value"/>
+                                            <span></span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div  id="Day_Working_People_Content"class="btn-group btn-group-justified">
-                                            <b>預設上班人數:</b><br />
+                                            <b>實到人數:</b><br />
                                             <input  type="text" maxlength="2" id="Day_Working_People" class="int_Value"/>
                                             <span></span> 
                                         </div>
@@ -243,8 +264,19 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div  id="Update_Excepted_People_Content"class="btn-group btn-group-justified">
+                                            <b>應到人數:</b><br />
+                                            <input  type="text" maxlength="2" id="Update_Excepted_People" class="int_Value"/>
+                                            <span></span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div  id="Update_Working_People_Content"class="btn-group btn-group-justified">
-                                            <b>工作人數:</b><br />
+                                            <b>實到人數:</b><br />
                                             <input  type="text" maxlength="2" id="Update_Working_People" class="int_Value"/>
                                             <span></span> 
                                         </div>
@@ -381,6 +413,7 @@
                 var obj = readCookie('userInfo');
                
                 data["Factory"] = top["Factory"];
+                data["Excepted_People"] = $("#Excepted_People").val();
                 data["Working_People"] = $("#Working_People").val();
                 data["Work_Time"] = $("#Work_Time").val();
                 data["WorkStation_Name"] = $("#ContentPlaceHolder1_Month_WorkStation option:selected").text();
@@ -412,6 +445,7 @@
                 var obj = readCookie('userInfo');
                 
                 data["Factory"] = top["Factory"];
+                data["Excepted_People"] = $("#Day_Excepted_People").val();
                 data["Working_People"] = $("#Day_Working_People").val();
                 data["Work_Time"] = $("#Day_Work_Time").val();
                 data["WorkStation_Name"] = $("#ContentPlaceHolder1_Day_WorkStation option:selected").text();
@@ -447,8 +481,9 @@
                 }
         }
         //預設修改參數
-        function Update_Value(workStion_Num, date, working_People, workTime) {
+        function Update_Value(workStion_Num, date, excepted_People,working_People, workTime) {
             $("#Update_Date").val(date);
+            $("#Update_Excepted_People").val(excepted_People);
             $("#Update_Working_People").val(working_People);
             $("#Update_Work_Time").val(workTime);
             $("#Update_WorkStation").val(workStion_Num);
@@ -485,6 +520,7 @@
                 data["WorkStation_Num"] = $("#ContentPlaceHolder1_Update_WorkStation").val();
                 data["WorkStation_Name"] = $("#ContentPlaceHolder1_Update_WorkStation option:selected").text();
                 data["Serch_WorkStation"] = top["Serch_WorkStation"];
+                data["Excepted_People"] = $("#Update_Excepted_People").val();
                 data["Working_People"] = $("#Update_Working_People").val();
                 data["Work_Time"] = $("#Update_Work_Time").val();
                 data["New_Date"] = $("#Update_Date").val().replace(/-/g, "");
@@ -499,7 +535,7 @@
         //20220901判斷數字群組
         $(".int_Value").keyup(function () {
             // 驗證輸入字串
-            const rules = /^[1-9]*$/;
+            const rules = /^[1-9][0-9]*$/;
             var id = $(this).parent().attr("id")
             var value = $(this).val();
             if (!rules.test(value) && value != "") {

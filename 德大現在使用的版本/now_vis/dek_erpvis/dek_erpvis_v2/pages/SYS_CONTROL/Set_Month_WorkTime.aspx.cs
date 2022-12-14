@@ -199,7 +199,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                             dt_Row["日期"] = weekday[i];
                             dt_Row["工作站編號"] = workstation_All[j].GetType().GetProperty("工作站編號").GetValue(workstation_All[j]).ToString();
                             dt_Row["工作站名稱"] = workstation_All[j].GetType().GetProperty("工作站名稱").GetValue(workstation_All[j]).ToString();
-                            dt_Row["工作人數"] = myData["Working_People"];
+                            dt_Row["應到人數"] = myData["Excepted_People"];
+                            dt_Row["實到人數"] = myData["Working_People"];
                             dt_Row["工作時數"] = myData["Work_Time"];
                             dt_Row["所屬月份"] = month;
                             dt.Rows.Add(dt_Row);
@@ -253,7 +254,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                         dt_Row["日期"] = date;
                         dt_Row["工作站編號"] = workstation_All[j].GetType().GetProperty("工作站編號").GetValue(workstation_All[j]).ToString();
                         dt_Row["工作站名稱"] = workstation_All[j].GetType().GetProperty("工作站名稱").GetValue(workstation_All[j]).ToString();
-                        dt_Row["工作人數"] = myData["Working_People"];
+                        dt_Row["應到人數"] = myData["Excepted_People"];
+                        dt_Row["實到人數"] = myData["Working_People"];
                         dt_Row["工作時數"] = myData["Work_Time"];
                         dt_Row["所屬月份"] = month;
                         dt.Rows.Add(dt_Row);
@@ -312,6 +314,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string factory = myData["Factory"];
             string workstation_Num = myData["WorkStation_Num"];
             string workstation_Name = myData["WorkStation_Name"];
+            string excepted_People = myData["Excepted_People"];
             string working_People = myData["Working_People"];
             string work_Time = myData["Work_Time"];
             string date = myData["Original_Date"];
@@ -354,7 +357,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     row["日期"] = new_date;
                     row["工作站編號"] = workstation_All[j].GetType().GetProperty("工作站編號").GetValue(workstation_All[j]).ToString();
                     row["工作站名稱"] = workstation_All[j].GetType().GetProperty("工作站名稱").GetValue(workstation_All[j]).ToString();
-                    row["工作人數"] = working_People;
+                    row["應到人數"] = excepted_People;
+                    row["實到人數"] = working_People;
                     row["工作時數"] = work_Time;
                     //row["所屬月份"] = TextBox_Date.Text.Replace("-", "");
                     dt.Rows.Add(row);
@@ -538,17 +542,17 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 case "sowon":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} {condition} order by 工作站名稱,日期";
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,應到人數,實到人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} {condition} order by 工作站名稱,日期";
                     dataTable = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "dek":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號='11' order by 工作站名稱,日期";
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,應到人數,實到人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號='11' order by 工作站名稱,日期";
                     dataTable = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "hor":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號<>'11' {condition} order by 工作站名稱,日期";
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,應到人數,實到人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號<>'11' {condition} order by 工作站名稱,日期";
                     dataTable = DataTableUtils.GetDataTable(sqlcmd);
                     break;
             }
@@ -588,17 +592,17 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 case "sowon":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} {condition} order by 工作站名稱,日期";
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,應到人數,實到人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} {condition} order by 工作站名稱,日期";
                     dataTable = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "dek":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);//20220811 大圓盤改連臥式資料庫
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號='11' order by 工作站名稱,日期";
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,應到人數,實到人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號='11' order by 工作站名稱,日期";
                     dataTable = DataTableUtils.GetDataTable(sqlcmd);
                     break;
                 case "hor":
                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,工作人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號<>'11' {condition} order by 工作站名稱,日期";
+                    sqlcmd = $"select 工作站編號 AS 編輯,日期,所屬月份,工作站名稱,應到人數,實到人數,工作時數 from 人員工時表 where 日期>={date_str} and 日期<={date_end} and 工作站編號<>'11' {condition} order by 工作站名稱,日期";
                     dataTable = DataTableUtils.GetDataTable(sqlcmd);
                     break;
             }
@@ -632,13 +636,14 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             string workStion_Num = DataTableUtils.toString(row["編輯"]);
             string date = DataTableUtils.toString(row["日期"]);
             date=DateTime.ParseExact(date, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces).ToString("yyyy-MM-dd");
-            string working_People = DataTableUtils.toString(row["工作人數"]);
+            string working_People = DataTableUtils.toString(row["實到人數"]);
+            string excepted_People = DataTableUtils.toString(row["應到人數"]);
             string workTime = DataTableUtils.toString(row["工作時數"]);
             if (field_name == "編輯")
             {
                 value = $"<td>" +
                             $"<u>" +
-                                $"<a href=\"javascript:void(0)\" onclick=Update_Value(\"{workStion_Num}\",\"{date}\",\"{working_People}\",\"{workTime}\")  data-toggle=\"modal\" data-target=\"#Update_Modal\">" +
+                                $"<a href=\"javascript:void(0)\" onclick=Update_Value(\"{workStion_Num}\",\"{date}\",\"{excepted_People}\",\"{working_People}\",\"{workTime}\")  data-toggle=\"modal\" data-target=\"#Update_Modal\">" +
                                     $"編輯" +
                                 $"</a>" +
                             $"</u>" +

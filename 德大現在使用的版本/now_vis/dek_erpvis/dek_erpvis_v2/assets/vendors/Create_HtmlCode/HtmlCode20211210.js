@@ -67,7 +67,7 @@ function stateSave_Table(DataTableName) {
     });
 
 }
-//20220804 適用有總計之頁面,不排序,防止套件亂排序
+//20220804 適用有總計之頁面,不排序,防止套件亂排序,移除搜索欄位及分頁欄位
 function set_Table_defaulf_sort(DataTableName) {
     $(DataTableName).DataTable({
         destroy: true,
@@ -89,9 +89,10 @@ function set_Table_defaulf_sort(DataTableName) {
                 "last": "最後一頁"
             }
         },
+        searching: false, paging: false, info: false,
         colReorder: true,
         scrollCollapse: true,
-        dom: "<'top-list'<'pull-left'f>'row'<'pull-middle'B>'row'<'pull-right'l>>" +
+        dom: "<'top-list'<'pull-middle'B>>" +
             "<rt>" +
             "<'bottom-list'<'pull-left'i>row'<'pull-right'p>>",
 

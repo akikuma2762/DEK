@@ -153,6 +153,29 @@
                                                 </b>
                                             </td>
                                         </tr>
+                                         <tr>
+                                            <td align="center" style='font-size: 20px; color: black'>
+                                                <b>上期尚未生產： </b>
+                                            </td>
+                                            <td align="center" style='font-size: 20px; color: black'>
+                                                <b>
+                                                    <span style="display: inline-block; width: 45%; text-align: right;"><%=上期尚未生產 %></span>
+                                                    
+                                                </b>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td align="center" style='font-size: 20px; color: black'>
+                                                <b>下期提前生產： </b>
+                                            </td>
+                                            <td align="center" style='font-size: 20px; color: black'>
+                                                <b>
+                                                    <span style="display: inline-block; width: 45%; text-align: right;"><%= 下期提前生產 %></span>
+                                                    
+
+                                                </b>
+                                            </td>
+                                        </tr>
 
                                         <tr>
                                             <td align="center" style='font-size: 20px; color: black'>
@@ -664,7 +687,7 @@
         //防止頁籤跑版
         loadpage('', '');
 
-        create_tablecode('capacity', '本月生產進度', 'capacity-form', '<%=th_month_capacity.ToString() %>', '<%=tr_month_capacity.ToString() %>');
+        create_tablecode('capacity', '每日生產進度', 'capacity-form', '<%=th_month_capacity.ToString() %>', '<%=tr_month_capacity.ToString() %>');
         //產生相對應的JScode
         set_Table_defaulf_sort('#capacity-form');
 

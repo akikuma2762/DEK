@@ -2225,7 +2225,7 @@ namespace dek_erpvis_v2.cls
                 else if (LineNum=="11")
                     sqlcmd = $"SELECT 實際啟動時間,(組裝時間) AS 標準工時 FROM 工作站狀態資料表 LEFT JOIN 組裝工藝 ON Substring(排程編號, 1, Charindex('-', 排程編號) - 1) = 組裝工藝.機種編號 WHERE 排程編號 ='{schedule_number}' AND 工作站編號 = '{LineNum}'";
             }
-            dr = DataTableUtils.GetDataTable(sqlcmd);
+             dr = DataTableUtils.GetDataTable(sqlcmd);
 
             if (HtmlUtil.Check_DataTable(dr))
             {

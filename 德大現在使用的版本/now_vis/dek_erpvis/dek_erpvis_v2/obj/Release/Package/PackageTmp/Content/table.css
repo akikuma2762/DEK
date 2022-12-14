@@ -17,9 +17,15 @@
     padding-top:5px;
 }
 
-    .top-list .pull-left, .top-list .pull-middle {
-        width: 100%;
-    }
+.top-list .pull-left, .top-list .pull-middle, .top-list .pull-right, #table-form_length {
+    width: 100%;
+}
+.top-list .pull-right {
+text-align:right;
+}
+.pull-middle {
+text-align:center;
+}
 
 .dataTables_wrapper div.dataTables_filter {
     text-align: left !important;
@@ -68,6 +74,10 @@ td {
 
     .pull-right {
         width: 100%;
+        
+    }
+    #table-form_length {
+        text-align: left;
     }
 
     #myTab {
