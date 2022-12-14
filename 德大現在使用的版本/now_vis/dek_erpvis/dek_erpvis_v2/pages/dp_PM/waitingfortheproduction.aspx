@@ -666,7 +666,7 @@
 
         create_tablecode('capacity', '本月生產進度', 'capacity-form', '<%=th_month_capacity.ToString() %>', '<%=tr_month_capacity.ToString() %>');
         //產生相對應的JScode
-        set_Table('#capacity-form');
+        set_Table_defaulf_sort('#capacity-form');
 
 
     </script>

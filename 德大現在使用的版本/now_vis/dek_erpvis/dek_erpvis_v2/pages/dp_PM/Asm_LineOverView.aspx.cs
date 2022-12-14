@@ -66,7 +66,8 @@ namespace dek_erpvis_v2.pages.dp_PD
                         }
                         catch
                         {
-                            GotoCenn();
+                            //GotoCenn();
+                            Response.Redirect(myclass.logout_url);
                         }
 
 
