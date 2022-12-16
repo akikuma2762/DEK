@@ -1,4 +1,5 @@
 ﻿using dek_erpvis_v2.cls;
+using dekERP_dll.dekErp;
 using Support;
 using System;
 using System.Collections;
@@ -154,10 +155,60 @@ namespace dek_erpvis_v2.cls
                 tr = "<tr> <td class=\"center\"> no data </td></tr>";
             return tr;
         }
+
+        //20221215 by秋
+        public static string Set_Table_Content_New(DataTable dt, List<ProductionProgress> productionProgress, string[] TitleList, Func<List<ProductionProgress>,DataRow, string, string> callback = null, string align = "")
+        {
+            string tr = "";
+            string result = "";
+            string field_value;
+            if (Check_DataTable(dt))
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    result = "";
+                    for (int i = 0; i < TitleList.Length - 1; i++)
+                    {
+                        field_value = "";
+                        if (callback != null)
+                            field_value = callback(productionProgress, row, TitleList[i]);
+                        if (field_value == "" || field_value == "<td></td>")
+                        {
+                            if (TitleList[i] != "備註")
+                                field_value = $"<td {align}>{DataTableUtils.toString(row[TitleList[i]])}</td>";
+                        }
+                        else if (field_value == "1")
+                            field_value = "";
+
+                        result += field_value;
+                    }
+
+                    if (result != "")
+                    {
+                        tr += "<tr>";
+                        tr += result;
+                        tr += "</tr>";
+                    }
+
+                }
+            }
+            else
+                tr = "<tr> <td class=\"center\"> no data </td></tr>";
+            return tr;
+        }
+
         public static string Set_Table_Content(DataTable dt, string Title_comma_text, Func<DataRow, string, string> callback = null, string align = "")
         {
             if (Check_DataTable(dt))
                 return Set_Table_Content(dt, Title_comma_text.Split(','), callback, align);
+            else
+                return "<tr> <td class=\"center\"> no data </td></tr>"; ;
+        }
+        //20221215 by秋
+        public static string DaTaTable_To_HtmlTable(DataTable dt,List<ProductionProgress> productionProgress, string Title_comma_text, Func<List<ProductionProgress>, DataRow, string, string> callback = null, string align = "")
+        {
+            if (Check_DataTable(dt))
+                return Set_Table_Content_New( dt,productionProgress, Title_comma_text.Split(','), callback, align);
             else
                 return "<tr> <td class=\"center\"> no data </td></tr>"; ;
         }

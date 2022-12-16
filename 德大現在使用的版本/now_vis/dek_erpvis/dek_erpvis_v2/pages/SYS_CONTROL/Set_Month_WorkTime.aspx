@@ -196,6 +196,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div  id="Day_Working_People_Content"class="btn-group btn-group-justified">

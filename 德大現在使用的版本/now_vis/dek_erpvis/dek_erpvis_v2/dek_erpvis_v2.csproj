@@ -3933,6 +3933,7 @@
     <Content Include="pages\dp_PM\Lost_Material.aspx" />
     <Content Include="pages\dp_PM\Upload_Image.aspx" />
     <Content Include="pages\dp_PM\Upload_MachineImage.aspx" />
+    <Content Include="pages\dp_PM\Asm_Production_Progress.aspx" />
     <Content Include="pages\dp_PM\waitingfortheproduction_details_ITEC.aspx" />
     <Content Include="pages\dp_PM\waitingfortheproduction_details.aspx" />
     <Content Include="pages\dp_PM\waitingfortheproduction.aspx" />
@@ -4340,6 +4341,13 @@
     </Compile>
     <Compile Include="pages\dp_PM\Upload_MachineImage.aspx.designer.cs">
       <DependentUpon>Upload_MachineImage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pages\dp_PM\Asm_Production_Progress.aspx.cs">
+      <DependentUpon>Asm_Production_Progress.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\dp_PM\Asm_Production_Progress.aspx.designer.cs">
+      <DependentUpon>Asm_Production_Progress.aspx</DependentUpon>
     </Compile>
     <Compile Include="pages\dp_PM\waitingfortheproduction_details_ITEC.aspx.cs">
       <DependentUpon>waitingfortheproduction_details_ITEC.aspx</DependentUpon>

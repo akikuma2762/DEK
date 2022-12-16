@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dekErp\Factory_Item.cs" />
     <Compile Include="dekErp\ERP_House.cs" />
     <Compile Include="dekErp\ERP_Materials.cs" />
     <Compile Include="dekErp\ERP_Product.cs" />

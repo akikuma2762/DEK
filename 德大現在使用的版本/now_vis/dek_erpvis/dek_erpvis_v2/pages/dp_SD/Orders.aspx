@@ -9,7 +9,7 @@
     <link href="../../Content/Default.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
+      <%@ OutputCache VaryByParam="*" Duration="100" %>
 
     <!-----------------title------------------>
     <style>
