@@ -216,7 +216,7 @@ namespace dek_erpvis_v2.cls
 
         }
         //設定啟動時間 暫停時間 完成時間
-        public bool change_status(string acc, string Link, DataTable dt, string tablename, string condition, string status, string Report, string percent = "")
+        public bool change_status(string acc, string Link, DataTable dt, string tablename, string condition, string status, string Report, string worker, string percent = "")
         {
             acc = HtmlUtil.Search_acc_Column(acc, "USER_NAME");
             if (dt != null)
@@ -230,6 +230,7 @@ namespace dek_erpvis_v2.cls
                         case "啟動":
                             row["狀態"] = status;
                             row["進度"] = percent;
+                            row["派工狀態"] = worker;
                             if (now_status == "未動工")
                                 row["實際啟動時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
                             else if (now_status == "暫停")
@@ -238,6 +239,7 @@ namespace dek_erpvis_v2.cls
                         case "暫停":
                             row["狀態"] = status;
                             row["進度"] = percent;
+                            row["派工狀態"] = worker;
                             if (DataTableUtils.toString(dt.Rows[0]["實際啟動時間"]) == "")
                                 row["實際啟動時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
                             row["暫停時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -245,6 +247,7 @@ namespace dek_erpvis_v2.cls
                         case "跑合":
                             row["狀態"] = "啟動";
                             row["進度"] = 99;
+                            row["派工狀態"] = worker;
                             if (DataTableUtils.toString(dt.Rows[0]["實際啟動時間"]) == "")
                                 row["實際啟動時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
                             row["再次啟動時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -252,6 +255,7 @@ namespace dek_erpvis_v2.cls
                         case "完成":
                             row["狀態"] = status;
                             row["進度"] = 100;
+                            row["派工狀態"] = worker;
                             if (DataTableUtils.toString(dt.Rows[0]["實際啟動時間"]) == "")
                                 row["實際啟動時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
                             row["實際完成時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -262,6 +266,7 @@ namespace dek_erpvis_v2.cls
                 {
                     row["狀態"] = "完成";
                     row["進度"] = 100;
+                    row["派工狀態"] = worker;
                     if (DataTableUtils.toString(dt.Rows[0]["實際啟動時間"]) == "")
                         row["實際啟動時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
                     row["實際完成時間"] = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -1910,13 +1915,13 @@ namespace dek_erpvis_v2.cls
                             {
                                 string err = list[1].ToString().Replace(" ","");
                                 if (dt.Rows[i]["狀態"].ToString() == "暫停")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'> <span style='color:red'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\",'{dt.Rows[i]["派工狀態"]}') data-toggle='modal' data-target='#exampleModal'> <span style='color:red'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else if (dt.Rows[i]["狀態"].ToString() == "完成")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'><span style='color:green'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\"','{dt.Rows[i]["派工狀態"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:green'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else if (dt.Rows[i]["狀態"].ToString() == "啟動")
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'><span style='color:blue'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\",'{dt.Rows[i]["派工狀態"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:blue'><u>{dt.Rows[i]["進度"]}%</u></span></a></td> \n";
                                 else
-                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\") data-toggle='modal' data-target='#exampleModal'><span style='color:black'><u>0%</u></span></a></td> \n";
+                                    td += $"<td style='text-align:center;width:10%;vertical-align: middle'><a href='javascript:void(0)' onclick=SetValue('{dt.Rows[i]["排程編號"]}','{dt.Rows[i]["進度"]}%','{dt.Rows[i]["問題回報"]}',\"{err}\",'{dt.Rows[i]["派工狀態"]}') data-toggle='modal' data-target='#exampleModal'><span style='color:black'><u>0%</u></span></a></td> \n";
 
                                 color = "";
 
@@ -2012,9 +2017,9 @@ namespace dek_erpvis_v2.cls
                                 GlobalVar.UseDB_setConnString(GetConnByDekVisTmp);
                                 string sqlcmd = "";
                                 if (GetConnByDekVisTmp.Contains("Hor"))
-                                    sqlcmd = $"select sales,trn_date,d_date,designer,組裝者,CCS  from 組裝資料表,工作站狀態資料表 where 組裝資料表.排程編號 = 工作站狀態資料表.排程編號 and  工作站狀態資料表.排程編號 = '{DataTableUtils.toString(dt_select.Rows[i]["排程編號"])}' and CCS IS NOT NULL and Len(CCS) >0";
+                                    sqlcmd = $"select sales,trn_date,d_date,designer,組裝者,item_no CCS,派工狀態 from 組裝資料表,工作站狀態資料表 where 組裝資料表.排程編號 = 工作站狀態資料表.排程編號 and  工作站狀態資料表.排程編號 = '{DataTableUtils.toString(dt_select.Rows[i]["排程編號"])}' and item_no IS NOT NULL and Len(item_no) >0";
                                 else
-                                    sqlcmd = $"select sales,trn_date,d_date,designer,組裝者,item_no CCS from 組裝資料表,工作站狀態資料表 where 組裝資料表.排程編號 = 工作站狀態資料表.排程編號 and  工作站狀態資料表.排程編號 = '{DataTableUtils.toString(dt_select.Rows[i]["排程編號"])}' and item_no IS NOT NULL and Len(item_no) >0";
+                                    sqlcmd = $"select sales,trn_date,d_date,designer,組裝者,item_no CCS,派工狀態 from 組裝資料表,工作站狀態資料表 where 組裝資料表.排程編號 = 工作站狀態資料表.排程編號 and  工作站狀態資料表.排程編號 = '{DataTableUtils.toString(dt_select.Rows[i]["排程編號"])}' and item_no IS NOT NULL and Len(item_no) >0";
                                 DataTable dt_imformation = DataTableUtils.GetDataTable(sqlcmd);
                                 string ss = DataTableUtils.ErrorMessage;
 
@@ -2031,11 +2036,12 @@ namespace dek_erpvis_v2.cls
                                 string d_date = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["d_date"].ToString() != "" ? $" 預交日:{HtmlUtil.changetimeformat(dt_imformation.Rows[0]["d_date"].ToString())} <br/>" : "";
                                 //取得ccs
                                 string ccs = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["ccs"].ToString() != "" ? $"  CCS: <br/> {HtmlUtil.changetimeformat(dt_imformation.Rows[0]["CCS"].ToString())} <br/>" : "";
-
+                                //20221221 取得派工人員
+                                string dispatch_staff = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["派工狀態"].ToString() != "" ? $"  派工狀態: {HtmlUtil.changetimeformat(dt_imformation.Rows[0]["派工狀態"].ToString())} <br/>" : "";
                                 //tooltip
                                 string tooltip = "";
                                 if (image != "" || start_time != "" || finish_time != "" || designer != "" || worker != "" || saler != "" || trn_date != "" || d_date != "" || ccs != "")
-                                    tooltip = $"data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"left\"  data-html=\"true\" title=\"\" data-original-title=\" {start_time} {finish_time}  {designer} {worker} {saler} {trn_date} {d_date} {image} {ccs} \"";
+                                    tooltip = $"data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"left\"  data-html=\"true\" title=\"\" data-original-title=\" {start_time} {finish_time}  {designer} {worker}{dispatch_staff}{saler} {trn_date} {d_date} {image} {ccs} \"";
 
                                 if (judge == "")
                                     td += $"<td style='text-align:center;width:12%;vertical-align: middle' {tooltip} >{DataTableUtils.toString(dt_select.Rows[i][j])}</td> \n";

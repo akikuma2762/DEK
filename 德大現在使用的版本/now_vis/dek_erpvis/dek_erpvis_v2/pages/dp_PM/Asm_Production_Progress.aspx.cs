@@ -867,7 +867,6 @@ namespace dek_erpvis_v2.pages.dp_PM
                 {
                     value = "0";
                 }
-
             }
             else
             {
@@ -941,10 +940,10 @@ namespace dek_erpvis_v2.pages.dp_PM
         public string ProductionFullCount_CMD(string end)
         {
             string sqlcmd = "";
-            //不顯示已在上期完成的數量
-            //sqlcmd = $"(預計完工日<={end} and (實際完成時間 >='{start}' and 實際完成時間<={yesterday}) and 狀態 = '完成')";
-            //顯示已在下期提早完成數量
-            sqlcmd = $"((預計完工日<={end} OR 預計完工日>={end}) and 實際完成時間<='{end}' and 狀態 = '完成')";
+            //不顯示下期完成的數量
+            //sqlcmd = $"(預計完工日<={end} and 實際完成時間<='{end}' and 狀態 = '完成')"; //未確定20221216
+            //顯示在下期提早完成數量
+            //sqlcmd = $"((預計完工日<={end} OR 預計完工日>={end}) and 實際完成時間<='{end}' and 狀態 = '完成')";
             return sqlcmd;
         }
 

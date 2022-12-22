@@ -12,7 +12,10 @@
         #testmodal2 {
             padding: 5px 20px;
         }
-
+         #ContentPlaceHolder1_RadioButtonList_select_type>tbody>tr>td>span>label {
+                font-size:3rem;
+                margin-top:5px;
+            }
         @media screen and (max-width:768px) {
             #myModalLabel2 i {
                 margin-right: 10px;
@@ -193,6 +196,18 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <h3>
+                                            <i class="fa fa-caret-down">派工人員:</i>
+                                        </h3>
+                                        <fieldset>
+                                            <asp:TextBox ID="TextBox_Dispatch" runat="server" Style="display: none" Width="100%"></asp:TextBox>
+                                            <div id ="selection"></div>
+                                        </fieldset>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="col-md-4 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <h3>
@@ -201,7 +216,7 @@
                                         <fieldset>
                                             <asp:DropDownList ID="DropDownList_progress" runat="server"></asp:DropDownList>
                                         </fieldset>
-                                    </div>
+                                    </div>                                 
                                     <div class="form-group">
                                         <h3>
                                             <i class="fa fa-caret-down">狀態選擇:</i>
@@ -289,11 +304,19 @@
             var key = document.getElementsByName("ctl00$ContentPlaceHolder1$Text2")[0].value = X;//Text_Story  
         };
 
-        function SetValue(number, percent, Report,error_str) {
+        function SetValue(number, percent, Report,error_str,dispatch) {
 
             $('#ContentPlaceHolder1_TextBox_Number').val('' + number + '');
             $('#ContentPlaceHolder1_TextBox_show').val('' + number + '');
             $('#ContentPlaceHolder1_TextBox_Report').val('' + Report.replaceAll("^", "'").replaceAll('#', '"').replaceAll("$", " ").replaceAll('@', '\r\n') + '');
+            $("#ssss option").each(function (index) {
+
+                if ($(this).text() == dispatch) {
+                    console.log($(this).text(), dispatch, index);
+                    $("#ssss")[0].selectedIndex = index;
+                    console.log($("#ssss"));
+                }
+            })
             var error_ary = error_str.split("/");
             top["err_count"] = error_ary[0];
             console.log(error_ary);
@@ -302,6 +325,10 @@
         }
         //防止切換頁籤時跑版
         $(document).ready(function () {
+            var factory = <%=Factory_Json%>;
+            var dispatch = JSON.parse('<%=Dispatch_Json%>');
+            console.log(factory, dispatch);
+            SetSelectGroup(factory, dispatch, "ssss");
             $('#example').DataTable({
                 responsive: true
             });
@@ -339,6 +366,10 @@
                     document.querySelector(".blockUI.blockMsg.blockPage").style.zIndex = 1000000;
                     document.getElementById('btncheck').disabled = true;
                 }
+                var val = $("#selection option:selected").val();
+                console.log(val);
+                $('#ContentPlaceHolder1_TextBox_Dispatch').val(val);
+                console.log($('#ContentPlaceHolder1_TextBox_Dispatch').val());
                 document.getElementById('<%=button_select.ClientID %>').click();
 
             }
@@ -373,5 +404,41 @@
             top["status"] = $(this).val();
             console.log($(this).val());
         });
+
+        //20221221 新增select群組生成
+        function SetSelectGroup(factory, dispatch,id) {
+            var htmlText = "";
+            var f_Belong_Factory;
+            var w_Belong_Factory;
+            htmlText = `<select id="${id}" style=\"width:100%;\">`;
+            for (var i = 0; i < factory.length; i++)
+            {
+                f_Belong_Factory = factory[i]["Belong_Factory"];
+                htmlText += `<optgroup label="${f_Belong_Factory}">`
+                for (var j = 0; j < dispatch.length; j++)
+                {
+                    w_Belong_Factory = dispatch[j].Belong_Factory;
+                    if (w_Belong_Factory == f_Belong_Factory)
+                    {
+                        var user_id = dispatch[j].USER_ID;
+                        var user_name = dispatch[j].USER_Name;
+                        htmlText += `<option value="${user_id}">${user_name}</option>`
+                    }
+                }
+                htmlText += `</optgroup >`
+            }
+            htmlText += "</select>";
+
+            $("#selection").html(htmlText);
+        }
+        $("#selection").change(function () {
+            console.log($("#selection option:selected").val());
+            var val = $("#selection option:selected").val();
+            $('#ContentPlaceHolder1_TextBox_Dispatch').val(val);
+            $('#ContentPlaceHolder1_TextBox_Dispatch').text(val);
+            console.log($('#ContentPlaceHolder1_TextBox_Dispatch').text());
+        });
+
+
     </script>
 </asp:Content>

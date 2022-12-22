@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using dek_erpvis_v2.cls;
 using System.Data;
 using Support;
+using Newtonsoft.Json;
 
 namespace dek_erpvis_v2.pages.dp_PD
 {
@@ -47,7 +48,8 @@ namespace dek_erpvis_v2.pages.dp_PD
         ShareFunction SFun = new ShareFunction();
         myclass myclass = new myclass();
         public string PieceUnit = ShareMemory.PieceUnit;
-
+        public string Factory_Json = "";
+        public string Dispatch_Json = "";
         private void GotoCenn()
         {
             if (Request.QueryString["key"] != null)
@@ -63,6 +65,7 @@ namespace dek_erpvis_v2.pages.dp_PD
                             AddProgressList();
                             load_page_data();
                             check_power(acc);
+                            GetWorker();
                         }
                         catch
                         {
@@ -252,7 +255,8 @@ namespace dek_erpvis_v2.pages.dp_PD
             string CORD_NO = "";
             string CORD_SN = "";
             string Key = TextBox_show.Text;
-
+            string Dispatch_ID = TextBox_Dispatch.Text;
+            string Dispatch_Name = "";
             string CompLoacation = "";
             string[] QueryStr;
             QueryStr = HtmlUtil.Return_str(Request.QueryString["key"]);
@@ -261,7 +265,10 @@ namespace dek_erpvis_v2.pages.dp_PD
             bool no_Error = true;
             if (Key != "")
             {
-
+                DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+                string sqlcmd = $"select * from Users where USER_ID='{Dispatch_ID}'";
+                DataTable Users = DataTableUtils.GetDataTable(sqlcmd);
+                Dispatch_Name = Users.Rows[0]["USER_Name"].ToString();
                 CompLoacation = ShareFunction.Last_Place(acc);
                 SFun.GetConnByDekVisTmp = SFun.GetConnByDekdekVisAssm;
                 if (CompLoacation.ToUpper().Contains("HOR"))
@@ -275,6 +282,7 @@ namespace dek_erpvis_v2.pages.dp_PD
 
                 if (no_Error)
                 {
+                    
 
                     if (QueryStr != null)
                         condition = "排程編號=" + "'" + Key + "'" + " AND " + "工作站編號=" + "'" + QueryStr[1] + "'";
@@ -295,7 +303,7 @@ namespace dek_erpvis_v2.pages.dp_PD
 
                     //bool UpdataOK = DataTableUtils.Update_DataRow(ShareMemory.SQLAsm_WorkStation_State, condition, dr_select);
                     DataTable dt = DataTableUtils.GetDataTable(ShareMemory.SQLAsm_WorkStation_State, condition);
-                    bool updataok = SFun.change_status(acc, SFun.GetConnByDekVisTmp, dt, ShareMemory.SQLAsm_WorkStation_State, condition, RadioButtonList_select_type.SelectedItem.Text, TextBox_Report.Text.Replace("'", "^").Replace('"', '#').Replace(" ", "$").Replace("\r\n", "@"), DropDownList_progress.SelectedItem.Text.Trim('%'));
+                    bool updataok = SFun.change_status(acc, SFun.GetConnByDekVisTmp, dt, ShareMemory.SQLAsm_WorkStation_State, condition, RadioButtonList_select_type.SelectedItem.Text, TextBox_Report.Text.Replace("'", "^").Replace('"', '#').Replace(" ", "$").Replace("\r\n", "@"), Dispatch_Name, DropDownList_progress.SelectedItem.Text.Trim('%'));
                     SFun.Set_MachineID_Line_Updata(dr["工作站編號"].ToString());
                     if (RadioButtonList_select_type.SelectedItem.Text == "完成")
                     {
@@ -348,10 +356,14 @@ namespace dek_erpvis_v2.pages.dp_PD
             Response.Redirect("Asm_ErrorDetail.aspx?key=" + TextBox_textTemp.Text);
         }
 
-
-
-
-        
-
+        public void GetWorker() {
+            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+            string sqlcmd = "SELECT distinct Belong_Factory FROM USERS where USER_DPM = 'PMD' and Belong_Factory is not null";
+            DataTable dt_Factory = DataTableUtils.DataTable_GetTable(sqlcmd);
+            sqlcmd = "SELECT USER_ID,USER_Name,Power, Belong_Factory FROM USERS where USER_DPM='PMD'";
+            DataTable dt_Dispatch = DataTableUtils.GetDataTable(sqlcmd);
+            Factory_Json = JsonConvert.SerializeObject(dt_Factory);
+            Dispatch_Json = JsonConvert.SerializeObject(dt_Dispatch);
+        }
     }
 }
