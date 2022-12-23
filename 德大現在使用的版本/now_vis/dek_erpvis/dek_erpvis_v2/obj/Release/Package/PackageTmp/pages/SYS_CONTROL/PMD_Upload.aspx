@@ -439,13 +439,16 @@
                 $('#ContentPlaceHolder1_TextBox_OrderNum').val('' + Order + '');
                 $('#ContentPlaceHolder1_TextBox_Schedule').val('' + Number + '');
                 $('#ContentPlaceHolder1_TextBox_WorkNumber').val('' + WorkNumber + '');
+                top["Order_Origin"] = Order;
+                top["Schedule_Origin"] = Number;
+                top["WorkStation_Number_Origin"] = WorkNumber;
                 //console.log($('#ContentPlaceHolder1_TextBox_OrderNum').val(), $('#ContentPlaceHolder1_TextBox_Schedule').val(), $('#ContentPlaceHolder1_TextBox_WorkNumber').val());
                 var answer = confirm("您確定要刪除嗎??");
+                var data = update_Item_Data();
+                data["click_Type"] = "Delete";
+                data = JSON.stringify(data);
                 if (answer) {
                 //20220825 需求:新增刪頁面不跳轉,改使用AJAX傳輸資料,停用aps.net button元件
-                    var data = update_Item_Data();
-                    data["click_Type"] = "Delete";
-                    data = JSON.stringify(data);
                     postData(data);
                 }
             }

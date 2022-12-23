@@ -230,7 +230,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             else if (insert_Type == "Day")
             {
                 //判斷所屬月份
-                if (int.Parse(date) > int.Parse(date_str) && int.Parse(date) <= int.Parse(date_end))
+                if (int.Parse(date) >= int.Parse(date_str) && int.Parse(date) <= int.Parse(date_end))
                 {
                     month = d_end.Month.ToString();
                 }
@@ -577,8 +577,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         //CRUD後重載Table
         private Dictionary<string, string> set_Table(Dictionary<string, string> myData, string status)
         {
-            Dictionary<string, string> data2 = new Dictionary<string, string>();
-            object data = new { };
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            //object data = new { };
             string sqlcmd = "";
             string factory = myData["Factory"];
             string serch_WorkStation = myData["Serch_WorkStation"];
@@ -616,18 +616,21 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 dt.Columns["刪除"].SetOrdinal(1);
                 th = HtmlUtil.Set_Table_Title(dt, out titlename);
                 tr = HtmlUtil.Set_Table_Content(dt, titlename, Set_Energy_callback);
-                data = new { th = th, tr = tr, status = status };
-                data2.Add("th", th);
-                data2.Add("tr", tr);
-                data2.Add("status", status);
+                
+                data.Add("th", th);
+                data.Add("tr", tr);
+                data.Add("status", status);
 
             }
             else
             {
                 HtmlUtil.NoData(out th, out tr);
-                data = new { th = th, tr = tr, status = status };
+                //data = new { th = th, tr = tr, status = status };
+                data.Add("th", th);
+                data.Add("tr", tr);
+                data.Add("status", status);
             }
-            return data2;
+            return data;
         }
 
         private string Set_Energy_callback(DataRow row, string field_name)

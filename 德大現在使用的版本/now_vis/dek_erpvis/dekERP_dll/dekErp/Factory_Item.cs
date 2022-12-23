@@ -10,9 +10,13 @@ namespace dekERP_dll.dekErp
     public class ProductionProgress
     {
         public string FactoryFloor { get; set; }
+        public string Account { get; set; }
+        public string Date_Start { get; set; }
+        public string Date_End { get; set; }
+        public string Condition { get; set; }
         public DataTable FactoryDataTable { get; set; }
-        public DataTable WorkerDataTable { get; set; }
-        public DataTable ErrorUsolvedDataTable { get; set; }
+        public DataTable StaffDataTable { get; set; }
+        public DataTable ErrorUnsolvedDataTable { get; set; }
         public DataTable CapacitydDataTable { get; set; }
     }
 }
