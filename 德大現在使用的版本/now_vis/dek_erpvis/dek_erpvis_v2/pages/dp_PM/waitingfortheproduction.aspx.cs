@@ -717,7 +717,14 @@ namespace dek_erpvis_v2.pages.dp_PM
                     ErrorUnsolvedDataTable = error_unsolved,
                     CapacitydDataTable = capacityTable
                 });
-                
+                //上期未生產
+                string sqlcmd = PPC.ProductionDelay_CMD(date_start);
+                DataRow[] rows= dt.Select(sqlcmd);
+                上期尚未生產 = rows.Length;
+                //下期提前生產
+                sqlcmd = PPC.ProductionAhead_CMD(date_end);
+                rows = dt.Select(sqlcmd);
+                下期提前生產 = rows.Length;
                     th_month_capacity.Append(HtmlUtil.Set_Table_Title(table, out columns, "", "style=\"text-align:center;background-color:#2A3F54;color:white;\""));
                     tr_month_capacity.Append(HtmlUtil.DaTaTable_To_HtmlTable(table, productionProgress, columns, PPC.ProductionProgressTable_CallBack, "style=\"text-align:center;background-color:#2A3F54;color:white;\""));
                 

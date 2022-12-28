@@ -5576,16 +5576,26 @@ namespace dek_erpvis_v2.cls
         {
             DataTable dt = new DataTable();
             string sqlcmd = "";
-            if (factory == "sowon")
+            string day = "";
+            day = DateTime.Now.ToString("dd");
+            if (day == WebUtils.GetAppSettings("defult_StartDay"))
             {
+                date_str = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+            }
+            if (factory == "sowon")
+            {              
                 sqlcmd = $"select 日期,工作站編號 as 產線代號,工作站名稱,應到人數,實到人數 from 人員工時表 where 日期>='{date_str}' and 日期<='{date_end}'";
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                //GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssm);
+                DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssm;
+                dt = DataTableUtils.GetDataTable(sqlcmd);
             }
 
             else
             {
                 sqlcmd = $"select 日期,(CASE when 工作站編號='1' then '100' when 工作站編號='2' then'110' else 工作站編號 End) as 產線代號,工作站名稱,應到人數,實到人數 from 人員工時表 where 日期>='{date_str}' and 日期<='{date_end}'";
-                GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                //GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
+                DataTableUtils.Conn_String = myclass.GetConnByDekdekVisAssmHor;
+                dt = DataTableUtils.GetDataTable(sqlcmd);
             }
             dt = DataTableUtils.GetDataTable(sqlcmd);
             if (HtmlUtil.Check_DataTable(dt))
@@ -5704,7 +5714,7 @@ namespace dek_erpvis_v2.cls
                         break;
                     case "昨日應有進度":
                         //today = "20221126";
-                        day = DateTime.Now.AddDays(-1).ToString("dd");
+                        day = DateTime.Now.ToString("dd");
                         if (day.Contains("26"))
                         {
                             string startDay = "";
@@ -5719,7 +5729,7 @@ namespace dek_erpvis_v2.cls
                                 case "sowon":
                                     DataTable last_month_Assm = Get_ProductionDataTable(startDay, endDay, condition, factoryFloor);
                                     dt_factory = DataTableMerge(last_month_Assm, startDay, endDay);
-                                    dt_factory = myclass.Add_LINE_GROUP(dt_factory).ToTable();
+                                    //dt_factory = myclass.Add_LINE_GROUP(dt_factory).ToTable();
                                     sqlcmd = ExpectedProduction_CMD(endDay, today, startDay, true);
                                     break;
                                 case "iTec":
@@ -5752,7 +5762,7 @@ namespace dek_erpvis_v2.cls
 
                     case "昨日實際進度":
                         //today = "20221126";
-                        day = DateTime.Now.AddDays(-1).ToString("dd");
+                        day = DateTime.Now.ToString("dd");
                         if (day.Contains("26"))
                         {
                             string startDay = "";
@@ -5768,7 +5778,7 @@ namespace dek_erpvis_v2.cls
                                     DataTable last_month_Assm = Get_ProductionDataTable(startDay, endDay,condition, factoryFloor);
                                     dt_factory = DataTableMerge(last_month_Assm, startDay, endDay);
 
-                                    dt_factory = myclass.Add_LINE_GROUP(dt_factory).ToTable();
+                                    //dt_factory = myclass.Add_LINE_GROUP(dt_factory).ToTable();
 
                                     //sqlcmd = ProductionFullCountForYesterday_CMD(startDay, endDay, "20221125");
                                     sqlcmd = ProductionFullCount_CMD(endDay);
@@ -5804,9 +5814,10 @@ namespace dek_erpvis_v2.cls
                         }
                         sqlcmd += $" and 產線群組='{LineGroup}'";
                         rows = dt_factory.Select(sqlcmd);
-                        DataTable dts = dt_factory.Clone();
-                        for (int i = 0; i < rows.Length; i++)
-                            dts.ImportRow(rows[i]);
+                        //測試用
+                        //DataTable dts = dt_factory.Clone();
+                        //for (int i = 0; i < rows.Length; i++)
+                        //    dts.ImportRow(rows[i]);
                         _昨日實際生產 = rows.Length;
                         break;
 
@@ -5836,6 +5847,10 @@ namespace dek_erpvis_v2.cls
                         sqlcmd = ProductionDelay_CMD(d_start);
                         sqlcmd += $" and 產線群組='{LineGroup}'";
                         rows = dt_factory.Select(sqlcmd);
+                        //測試用
+                        //DataTable dtsa = dt_factory.Clone();
+                        //for (int i = 0; i < rows.Length; i++)
+                        //    dtsa.ImportRow(rows[i]);
                         上期尚未生產 = rows.Length;
                         break;
                     case "下期提前生產":
@@ -5918,7 +5933,7 @@ namespace dek_erpvis_v2.cls
             string sqlcmd = "";
             //延遲預計生產 20221214 
 
-            sqlcmd = $"((預計完工日 <= '{date_str}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 =''))  OR 預計完工日='開發機' ) ";
+            sqlcmd = $"((預計完工日 < '{date_str}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 =''))  OR 預計完工日='開發機' ) ";
 
             return sqlcmd;
         }
