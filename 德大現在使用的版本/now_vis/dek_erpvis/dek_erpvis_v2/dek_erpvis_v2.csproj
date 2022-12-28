@@ -3931,6 +3931,9 @@
     <Content Include="pages\dp_PM\Asm_NoSolve_ITEC.aspx" />
     <Content Include="pages\dp_PM\Knifeset_Count.aspx" />
     <Content Include="pages\dp_PM\Lost_Material.aspx" />
+    <Content Include="pages\dp_PM\PMD_Upload.aspx" />
+    <Content Include="pages\dp_PM\Set_Energy.aspx" />
+    <Content Include="pages\dp_PM\Set_Month_WorkTime.aspx" />
     <Content Include="pages\dp_PM\Upload_Image.aspx" />
     <Content Include="pages\dp_PM\Upload_MachineImage.aspx" />
     <Content Include="pages\dp_PM\Asm_Production_Progress.aspx" />
@@ -4327,6 +4330,27 @@
     </Compile>
     <Compile Include="pages\dp_PM\Lost_Material.aspx.designer.cs">
       <DependentUpon>Lost_Material.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pages\dp_PM\PMD_Upload.aspx.cs">
+      <DependentUpon>PMD_Upload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\dp_PM\PMD_Upload.aspx.designer.cs">
+      <DependentUpon>PMD_Upload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pages\dp_PM\Set_Energy.aspx.cs">
+      <DependentUpon>Set_Energy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\dp_PM\Set_Energy.aspx.designer.cs">
+      <DependentUpon>Set_Energy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pages\dp_PM\Set_Month_WorkTime.aspx.cs">
+      <DependentUpon>Set_Month_WorkTime.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\dp_PM\Set_Month_WorkTime.aspx.designer.cs">
+      <DependentUpon>Set_Month_WorkTime.aspx</DependentUpon>
     </Compile>
     <Compile Include="pages\dp_PM\Upload_Image.aspx.cs">
       <DependentUpon>Upload_Image.aspx</DependentUpon>

@@ -29,8 +29,8 @@
             </li>
             <li role="presentation" class="" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content2" id="profile-tab" role="tab" data-toggle="tab" aria-expanded="false">表格模式</a>
             </li>
-             <li role="presentation" class="" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content3" id="month_capacity" role="tab" data-toggle="tab" aria-expanded="false">本月產能</a>
-            </li>
+            <!---- <li role="presentation" class="" style="box-shadow: 3px 3px 9px gray;"><a href="#tab_content3" id="month_capacity" role="tab" data-toggle="tab" aria-expanded="false">本月產能</a>
+            </li>------>
         </ul>
         <div id="myTabContent" class="tab-content">
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">

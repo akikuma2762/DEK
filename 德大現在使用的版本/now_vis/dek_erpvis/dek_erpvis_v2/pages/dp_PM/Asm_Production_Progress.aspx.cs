@@ -54,7 +54,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             {
                 acc = DataTableUtils.toString(userInfo["user_ACC"]);
                 path = 德大機械.get_title_web_path("PMD");
-                URL_NAME = "waitingfortheproduction";
+                URL_NAME = "Asm_Production_Progress";
                 color = HtmlUtil.change_color(acc);
                 //string date = DateTime.Now.ToString("yyyyMMdd");
                 

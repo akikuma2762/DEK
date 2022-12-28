@@ -116,8 +116,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         }
 
         protected void Button_submit_Click(object sender, EventArgs e)
-        {
-
+        {           
             int available = 0;
             string tabl_name = "WEB_USER";
             string seleted_item = Request.Form["table_records"];
@@ -135,24 +134,35 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     available++;
 
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+
                 //新增至show_page //20220816 無法insert,新版帳號無須inser show_page暫不修正
-                string sqlcmd = "select * from show_page ";
-                DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
-                if (dt != null)
-                {
-                    DataRow rsw = dt.NewRow();
-                    rsw["URL"] = url;
-                    rsw["account"] = id;
-                    rsw["Allow"] = "Y";
-                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
-                    DataTableUtils.Insert_DataRow("show_page", rsw);
+                //舊版-資料庫為空的話,永遠無法新增資料
+                //string sqlcmd = "select * from show_page ";
+                //DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+                //if (dt != null)
+                //{
+                //    DataTable dt_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
+                //    DataRow rsw = dt_NoRow.NewRow();
+                //    rsw["URL"] = url;
+                //    rsw["account"] = id;
+                //    rsw["Allow"] = "Y";
+                //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                //    bool success=DataTableUtils.Insert_DataRow("show_page", rsw);
 
-                }
-
-
+                //}
+                //20221228 新-不判斷資料庫直接直接新增
+                DataTable dt_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
+                DataRow rsw = dt_NoRow.NewRow();
+                rsw["URL"] = url;
+                rsw["account"] = id;
+                rsw["Allow"] = "Y";
+                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                bool success = DataTableUtils.Insert_DataRow("show_page", rsw);
             }
             Response.Write("<script language='javascript'>alert('伺服器回應 : 已審核 " + available + " 筆申請資料。');</script>");
-            GotoCenn();
+            //20221228 送出後重整避免使用者瀏覽器重整,重複動作
+            Response.Redirect("rights_application.aspx", false);
+            //GotoCenn();
 
         }
 
@@ -173,7 +183,9 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     available++;
             }
             Response.Write("<script language='javascript'>alert('伺服器回應 : 已刪除 " + available + " 筆申請資料。');</script>");
-            GotoCenn();
+            //20221228 送出後重整避免使用者瀏覽器重整,重複動作
+            Response.Redirect("rights_application.aspx", false);
+            //GotoCenn();
         }
 
     }

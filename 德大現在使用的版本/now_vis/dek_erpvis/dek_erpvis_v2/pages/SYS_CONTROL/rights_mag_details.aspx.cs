@@ -182,12 +182,14 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
         private void get_checkBoxList_Item(CheckBoxList CheckBoxList, string dep_item)
         {
             ListItem listItem = null;
-            string sql_cmd = "select a.*, (CASE WHEN b.USER_ACC is null THEN '' ELSE b.USER_ACC END ) as USER_ACC from (select WEB_PAGES.WEB_DPM, WEB_PAGES.WEB_PAGENAME, WEB_PAGES.WEB_URL ,web_pages.web_open FROM WEB_PAGES) as a left join (SELECT WB_URL,USER_ACC FROM WEB_USER where USER_ACC = '" + selected_user_acc + "') as b on a.WEB_URL = b.WB_URL  where a.WEB_DPM = '" + dep_item + "' and a.WEB_open = 'Y'  ";
+            //string sql_cmd = "select a.*, (CASE WHEN b.USER_ACC is null THEN '' ELSE b.USER_ACC END ) as USER_ACC from (select WEB_PAGES.WEB_DPM, WEB_PAGES.WEB_PAGENAME, WEB_PAGES.WEB_URL ,web_pages.web_open FROM WEB_PAGES) as a left join (SELECT WB_URL,USER_ACC FROM WEB_USER where USER_ACC = '" + selected_user_acc + "') as b on a.WEB_URL = b.WB_URL  where a.WEB_DPM = '" + dep_item + "' and a.WEB_open = 'Y'  ";
+            string sql_cmd = "select a.*, (CASE WHEN b.USER_ACC is null THEN '' ELSE b.USER_ACC END ) as USER_ACC,b.VIEW_NY from (select WEB_PAGES.WEB_DPM, WEB_PAGES.WEB_PAGENAME, WEB_PAGES.WEB_URL ,web_pages.web_open FROM WEB_PAGES) as a left join (SELECT * FROM WEB_USER where USER_ACC = '" + selected_user_acc + "') as b on a.WEB_URL = b.WB_URL  where a.WEB_DPM = '" + dep_item + "' and a.WEB_open = 'Y'";
             DataTable dt = DataTableUtils.GetDataTable(sql_cmd);
             foreach (DataRow row in dt.Rows)
             {
                 listItem = new ListItem(DataTableUtils.toString(row["WEB_PAGENAME"]), DataTableUtils.toString(row["WEB_URL"]));
-                if (DataTableUtils.toString(row["USER_ACC"]) != "")
+                string View_NY = row["VIEW_NY"].ToString();//20221228修改-增加判斷view_ny,確定審核過才能打勾,不是有審核就打勾
+                if (DataTableUtils.toString(row["USER_ACC"]) != "" && View_NY=="Y")
                     listItem.Selected = true;
                 else
                     listItem.Selected = false;
@@ -351,7 +353,11 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
             msg = selected_user_acc + "已異動! 可瀏覽頁面數 : " + i + "頁";
             Response.Write("<script language='javascript'>alert('伺服器回應 : " + msg + "');</script>");
-            load_page_data();
+            //20221228 送出後重整避免使用者瀏覽器重整,重複動作
+            string password = DataTableUtils.toString(HttpContext.Current.Request.QueryString["password_"]);
+            string url = $"rights_mag_details.aspx?password_={password}";
+            Server.Transfer(url);
+            //load_page_data();
         }
         protected void Button_info_Click(object sender, EventArgs e)
         {

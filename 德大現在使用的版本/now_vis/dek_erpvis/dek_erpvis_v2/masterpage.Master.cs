@@ -72,10 +72,10 @@ namespace dek_erpvis_v2
                           "</div>" +
                           "</div>";
                 }
-                //開放權限
-                if (HtmlUtil.Search_acc_Column(acc) == "Y")
-                    changevalue = $"<li style=\"background-color: {color}\"><a href=\"/pages/SYS_CONTROL/PMD_Upload.aspx\">03變更資料</a></li>" +
-                                  $"<li style=\"background-color: {color}\"><a href=\"/pages/SYS_CONTROL/Set_Energy.aspx\">04產能變更</a></li>";
+                //開放權限 //20221228 資料新增至資料庫,並移動至生產部底下
+                //if (HtmlUtil.Search_acc_Column(acc) == "Y")
+                //    changevalue = $"<li style=\"background-color: {color}\"><a href=\"/pages/SYS_CONTROL/PMD_Upload.aspx\">03變更資料</a></li>" +
+                //                  $"<li style=\"background-color: {color}\"><a href=\"/pages/SYS_CONTROL/Set_Energy.aspx\">04產能變更</a></li>";
             }
         }
         protected void Button_logout_Click(object sender, EventArgs e)
