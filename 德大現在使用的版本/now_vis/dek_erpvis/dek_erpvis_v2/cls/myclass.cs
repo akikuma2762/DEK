@@ -251,6 +251,16 @@ namespace dek_erpvis_v2.cls
             dv.ToTable();
             return dv;
         }
+        
+        //20221230 讀取ERP全產線群組資料
+        public DataTable Get_LINEGROUP()
+        {
+            string sqlcmd = "SELECT _Line.*,_Group.GROUP_ID,_Group.GROUP_NAME,(case  when _Line.LINE_ID=100 then 1   when _Line.LINE_ID=110 then 2 else  _Line.LINE_ID end)工作站編號 FROM ASSEMBLY_LINE as _Line left join ASSEMBLY_LINE_GROUP as _LineGroup on _LineGroup.LINE_ID=_Line.LINE_ID left join ASSEMBLY_GROUP as _Group on _Group.GROUP_ID=_LineGroup.GROUP_ID where _Group.GROUP_NAME is not null and _Line.LINE_STATUS<>0 order by _Group.GROUP_NAME";
+            GlobalVar.UseDB_setConnString(GetConnByDekVisErp);//切換至可視化資料庫
+            DataTable dt = DataTableUtils.GetDataTable(sqlcmd);
+            return dt;
+
+        }
 
         public string date_trn(string days)
         {

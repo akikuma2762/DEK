@@ -536,10 +536,12 @@
         //20220901判斷數字群組
         $(".int_Value").keyup(function () {
             // 驗證輸入字串
-            const rules = /^[1-9][0-9]*$/;
+            const rules = /^[1-9][1-9]*$/;
+            const rules_2 = /^[0][0-9]$/;//20221230 新增判斷0可以,0後面不能有任何數字
             var id = $(this).parent().attr("id")
             var value = $(this).val();
-            if (!rules.test(value) && value != "") {
+            console.log(rules_2.test(value));
+            if (!rules.test(value) && value != "" && rules_2.test(value)) {
                 $("#" + id + " span").text("資料格式錯誤!");
                 $("#" + id + " span").css("color", "red");
                 warning[id] = "";

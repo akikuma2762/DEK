@@ -6,7 +6,10 @@ input[type="checkbox"] {
     border: 1px solid black;
     -webkit-appearance: checkbox;
 }
-
+.int_Value::-webkit-outer-spin-button,
+.int_Value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+} 
 
 
 .col-xs-1,

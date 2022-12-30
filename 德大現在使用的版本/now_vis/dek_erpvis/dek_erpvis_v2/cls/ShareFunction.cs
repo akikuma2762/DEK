@@ -830,7 +830,25 @@ namespace dek_erpvis_v2.cls
                         schdule_number += $" OR  排程編號 ='{Number[i]}' ";
                 }
                 schdule_number = schdule_number + ")";
-                string Sql = $"select  * from {ShareMemory.SQLAsm_WorkStation_State} INNER JOIN 工作站型態資料表 ON 工作站狀態資料表.工作站編號 = 工作站型態資料表.工作站編號  where 工作站狀態資料表.工作站編號='{LineNum}' {schdule_number}  order by 組裝日 desc";
+
+                //20221230新增 配合每日生產進度表,立式復合產線(ex:40盤),進行產線編號組合
+                var LineNum_Arry = LineNum.Split(',');
+                string condition = "";
+                if (LineNum_Arry.Length > 1) 
+                {
+                    foreach (string lineNum in LineNum_Arry) {
+
+                        condition+= $"工作站狀態資料表.工作站編號='{lineNum}' or ";
+                    }
+                    condition = condition.TrimEnd("and ".ToArray());
+                }
+                else
+                {
+                    condition = $"工作站狀態資料表.工作站編號='{LineNum}'";
+                }
+
+                //string Sql = $"select  * from {ShareMemory.SQLAsm_WorkStation_State} INNER JOIN 工作站型態資料表 ON 工作站狀態資料表.工作站編號 = 工作站型態資料表.工作站編號  where 工作站狀態資料表.工作站編號='{LineNum}' {schdule_number}  order by 組裝日 desc";//舊
+                string Sql = $"select  * from {ShareMemory.SQLAsm_WorkStation_State} INNER JOIN 工作站型態資料表 ON 工作站狀態資料表.工作站編號 = 工作站型態資料表.工作站編號  where {condition} {schdule_number}  order by 組裝日 desc";//20221230新
                 dt = DataTableUtils.GetDataTable(Sql);
             }
 
@@ -2028,7 +2046,7 @@ namespace dek_erpvis_v2.cls
                                 //取得設計者
                                 string designer = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["designer"].ToString() != "" ? $"  設計者:{dt_imformation.Rows[0]["designer"]} <br/> " : "";
                                 //取得組裝者
-                                string worker = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["組裝者"].ToString() != "" ? $"  組裝者:{dt_imformation.Rows[0]["組裝者"]} <br/>" : "";
+                                //string worker = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["組裝者"].ToString() != "" ? $"  組裝者:{dt_imformation.Rows[0]["組裝者"]} <br/>" : "";
                                 //取得業務員
                                 string saler = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["sales"].ToString() != "" ? $"  業務員:{dt_imformation.Rows[0]["sales"]} <br/>" : "";
                                 //取得下單日
@@ -2038,11 +2056,14 @@ namespace dek_erpvis_v2.cls
                                 //取得ccs
                                 string ccs = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["ccs"].ToString() != "" ? $"  CCS: <br/> {HtmlUtil.changetimeformat(dt_imformation.Rows[0]["CCS"].ToString())} <br/>" : "";
                                 //20221221 取得派工人員
-                                string dispatch_staff = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["派工狀態"].ToString() != "" ? $"  派工狀態: {HtmlUtil.changetimeformat(dt_imformation.Rows[0]["派工狀態"].ToString())} <br/>" : "";
+                                string dispatch_staff = HtmlUtil.Check_DataTable(dt_imformation) && dt_imformation.Rows[0]["派工狀態"].ToString() != "" ? $"  派工人員: {HtmlUtil.changetimeformat(dt_imformation.Rows[0]["派工狀態"].ToString())} <br/>" : "";
                                 //tooltip
                                 string tooltip = "";
-                                if (image != "" || start_time != "" || finish_time != "" || designer != "" || worker != "" || saler != "" || trn_date != "" || d_date != "" || ccs != "")
-                                    tooltip = $"data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"left\"  data-html=\"true\" title=\"\" data-original-title=\" {start_time} {finish_time}  {designer} {worker}{dispatch_staff}{saler} {trn_date} {d_date} {image} {ccs} \"";
+                                //20221230 worker(派工帳號 暫不顯示 未來需修改資料庫)
+                                //if (image != "" || start_time != "" || finish_time != "" || designer != "" || worker != "" || saler != "" || trn_date != "" || d_date != "" || ccs != "")
+                                //    tooltip = $"data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"left\"  data-html=\"true\" title=\"\" data-original-title=\" {start_time} {finish_time}  {designer} {worker}{dispatch_staff}{saler} {trn_date} {d_date} {image} {ccs} \"";
+                                if (image != "" || start_time != "" || finish_time != "" || designer != "" || saler != "" || trn_date != "" || d_date != "" || ccs != "")
+                                    tooltip = $"data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"left\"  data-html=\"true\" title=\"\" data-original-title=\" {start_time} {finish_time}  {designer} {dispatch_staff}{saler} {trn_date} {d_date} {image} {ccs} \"";
 
                                 if (judge == "")
                                     td += $"<td style='text-align:center;width:12%;vertical-align: middle' {tooltip} >{DataTableUtils.toString(dt_select.Rows[i][j])}</td> \n";
@@ -4714,13 +4735,13 @@ namespace dek_erpvis_v2.cls
         }
 
         //計算起開始月份及結束月份
-        public Dictionary<string, string> monthInterval(string date, string acc)
+        public Dictionary<string, string> monthInterval(string endDate, string acc)
         {
             Dictionary<string, string> obj = new Dictionary<string, string>();
             DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
             DataTable user_Acc = DataTableUtils.DataTable_GetTable($"SELECT * FROM SYSTEM_PARAMETER WHERE USER_ACC='{acc}'");
             //轉換日期型態
-            DateTime endDay = DateTime.ParseExact(date, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            DateTime endDay = DateTime.ParseExact(endDate, "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
             DateTime startDay = endDay.AddMonths(-1);
 
             //結合帳號月區間重新組合日期
@@ -4728,11 +4749,11 @@ namespace dek_erpvis_v2.cls
             startDay = new DateTime(startDay.Year, startDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
 
             //202212/22判斷日期歸屬的區間,計算起始結束日期
-            if (int.Parse(date) >= int.Parse(startDay.ToString("yyyyMMdd")) && int.Parse(date) <= int.Parse(endDay.ToString("yyyyMMdd")))
+            if (int.Parse(endDate) >= int.Parse(startDay.ToString("yyyyMMdd")) && int.Parse(endDate) <= int.Parse(endDay.ToString("yyyyMMdd")))
             {
 
             }
-            else if (int.Parse(date) >= int.Parse(endDay.ToString("yyyyMMdd")))
+            else if (int.Parse(endDate) >= int.Parse(endDay.ToString("yyyyMMdd")))
             {
                 startDay = new DateTime(endDay.Year, endDay.Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_STR"])));
                 endDay = new DateTime(endDay.Year, endDay.AddMonths(1).Month, int.Parse(DataTableUtils.toString(user_Acc.Rows[0]["DATE_END"])));
@@ -5514,12 +5535,15 @@ namespace dek_erpvis_v2.cls
             return dt_month;
         }
 
-        public DataTable Get_AbbormalTable(DataTable dt,string condition ,string factory)
+        public DataTable Get_AbbormalTable(DataTable dt,string startDay,string endDay, string condition ,string factory)
         {
             //列出目前所有排程
             DataTable dt_unsolved = new DataTable();
             string Error_Number = "";
             bool ok = true;
+            startDay += "010101";
+            endDay += "235959";
+            string conditions = $"a.時間紀錄>='{startDay}' AND a.時間紀錄 <= '{endDay}' and a.結案判定類型 is not null";
             if (HtmlUtil.Check_DataTable(dt))
             {
                 foreach (DataRow row in dt.Rows)
@@ -5540,26 +5564,27 @@ namespace dek_erpvis_v2.cls
                                 $" 異常維護編號," +
                                 $"工作站編號 as 產線代號," +
                                 $" 排程編號," +
-                                $" a.結案判定類型  " +
+                                $" a.結案判定類型," +
+                                $"a.時間紀錄" +
                                 $" FROM 工作站異常維護資料表 " +
                                 $" LEFT JOIN (" +
-                                $"             SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型 " +
+                                $"             SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型,時間紀錄 " +
                                 $"             FROM 工作站異常維護資料表 " +
                                 $"             where    結案判定類型 IS NOT NULL " +
-                                $"             group by 父編號,排程編號,結案判定類型" +
+                                $"             group by 父編號,排程編號,結案判定類型,時間紀錄" +
                                 $"           ) a ON a.排程號碼 = 工作站異常維護資料表.排程編號 AND 工作站異常維護資料表.異常維護編號 = a.父編號 " +
                                 $"           {Error_Number} " +
                                 $"           AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) " +
-                                $"           AND a.結案判定類型 IS NULL {condition.Replace("產線代號", "工作站異常維護資料表.工作站編號")} ORDER BY 工作站異常維護資料表.排程編號";
+                                $"           AND a.結案判定類型 IS NOT NULL {condition.Replace("產線代號", "工作站異常維護資料表.工作站編號")} ORDER BY 工作站異常維護資料表.排程編號";
                 dt_unsolved = DataTableUtils.GetDataTable(sqlcmd);
                 dt_unsolved = myclass.Add_LINE_GROUP(dt_unsolved).ToTable();
             }
             else
             {
-                Error_Number = Error_Number != "" ? $" {Error_Number} and (工作站異常維護資料表.工作站編號='1' OR 工作站異常維護資料表.工作站編號='2'  OR 工作站異常維護資料表.工作站編號='9' ) " : "";
+                Error_Number = Error_Number != "" ? $" {Error_Number} and (工作站異常維護資料表.工作站編號='1' OR 工作站異常維護資料表.工作站編號='2'  OR 工作站異常維護資料表.工作站編號='9' OR 工作站異常維護資料表.工作站編號='11') " : "";
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekdekVisAssmHor);
-                string sqlcmd = $" SELECT DISTINCT 異常維護編號,(CASE when 工作站編號='1' then '100' when 工作站編號='2' then'110' else 工作站編號 End) AS 產線代號,排程編號,a.結案判定類型  FROM 工作站異常維護資料表 LEFT JOIN (SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型 FROM 工作站異常維護資料表 where    結案判定類型 IS NOT NULL group by 父編號,排程編號,結案判定類型) a ON a.排程號碼 = 工作站異常維護資料表.排程編號 AND 工作站異常維護資料表.異常維護編號 = a.父編號 {Error_Number} AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) AND 工作站編號=1  ORDER BY 工作站異常維護資料表.排程編號";
-
+                //string sqlcmd = $" SELECT DISTINCT 異常維護編號,(CASE when 工作站編號='1' then '100' when 工作站編號='2' then'110' else 工作站編號 End) AS 產線代號,排程編號,a.結案判定類型  FROM 工作站異常維護資料表 LEFT JOIN (SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型 FROM 工作站異常維護資料表 where    結案判定類型 IS NOT NULL group by 父編號,排程編號,結案判定類型) a ON a.排程號碼 = 工作站異常維護資料表.排程編號 AND 工作站異常維護資料表.異常維護編號 = a.父編號 {Error_Number} AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) AND 工作站編號=1  ORDER BY 工作站異常維護資料表.排程編號";
+                string sqlcmd = $" SELECT DISTINCT 異常維護編號,(CASE when 工作站編號='1' then '100' when 工作站編號='2' then'110' else 工作站編號 End) AS 產線代號,工作站編號,排程編號,a.結案判定類型,a.時間紀錄 FROM 工作站異常維護資料表 LEFT JOIN (SELECT max(異常維護編號) 編號,排程編號 排程號碼,父編號,結案判定類型,時間紀錄 FROM 工作站異常維護資料表 where 結案判定類型 IS NOT NULL group by 父編號,排程編號,結案判定類型,時間紀錄) a ON a.排程號碼 = 工作站異常維護資料表.排程編號 AND 工作站異常維護資料表.異常維護編號 = a.父編號 {Error_Number} AND (工作站異常維護資料表.父編號 IS NULL OR 工作站異常維護資料表.父編號=0) and {conditions}  ORDER BY 工作站異常維護資料表.排程編號";
                 //20221212 無資料不抓異常
                 if (Error_Number == "")
                     sqlcmd = "";
@@ -5649,6 +5674,7 @@ namespace dek_erpvis_v2.cls
             string row_name = row[0].ToString();
             string day = "";
             string yesterday = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+            string default_value = "";
             if (field_name != " ")
             {
 
@@ -5669,6 +5695,7 @@ namespace dek_erpvis_v2.cls
                             object dd = dt_capacity.Compute("sum(月產能)", $"工作站名稱='{line_Group}'");
                             月產能 = int.Parse(dd.ToString());
                         }
+                        value = 月產能.ToString();
                         break;
                     case "本期計畫生產":
                         //預計生產
@@ -5679,6 +5706,8 @@ namespace dek_erpvis_v2.cls
                         for (int i = 0; i < rows.Length; i++)
                             dtss.ImportRow(rows[i]);
                         _預定生產 = rows.Length;
+                        _預定生產 = _預定生產 == 0 ? 0 : _預定生產;
+                        value = _預定生產.ToString();
                         break;
                     case "目前累計應有進度":
                         sqlcmd = ExpectedProduction_CMD(today, today, d_start, true);
@@ -5686,6 +5715,7 @@ namespace dek_erpvis_v2.cls
                         rows = dt_factory.Select(sqlcmd);
                         //到今天為止應生產多少
                         _預計生產量 = rows.Length;
+                        value = _預計生產量.ToString();
                         break;
                     case "目前累計實際進度":
                         //實際生產
@@ -5694,7 +5724,7 @@ namespace dek_erpvis_v2.cls
                         rows = dt_factory.Select(sqlcmd);
 
                         _實際生產 = rows.Length;
-
+                        value = _實際生產.ToString();
                         break;
                     case "差異量":
 
@@ -5711,6 +5741,7 @@ namespace dek_erpvis_v2.cls
                         _預計生產量 = rows.Length;
 
                         差異量 = (_預計生產量 - _實際生產).ToString();
+                        value = 差異量;
                         break;
                     case "昨日應有進度":
                         //today = "20221126";
@@ -5758,6 +5789,7 @@ namespace dek_erpvis_v2.cls
                         //for (int i = 0; i < rows.Length; i++)
                         //    dtsss.ImportRow(rows[i]);
                         _昨日預定生產 = rows.Length;
+                        value = _昨日預定生產.ToString();
                         break;
 
                     case "昨日實際進度":
@@ -5819,6 +5851,7 @@ namespace dek_erpvis_v2.cls
                         //for (int i = 0; i < rows.Length; i++)
                         //    dts.ImportRow(rows[i]);
                         _昨日實際生產 = rows.Length;
+                        value = _昨日實際生產.ToString();
                         break;
 
                     case "昨日人力(實到/應到)":
@@ -5837,11 +5870,12 @@ namespace dek_erpvis_v2.cls
                                 實到人數 += int.Parse(working_People_count);
                             }
                         }
-
+                        value = $"{實到人數}/{應到人數}";
                         break;
 
                     case "本期異常累計":
                         _異常量 = ErrorCountForSingleLine(error_unsolved, LineGroup, factoryFloor);
+                        value = _異常量.ToString();
                         break;
                     case "上期尚未生產":
                         sqlcmd = ProductionDelay_CMD(d_start);
@@ -5852,46 +5886,64 @@ namespace dek_erpvis_v2.cls
                         //for (int i = 0; i < rows.Length; i++)
                         //    dtsa.ImportRow(rows[i]);
                         上期尚未生產 = rows.Length;
+                        value = 上期尚未生產.ToString();
                         break;
                     case "下期提前生產":
                         sqlcmd = ProductionAhead_CMD(d_end);
                         sqlcmd += $" and 產線群組='{LineGroup}'";
                         rows = dt_factory.Select(sqlcmd);
                         下期提前生產 = rows.Length;
+                        value = 下期提前生產.ToString();
+                        break;
+                    default:
+                        //20221229 default 動態應對異常狀態欄位
+                        string Schedule_Num = "";
+                        string workStationNum = "";
+                        string url = "";
+
+                        sqlcmd = $"結案判定類型='{row_name}' and 產線群組='{LineGroup}'";
+                        rows = error_unsolved.Select(sqlcmd);
+                        if (rows.Length != 0)
+                        {
+                            DataTable dt_LineGroup = myclass.Get_LINEGROUP();
+                            if (HtmlUtil.Check_DataTable(dt_LineGroup))
+                            {
+                                
+                                sqlcmd = $"GROUP_NAME='{LineGroup}'";
+                                DataRow[] group_rows = dt_LineGroup.Select(sqlcmd);
+                                foreach (DataRow GpRow in group_rows) {
+                                    workStationNum += $"{GpRow["工作站編號"]},";
+                                }
+                                workStationNum = workStationNum.TrimEnd(",".ToCharArray());
+                                for (int i = 0; i < rows.Length; i++)
+                                {
+                                    if (rows.Length > 1)
+                                    {
+                                        Schedule_Num += rows[i]["排程編號"].ToString() + "$";
+                                    }
+                                    else
+                                    {
+                                        Schedule_Num = rows[i]["排程編號"].ToString()+"$";
+                                    }
+                                }
+                                string Location = factoryFloor == "sowon" ? "Ver" : "Hor";
+                                url = "Local=" + Location + ",ErrorLineNum=" + workStationNum + ",Errorkey=" + Schedule_Num + ",Date_str=" + d_start + ",Date_end=" + d_end + ",ErrorType=" + row_name;
+                                if (ConfigurationManager.AppSettings["URL_ENCODE"] == "1" && url != "")
+                                    url = WebUtils.UrlStringEncode(url);
+
+                                value = $"<a href=\"Asm_history.aspx?key={url}\"><div style=\"height:100%;width:100%\">{rows.Length}</div></a>";
+                            }
+                            else
+                            {
+                                value = rows.Length.ToString();
+                            }
+                        }
+                        else 
+                        {
+                            value = "0";
+                        }
                         break;
                 }
-
-                value = "";
-                if (row_name == "本期計畫生產")
-                {
-                    _預定生產 = _預定生產 == 0 ? 0 : _預定生產;
-                    value = _預定生產.ToString();
-                }
-                if (row_name == "目前累計應有進度")
-                    value = _預計生產量.ToString();
-                if (row_name == "目前累計實際進度")
-                    value = _實際生產.ToString();
-                if (row_name == "差異量")
-                {
-
-                    value = 差異量;
-                }
-
-                if (row_name == "昨日應有進度")
-                    value = _昨日預定生產.ToString();
-                if (row_name == "昨日實際進度")
-                    value = _昨日實際生產.ToString();
-                if (row_name == "昨日人力(實到/應到)")
-                    value = $"{實到人數}/{應到人數}";
-                if (row_name == "本期異常累計")
-                    value = _異常量.ToString();
-                if (row_name == "月產能")
-                    value = 月產能.ToString();
-                if (row_name == "上期尚未生產")
-                    value = 上期尚未生產.ToString();
-                if (row_name == "下期提前生產")
-                    value = 下期提前生產.ToString();
-
             }
             return value == "" ? "" : $"<td style=\"text-align:center;\"> {value} </td>";
         }
@@ -5960,7 +6012,7 @@ namespace dek_erpvis_v2.cls
         }
 
 
-        //20221216 顯示錯誤台數單獨產線計算
+        //20221230 顯示已結案錯誤台數,單獨產線計算
         private string ErrorCountForSingleLine(DataTable ErrorUnsolved, string LineGroup, string FactoryFloor)
         {
             string sqlcmd = "";
@@ -5982,7 +6034,8 @@ namespace dek_erpvis_v2.cls
                     foreach (DataRow dataRow1 in rows)
                         nosovle += $"{dataRow1["排程編號"]}!{dataRow1["異常維護編號"]}*";
                     //導向網址
-                    value = FactoryFloor == "sowon" ? $"<u><a href=\"Asm_NoSolve.aspx?key={WebUtils.UrlStringEncode($"mach={nosovle}")}\">{rows.Length}</a></u>" : $"<u><a href=\"Asm_NoSolve_ITEC.aspx?key={WebUtils.UrlStringEncode($"mach={nosovle}")}\">{rows.Length}</a></u>";
+                    //value = FactoryFloor == "sowon" ? $"<u><a href=\"Asm_NoSolve.aspx?key={WebUtils.UrlStringEncode($"mach={nosovle}")}\">{rows.Length}</a></u>" : $"<u><a href=\"Asm_NoSolve_ITEC.aspx?key={WebUtils.UrlStringEncode($"mach={nosovle}")}\">{rows.Length}</a></u>";
+                    value = rows.Length.ToString();
                 }
                 else
                 {

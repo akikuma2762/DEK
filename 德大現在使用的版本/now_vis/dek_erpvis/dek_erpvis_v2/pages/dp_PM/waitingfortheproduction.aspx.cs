@@ -135,7 +135,7 @@ namespace dek_erpvis_v2.pages.dp_PM
             dt_Production = PPC.Get_ProductionDataTable(date_str, date_end, condition, dropdownlist_Factory.SelectedItem.Value);
             //dt_Capacity = PPC.Get_CapacityDatable(dropdownlist_Factory.SelectedItem.Value);
             dt_Production = PPC.DataTableMerge(dt_Production, date_str, date_end);
-            dt_Error = PPC.Get_AbbormalTable(dt_Production, condition, dropdownlist_Factory.SelectedItem.Value);
+            //dt_Error = PPC.Get_AbbormalTable(dt_Production, condition, dropdownlist_Factory.SelectedItem.Value);
             //dt_Staff = PPC.GetWorkerWorkTimeDataTable(date_str, date_end, dropdownlist_Factory.SelectedItem.Value);
             //Set_ProductionProgressTable(dt_Production, dt_Staff, dt_Error, dt_Capacity, acc, date_str, date_end, condition, dropdownlist_Factory.SelectedItem.Value);
 

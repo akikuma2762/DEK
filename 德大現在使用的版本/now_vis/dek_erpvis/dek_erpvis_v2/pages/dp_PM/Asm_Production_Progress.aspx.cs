@@ -84,14 +84,14 @@ namespace dek_erpvis_v2.pages.dp_PM
             Assm_month = PPC.Get_ProductionDataTable(date_str, date_end,"","sowon");
             Assm_Capacity = PPC.Get_CapacityDatable("sowon");
             Assm_month = PPC.DataTableMerge(Assm_month, date_str, date_end);
-            Assm_Error = PPC.Get_AbbormalTable(Assm_month,"", "sowon");
+            Assm_Error = PPC.Get_AbbormalTable(Assm_month,date_str, date_end,"", "sowon");
             Assm_Staff = PPC.GetWorkerWorkTimeDataTable(date_str, date_end, "sowon");
             Set_ProductionProgressTable(Assm_month, Assm_Staff, Assm_Error, Assm_Capacity,acc,date_str,date_end,"", "sowon");
 
             Hor_month = PPC.Get_ProductionDataTable(date_str, date_end,"","iTec");
             Hor_Capacity = PPC.Get_CapacityDatable("iTec");
             Hor_month = PPC.DataTableMerge(Hor_month, date_str, date_end);
-            Hor_Error = PPC.Get_AbbormalTable(Hor_month,"" ,"iTec");
+            Hor_Error = PPC.Get_AbbormalTable(Hor_month,date_str,date_end,"" ,"iTec");
             Hor_Staff = PPC.GetWorkerWorkTimeDataTable(date_str, date_end, "iTec");
             Set_ProductionProgressTable(Hor_month, Hor_Staff, Hor_Error, Hor_Capacity, acc, date_str, date_end,"", "iTec");
         }
@@ -128,8 +128,7 @@ namespace dek_erpvis_v2.pages.dp_PM
                 {
                     table.Columns.Add(dataRow[0].ToString());
                 }
-
-
+                DataTable error_rows = error_unsolved.DefaultView.ToTable(true, new string[] { "結案判定類型" });
                 //新增總計
                 table.Rows.Add("月產能");
                 table.Rows.Add("本期計畫生產");
@@ -141,6 +140,11 @@ namespace dek_erpvis_v2.pages.dp_PM
                 table.Rows.Add("上期尚未生產");
                 table.Rows.Add("下期提前生產");
                 table.Rows.Add("昨日人力(實到/應到)");
+                
+                foreach (DataRow row in error_rows.Rows) {
+                    string error_row = row["結案判定類型"].ToString();
+                    table.Rows.Add(error_row);
+                }
                 table.Rows.Add("本期異常累計");
                 string columns = "";
                 //20220729 新稱月產能
@@ -182,15 +186,6 @@ namespace dek_erpvis_v2.pages.dp_PM
                 
         }
 
-        
-
-        
-
-
-
-
-
-
         //20220822 計算工作天,生產推移圖專用
         private string month_WorkDay(string date_str,string date_end)
         {   
@@ -219,57 +214,5 @@ namespace dek_erpvis_v2.pages.dp_PM
             arr[2] = (((endDay - startDay).Days) + 1).ToString();
             return arr;
         }
-
-
-        //20221208 生產推移圖-預計生產篩選條件 by秋雄
-        //public string ExpectedProduction_CMD(string expected_fn_day, string today, string date_str, bool first_day) {
-        //    string sqlcmd = "";
-        //        //預計生產 20221209 
-        //        if (DataTableUtils.toInt(today) >= DataTableUtils.toInt(date_str))
-        //        //中間的 substring(實際完成時間, 1, 8)>='{date_str}' 是為了將逾期完成,單在本月完成後的資料抓出,否則完成前會出現,完成後則抓不到
-        //        //1.不顯示已提早在上期完成的數量
-        //        //sqlcmd = first_day ? $"((預計完工日 <= '{expected_fn_day}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 =''))  OR 預計完工日='開發機' ) " : $"預計完工日 = '{expected_fn_day}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='')";
-        //        //2.顯示已在上期提早完成的數量
-        //        sqlcmd = first_day ? $"((預計完工日 <= '{expected_fn_day}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR substring(實際完成時間, 1, 8)<='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 =''))  OR 預計完工日='開發機' ) " : $"預計完工日 = '{expected_fn_day}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 ='')";
-
-        //        else
-        //        sqlcmd = $"預計完工日 = '{expected_fn_day}'";
-        //    return sqlcmd;
-        //}
-
-        //20221216 昨日實際生產總計篩選條件 by秋雄
-        //public string ProductionFullCountForYesterday_CMD(string start, string end, string yesterday)
-        //{
-        //    string sqlcmd = "";
-        //    //不顯示已在上期完成的數量
-        //    //sqlcmd = $"(預計完工日<={end} and (實際完成時間 >='{start}' and 實際完成時間<={yesterday}) and 狀態 = '完成')";
-        //    //顯示已在上期完成的數量
-        //    sqlcmd = $"(預計完工日<={end} and ( 實際完成時間<={yesterday}) and 狀態 = '完成')";
-        //    return sqlcmd;
-        //}
-        
-
-     
-        
-        ////20221212 生產推移圖-上期未生產生產篩選條件 by秋雄
-        //public string ProductionDelay_CMD(string date_str)
-        //{
-        //    string sqlcmd = "";
-        //    //延遲預計生產 20221214 
-            
-        //        sqlcmd =  $"((預計完工日 <= '{date_str}' and (substring(實際完成時間, 1, 8)>='{date_str}' OR 實際完成時間 IS NULL  OR 實際完成時間 =''))  OR 預計完工日='開發機' ) ";
-            
-        //    return sqlcmd;
-        //}
-        //20221212 生產推移圖-下期提前生產篩選條件 by秋雄
-        //public string ProductionAhead_CMD(string date_end)
-        //{
-        //    string sqlcmd = "";
-        //    //提前生產 20221214 
-        //    sqlcmd = $"((預計完工日 > '{date_end}' OR 預計完工日='開發機') and (substring(實際完成時間, 1, 8)<='{date_end}')) ";
-
-        //    return sqlcmd;
-        //}
-
     }
 }

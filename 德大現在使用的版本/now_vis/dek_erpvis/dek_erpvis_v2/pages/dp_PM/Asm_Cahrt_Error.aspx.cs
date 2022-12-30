@@ -91,7 +91,8 @@ namespace dek_erpvis_v2.pages.dp_PM
         private void GetErrorData()
         {
             HttpCookie userOpRec = Request.Cookies["Rec"];
-            string[] timeSet;
+            //string[] timeSet;
+            string[] timeSet = new string[2];
             string timeTypeSource = "";
             if (userOpRec["user_TimeType"] != null || userOpRec["user_TimeType"].ToString() != "")
                 timeTypeSource = SFun.TrsDate(userOpRec["user_TimeType"].ToString());
@@ -99,41 +100,43 @@ namespace dek_erpvis_v2.pages.dp_PM
             if (!string.IsNullOrEmpty(timeTypeSource))//timeTypeSource != null && timeTypeSource != "")
             {
                 //SelectLine = "1";
-                timeSet = SFun.GetTimeType(timeTypeSource);
-                userOpRec["user_StartTime"] = timeSet[0];
-                userOpRec["user_EndTime"] = timeSet[1];
+                //timeSet = SFun.GetTimeType(timeTypeSource);
+                //userOpRec["user_StartTime"] = timeSet[0];
+                //userOpRec["user_EndTime"] = timeSet[1];
+                timeSet[0] = date_str;
+                timeSet[1] = date_end;
                 Response.Cookies.Add(userOpRec);
                 SetDropDownList();//pageload已載入,不重複設定checkbox 20220614
                 if (SelectLine == "0" || string.IsNullOrEmpty(SelectLine))
                     GetDataInf(timeTypeSource, timeSet);
                 else
                     GetDataInf(timeTypeSource, timeSet, SelectLine);
-                TimeTypeForSubTitle = timeSet[4];
-                if (Session["time_s"] != null && Session["time_e"] != null)
-                {
-                    TimeTypeForSubTitle = HtmlUtil.changetimeformat(Session["time_s"].ToString().Replace("010101", "")) + "~" + HtmlUtil.changetimeformat(Session["time_e"].ToString().Replace("235959", ""));
-                    Session.Remove("time_s");
-                    Session.Remove("time_e");
+                //TimeTypeForSubTitle = timeSet[4];
+                //if (Session["time_s"] != null && Session["time_e"] != null)
+                //{
+                //    TimeTypeForSubTitle = HtmlUtil.changetimeformat(Session["time_s"].ToString().Replace("010101", "")) + "~" + HtmlUtil.changetimeformat(Session["time_e"].ToString().Replace("235959", ""));
+                //    Session.Remove("time_s");
+                //    Session.Remove("time_e");
 
-                }
+                //}
             }
             else
             {
-                if (SelectLine == "0" || SelectLine == null || SelectLine == "")
-                    GetDataInf(timeTypeSource, null);
-                else //First  -> show Today
-                {
-                    timeSet = SFun.GetTimeType("day");
-                    GetDataInf("day", timeSet, SelectLine);
-                    TimeTypeForSubTitle = timeSet[4];
-                    if (Session["time_s"] != null && Session["time_e"] != null)
-                    {
-                        TimeTypeForSubTitle = Session["time_s"].ToString() + "-" + Session["time_e"].ToString();
-                        Session.Remove("time_s");
-                        Session.Remove("time_e");
-                    }
+                //if (SelectLine == "0" || SelectLine == null || SelectLine == "")
+                //    GetDataInf(timeTypeSource, null);
+                //else //First  -> show Today
+                //{
+                //    timeSet = SFun.GetTimeType("day");
+                //    GetDataInf("day", timeSet, SelectLine);
+                //    TimeTypeForSubTitle = timeSet[4];
+                //    if (Session["time_s"] != null && Session["time_e"] != null)
+                //    {
+                //        TimeTypeForSubTitle = Session["time_s"].ToString() + "-" + Session["time_e"].ToString();
+                //        Session.Remove("time_s");
+                //        Session.Remove("time_e");
+                //    }
 
-                }
+                //}
             }
         }
         private void GetDataInf(string TimeType, string[] timeset, string SelectLine = "0")
@@ -298,18 +301,21 @@ namespace dek_erpvis_v2.pages.dp_PM
                 {
                     if (!IsPostBack)
                     {
+                        string[] daterange = 德大機械.德大專用月份(acc).Split(',');
                         if (textbox_dt1.Text == "" && textbox_dt2.Text == "")
                         {
-                            string[] daterange = 德大機械.德大專用月份(acc).Split(',');
                             textbox_dt1.Text = HtmlUtil.changetimeformat(daterange[0], "-");
                             textbox_dt2.Text = HtmlUtil.changetimeformat(daterange[1], "-");
                         }
-
+                        date_str = daterange[0];
+                        date_end = daterange[1];
                         userOpRec["user_unit"] = ShareMemory.TimeUnit;
                         userOpRec["user_TimeType"] = "type_month";
                         userOpRec["user_LineNum"] = "0";
-                        userOpRec["user_StartTime"] = DateTime.Now.ToString("yyyyMM" + "01010101");
-                        userOpRec["user_EndTime"] = DateTime.Now.ToString("yyyyMM" + "30235959");
+                        //userOpRec["user_StartTime"] = DateTime.Now.ToString("yyyyMM" + "01010101");
+                        //userOpRec["user_EndTime"] = DateTime.Now.ToString("yyyyMM" + "30235959");
+                        userOpRec["user_StartTime"] = daterange[0].ToString()+"010101";
+                        userOpRec["user_EndTime"] = daterange[1].ToString()+"235959";
                         userOpRec.Expires = DateTime.Now.AddDays(1);
                         Response.Cookies.Add(userOpRec);
                         TimeUnit = timeUnitForshow(ShareMemory.TimeUnit);
