@@ -159,9 +159,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
                 bool success = DataTableUtils.Insert_DataRow("show_page", rsw);
             }
-            Response.Write("<script language='javascript'>alert('伺服器回應 : 已審核 " + available + " 筆申請資料。');</script>");
             //20221228 送出後重整避免使用者瀏覽器重整,重複動作
-            Response.Redirect("rights_application.aspx", false);
+            Response.Write($"<script language='javascript'>alert('伺服器回應 : 已審核 {available} 筆申請資料。');location.href='rights_application.aspx';</script>");
             //GotoCenn();
 
         }
@@ -182,9 +181,8 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                 if (DataTableUtils.Delete_Record(tabl_name, condition) == true)
                     available++;
             }
-            Response.Write("<script language='javascript'>alert('伺服器回應 : 已刪除 " + available + " 筆申請資料。');</script>");
             //20221228 送出後重整避免使用者瀏覽器重整,重複動作
-            Response.Redirect("rights_application.aspx", false);
+            Response.Write($"<script language='javascript'>alert('伺服器回應 : 已刪除 {available} 筆申請資料。');location.href='rights_application.aspx';</script>");
             //GotoCenn();
         }
 

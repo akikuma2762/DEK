@@ -189,7 +189,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
             {
                 listItem = new ListItem(DataTableUtils.toString(row["WEB_PAGENAME"]), DataTableUtils.toString(row["WEB_URL"]));
                 string View_NY = row["VIEW_NY"].ToString();//20221228修改-增加判斷view_ny,確定審核過才能打勾,不是有審核就打勾
-                if (DataTableUtils.toString(row["USER_ACC"]) != "" && View_NY=="Y")
+                if (DataTableUtils.toString(row["USER_ACC"]) != "" && View_NY == "Y")
                     listItem.Selected = true;
                 else
                     listItem.Selected = false;
@@ -244,11 +244,12 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
             string msg = "";
             string sqlcmd = "";
+            string Web_Url = "";
             int ran = myclass.get_ran_id();
+            //DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
+            //DataTableUtils.Delete_Record("WEB_USER", "user_acc = '" + selected_user_acc + "'");
             DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
-            DataTableUtils.Delete_Record("WEB_USER", "user_acc = '" + selected_user_acc + "'");
-            DataTableUtils.Conn_String = myclass.GetConnByDekVisErp;
-            DataTableUtils.Delete_Record("show_page", "account = '" + selected_user_acc + "'");
+            //DataTableUtils.Delete_Record("show_page", "account = '" + selected_user_acc + "'");
             int i = 0;
             DataTable dt = DataTableUtils.GetDataTable($"select * from web_user where USER_ACC = '{selected_user_acc}'");
 
@@ -260,37 +261,109 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
                     {
                         foreach (ListItem li in ((CheckBoxList)cbxlist).Items)
                         {
+
+                            //if (li.Selected == true)
+                            //{
+                            //ran = ran + 1;
+                            //DataRow row = dt.NewRow();
+                            //row["WU_ID"] = "WU" + ran;
+                            //row["WB_URL"] = DataTableUtils.toString(li.Value);
+                            //row["USER_ACC"] = selected_user_acc;
+                            //row["VIEW_NY"] = "Y";
+                            //GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                            //if (DataTableUtils.Insert_DataRow("web_user", row))
+                            //    i++;
+
+                            //GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                            ////新增至show_page
+                            //sqlcmd = "select * from show_page ";
+                            //DataTable ds = DataTableUtils.GetDataTable(sqlcmd);
+                            //if (ds != null)
+                            //{
+                            //    //20221202 show_page 不使用空白Tablerow 會自動產生ID,導致寫入錯誤 by 秋雄
+                            //    DataTable ds_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
+                            //    DataRow rsw = ds_NoRow.NewRow();
+                            //    rsw["URL"] = DataTableUtils.toString(li.Value);
+                            //    rsw["account"] = selected_user_acc;
+                            //    rsw["Allow"] = "Y";
+                            //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                            //    DataTableUtils.Insert_DataRow("show_page", rsw);
+
+                            //}
+                            //GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                            ////新增至show_page
+                            //sqlcmd = "select * from show_page ";
+                            //DataTable ds = DataTableUtils.GetDataTable(sqlcmd);
+                            //if (ds != null)
+                            //{
+                            //    //20221202 show_page 不使用空白Tablerow 會自動產生ID,導致寫入錯誤 by 秋雄
+                            //    DataTable ds_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
+                            //    DataRow rsw = ds_NoRow.NewRow();
+                            //    rsw["URL"] = DataTableUtils.toString(li.Value);
+                            //    rsw["account"] = selected_user_acc;
+                            //    rsw["Allow"] = "Y";
+                            //    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                            //    DataTableUtils.Insert_DataRow("show_page", rsw);
+
+                            //}
+                            //}
                             if (li.Selected == true)
                             {
-
-                                ran = ran + 1;
-                                DataRow row = dt.NewRow();
-                                row["WU_ID"] = "WU" + ran;
-                                row["WB_URL"] = DataTableUtils.toString(li.Value);
-                                row["USER_ACC"] = selected_user_acc;
-                                row["VIEW_NY"] = "Y";
-                                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
-                                if (DataTableUtils.Insert_DataRow("web_user", row))
-                                    i++;
-
+                                Web_Url = li.Value.ToString();
+                                sqlcmd = $"WB_URL = '{Web_Url}'";
+                                DataRow[] rows = dt.Select(sqlcmd);
+                                if (rows.Length > 0 && rows.Length == 1)
+                                {
+                                    DataRow WebUser_Row = dt.NewRow();
+                                    foreach (DataRow dataRow in rows)
+                                    {
+                                        WebUser_Row["VIEW_NY"] = "Y";
+                                    }
+                                    bool ok = DataTableUtils.Update_DataRow("web_user", $" USER_ACC='{selected_user_acc}' and WB_URL='{Web_Url}' ", WebUser_Row);
+                                    if(ok)
+                                        i++;
+                                }
+                                else if(rows.Length==0)
+                                {
+                                    ran = ran + 1;
+                                    DataRow WebUser_Insert = dt.NewRow();
+                                    WebUser_Insert["WU_ID"] = "WU" + ran;
+                                    WebUser_Insert["WB_URL"] = DataTableUtils.toString(Web_Url);
+                                    WebUser_Insert["USER_ACC"] = selected_user_acc;
+                                    WebUser_Insert["VIEW_NY"] = "Y";
+                                    GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                                    if (DataTableUtils.Insert_DataRow("web_user",WebUser_Insert))
+                                        i++;
+                                }
                                 GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
                                 //新增至show_page
-                                sqlcmd = "select * from show_page ";
-                                DataTable ds = DataTableUtils.GetDataTable(sqlcmd);
-                                if (ds != null)
+                                sqlcmd = $"select * from show_page where account='{selected_user_acc}' and URL ='{Web_Url}'";
+                                DataTable ShowPage_dt = DataTableUtils.GetDataTable(sqlcmd);
+                                if (!HtmlUtil.Check_DataTable(ShowPage_dt))
                                 {
                                     //20221202 show_page 不使用空白Tablerow 會自動產生ID,導致寫入錯誤 by 秋雄
-                                    DataTable ds_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
-                                    DataRow rsw = ds_NoRow.NewRow();
-                                    rsw["URL"] = DataTableUtils.toString(li.Value);
-                                    rsw["account"] = selected_user_acc;
-                                    rsw["Allow"] = "Y";
+                                    DataTable ShowPage_NoRow = DataTableUtils.DataTable_TableNoRow("show_page");
+                                    DataRow ShowPage_Row = ShowPage_NoRow.NewRow();
+                                    ShowPage_Row["URL"] = Web_Url;
+                                    ShowPage_Row["account"] = selected_user_acc;
+                                    ShowPage_Row["Allow"] = "Y";
                                     GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
-                                    DataTableUtils.Insert_DataRow("show_page", rsw);
-
+                                    DataTableUtils.Insert_DataRow("show_page", ShowPage_Row);
                                 }
-
                             }
+                            else //沒選到的刪除
+                            {
+                                Web_Url = li.Value.ToString();
+                                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                                sqlcmd = $"WB_URL = '{Web_Url}' and VIEW_NY='Y'";//VIEW_NY為N時不刪除,因尚未通過審核
+                                DataRow[] WebUser_Del_Row = dt.Select(sqlcmd);
+                                if (WebUser_Del_Row.Length > 0) {
+                                    DataTableUtils.Delete_Record("WEB_USER", $"USER_ACC = '{selected_user_acc}' and WB_URL='{Web_Url}'");
+                                }
+                                GlobalVar.UseDB_setConnString(myclass.GetConnByDekVisErp);
+                                DataTableUtils.Delete_Record("show_page", $"account = '{selected_user_acc}' and URL ='{Web_Url}'");
+                            }
+
                         }
                     }
                 }
@@ -299,7 +372,7 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
 
 
-
+            //高等權限設定
             for (int x = 0; x < CheckBoxList_Power.Items.Count; x++)
             {
                 //先取得ID
@@ -352,11 +425,11 @@ namespace dek_erpvis_v2.pages.SYS_CONTROL
 
 
             msg = selected_user_acc + "已異動! 可瀏覽頁面數 : " + i + "頁";
-            Response.Write("<script language='javascript'>alert('伺服器回應 : " + msg + "');</script>");
+            //Response.Write("<script language='javascript'>alert('伺服器回應 : " + msg + "');</script>");
             //20221228 送出後重整避免使用者瀏覽器重整,重複動作
             string password = DataTableUtils.toString(HttpContext.Current.Request.QueryString["password_"]);
             string url = $"rights_mag_details.aspx?password_={password}";
-            Server.Transfer(url);
+            Response.Write($"<script>alert('伺服器回應 :{msg}');location.href='{url}';</script>");
             //load_page_data();
         }
         protected void Button_info_Click(object sender, EventArgs e)
