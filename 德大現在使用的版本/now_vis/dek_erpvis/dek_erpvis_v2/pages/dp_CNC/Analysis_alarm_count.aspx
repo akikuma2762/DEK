@@ -5,7 +5,7 @@
     <link href="../../assets/vendors/bootstrap-touchspin-master/dist/jquery.bootstrap-touchspin.css" rel="stylesheet" type="text/css" media="all">
     <%=color %>
     <!--<link href="../../assets/build/css/custom.css" rel="stylesheet" />
-    <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />-->
+    <link href="../../assets/build/css/Change_Table_Button.css" rel="stylesheet" />--->
     <link href="../../Content/Default_input.css" rel="stylesheet" />
     <link href="../../Content/Default.css" rel="stylesheet" />
     <link href="../../Content/table.css" rel="stylesheet" media="screen and (max-width:768px)" />
