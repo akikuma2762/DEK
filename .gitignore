@@ -2,5 +2,5 @@
 *.user
 *.suo
 *.pdb
-*/Debug/*
-*/Release/*
+*/obj/*
+*/obj/Release/Package/*

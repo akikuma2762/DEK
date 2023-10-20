@@ -437,7 +437,7 @@
             $('#ContentPlaceHolder1_TextBox_Dispatch').val(val);
             $('#ContentPlaceHolder1_TextBox_Dispatch').text(val);
             console.log($('#ContentPlaceHolder1_TextBox_Dispatch').text());
-            console.log($('#ContentPlaceHolder1_TextBox_Dispatch').text());
+
         });
 
 
