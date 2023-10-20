@@ -2,4 +2,5 @@
 *.user
 *.suo
 *.pdb
-*/Debug/
+*/Debug/*
+*/Release/*
