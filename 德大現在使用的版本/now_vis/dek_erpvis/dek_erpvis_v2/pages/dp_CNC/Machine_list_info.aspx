@@ -1963,7 +1963,7 @@
             } else {
                 count_gp2_loop++;
                 count_gp2_last++;
-                //console.log($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML);
+                ///console.log($(`#ContentPlaceHolder1_CheckBoxList_cloumn_${i}`).parent()[0].outerHTML);
 
                 if (count_gp2_loop < 2) {
                     gp2_td = "<tr class=gp2>";
